@@ -1,0 +1,5688 @@
+{
+  "generated_at": "2026-06-03T14:13:23",
+  "contexts": {
+    "equal_0": {
+      "analyze": [
+        {
+          "id": "top5_equal",
+          "holdings": [
+            {
+              "ticker": "MU",
+              "shares": 10
+            },
+            {
+              "ticker": "ECPG",
+              "shares": 10
+            },
+            {
+              "ticker": "SNDK",
+              "shares": 10
+            },
+            {
+              "ticker": "DAL",
+              "shares": 10
+            },
+            {
+              "ticker": "NEM",
+              "shares": 10
+            }
+          ],
+          "result": {
+            "total_value": 30480.7,
+            "num_holdings": 5,
+            "num_stocks": 5,
+            "num_etfs": 0,
+            "num_unmatched": 0,
+            "unmatched_tickers": [],
+            "stock_weight": 100.0,
+            "etf_weight": 0.0,
+            "weighted_composite": 8.94,
+            "weighted_rating": "Buy",
+            "pillar_scores": {
+              "Valuation": 5.514481852450895,
+              "Growth": 9.78373610186118,
+              "Profitability": 10.378984078449642,
+              "Momentum": 11.505192203591127,
+              "EPS Revisions": 7.487623315737499
+            },
+            "rating_distribution": {
+              "Buy": 0.9122034598942937,
+              "Strong Buy": 0.051872168290098324,
+              "Strong Buy+": 0.03592437181560791
+            },
+            "hhi": 0.835,
+            "concentration_level": "Concentrated",
+            "sector_weights": {
+              "Technology": {
+                "weight": 0.9122034598942937,
+                "count": 2,
+                "avg_score": 8.965
+              },
+              "Basic Materials": {
+                "weight": 0.03592437181560791,
+                "count": 1,
+                "avg_score": 8.79
+              },
+              "Industrials": {
+                "weight": 0.02625267792406342,
+                "count": 1,
+                "avg_score": 8.86
+              },
+              "Financial Services": {
+                "weight": 0.025619490366034902,
+                "count": 1,
+                "avg_score": 8.89
+              }
+            },
+            "factor_tilts": {
+              "Valuation": {
+                "portfolio": 5.5,
+                "universe": 6.9,
+                "diff": -1.4,
+                "tilt": "Underweight"
+              },
+              "Growth": {
+                "portfolio": 9.8,
+                "universe": 7.0,
+                "diff": 2.8,
+                "tilt": "Overweight"
+              },
+              "Profitability": {
+                "portfolio": 10.4,
+                "universe": 7.0,
+                "diff": 3.4,
+                "tilt": "Overweight"
+              },
+              "Momentum": {
+                "portfolio": 11.5,
+                "universe": 7.0,
+                "diff": 4.6,
+                "tilt": "Overweight"
+              },
+              "EPS Revisions": {
+                "portfolio": 7.5,
+                "universe": 7.0,
+                "diff": 0.5,
+                "tilt": "Neutral"
+              }
+            },
+            "positions": [
+              {
+                "ticker": "MU",
+                "type": "stock",
+                "market_value": 10641.0,
+                "weight": 0.349106155698524,
+                "composite": 9.05,
+                "rating": "Buy",
+                "sector": "Technology",
+                "gain_pct": null
+              },
+              {
+                "ticker": "ECPG",
+                "type": "stock",
+                "market_value": 780.9000000000001,
+                "weight": 0.025619490366034902,
+                "composite": 8.89,
+                "rating": "Strong Buy",
+                "sector": "Financial Services",
+                "gain_pct": null
+              },
+              {
+                "ticker": "SNDK",
+                "type": "stock",
+                "market_value": 17163.6,
+                "weight": 0.5630973041957698,
+                "composite": 8.88,
+                "rating": "Buy",
+                "sector": "Technology",
+                "gain_pct": null
+              },
+              {
+                "ticker": "DAL",
+                "type": "stock",
+                "market_value": 800.1999999999999,
+                "weight": 0.02625267792406342,
+                "composite": 8.86,
+                "rating": "Strong Buy",
+                "sector": "Industrials",
+                "gain_pct": null
+              },
+              {
+                "ticker": "NEM",
+                "type": "stock",
+                "market_value": 1095.0,
+                "weight": 0.03592437181560791,
+                "composite": 8.79,
+                "rating": "Strong Buy+",
+                "sector": "Basic Materials",
+                "gain_pct": null
+              }
+            ]
+          }
+        },
+        {
+          "id": "varied_sizes",
+          "holdings": [
+            {
+              "ticker": "MU",
+              "shares": 100,
+              "cost_basis": null
+            },
+            {
+              "ticker": "DAL",
+              "shares": 5,
+              "cost_basis": 50.0
+            },
+            {
+              "ticker": "UNIT",
+              "shares": 33,
+              "cost_basis": 1000.0
+            },
+            {
+              "ticker": "VST",
+              "shares": 12,
+              "cost_basis": 25.0
+            },
+            {
+              "ticker": "ADNT",
+              "shares": 7,
+              "cost_basis": 80.0
+            }
+          ],
+          "result": {
+            "total_value": 109239.81999999999,
+            "num_holdings": 5,
+            "num_stocks": 5,
+            "num_etfs": 0,
+            "num_unmatched": 0,
+            "unmatched_tickers": [],
+            "stock_weight": 100.0,
+            "etf_weight": 0.0,
+            "weighted_composite": 9.04,
+            "weighted_rating": "Strong Buy",
+            "pillar_scores": {
+              "Valuation": 6.205776606918612,
+              "Growth": 9.266994009144286,
+              "Profitability": 10.526816137192462,
+              "Momentum": 11.881333081654658,
+              "EPS Revisions": 7.294271997152687
+            },
+            "rating_distribution": {
+              "Buy": 0.9775240383955227,
+              "Hold": 0.0014603649108905527,
+              "Strong Buy": 0.02101559669358664
+            },
+            "hhi": 0.949,
+            "concentration_level": "Concentrated",
+            "sector_weights": {
+              "Technology": {
+                "weight": 0.9740953436210348,
+                "count": 1,
+                "avg_score": 9.05
+              },
+              "Utilities": {
+                "weight": 0.017353012848245263,
+                "count": 1,
+                "avg_score": 8.48
+              },
+              "Industrials": {
+                "weight": 0.003662583845341378,
+                "count": 1,
+                "avg_score": 8.86
+              },
+              "Real Estate": {
+                "weight": 0.0034286947744879112,
+                "count": 1,
+                "avg_score": 8.67
+              },
+              "Consumer Cyclical": {
+                "weight": 0.0014603649108905527,
+                "count": 1,
+                "avg_score": 8.19
+              }
+            },
+            "factor_tilts": {
+              "Valuation": {
+                "portfolio": 6.2,
+                "universe": 6.9,
+                "diff": -0.7,
+                "tilt": "Neutral"
+              },
+              "Growth": {
+                "portfolio": 9.3,
+                "universe": 7.0,
+                "diff": 2.3,
+                "tilt": "Overweight"
+              },
+              "Profitability": {
+                "portfolio": 10.5,
+                "universe": 7.0,
+                "diff": 3.6,
+                "tilt": "Overweight"
+              },
+              "Momentum": {
+                "portfolio": 11.9,
+                "universe": 7.0,
+                "diff": 4.9,
+                "tilt": "Overweight"
+              },
+              "EPS Revisions": {
+                "portfolio": 7.3,
+                "universe": 7.0,
+                "diff": 0.3,
+                "tilt": "Neutral"
+              }
+            },
+            "positions": [
+              {
+                "ticker": "MU",
+                "type": "stock",
+                "market_value": 106409.99999999999,
+                "weight": 0.9740953436210348,
+                "composite": 9.05,
+                "rating": "Buy",
+                "sector": "Technology",
+                "gain_pct": null
+              },
+              {
+                "ticker": "DAL",
+                "type": "stock",
+                "market_value": 400.09999999999997,
+                "weight": 0.003662583845341378,
+                "composite": 8.86,
+                "rating": "Strong Buy",
+                "sector": "Industrials",
+                "gain_pct": 60.03999999999999
+              },
+              {
+                "ticker": "UNIT",
+                "type": "stock",
+                "market_value": 374.55,
+                "weight": 0.0034286947744879112,
+                "composite": 8.67,
+                "rating": "Buy",
+                "sector": "Real Estate",
+                "gain_pct": -98.86500000000001
+              },
+              {
+                "ticker": "VST",
+                "type": "stock",
+                "market_value": 1895.6399999999999,
+                "weight": 0.017353012848245263,
+                "composite": 8.48,
+                "rating": "Strong Buy",
+                "sector": "Utilities",
+                "gain_pct": 531.88
+              },
+              {
+                "ticker": "ADNT",
+                "type": "stock",
+                "market_value": 159.53,
+                "weight": 0.0014603649108905527,
+                "composite": 8.19,
+                "rating": "Hold",
+                "sector": "Consumer Cyclical",
+                "gain_pct": -71.5125
+              }
+            ]
+          }
+        },
+        {
+          "id": "single_sector",
+          "holdings": [
+            {
+              "ticker": "ECPG",
+              "shares": 20
+            },
+            {
+              "ticker": "MCY",
+              "shares": 20
+            },
+            {
+              "ticker": "EZPW",
+              "shares": 20
+            },
+            {
+              "ticker": "MSCI",
+              "shares": 20
+            },
+            {
+              "ticker": "SEZL",
+              "shares": 20
+            }
+          ],
+          "result": {
+            "total_value": 19125.800000000003,
+            "num_holdings": 5,
+            "num_stocks": 5,
+            "num_etfs": 0,
+            "num_unmatched": 0,
+            "unmatched_tickers": [],
+            "stock_weight": 100.0,
+            "etf_weight": 0.0,
+            "weighted_composite": 8.44,
+            "weighted_rating": "Buy",
+            "pillar_scores": {
+              "Valuation": 5.980221167219149,
+              "Growth": 8.3075348482155,
+              "Profitability": 10.63247550429263,
+              "Momentum": 9.465890263413817,
+              "EPS Revisions": 7.779311192211568
+            },
+            "rating_distribution": {
+              "Hold": 0.7829214987085505,
+              "Strong Buy": 0.11413901640715682,
+              "Strong Buy+": 0.1029394848842924
+            },
+            "hhi": 1.0,
+            "concentration_level": "Concentrated",
+            "sector_weights": {
+              "Financial Services": {
+                "weight": 0.9999999999999998,
+                "count": 5,
+                "avg_score": 8.532
+              }
+            },
+            "factor_tilts": {
+              "Valuation": {
+                "portfolio": 6.0,
+                "universe": 6.9,
+                "diff": -0.9,
+                "tilt": "Neutral"
+              },
+              "Growth": {
+                "portfolio": 8.3,
+                "universe": 7.0,
+                "diff": 1.3,
+                "tilt": "Overweight"
+              },
+              "Profitability": {
+                "portfolio": 10.6,
+                "universe": 7.0,
+                "diff": 3.7,
+                "tilt": "Overweight"
+              },
+              "Momentum": {
+                "portfolio": 9.5,
+                "universe": 7.0,
+                "diff": 2.5,
+                "tilt": "Overweight"
+              },
+              "EPS Revisions": {
+                "portfolio": 7.8,
+                "universe": 7.0,
+                "diff": 0.8,
+                "tilt": "Neutral"
+              }
+            },
+            "positions": [
+              {
+                "ticker": "ECPG",
+                "type": "stock",
+                "market_value": 1561.8000000000002,
+                "weight": 0.08165932928295809,
+                "composite": 8.89,
+                "rating": "Strong Buy",
+                "sector": "Financial Services",
+                "gain_pct": null
+              },
+              {
+                "ticker": "MCY",
+                "type": "stock",
+                "market_value": 1968.8,
+                "weight": 0.1029394848842924,
+                "composite": 8.56,
+                "rating": "Strong Buy+",
+                "sector": "Financial Services",
+                "gain_pct": null
+              },
+              {
+                "ticker": "EZPW",
+                "type": "stock",
+                "market_value": 621.1999999999999,
+                "weight": 0.03247968712419872,
+                "composite": 8.47,
+                "rating": "Strong Buy",
+                "sector": "Financial Services",
+                "gain_pct": null
+              },
+              {
+                "ticker": "MSCI",
+                "type": "stock",
+                "market_value": 12605.4,
+                "weight": 0.6590783130640285,
+                "composite": 8.37,
+                "rating": "Hold",
+                "sector": "Financial Services",
+                "gain_pct": null
+              },
+              {
+                "ticker": "SEZL",
+                "type": "stock",
+                "market_value": 2368.6000000000004,
+                "weight": 0.12384318564452206,
+                "composite": 8.37,
+                "rating": "Hold",
+                "sector": "Financial Services",
+                "gain_pct": null
+              }
+            ]
+          }
+        },
+        {
+          "id": "etf_and_unmatched",
+          "holdings": [
+            {
+              "ticker": "QTUM",
+              "shares": 15
+            },
+            {
+              "ticker": "BAI",
+              "shares": 15
+            },
+            {
+              "ticker": "SNDK",
+              "shares": 40
+            },
+            {
+              "ticker": "ZZZZ_NOPE",
+              "shares": 3
+            }
+          ],
+          "result": {
+            "total_value": 71964.59999999999,
+            "num_holdings": 3,
+            "num_stocks": 3,
+            "num_etfs": 0,
+            "num_unmatched": 1,
+            "unmatched_tickers": [
+              "ZZZZ_NOPE"
+            ],
+            "stock_weight": 100.0,
+            "etf_weight": 0.0,
+            "weighted_composite": 8.84,
+            "weighted_rating": "Buy",
+            "pillar_scores": {
+              "Valuation": 4.681774205651113,
+              "Growth": 10.100507749643576,
+              "Profitability": 10.243608107319433,
+              "Momentum": 11.683339475241993,
+              "EPS Revisions": 7.4770011922528585
+            },
+            "rating_distribution": {
+              "Buy": 0.9540023845057154,
+              "Hold": 0.045997615494284695
+            },
+            "hhi": 0.912,
+            "concentration_level": "Concentrated",
+            "sector_weights": {
+              "Technology": {
+                "weight": 0.9540023845057154,
+                "count": 1,
+                "avg_score": 8.88
+              },
+              "ETF": {
+                "weight": 0.045997615494284695,
+                "count": 2,
+                "avg_score": 7.984999999999999
+              }
+            },
+            "factor_tilts": {
+              "Valuation": {
+                "portfolio": 4.7,
+                "universe": 6.9,
+                "diff": -2.2,
+                "tilt": "Underweight"
+              },
+              "Growth": {
+                "portfolio": 10.1,
+                "universe": 7.0,
+                "diff": 3.1,
+                "tilt": "Overweight"
+              },
+              "Profitability": {
+                "portfolio": 10.2,
+                "universe": 7.0,
+                "diff": 3.3,
+                "tilt": "Overweight"
+              },
+              "Momentum": {
+                "portfolio": 11.7,
+                "universe": 7.0,
+                "diff": 4.7,
+                "tilt": "Overweight"
+              },
+              "EPS Revisions": {
+                "portfolio": 7.5,
+                "universe": 7.0,
+                "diff": 0.5,
+                "tilt": "Neutral"
+              }
+            },
+            "positions": [
+              {
+                "ticker": "QTUM",
+                "type": "stock",
+                "market_value": 2531.3999999999996,
+                "weight": 0.03517562801710841,
+                "composite": 8.0,
+                "rating": "Hold",
+                "sector": "ETF",
+                "gain_pct": null
+              },
+              {
+                "ticker": "BAI",
+                "type": "stock",
+                "market_value": 778.8000000000001,
+                "weight": 0.010821987477176281,
+                "composite": 7.97,
+                "rating": "Hold",
+                "sector": "ETF",
+                "gain_pct": null
+              },
+              {
+                "ticker": "SNDK",
+                "type": "stock",
+                "market_value": 68654.4,
+                "weight": 0.9540023845057154,
+                "composite": 8.88,
+                "rating": "Buy",
+                "sector": "Technology",
+                "gain_pct": null
+              }
+            ]
+          }
+        },
+        {
+          "id": "many",
+          "holdings": [
+            {
+              "ticker": "MU",
+              "shares": 1
+            },
+            {
+              "ticker": "SNDK",
+              "shares": 3
+            },
+            {
+              "ticker": "NEM",
+              "shares": 5
+            },
+            {
+              "ticker": "ETSY",
+              "shares": 7
+            },
+            {
+              "ticker": "UNIT",
+              "shares": 2
+            },
+            {
+              "ticker": "WDC",
+              "shares": 4
+            },
+            {
+              "ticker": "MCY",
+              "shares": 6
+            },
+            {
+              "ticker": "NVDA",
+              "shares": 1
+            },
+            {
+              "ticker": "INSW",
+              "shares": 3
+            },
+            {
+              "ticker": "CCL",
+              "shares": 5
+            },
+            {
+              "ticker": "VST",
+              "shares": 7
+            },
+            {
+              "ticker": "TSM",
+              "shares": 2
+            },
+            {
+              "ticker": "MO",
+              "shares": 4
+            },
+            {
+              "ticker": "MSCI",
+              "shares": 6
+            },
+            {
+              "ticker": "SEZL",
+              "shares": 1
+            }
+          ],
+          "result": {
+            "total_value": 16887.32,
+            "num_holdings": 15,
+            "num_stocks": 15,
+            "num_etfs": 0,
+            "num_unmatched": 0,
+            "unmatched_tickers": [],
+            "stock_weight": 100.0,
+            "etf_weight": 0.0,
+            "weighted_composite": 8.65,
+            "weighted_rating": "Buy",
+            "pillar_scores": {
+              "Valuation": 5.682340021980991,
+              "Growth": 9.113067230324292,
+              "Profitability": 10.477265190687453,
+              "Momentum": 10.055866075848625,
+              "EPS Revisions": 7.895103841225249
+            },
+            "rating_distribution": {
+              "Buy": 0.5976430836864582,
+              "Hold": 0.2309454667762558,
+              "Strong Buy": 0.08761484948470213,
+              "Strong Buy+": 0.08379660005258384
+            },
+            "hhi": 0.4,
+            "concentration_level": "Concentrated",
+            "sector_weights": {
+              "Technology": {
+                "weight": 0.5673949448461922,
+                "count": 5,
+                "avg_score": 8.696
+              },
+              "Financial Services": {
+                "weight": 0.2659208210657464,
+                "count": 3,
+                "avg_score": 8.433333333333332
+              },
+              "Utilities": {
+                "weight": 0.06548049068768756,
+                "count": 1,
+                "avg_score": 8.48
+              },
+              "Consumer Cyclical": {
+                "weight": 0.03708758997875329,
+                "count": 2,
+                "avg_score": 8.61
+              },
+              "Basic Materials": {
+                "weight": 0.03242077487724518,
+                "count": 1,
+                "avg_score": 8.79
+              },
+              "Consumer Defensive": {
+                "weight": 0.01640047088584808,
+                "count": 1,
+                "avg_score": 8.38
+              },
+              "Energy": {
+                "weight": 0.01395070384169898,
+                "count": 1,
+                "avg_score": 8.49
+              },
+              "Real Estate": {
+                "weight": 0.0013442038168282474,
+                "count": 1,
+                "avg_score": 8.67
+              }
+            },
+            "factor_tilts": {
+              "Valuation": {
+                "portfolio": 5.7,
+                "universe": 6.9,
+                "diff": -1.2,
+                "tilt": "Underweight"
+              },
+              "Growth": {
+                "portfolio": 9.1,
+                "universe": 7.0,
+                "diff": 2.1,
+                "tilt": "Overweight"
+              },
+              "Profitability": {
+                "portfolio": 10.5,
+                "universe": 7.0,
+                "diff": 3.5,
+                "tilt": "Overweight"
+              },
+              "Momentum": {
+                "portfolio": 10.1,
+                "universe": 7.0,
+                "diff": 3.1,
+                "tilt": "Overweight"
+              },
+              "EPS Revisions": {
+                "portfolio": 7.9,
+                "universe": 7.0,
+                "diff": 0.9,
+                "tilt": "Neutral"
+              }
+            },
+            "positions": [
+              {
+                "ticker": "MU",
+                "type": "stock",
+                "market_value": 1064.1,
+                "weight": 0.06301177451484309,
+                "composite": 9.05,
+                "rating": "Buy",
+                "sector": "Technology",
+                "gain_pct": null
+              },
+              {
+                "ticker": "SNDK",
+                "type": "stock",
+                "market_value": 5149.08,
+                "weight": 0.3049080611962111,
+                "composite": 8.88,
+                "rating": "Buy",
+                "sector": "Technology",
+                "gain_pct": null
+              },
+              {
+                "ticker": "NEM",
+                "type": "stock",
+                "market_value": 547.5,
+                "weight": 0.03242077487724518,
+                "composite": 8.79,
+                "rating": "Strong Buy+",
+                "sector": "Basic Materials",
+                "gain_pct": null
+              },
+              {
+                "ticker": "ETSY",
+                "type": "stock",
+                "market_value": 488.11,
+                "weight": 0.028903935023437705,
+                "composite": 8.74,
+                "rating": "Buy",
+                "sector": "Consumer Cyclical",
+                "gain_pct": null
+              },
+              {
+                "ticker": "UNIT",
+                "type": "stock",
+                "market_value": 22.7,
+                "weight": 0.0013442038168282474,
+                "composite": 8.67,
+                "rating": "Buy",
+                "sector": "Real Estate",
+                "gain_pct": null
+              },
+              {
+                "ticker": "WDC",
+                "type": "stock",
+                "market_value": 2252.4,
+                "weight": 0.13337817960457907,
+                "composite": 8.6,
+                "rating": "Buy",
+                "sector": "Technology",
+                "gain_pct": null
+              },
+              {
+                "ticker": "MCY",
+                "type": "stock",
+                "market_value": 590.64,
+                "weight": 0.03497535428949058,
+                "composite": 8.56,
+                "rating": "Strong Buy+",
+                "sector": "Financial Services",
+                "gain_pct": null
+              },
+              {
+                "ticker": "NVDA",
+                "type": "stock",
+                "market_value": 222.82,
+                "weight": 0.013194515174699124,
+                "composite": 8.52,
+                "rating": "Buy",
+                "sector": "Technology",
+                "gain_pct": null
+              },
+              {
+                "ticker": "INSW",
+                "type": "stock",
+                "market_value": 235.59,
+                "weight": 0.01395070384169898,
+                "composite": 8.49,
+                "rating": "Strong Buy",
+                "sector": "Energy",
+                "gain_pct": null
+              },
+              {
+                "ticker": "CCL",
+                "type": "stock",
+                "market_value": 138.2,
+                "weight": 0.008183654955315586,
+                "composite": 8.48,
+                "rating": "Strong Buy",
+                "sector": "Consumer Cyclical",
+                "gain_pct": null
+              },
+              {
+                "ticker": "VST",
+                "type": "stock",
+                "market_value": 1105.79,
+                "weight": 0.06548049068768756,
+                "composite": 8.48,
+                "rating": "Strong Buy",
+                "sector": "Utilities",
+                "gain_pct": null
+              },
+              {
+                "ticker": "TSM",
+                "type": "stock",
+                "market_value": 893.38,
+                "weight": 0.0529024143558599,
+                "composite": 8.43,
+                "rating": "Buy",
+                "sector": "Technology",
+                "gain_pct": null
+              },
+              {
+                "ticker": "MO",
+                "type": "stock",
+                "market_value": 276.96,
+                "weight": 0.01640047088584808,
+                "composite": 8.38,
+                "rating": "Strong Buy+",
+                "sector": "Consumer Defensive",
+                "gain_pct": null
+              },
+              {
+                "ticker": "MSCI",
+                "type": "stock",
+                "market_value": 3781.62,
+                "weight": 0.22393251267815142,
+                "composite": 8.37,
+                "rating": "Hold",
+                "sector": "Financial Services",
+                "gain_pct": null
+              },
+              {
+                "ticker": "SEZL",
+                "type": "stock",
+                "market_value": 118.43,
+                "weight": 0.007012954098104377,
+                "composite": 8.37,
+                "rating": "Hold",
+                "sector": "Financial Services",
+                "gain_pct": null
+              }
+            ]
+          }
+        }
+      ],
+      "quant": [
+        {
+          "id": "Balanced_100000",
+          "capital": 100000,
+          "aggressiveness": "Balanced",
+          "weight_scheme": "equal",
+          "positions": [
+            {
+              "ticker": "MU",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 9.05,
+              "price": 1064.1,
+              "weight_pct": 5.49,
+              "dollars": 5492.68,
+              "shares": 5.162,
+              "market_cap_b": 1200.02
+            },
+            {
+              "ticker": "SNDK",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 8.88,
+              "price": 1716.36,
+              "weight_pct": 5.29,
+              "dollars": 5288.26,
+              "shares": 3.081,
+              "market_cap_b": 254.18
+            },
+            {
+              "ticker": "DAL",
+              "sector": "Industrials",
+              "rating": "Strong Buy",
+              "composite_score": 8.86,
+              "price": 80.02,
+              "weight_pct": 5.26,
+              "dollars": 5264.47,
+              "shares": 65.789,
+              "market_cap_b": 52.57
+            },
+            {
+              "ticker": "NEM",
+              "sector": "Basic Materials",
+              "rating": "Strong Buy+",
+              "composite_score": 8.79,
+              "price": 109.5,
+              "weight_pct": 5.18,
+              "dollars": 5181.61,
+              "shares": 47.321,
+              "market_cap_b": 116.9
+            },
+            {
+              "ticker": "INDV",
+              "sector": "Healthcare",
+              "rating": "Strong Buy+",
+              "composite_score": 8.78,
+              "price": 33.71,
+              "weight_pct": 5.17,
+              "dollars": 5169.83,
+              "shares": 153.362,
+              "market_cap_b": 3.98
+            },
+            {
+              "ticker": "ETSY",
+              "sector": "Consumer Cyclical",
+              "rating": "Buy",
+              "composite_score": 8.74,
+              "price": 69.73,
+              "weight_pct": 5.12,
+              "dollars": 5122.83,
+              "shares": 73.467,
+              "market_cap_b": 6.62
+            },
+            {
+              "ticker": "NBIX",
+              "sector": "Healthcare",
+              "rating": "Strong Buy",
+              "composite_score": 8.72,
+              "price": 154.84,
+              "weight_pct": 5.1,
+              "dollars": 5099.41,
+              "shares": 32.933,
+              "market_cap_b": 15.57
+            },
+            {
+              "ticker": "UNIT",
+              "sector": "Real Estate",
+              "rating": "Buy",
+              "composite_score": 8.67,
+              "price": 11.35,
+              "weight_pct": 5.04,
+              "dollars": 5041.1,
+              "shares": 444.15,
+              "market_cap_b": 2.76
+            },
+            {
+              "ticker": "WDC",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 8.6,
+              "price": 563.1,
+              "weight_pct": 4.96,
+              "dollars": 4960.02,
+              "shares": 8.808,
+              "market_cap_b": 194.09
+            },
+            {
+              "ticker": "SM",
+              "sector": "Energy",
+              "rating": "Strong Buy",
+              "composite_score": 8.57,
+              "price": 32.94,
+              "weight_pct": 4.93,
+              "dollars": 4925.48,
+              "shares": 149.529,
+              "market_cap_b": 7.9
+            },
+            {
+              "ticker": "MCY",
+              "sector": "Financial Services",
+              "rating": "Strong Buy+",
+              "composite_score": 8.56,
+              "price": 98.44,
+              "weight_pct": 4.91,
+              "dollars": 4913.99,
+              "shares": 49.919,
+              "market_cap_b": 5.45
+            },
+            {
+              "ticker": "VSCO",
+              "sector": "Consumer Cyclical",
+              "rating": "Strong Buy",
+              "composite_score": 8.55,
+              "price": 80.06,
+              "weight_pct": 4.9,
+              "dollars": 4902.52,
+              "shares": 61.236,
+              "market_cap_b": 4.31
+            },
+            {
+              "ticker": "NVDA",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 8.52,
+              "price": 222.82,
+              "weight_pct": 4.87,
+              "dollars": 4868.17,
+              "shares": 21.848,
+              "market_cap_b": 5396.92
+            },
+            {
+              "ticker": "BKNG",
+              "sector": "Consumer Cyclical",
+              "rating": "Strong Buy+",
+              "composite_score": 8.52,
+              "price": 167.21,
+              "weight_pct": 4.87,
+              "dollars": 4868.17,
+              "shares": 29.114,
+              "market_cap_b": 129.57
+            },
+            {
+              "ticker": "INSW",
+              "sector": "Energy",
+              "rating": "Strong Buy",
+              "composite_score": 8.49,
+              "price": 78.53,
+              "weight_pct": 4.83,
+              "dollars": 4833.95,
+              "shares": 61.555,
+              "market_cap_b": 3.89
+            },
+            {
+              "ticker": "PBI",
+              "sector": "Industrials",
+              "rating": "Strong Buy",
+              "composite_score": 8.49,
+              "price": 16.72,
+              "weight_pct": 4.83,
+              "dollars": 4833.95,
+              "shares": 289.112,
+              "market_cap_b": 2.26
+            },
+            {
+              "ticker": "CCL",
+              "sector": "Consumer Cyclical",
+              "rating": "Strong Buy",
+              "composite_score": 8.48,
+              "price": 27.64,
+              "weight_pct": 4.82,
+              "dollars": 4822.57,
+              "shares": 174.478,
+              "market_cap_b": 38.29
+            },
+            {
+              "ticker": "UAL",
+              "sector": "Industrials",
+              "rating": "Strong Buy+",
+              "composite_score": 8.48,
+              "price": 108.82,
+              "weight_pct": 4.82,
+              "dollars": 4822.57,
+              "shares": 44.317,
+              "market_cap_b": 35.32
+            },
+            {
+              "ticker": "VST",
+              "sector": "Utilities",
+              "rating": "Strong Buy",
+              "composite_score": 8.48,
+              "price": 157.97,
+              "weight_pct": 4.82,
+              "dollars": 4822.57,
+              "shares": 30.528,
+              "market_cap_b": 53.26
+            },
+            {
+              "ticker": "TSM",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 8.43,
+              "price": 446.69,
+              "weight_pct": 4.77,
+              "dollars": 4765.87,
+              "shares": 10.669,
+              "market_cap_b": 2316.75
+            }
+          ]
+        },
+        {
+          "id": "Conservative_25000",
+          "capital": 25000,
+          "aggressiveness": "Conservative",
+          "weight_scheme": "equal",
+          "positions": [
+            {
+              "ticker": "MU",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 9.05,
+              "price": 1064.1,
+              "weight_pct": 3.68,
+              "dollars": 918.81,
+              "shares": 0.863,
+              "market_cap_b": 1200.02
+            },
+            {
+              "ticker": "SNDK",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 8.88,
+              "price": 1716.36,
+              "weight_pct": 3.57,
+              "dollars": 893.04,
+              "shares": 0.52,
+              "market_cap_b": 254.18
+            },
+            {
+              "ticker": "DAL",
+              "sector": "Industrials",
+              "rating": "Strong Buy",
+              "composite_score": 8.86,
+              "price": 80.02,
+              "weight_pct": 3.56,
+              "dollars": 890.02,
+              "shares": 11.122,
+              "market_cap_b": 52.57
+            },
+            {
+              "ticker": "NEM",
+              "sector": "Basic Materials",
+              "rating": "Strong Buy+",
+              "composite_score": 8.79,
+              "price": 109.5,
+              "weight_pct": 3.52,
+              "dollars": 879.5,
+              "shares": 8.032,
+              "market_cap_b": 116.9
+            },
+            {
+              "ticker": "ETSY",
+              "sector": "Consumer Cyclical",
+              "rating": "Buy",
+              "composite_score": 8.74,
+              "price": 69.73,
+              "weight_pct": 3.49,
+              "dollars": 872.0,
+              "shares": 12.505,
+              "market_cap_b": 6.62
+            },
+            {
+              "ticker": "NBIX",
+              "sector": "Healthcare",
+              "rating": "Strong Buy",
+              "composite_score": 8.72,
+              "price": 154.84,
+              "weight_pct": 3.48,
+              "dollars": 869.01,
+              "shares": 5.612,
+              "market_cap_b": 15.57
+            },
+            {
+              "ticker": "WDC",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 8.6,
+              "price": 563.1,
+              "weight_pct": 3.4,
+              "dollars": 851.13,
+              "shares": 1.512,
+              "market_cap_b": 194.09
+            },
+            {
+              "ticker": "SM",
+              "sector": "Energy",
+              "rating": "Strong Buy",
+              "composite_score": 8.57,
+              "price": 32.94,
+              "weight_pct": 3.39,
+              "dollars": 846.68,
+              "shares": 25.704,
+              "market_cap_b": 7.9
+            },
+            {
+              "ticker": "MCY",
+              "sector": "Financial Services",
+              "rating": "Strong Buy+",
+              "composite_score": 8.56,
+              "price": 98.44,
+              "weight_pct": 3.38,
+              "dollars": 845.2,
+              "shares": 8.586,
+              "market_cap_b": 5.45
+            },
+            {
+              "ticker": "NVDA",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 8.52,
+              "price": 222.82,
+              "weight_pct": 3.36,
+              "dollars": 839.29,
+              "shares": 3.767,
+              "market_cap_b": 5396.92
+            },
+            {
+              "ticker": "BKNG",
+              "sector": "Consumer Cyclical",
+              "rating": "Strong Buy+",
+              "composite_score": 8.52,
+              "price": 167.21,
+              "weight_pct": 3.36,
+              "dollars": 839.29,
+              "shares": 5.019,
+              "market_cap_b": 129.57
+            },
+            {
+              "ticker": "CCL",
+              "sector": "Consumer Cyclical",
+              "rating": "Strong Buy",
+              "composite_score": 8.48,
+              "price": 27.64,
+              "weight_pct": 3.33,
+              "dollars": 833.38,
+              "shares": 30.151,
+              "market_cap_b": 38.29
+            },
+            {
+              "ticker": "UAL",
+              "sector": "Industrials",
+              "rating": "Strong Buy+",
+              "composite_score": 8.48,
+              "price": 108.82,
+              "weight_pct": 3.33,
+              "dollars": 833.38,
+              "shares": 7.658,
+              "market_cap_b": 35.32
+            },
+            {
+              "ticker": "VST",
+              "sector": "Utilities",
+              "rating": "Strong Buy",
+              "composite_score": 8.48,
+              "price": 157.97,
+              "weight_pct": 3.33,
+              "dollars": 833.38,
+              "shares": 5.276,
+              "market_cap_b": 53.26
+            },
+            {
+              "ticker": "TSM",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 8.43,
+              "price": 446.69,
+              "weight_pct": 3.3,
+              "dollars": 826.02,
+              "shares": 1.849,
+              "market_cap_b": 2316.75
+            },
+            {
+              "ticker": "OVV",
+              "sector": "Energy",
+              "rating": "Strong Buy",
+              "composite_score": 8.4,
+              "price": 58.54,
+              "weight_pct": 3.29,
+              "dollars": 821.62,
+              "shares": 14.035,
+              "market_cap_b": 16.45
+            },
+            {
+              "ticker": "MO",
+              "sector": "Consumer Defensive",
+              "rating": "Strong Buy+",
+              "composite_score": 8.38,
+              "price": 69.24,
+              "weight_pct": 3.27,
+              "dollars": 818.68,
+              "shares": 11.824,
+              "market_cap_b": 115.62
+            },
+            {
+              "ticker": "HST",
+              "sector": "Real Estate",
+              "rating": "Hold",
+              "composite_score": 8.38,
+              "price": 23.65,
+              "weight_pct": 3.27,
+              "dollars": 818.68,
+              "shares": 34.616,
+              "market_cap_b": 16.41
+            },
+            {
+              "ticker": "MSCI",
+              "sector": "Financial Services",
+              "rating": "Hold",
+              "composite_score": 8.37,
+              "price": 630.27,
+              "weight_pct": 3.27,
+              "dollars": 817.22,
+              "shares": 1.297,
+              "market_cap_b": 45.84
+            },
+            {
+              "ticker": "IRM",
+              "sector": "Real Estate",
+              "rating": "Hold",
+              "composite_score": 8.37,
+              "price": 128.46,
+              "weight_pct": 3.27,
+              "dollars": 817.22,
+              "shares": 6.362,
+              "market_cap_b": 38.22
+            },
+            {
+              "ticker": "GEN",
+              "sector": "Technology",
+              "rating": "Hold",
+              "composite_score": 8.33,
+              "price": 27.53,
+              "weight_pct": 3.25,
+              "dollars": 811.37,
+              "shares": 29.472,
+              "market_cap_b": 16.59
+            },
+            {
+              "ticker": "DINO",
+              "sector": "Energy",
+              "rating": "Hold",
+              "composite_score": 8.32,
+              "price": 73.22,
+              "weight_pct": 3.24,
+              "dollars": 809.91,
+              "shares": 11.061,
+              "market_cap_b": 13.2
+            },
+            {
+              "ticker": "APA",
+              "sector": "Energy",
+              "rating": "Hold",
+              "composite_score": 8.31,
+              "price": 37.81,
+              "weight_pct": 3.23,
+              "dollars": 808.45,
+              "shares": 21.382,
+              "market_cap_b": 13.36
+            },
+            {
+              "ticker": "STX",
+              "sector": "Technology",
+              "rating": "Hold",
+              "composite_score": 8.31,
+              "price": 926.61,
+              "weight_pct": 3.23,
+              "dollars": 808.45,
+              "shares": 0.872,
+              "market_cap_b": 209.65
+            },
+            {
+              "ticker": "OUT",
+              "sector": "Real Estate",
+              "rating": "Hold",
+              "composite_score": 8.29,
+              "price": 31.46,
+              "weight_pct": 3.22,
+              "dollars": 805.53,
+              "shares": 25.605,
+              "market_cap_b": 5.54
+            },
+            {
+              "ticker": "CF",
+              "sector": "Basic Materials",
+              "rating": "Hold",
+              "composite_score": 8.26,
+              "price": 113.48,
+              "weight_pct": 3.2,
+              "dollars": 801.16,
+              "shares": 7.06,
+              "market_cap_b": 17.43
+            },
+            {
+              "ticker": "VIRT",
+              "sector": "Financial Services",
+              "rating": "Hold",
+              "composite_score": 8.26,
+              "price": 49.51,
+              "weight_pct": 3.2,
+              "dollars": 801.16,
+              "shares": 16.182,
+              "market_cap_b": 10.65
+            },
+            {
+              "ticker": "PCG",
+              "sector": "Utilities",
+              "rating": "Hold",
+              "composite_score": 8.25,
+              "price": 16.57,
+              "weight_pct": 3.2,
+              "dollars": 799.71,
+              "shares": 48.263,
+              "market_cap_b": 36.49
+            },
+            {
+              "ticker": "FCX",
+              "sector": "Basic Materials",
+              "rating": "Hold",
+              "composite_score": 8.22,
+              "price": 71.72,
+              "weight_pct": 3.18,
+              "dollars": 795.35,
+              "shares": 11.09,
+              "market_cap_b": 103.1
+            },
+            {
+              "ticker": "VRT",
+              "sector": "Industrials",
+              "rating": "Hold",
+              "composite_score": 8.22,
+              "price": 334.49,
+              "weight_pct": 3.18,
+              "dollars": 795.35,
+              "shares": 2.378,
+              "market_cap_b": 128.48
+            }
+          ]
+        },
+        {
+          "id": "Aggressive_50000",
+          "capital": 50000,
+          "aggressiveness": "Aggressive",
+          "weight_scheme": "equal",
+          "positions": [
+            {
+              "ticker": "MU",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 9.05,
+              "price": 1064.1,
+              "weight_pct": 9.02,
+              "dollars": 4511.7,
+              "shares": 4.24,
+              "market_cap_b": 1200.02
+            },
+            {
+              "ticker": "ECPG",
+              "sector": "Financial Services",
+              "rating": "Strong Buy",
+              "composite_score": 8.89,
+              "price": 78.09,
+              "weight_pct": 8.63,
+              "dollars": 4314.92,
+              "shares": 55.256,
+              "market_cap_b": 1.67
+            },
+            {
+              "ticker": "SNDK",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 8.88,
+              "price": 1716.36,
+              "weight_pct": 8.61,
+              "dollars": 4302.8,
+              "shares": 2.507,
+              "market_cap_b": 254.18
+            },
+            {
+              "ticker": "DAL",
+              "sector": "Industrials",
+              "rating": "Strong Buy",
+              "composite_score": 8.86,
+              "price": 80.02,
+              "weight_pct": 8.56,
+              "dollars": 4278.61,
+              "shares": 53.469,
+              "market_cap_b": 52.57
+            },
+            {
+              "ticker": "NEM",
+              "sector": "Basic Materials",
+              "rating": "Strong Buy+",
+              "composite_score": 8.79,
+              "price": 109.5,
+              "weight_pct": 8.39,
+              "dollars": 4194.6,
+              "shares": 38.307,
+              "market_cap_b": 116.9
+            },
+            {
+              "ticker": "INDV",
+              "sector": "Healthcare",
+              "rating": "Strong Buy+",
+              "composite_score": 8.78,
+              "price": 33.71,
+              "weight_pct": 8.37,
+              "dollars": 4182.68,
+              "shares": 124.078,
+              "market_cap_b": 3.98
+            },
+            {
+              "ticker": "ETSY",
+              "sector": "Consumer Cyclical",
+              "rating": "Buy",
+              "composite_score": 8.74,
+              "price": 69.73,
+              "weight_pct": 8.27,
+              "dollars": 4135.21,
+              "shares": 59.303,
+              "market_cap_b": 6.62
+            },
+            {
+              "ticker": "NBIX",
+              "sector": "Healthcare",
+              "rating": "Strong Buy",
+              "composite_score": 8.72,
+              "price": 154.84,
+              "weight_pct": 8.22,
+              "dollars": 4111.59,
+              "shares": 26.554,
+              "market_cap_b": 15.57
+            },
+            {
+              "ticker": "UNIT",
+              "sector": "Real Estate",
+              "rating": "Buy",
+              "composite_score": 8.67,
+              "price": 11.35,
+              "weight_pct": 8.11,
+              "dollars": 4052.91,
+              "shares": 357.085,
+              "market_cap_b": 2.76
+            },
+            {
+              "ticker": "LPG",
+              "sector": "Energy",
+              "rating": "Strong Buy",
+              "composite_score": 8.63,
+              "price": 40.9,
+              "weight_pct": 8.01,
+              "dollars": 4006.32,
+              "shares": 97.954,
+              "market_cap_b": 1.75
+            },
+            {
+              "ticker": "WDC",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 8.6,
+              "price": 563.1,
+              "weight_pct": 7.94,
+              "dollars": 3971.59,
+              "shares": 7.053,
+              "market_cap_b": 194.09
+            },
+            {
+              "ticker": "SM",
+              "sector": "Energy",
+              "rating": "Strong Buy",
+              "composite_score": 8.57,
+              "price": 32.94,
+              "weight_pct": 7.87,
+              "dollars": 3937.05,
+              "shares": 119.522,
+              "market_cap_b": 7.9
+            }
+          ]
+        },
+        {
+          "id": "Balanced_250000",
+          "capital": 250000,
+          "aggressiveness": "Balanced",
+          "weight_scheme": "equal",
+          "positions": [
+            {
+              "ticker": "MU",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 9.05,
+              "price": 1064.1,
+              "weight_pct": 5.49,
+              "dollars": 13731.69,
+              "shares": 12.905,
+              "market_cap_b": 1200.02
+            },
+            {
+              "ticker": "SNDK",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 8.88,
+              "price": 1716.36,
+              "weight_pct": 5.29,
+              "dollars": 13220.65,
+              "shares": 7.703,
+              "market_cap_b": 254.18
+            },
+            {
+              "ticker": "DAL",
+              "sector": "Industrials",
+              "rating": "Strong Buy",
+              "composite_score": 8.86,
+              "price": 80.02,
+              "weight_pct": 5.26,
+              "dollars": 13161.16,
+              "shares": 164.473,
+              "market_cap_b": 52.57
+            },
+            {
+              "ticker": "NEM",
+              "sector": "Basic Materials",
+              "rating": "Strong Buy+",
+              "composite_score": 8.79,
+              "price": 109.5,
+              "weight_pct": 5.18,
+              "dollars": 12954.02,
+              "shares": 118.302,
+              "market_cap_b": 116.9
+            },
+            {
+              "ticker": "INDV",
+              "sector": "Healthcare",
+              "rating": "Strong Buy+",
+              "composite_score": 8.78,
+              "price": 33.71,
+              "weight_pct": 5.17,
+              "dollars": 12924.56,
+              "shares": 383.404,
+              "market_cap_b": 3.98
+            },
+            {
+              "ticker": "ETSY",
+              "sector": "Consumer Cyclical",
+              "rating": "Buy",
+              "composite_score": 8.74,
+              "price": 69.73,
+              "weight_pct": 5.12,
+              "dollars": 12807.07,
+              "shares": 183.667,
+              "market_cap_b": 6.62
+            },
+            {
+              "ticker": "NBIX",
+              "sector": "Healthcare",
+              "rating": "Strong Buy",
+              "composite_score": 8.72,
+              "price": 154.84,
+              "weight_pct": 5.1,
+              "dollars": 12748.52,
+              "shares": 82.334,
+              "market_cap_b": 15.57
+            },
+            {
+              "ticker": "UNIT",
+              "sector": "Real Estate",
+              "rating": "Buy",
+              "composite_score": 8.67,
+              "price": 11.35,
+              "weight_pct": 5.04,
+              "dollars": 12602.74,
+              "shares": 1110.374,
+              "market_cap_b": 2.76
+            },
+            {
+              "ticker": "WDC",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 8.6,
+              "price": 563.1,
+              "weight_pct": 4.96,
+              "dollars": 12400.06,
+              "shares": 22.021,
+              "market_cap_b": 194.09
+            },
+            {
+              "ticker": "SM",
+              "sector": "Energy",
+              "rating": "Strong Buy",
+              "composite_score": 8.57,
+              "price": 32.94,
+              "weight_pct": 4.93,
+              "dollars": 12313.7,
+              "shares": 373.822,
+              "market_cap_b": 7.9
+            },
+            {
+              "ticker": "MCY",
+              "sector": "Financial Services",
+              "rating": "Strong Buy+",
+              "composite_score": 8.56,
+              "price": 98.44,
+              "weight_pct": 4.91,
+              "dollars": 12284.98,
+              "shares": 124.797,
+              "market_cap_b": 5.45
+            },
+            {
+              "ticker": "VSCO",
+              "sector": "Consumer Cyclical",
+              "rating": "Strong Buy",
+              "composite_score": 8.55,
+              "price": 80.06,
+              "weight_pct": 4.9,
+              "dollars": 12256.29,
+              "shares": 153.089,
+              "market_cap_b": 4.31
+            },
+            {
+              "ticker": "NVDA",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 8.52,
+              "price": 222.82,
+              "weight_pct": 4.87,
+              "dollars": 12170.43,
+              "shares": 54.62,
+              "market_cap_b": 5396.92
+            },
+            {
+              "ticker": "BKNG",
+              "sector": "Consumer Cyclical",
+              "rating": "Strong Buy+",
+              "composite_score": 8.52,
+              "price": 167.21,
+              "weight_pct": 4.87,
+              "dollars": 12170.43,
+              "shares": 72.785,
+              "market_cap_b": 129.57
+            },
+            {
+              "ticker": "INSW",
+              "sector": "Energy",
+              "rating": "Strong Buy",
+              "composite_score": 8.49,
+              "price": 78.53,
+              "weight_pct": 4.83,
+              "dollars": 12084.88,
+              "shares": 153.889,
+              "market_cap_b": 3.89
+            },
+            {
+              "ticker": "PBI",
+              "sector": "Industrials",
+              "rating": "Strong Buy",
+              "composite_score": 8.49,
+              "price": 16.72,
+              "weight_pct": 4.83,
+              "dollars": 12084.88,
+              "shares": 722.78,
+              "market_cap_b": 2.26
+            },
+            {
+              "ticker": "CCL",
+              "sector": "Consumer Cyclical",
+              "rating": "Strong Buy",
+              "composite_score": 8.48,
+              "price": 27.64,
+              "weight_pct": 4.82,
+              "dollars": 12056.42,
+              "shares": 436.195,
+              "market_cap_b": 38.29
+            },
+            {
+              "ticker": "UAL",
+              "sector": "Industrials",
+              "rating": "Strong Buy+",
+              "composite_score": 8.48,
+              "price": 108.82,
+              "weight_pct": 4.82,
+              "dollars": 12056.42,
+              "shares": 110.792,
+              "market_cap_b": 35.32
+            },
+            {
+              "ticker": "VST",
+              "sector": "Utilities",
+              "rating": "Strong Buy",
+              "composite_score": 8.48,
+              "price": 157.97,
+              "weight_pct": 4.82,
+              "dollars": 12056.42,
+              "shares": 76.321,
+              "market_cap_b": 53.26
+            },
+            {
+              "ticker": "TSM",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 8.43,
+              "price": 446.69,
+              "weight_pct": 4.77,
+              "dollars": 11914.67,
+              "shares": 26.673,
+              "market_cap_b": 2316.75
+            }
+          ]
+        }
+      ]
+    },
+    "m_heavy_0": {
+      "analyze": [
+        {
+          "id": "top5_equal",
+          "holdings": [
+            {
+              "ticker": "PEB",
+              "shares": 10
+            },
+            {
+              "ticker": "NRGV",
+              "shares": 10
+            },
+            {
+              "ticker": "RKLB",
+              "shares": 10
+            },
+            {
+              "ticker": "HUT",
+              "shares": 10
+            },
+            {
+              "ticker": "MU",
+              "shares": 10
+            }
+          ],
+          "result": {
+            "total_value": 13422.4,
+            "num_holdings": 5,
+            "num_stocks": 5,
+            "num_etfs": 0,
+            "num_unmatched": 0,
+            "unmatched_tickers": [],
+            "stock_weight": 100.0,
+            "etf_weight": 0.0,
+            "weighted_composite": 11.3,
+            "weighted_rating": "Strong Buy",
+            "pillar_scores": {
+              "Valuation": 5.817949547025868,
+              "Growth": 9.445345094766957,
+              "Profitability": 8.963940874955298,
+              "Momentum": 12.0,
+              "EPS Revisions": 7.2012009774704975
+            },
+            "rating_distribution": {
+              "Buy": 0.9881243294790798,
+              "Strong Buy": 0.011875670520920253
+            },
+            "hhi": 0.647,
+            "concentration_level": "Concentrated",
+            "sector_weights": {
+              "Technology": {
+                "weight": 0.7927792347121231,
+                "count": 1,
+                "avg_score": 11.29
+              },
+              "Financial Services": {
+                "weight": 0.09910299201335082,
+                "count": 1,
+                "avg_score": 11.35
+              },
+              "Industrials": {
+                "weight": 0.09187626653951603,
+                "count": 1,
+                "avg_score": 11.35
+              },
+              "Real Estate": {
+                "weight": 0.011875670520920253,
+                "count": 1,
+                "avg_score": 11.44
+              },
+              "Utilities": {
+                "weight": 0.00436583621408988,
+                "count": 1,
+                "avg_score": 11.39
+              }
+            },
+            "factor_tilts": {
+              "Valuation": {
+                "portfolio": 5.8,
+                "universe": 6.9,
+                "diff": -1.0,
+                "tilt": "Underweight"
+              },
+              "Growth": {
+                "portfolio": 9.4,
+                "universe": 7.0,
+                "diff": 2.5,
+                "tilt": "Overweight"
+              },
+              "Profitability": {
+                "portfolio": 9.0,
+                "universe": 7.0,
+                "diff": 2.0,
+                "tilt": "Overweight"
+              },
+              "Momentum": {
+                "portfolio": 12.0,
+                "universe": 7.0,
+                "diff": 5.0,
+                "tilt": "Overweight"
+              },
+              "EPS Revisions": {
+                "portfolio": 7.2,
+                "universe": 7.0,
+                "diff": 0.2,
+                "tilt": "Neutral"
+              }
+            },
+            "positions": [
+              {
+                "ticker": "PEB",
+                "type": "stock",
+                "market_value": 159.4,
+                "weight": 0.011875670520920253,
+                "composite": 11.44,
+                "rating": "Strong Buy",
+                "sector": "Real Estate",
+                "gain_pct": null
+              },
+              {
+                "ticker": "NRGV",
+                "type": "stock",
+                "market_value": 58.6,
+                "weight": 0.00436583621408988,
+                "composite": 11.39,
+                "rating": "Buy",
+                "sector": "Utilities",
+                "gain_pct": null
+              },
+              {
+                "ticker": "RKLB",
+                "type": "stock",
+                "market_value": 1233.1999999999998,
+                "weight": 0.09187626653951603,
+                "composite": 11.35,
+                "rating": "Buy",
+                "sector": "Industrials",
+                "gain_pct": null
+              },
+              {
+                "ticker": "HUT",
+                "type": "stock",
+                "market_value": 1330.2,
+                "weight": 0.09910299201335082,
+                "composite": 11.35,
+                "rating": "Buy",
+                "sector": "Financial Services",
+                "gain_pct": null
+              },
+              {
+                "ticker": "MU",
+                "type": "stock",
+                "market_value": 10641.0,
+                "weight": 0.7927792347121231,
+                "composite": 11.29,
+                "rating": "Buy",
+                "sector": "Technology",
+                "gain_pct": null
+              }
+            ]
+          }
+        },
+        {
+          "id": "varied_sizes",
+          "holdings": [
+            {
+              "ticker": "PEB",
+              "shares": 100,
+              "cost_basis": null
+            },
+            {
+              "ticker": "HUT",
+              "shares": 5,
+              "cost_basis": 50.0
+            },
+            {
+              "ticker": "SNDK",
+              "shares": 33,
+              "cost_basis": 1000.0
+            },
+            {
+              "ticker": "BE",
+              "shares": 12,
+              "cost_basis": 25.0
+            },
+            {
+              "ticker": "HCC",
+              "shares": 7,
+              "cost_basis": 80.0
+            }
+          ],
+          "result": {
+            "total_value": 63305.13999999999,
+            "num_holdings": 5,
+            "num_stocks": 5,
+            "num_etfs": 0,
+            "num_unmatched": 0,
+            "unmatched_tickers": [],
+            "stock_weight": 100.0,
+            "etf_weight": 0.0,
+            "weighted_composite": 11.09,
+            "weighted_rating": "Strong Buy",
+            "pillar_scores": {
+              "Valuation": 4.554776029245019,
+              "Growth": 10.224820370036303,
+              "Profitability": 9.764434167588922,
+              "Momentum": 11.661773852802474,
+              "EPS Revisions": 7.383285148725681
+            },
+            "rating_distribution": {
+              "Buy": 0.9626260995552652,
+              "Hold": 0.01219427048103835,
+              "Strong Buy": 0.025179629963696475
+            },
+            "hhi": 0.805,
+            "concentration_level": "Concentrated",
+            "sector_weights": {
+              "Technology": {
+                "weight": 0.8947121829285901,
+                "count": 1,
+                "avg_score": 11.1
+              },
+              "Industrials": {
+                "weight": 0.05740766073655316,
+                "count": 1,
+                "avg_score": 10.85
+              },
+              "Real Estate": {
+                "weight": 0.025179629963696475,
+                "count": 1,
+                "avg_score": 11.44
+              },
+              "Basic Materials": {
+                "weight": 0.01219427048103835,
+                "count": 1,
+                "avg_score": 10.45
+              },
+              "Financial Services": {
+                "weight": 0.010506255890122036,
+                "count": 1,
+                "avg_score": 11.35
+              }
+            },
+            "factor_tilts": {
+              "Valuation": {
+                "portfolio": 4.6,
+                "universe": 6.9,
+                "diff": -2.3,
+                "tilt": "Underweight"
+              },
+              "Growth": {
+                "portfolio": 10.2,
+                "universe": 7.0,
+                "diff": 3.3,
+                "tilt": "Overweight"
+              },
+              "Profitability": {
+                "portfolio": 9.8,
+                "universe": 7.0,
+                "diff": 2.8,
+                "tilt": "Overweight"
+              },
+              "Momentum": {
+                "portfolio": 11.7,
+                "universe": 7.0,
+                "diff": 4.7,
+                "tilt": "Overweight"
+              },
+              "EPS Revisions": {
+                "portfolio": 7.4,
+                "universe": 7.0,
+                "diff": 0.4,
+                "tilt": "Neutral"
+              }
+            },
+            "positions": [
+              {
+                "ticker": "PEB",
+                "type": "stock",
+                "market_value": 1594.0,
+                "weight": 0.025179629963696475,
+                "composite": 11.44,
+                "rating": "Strong Buy",
+                "sector": "Real Estate",
+                "gain_pct": null
+              },
+              {
+                "ticker": "HUT",
+                "type": "stock",
+                "market_value": 665.1,
+                "weight": 0.010506255890122036,
+                "composite": 11.35,
+                "rating": "Buy",
+                "sector": "Financial Services",
+                "gain_pct": 166.04000000000002
+              },
+              {
+                "ticker": "SNDK",
+                "type": "stock",
+                "market_value": 56639.88,
+                "weight": 0.8947121829285901,
+                "composite": 11.1,
+                "rating": "Buy",
+                "sector": "Technology",
+                "gain_pct": 71.636
+              },
+              {
+                "ticker": "BE",
+                "type": "stock",
+                "market_value": 3634.2000000000003,
+                "weight": 0.05740766073655316,
+                "composite": 10.85,
+                "rating": "Buy",
+                "sector": "Industrials",
+                "gain_pct": 1111.4
+              },
+              {
+                "ticker": "HCC",
+                "type": "stock",
+                "market_value": 771.96,
+                "weight": 0.01219427048103835,
+                "composite": 10.45,
+                "rating": "Hold",
+                "sector": "Basic Materials",
+                "gain_pct": 37.85
+              }
+            ]
+          }
+        },
+        {
+          "id": "single_sector",
+          "holdings": [
+            {
+              "ticker": "HUT",
+              "shares": 20
+            },
+            {
+              "ticker": "RIOT",
+              "shares": 20
+            },
+            {
+              "ticker": "WULF",
+              "shares": 20
+            },
+            {
+              "ticker": "WT",
+              "shares": 20
+            },
+            {
+              "ticker": "IREN",
+              "shares": 20
+            }
+          ],
+          "result": {
+            "total_value": 5447.6,
+            "num_holdings": 5,
+            "num_stocks": 5,
+            "num_etfs": 0,
+            "num_unmatched": 0,
+            "unmatched_tickers": [],
+            "stock_weight": 100.0,
+            "etf_weight": 0.0,
+            "weighted_composite": 11.14,
+            "weighted_rating": "Strong Buy",
+            "pillar_scores": {
+              "Valuation": 4.204079227549747,
+              "Growth": 9.263033262354064,
+              "Profitability": 3.5462368749541087,
+              "Momentum": 11.923647110654233,
+              "EPS Revisions": 7.910391732138923
+            },
+            "rating_distribution": {
+              "Buy": 0.6582348190028636,
+              "Strong Buy": 0.3417651809971363
+            },
+            "hhi": 1.0,
+            "concentration_level": "Concentrated",
+            "sector_weights": {
+              "Financial Services": {
+                "weight": 1.0,
+                "count": 5,
+                "avg_score": 11.036
+              }
+            },
+            "factor_tilts": {
+              "Valuation": {
+                "portfolio": 4.2,
+                "universe": 6.9,
+                "diff": -2.7,
+                "tilt": "Underweight"
+              },
+              "Growth": {
+                "portfolio": 9.3,
+                "universe": 7.0,
+                "diff": 2.3,
+                "tilt": "Overweight"
+              },
+              "Profitability": {
+                "portfolio": 3.5,
+                "universe": 7.0,
+                "diff": -3.4,
+                "tilt": "Underweight"
+              },
+              "Momentum": {
+                "portfolio": 11.9,
+                "universe": 7.0,
+                "diff": 5.0,
+                "tilt": "Overweight"
+              },
+              "EPS Revisions": {
+                "portfolio": 7.9,
+                "universe": 7.0,
+                "diff": 1.0,
+                "tilt": "Neutral"
+              }
+            },
+            "positions": [
+              {
+                "ticker": "HUT",
+                "type": "stock",
+                "market_value": 2660.4,
+                "weight": 0.4883618474190469,
+                "composite": 11.35,
+                "rating": "Buy",
+                "sector": "Financial Services",
+                "gain_pct": null
+              },
+              {
+                "ticker": "RIOT",
+                "type": "stock",
+                "market_value": 546.4,
+                "weight": 0.10030105000367133,
+                "composite": 11.07,
+                "rating": "Buy",
+                "sector": "Financial Services",
+                "gain_pct": null
+              },
+              {
+                "ticker": "WULF",
+                "type": "stock",
+                "market_value": 529.8,
+                "weight": 0.09725383655187604,
+                "composite": 10.94,
+                "rating": "Strong Buy",
+                "sector": "Financial Services",
+                "gain_pct": null
+              },
+              {
+                "ticker": "WT",
+                "type": "stock",
+                "market_value": 379.0,
+                "weight": 0.06957192158014538,
+                "composite": 10.94,
+                "rating": "Buy",
+                "sector": "Financial Services",
+                "gain_pct": null
+              },
+              {
+                "ticker": "IREN",
+                "type": "stock",
+                "market_value": 1332.0,
+                "weight": 0.2445113444452603,
+                "composite": 10.88,
+                "rating": "Strong Buy",
+                "sector": "Financial Services",
+                "gain_pct": null
+              }
+            ]
+          }
+        },
+        {
+          "id": "etf_and_unmatched",
+          "holdings": [
+            {
+              "ticker": "QTUM",
+              "shares": 15
+            },
+            {
+              "ticker": "BAI",
+              "shares": 15
+            },
+            {
+              "ticker": "RKLB",
+              "shares": 40
+            },
+            {
+              "ticker": "ZZZZ_NOPE",
+              "shares": 3
+            }
+          ],
+          "result": {
+            "total_value": 8243.0,
+            "num_holdings": 3,
+            "num_stocks": 3,
+            "num_etfs": 0,
+            "num_unmatched": 1,
+            "unmatched_tickers": [
+              "ZZZZ_NOPE"
+            ],
+            "stock_weight": 100.0,
+            "etf_weight": 0.0,
+            "weighted_composite": 11.2,
+            "weighted_rating": "Strong Buy",
+            "pillar_scores": {
+              "Valuation": 5.378273929394639,
+              "Growth": 8.94487443891787,
+              "Profitability": 4.366939221157346,
+              "Momentum": 11.98393837195196,
+              "EPS Revisions": 6.850394273929395
+            },
+            "rating_distribution": {
+              "Buy": 0.5984229042824214,
+              "Hold": 0.4015770957175785
+            },
+            "hhi": 0.519,
+            "concentration_level": "Concentrated",
+            "sector_weights": {
+              "Industrials": {
+                "weight": 0.5984229042824214,
+                "count": 1,
+                "avg_score": 11.35
+              },
+              "ETF": {
+                "weight": 0.4015770957175785,
+                "count": 2,
+                "avg_score": 10.934999999999999
+              }
+            },
+            "factor_tilts": {
+              "Valuation": {
+                "portfolio": 5.4,
+                "universe": 6.9,
+                "diff": -1.5,
+                "tilt": "Underweight"
+              },
+              "Growth": {
+                "portfolio": 8.9,
+                "universe": 7.0,
+                "diff": 2.0,
+                "tilt": "Overweight"
+              },
+              "Profitability": {
+                "portfolio": 4.4,
+                "universe": 7.0,
+                "diff": -2.6,
+                "tilt": "Underweight"
+              },
+              "Momentum": {
+                "portfolio": 12.0,
+                "universe": 7.0,
+                "diff": 5.0,
+                "tilt": "Overweight"
+              },
+              "EPS Revisions": {
+                "portfolio": 6.9,
+                "universe": 7.0,
+                "diff": -0.1,
+                "tilt": "Neutral"
+              }
+            },
+            "positions": [
+              {
+                "ticker": "QTUM",
+                "type": "stock",
+                "market_value": 2531.3999999999996,
+                "weight": 0.30709693072910343,
+                "composite": 11.0,
+                "rating": "Hold",
+                "sector": "ETF",
+                "gain_pct": null
+              },
+              {
+                "ticker": "BAI",
+                "type": "stock",
+                "market_value": 778.8000000000001,
+                "weight": 0.09448016498847508,
+                "composite": 10.87,
+                "rating": "Hold",
+                "sector": "ETF",
+                "gain_pct": null
+              },
+              {
+                "ticker": "RKLB",
+                "type": "stock",
+                "market_value": 4932.799999999999,
+                "weight": 0.5984229042824214,
+                "composite": 11.35,
+                "rating": "Buy",
+                "sector": "Industrials",
+                "gain_pct": null
+              }
+            ]
+          }
+        },
+        {
+          "id": "many",
+          "holdings": [
+            {
+              "ticker": "PEB",
+              "shares": 1
+            },
+            {
+              "ticker": "RKLB",
+              "shares": 3
+            },
+            {
+              "ticker": "MU",
+              "shares": 5
+            },
+            {
+              "ticker": "NVRI",
+              "shares": 7
+            },
+            {
+              "ticker": "SNDK",
+              "shares": 2
+            },
+            {
+              "ticker": "RIOT",
+              "shares": 4
+            },
+            {
+              "ticker": "VSTS",
+              "shares": 6
+            },
+            {
+              "ticker": "COCO",
+              "shares": 1
+            },
+            {
+              "ticker": "WT",
+              "shares": 3
+            },
+            {
+              "ticker": "VGNT",
+              "shares": 5
+            },
+            {
+              "ticker": "BE",
+              "shares": 7
+            },
+            {
+              "ticker": "ARCB",
+              "shares": 2
+            },
+            {
+              "ticker": "KALU",
+              "shares": 4
+            },
+            {
+              "ticker": "AAMI",
+              "shares": 6
+            },
+            {
+              "ticker": "CWEN",
+              "shares": 1
+            }
+          ],
+          "result": {
+            "total_value": 13324.770000000002,
+            "num_holdings": 15,
+            "num_stocks": 15,
+            "num_etfs": 0,
+            "num_unmatched": 0,
+            "unmatched_tickers": [],
+            "stock_weight": 100.0,
+            "etf_weight": 0.0,
+            "weighted_composite": 11.1,
+            "weighted_rating": "Strong Buy",
+            "pillar_scores": {
+              "Valuation": 5.199643325926076,
+              "Growth": 9.546243199695006,
+              "Profitability": 8.71250115386607,
+              "Momentum": 11.760355750981065,
+              "EPS Revisions": 6.862225014015252
+            },
+            "rating_distribution": {
+              "Buy": 0.8888866374428975,
+              "Hold": 0.03583251343175154,
+              "Strong Buy": 0.07528084912535074
+            },
+            "hhi": 0.483,
+            "concentration_level": "Concentrated",
+            "sector_weights": {
+              "Technology": {
+                "weight": 0.6569134026328408,
+                "count": 2,
+                "avg_score": 11.195
+              },
+              "Industrials": {
+                "weight": 0.2139181389247244,
+                "count": 5,
+                "avg_score": 11.046000000000001
+              },
+              "Basic Materials": {
+                "weight": 0.05713869732835913,
+                "count": 1,
+                "avg_score": 10.76
+              },
+              "Financial Services": {
+                "weight": 0.04520378212907239,
+                "count": 3,
+                "avg_score": 10.906666666666666
+              },
+              "Consumer Cyclical": {
+                "weight": 0.01694588349367381,
+                "count": 1,
+                "avg_score": 10.89
+              },
+              "Consumer Defensive": {
+                "weight": 0.005587338468131156,
+                "count": 1,
+                "avg_score": 10.94
+              },
+              "Utilities": {
+                "weight": 0.0030964887198803425,
+                "count": 1,
+                "avg_score": 10.66
+              },
+              "Real Estate": {
+                "weight": 0.0011962683033178057,
+                "count": 1,
+                "avg_score": 11.44
+              }
+            },
+            "factor_tilts": {
+              "Valuation": {
+                "portfolio": 5.2,
+                "universe": 6.9,
+                "diff": -1.7,
+                "tilt": "Underweight"
+              },
+              "Growth": {
+                "portfolio": 9.5,
+                "universe": 7.0,
+                "diff": 2.6,
+                "tilt": "Overweight"
+              },
+              "Profitability": {
+                "portfolio": 8.7,
+                "universe": 7.0,
+                "diff": 1.8,
+                "tilt": "Overweight"
+              },
+              "Momentum": {
+                "portfolio": 11.8,
+                "universe": 7.0,
+                "diff": 4.8,
+                "tilt": "Overweight"
+              },
+              "EPS Revisions": {
+                "portfolio": 6.9,
+                "universe": 7.0,
+                "diff": -0.1,
+                "tilt": "Neutral"
+              }
+            },
+            "positions": [
+              {
+                "ticker": "PEB",
+                "type": "stock",
+                "market_value": 15.94,
+                "weight": 0.0011962683033178057,
+                "composite": 11.44,
+                "rating": "Strong Buy",
+                "sector": "Real Estate",
+                "gain_pct": null
+              },
+              {
+                "ticker": "RKLB",
+                "type": "stock",
+                "market_value": 369.96,
+                "weight": 0.02776483196332844,
+                "composite": 11.35,
+                "rating": "Buy",
+                "sector": "Industrials",
+                "gain_pct": null
+              },
+              {
+                "ticker": "MU",
+                "type": "stock",
+                "market_value": 5320.5,
+                "weight": 0.39929394653716344,
+                "composite": 11.29,
+                "rating": "Buy",
+                "sector": "Technology",
+                "gain_pct": null
+              },
+              {
+                "ticker": "NVRI",
+                "type": "stock",
+                "market_value": null,
+                "weight": null,
+                "composite": 11.22,
+                "rating": "Buy",
+                "sector": "Industrials",
+                "gain_pct": null
+              },
+              {
+                "ticker": "SNDK",
+                "type": "stock",
+                "market_value": 3432.72,
+                "weight": 0.2576194560956774,
+                "composite": 11.1,
+                "rating": "Buy",
+                "sector": "Technology",
+                "gain_pct": null
+              },
+              {
+                "ticker": "RIOT",
+                "type": "stock",
+                "market_value": 109.28,
+                "weight": 0.008201267263900238,
+                "composite": 11.07,
+                "rating": "Buy",
+                "sector": "Financial Services",
+                "gain_pct": null
+              },
+              {
+                "ticker": "VSTS",
+                "type": "stock",
+                "market_value": 76.80000000000001,
+                "weight": 0.005763701737440871,
+                "composite": 11.02,
+                "rating": "Buy",
+                "sector": "Industrials",
+                "gain_pct": null
+              },
+              {
+                "ticker": "COCO",
+                "type": "stock",
+                "market_value": 74.45,
+                "weight": 0.005587338468131156,
+                "composite": 10.94,
+                "rating": "Buy",
+                "sector": "Consumer Defensive",
+                "gain_pct": null
+              },
+              {
+                "ticker": "WT",
+                "type": "stock",
+                "market_value": 56.849999999999994,
+                "weight": 0.0042664901533009565,
+                "composite": 10.94,
+                "rating": "Buy",
+                "sector": "Financial Services",
+                "gain_pct": null
+              },
+              {
+                "ticker": "VGNT",
+                "type": "stock",
+                "market_value": 225.79999999999998,
+                "weight": 0.01694588349367381,
+                "composite": 10.89,
+                "rating": "Strong Buy",
+                "sector": "Consumer Cyclical",
+                "gain_pct": null
+              },
+              {
+                "ticker": "BE",
+                "type": "stock",
+                "market_value": 2119.9500000000003,
+                "weight": 0.15909843096728873,
+                "composite": 10.85,
+                "rating": "Buy",
+                "sector": "Industrials",
+                "gain_pct": null
+              },
+              {
+                "ticker": "ARCB",
+                "type": "stock",
+                "market_value": 283.7,
+                "weight": 0.02129117425666634,
+                "composite": 10.79,
+                "rating": "Buy",
+                "sector": "Industrials",
+                "gain_pct": null
+              },
+              {
+                "ticker": "KALU",
+                "type": "stock",
+                "market_value": 761.36,
+                "weight": 0.05713869732835913,
+                "composite": 10.76,
+                "rating": "Strong Buy",
+                "sector": "Basic Materials",
+                "gain_pct": null
+              },
+              {
+                "ticker": "AAMI",
+                "type": "stock",
+                "market_value": 436.20000000000005,
+                "weight": 0.032736024711871196,
+                "composite": 10.71,
+                "rating": "Hold",
+                "sector": "Financial Services",
+                "gain_pct": null
+              },
+              {
+                "ticker": "CWEN",
+                "type": "stock",
+                "market_value": 41.26,
+                "weight": 0.0030964887198803425,
+                "composite": 10.66,
+                "rating": "Hold",
+                "sector": "Utilities",
+                "gain_pct": null
+              }
+            ]
+          }
+        }
+      ],
+      "quant": [
+        {
+          "id": "Balanced_100000",
+          "capital": 100000,
+          "aggressiveness": "Balanced",
+          "weight_scheme": "m_heavy",
+          "positions": [
+            {
+              "ticker": "RKLB",
+              "sector": "Industrials",
+              "rating": "Buy",
+              "composite_score": 11.35,
+              "price": 123.32,
+              "weight_pct": 5.15,
+              "dollars": 5150.9,
+              "shares": 41.769,
+              "market_cap_b": 71.39
+            },
+            {
+              "ticker": "HUT",
+              "sector": "Financial Services",
+              "rating": "Buy",
+              "composite_score": 11.35,
+              "price": 133.02,
+              "weight_pct": 5.15,
+              "dollars": 5150.9,
+              "shares": 38.723,
+              "market_cap_b": 14.98
+            },
+            {
+              "ticker": "MU",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 11.29,
+              "price": 1064.1,
+              "weight_pct": 5.12,
+              "dollars": 5123.67,
+              "shares": 4.815,
+              "market_cap_b": 1200.02
+            },
+            {
+              "ticker": "VSCO",
+              "sector": "Consumer Cyclical",
+              "rating": "Strong Buy",
+              "composite_score": 11.24,
+              "price": 80.06,
+              "weight_pct": 5.1,
+              "dollars": 5100.98,
+              "shares": 63.714,
+              "market_cap_b": 4.31
+            },
+            {
+              "ticker": "VSH",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 11.19,
+              "price": 62.49,
+              "weight_pct": 5.08,
+              "dollars": 5078.28,
+              "shares": 81.265,
+              "market_cap_b": 8.51
+            },
+            {
+              "ticker": "SNDK",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 11.1,
+              "price": 1716.36,
+              "weight_pct": 5.04,
+              "dollars": 5037.44,
+              "shares": 2.935,
+              "market_cap_b": 254.18
+            },
+            {
+              "ticker": "RIOT",
+              "sector": "Financial Services",
+              "rating": "Buy",
+              "composite_score": 11.07,
+              "price": 27.32,
+              "weight_pct": 5.02,
+              "dollars": 5023.83,
+              "shares": 183.888,
+              "market_cap_b": 10.33
+            },
+            {
+              "ticker": "BWA",
+              "sector": "Consumer Cyclical",
+              "rating": "Buy",
+              "composite_score": 11.04,
+              "price": 74.08,
+              "weight_pct": 5.01,
+              "dollars": 5010.21,
+              "shares": 67.632,
+              "market_cap_b": 15.19
+            },
+            {
+              "ticker": "QTUM",
+              "sector": "ETF",
+              "rating": "Hold",
+              "composite_score": 11.0,
+              "price": 168.76,
+              "weight_pct": 4.99,
+              "dollars": 4992.06,
+              "shares": 29.581,
+              "market_cap_b": 4.28
+            },
+            {
+              "ticker": "WULF",
+              "sector": "Financial Services",
+              "rating": "Strong Buy",
+              "composite_score": 10.94,
+              "price": 26.49,
+              "weight_pct": 4.96,
+              "dollars": 4964.83,
+              "shares": 187.423,
+              "market_cap_b": 13.13
+            },
+            {
+              "ticker": "COCO",
+              "sector": "Consumer Defensive",
+              "rating": "Buy",
+              "composite_score": 10.94,
+              "price": 74.45,
+              "weight_pct": 4.96,
+              "dollars": 4964.83,
+              "shares": 66.687,
+              "market_cap_b": 4.25
+            },
+            {
+              "ticker": "GH",
+              "sector": "Healthcare",
+              "rating": "Strong Buy",
+              "composite_score": 10.94,
+              "price": 130.17,
+              "weight_pct": 4.96,
+              "dollars": 4964.83,
+              "shares": 38.141,
+              "market_cap_b": 17.26
+            },
+            {
+              "ticker": "WT",
+              "sector": "Financial Services",
+              "rating": "Buy",
+              "composite_score": 10.94,
+              "price": 18.95,
+              "weight_pct": 4.96,
+              "dollars": 4964.83,
+              "shares": 261.996,
+              "market_cap_b": 2.9
+            },
+            {
+              "ticker": "MTRN",
+              "sector": "Basic Materials",
+              "rating": "Buy",
+              "composite_score": 10.89,
+              "price": 230.0,
+              "weight_pct": 4.94,
+              "dollars": 4942.14,
+              "shares": 21.488,
+              "market_cap_b": 4.78
+            },
+            {
+              "ticker": "VGNT",
+              "sector": "Consumer Cyclical",
+              "rating": "Strong Buy",
+              "composite_score": 10.89,
+              "price": 45.16,
+              "weight_pct": 4.94,
+              "dollars": 4942.14,
+              "shares": 109.436,
+              "market_cap_b": 3.2
+            },
+            {
+              "ticker": "IREN",
+              "sector": "Financial Services",
+              "rating": "Strong Buy",
+              "composite_score": 10.88,
+              "price": 66.6,
+              "weight_pct": 4.94,
+              "dollars": 4937.6,
+              "shares": 74.138,
+              "market_cap_b": 23.8
+            },
+            {
+              "ticker": "BAI",
+              "sector": "ETF",
+              "rating": "Hold",
+              "composite_score": 10.87,
+              "price": 51.92,
+              "weight_pct": 4.93,
+              "dollars": 4933.06,
+              "shares": 95.013,
+              "market_cap_b": 13.35
+            },
+            {
+              "ticker": "BE",
+              "sector": "Industrials",
+              "rating": "Buy",
+              "composite_score": 10.85,
+              "price": 302.85,
+              "weight_pct": 4.92,
+              "dollars": 4923.98,
+              "shares": 16.259,
+              "market_cap_b": 86.14
+            },
+            {
+              "ticker": "RXO",
+              "sector": "Industrials",
+              "rating": "Buy",
+              "composite_score": 10.79,
+              "price": 26.95,
+              "weight_pct": 4.9,
+              "dollars": 4896.76,
+              "shares": 181.698,
+              "market_cap_b": 4.44
+            },
+            {
+              "ticker": "ARCB",
+              "sector": "Industrials",
+              "rating": "Buy",
+              "composite_score": 10.79,
+              "price": 141.85,
+              "weight_pct": 4.9,
+              "dollars": 4896.76,
+              "shares": 34.521,
+              "market_cap_b": 3.16
+            }
+          ]
+        },
+        {
+          "id": "Conservative_25000",
+          "capital": 25000,
+          "aggressiveness": "Conservative",
+          "weight_scheme": "m_heavy",
+          "positions": [
+            {
+              "ticker": "RKLB",
+              "sector": "Industrials",
+              "rating": "Buy",
+              "composite_score": 11.35,
+              "price": 123.32,
+              "weight_pct": 3.51,
+              "dollars": 877.23,
+              "shares": 7.113,
+              "market_cap_b": 71.39
+            },
+            {
+              "ticker": "HUT",
+              "sector": "Financial Services",
+              "rating": "Buy",
+              "composite_score": 11.35,
+              "price": 133.02,
+              "weight_pct": 3.51,
+              "dollars": 877.23,
+              "shares": 6.595,
+              "market_cap_b": 14.98
+            },
+            {
+              "ticker": "MU",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 11.29,
+              "price": 1064.1,
+              "weight_pct": 3.49,
+              "dollars": 872.6,
+              "shares": 0.82,
+              "market_cap_b": 1200.02
+            },
+            {
+              "ticker": "VSH",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 11.19,
+              "price": 62.49,
+              "weight_pct": 3.46,
+              "dollars": 864.87,
+              "shares": 13.84,
+              "market_cap_b": 8.51
+            },
+            {
+              "ticker": "SNDK",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 11.1,
+              "price": 1716.36,
+              "weight_pct": 3.43,
+              "dollars": 857.91,
+              "shares": 0.5,
+              "market_cap_b": 254.18
+            },
+            {
+              "ticker": "RIOT",
+              "sector": "Financial Services",
+              "rating": "Buy",
+              "composite_score": 11.07,
+              "price": 27.32,
+              "weight_pct": 3.42,
+              "dollars": 855.59,
+              "shares": 31.317,
+              "market_cap_b": 10.33
+            },
+            {
+              "ticker": "BWA",
+              "sector": "Consumer Cyclical",
+              "rating": "Buy",
+              "composite_score": 11.04,
+              "price": 74.08,
+              "weight_pct": 3.41,
+              "dollars": 853.27,
+              "shares": 11.518,
+              "market_cap_b": 15.19
+            },
+            {
+              "ticker": "WULF",
+              "sector": "Financial Services",
+              "rating": "Strong Buy",
+              "composite_score": 10.94,
+              "price": 26.49,
+              "weight_pct": 3.38,
+              "dollars": 845.55,
+              "shares": 31.92,
+              "market_cap_b": 13.13
+            },
+            {
+              "ticker": "GH",
+              "sector": "Healthcare",
+              "rating": "Strong Buy",
+              "composite_score": 10.94,
+              "price": 130.17,
+              "weight_pct": 3.38,
+              "dollars": 845.55,
+              "shares": 6.496,
+              "market_cap_b": 17.26
+            },
+            {
+              "ticker": "IREN",
+              "sector": "Financial Services",
+              "rating": "Strong Buy",
+              "composite_score": 10.88,
+              "price": 66.6,
+              "weight_pct": 3.36,
+              "dollars": 840.91,
+              "shares": 12.626,
+              "market_cap_b": 23.8
+            },
+            {
+              "ticker": "BAI",
+              "sector": "ETF",
+              "rating": "Hold",
+              "composite_score": 10.87,
+              "price": 51.92,
+              "weight_pct": 3.36,
+              "dollars": 840.13,
+              "shares": 16.181,
+              "market_cap_b": 13.35
+            },
+            {
+              "ticker": "BE",
+              "sector": "Industrials",
+              "rating": "Buy",
+              "composite_score": 10.85,
+              "price": 302.85,
+              "weight_pct": 3.35,
+              "dollars": 838.59,
+              "shares": 2.769,
+              "market_cap_b": 86.14
+            },
+            {
+              "ticker": "XLK",
+              "sector": "ETF",
+              "rating": "Hold",
+              "composite_score": 10.73,
+              "price": 198.21,
+              "weight_pct": 3.32,
+              "dollars": 829.31,
+              "shares": 4.184,
+              "market_cap_b": 103.33
+            },
+            {
+              "ticker": "MXL",
+              "sector": "Technology",
+              "rating": "Hold",
+              "composite_score": 10.71,
+              "price": 88.76,
+              "weight_pct": 3.31,
+              "dollars": 827.77,
+              "shares": 9.326,
+              "market_cap_b": 7.95
+            },
+            {
+              "ticker": "CWEN",
+              "sector": "Utilities",
+              "rating": "Hold",
+              "composite_score": 10.66,
+              "price": 41.26,
+              "weight_pct": 3.3,
+              "dollars": 823.9,
+              "shares": 19.968,
+              "market_cap_b": 9.91
+            },
+            {
+              "ticker": "STX",
+              "sector": "Technology",
+              "rating": "Hold",
+              "composite_score": 10.65,
+              "price": 926.61,
+              "weight_pct": 3.29,
+              "dollars": 823.13,
+              "shares": 0.888,
+              "market_cap_b": 209.65
+            },
+            {
+              "ticker": "SNEX",
+              "sector": "Financial Services",
+              "rating": "Hold",
+              "composite_score": 10.63,
+              "price": 107.57,
+              "weight_pct": 3.29,
+              "dollars": 821.59,
+              "shares": 7.638,
+              "market_cap_b": 8.53
+            },
+            {
+              "ticker": "APLS",
+              "sector": "Healthcare",
+              "rating": "Hold",
+              "composite_score": 10.62,
+              "price": 41.03,
+              "weight_pct": 3.28,
+              "dollars": 820.81,
+              "shares": 20.005,
+              "market_cap_b": 5.25
+            },
+            {
+              "ticker": "BTSG",
+              "sector": "Healthcare",
+              "rating": "Hold",
+              "composite_score": 10.59,
+              "price": 59.34,
+              "weight_pct": 3.27,
+              "dollars": 818.49,
+              "shares": 13.793,
+              "market_cap_b": 11.51
+            },
+            {
+              "ticker": "CENX",
+              "sector": "Basic Materials",
+              "rating": "Hold",
+              "composite_score": 10.59,
+              "price": 68.77,
+              "weight_pct": 3.27,
+              "dollars": 818.49,
+              "shares": 11.902,
+              "market_cap_b": 6.81
+            },
+            {
+              "ticker": "F",
+              "sector": "Consumer Cyclical",
+              "rating": "Hold",
+              "composite_score": 10.58,
+              "price": 16.15,
+              "weight_pct": 3.27,
+              "dollars": 817.72,
+              "shares": 50.633,
+              "market_cap_b": 64.35
+            },
+            {
+              "ticker": "MYRG",
+              "sector": "Industrials",
+              "rating": "Hold",
+              "composite_score": 10.58,
+              "price": 450.31,
+              "weight_pct": 3.27,
+              "dollars": 817.72,
+              "shares": 1.816,
+              "market_cap_b": 7.01
+            },
+            {
+              "ticker": "MS",
+              "sector": "Financial Services",
+              "rating": "Hold",
+              "composite_score": 10.57,
+              "price": 214.98,
+              "weight_pct": 3.27,
+              "dollars": 816.95,
+              "shares": 3.8,
+              "market_cap_b": 339.08
+            },
+            {
+              "ticker": "HST",
+              "sector": "Real Estate",
+              "rating": "Hold",
+              "composite_score": 10.56,
+              "price": 23.65,
+              "weight_pct": 3.26,
+              "dollars": 816.18,
+              "shares": 34.511,
+              "market_cap_b": 16.41
+            },
+            {
+              "ticker": "LUMN",
+              "sector": "Communication Services",
+              "rating": "Hold",
+              "composite_score": 10.55,
+              "price": 10.56,
+              "weight_pct": 3.26,
+              "dollars": 815.4,
+              "shares": 77.216,
+              "market_cap_b": 10.88
+            },
+            {
+              "ticker": "NUE",
+              "sector": "Basic Materials",
+              "rating": "Hold",
+              "composite_score": 10.54,
+              "price": 258.46,
+              "weight_pct": 3.26,
+              "dollars": 814.63,
+              "shares": 3.152,
+              "market_cap_b": 58.86
+            },
+            {
+              "ticker": "WDC",
+              "sector": "Technology",
+              "rating": "Hold",
+              "composite_score": 10.54,
+              "price": 563.1,
+              "weight_pct": 3.26,
+              "dollars": 814.63,
+              "shares": 1.447,
+              "market_cap_b": 194.09
+            },
+            {
+              "ticker": "ARM",
+              "sector": "Technology",
+              "rating": "Hold",
+              "composite_score": 10.51,
+              "price": 402.71,
+              "weight_pct": 3.25,
+              "dollars": 812.31,
+              "shares": 2.017,
+              "market_cap_b": 430.13
+            },
+            {
+              "ticker": "LEA",
+              "sector": "Consumer Cyclical",
+              "rating": "Hold",
+              "composite_score": 10.49,
+              "price": 147.36,
+              "weight_pct": 3.24,
+              "dollars": 810.76,
+              "shares": 5.502,
+              "market_cap_b": 7.38
+            },
+            {
+              "ticker": "MRCY",
+              "sector": "Industrials",
+              "rating": "Hold",
+              "composite_score": 10.49,
+              "price": 112.87,
+              "weight_pct": 3.24,
+              "dollars": 810.76,
+              "shares": 7.183,
+              "market_cap_b": 6.78
+            }
+          ]
+        },
+        {
+          "id": "Aggressive_50000",
+          "capital": 50000,
+          "aggressiveness": "Aggressive",
+          "weight_scheme": "m_heavy",
+          "positions": [
+            {
+              "ticker": "PEB",
+              "sector": "Real Estate",
+              "rating": "Strong Buy",
+              "composite_score": 11.44,
+              "price": 15.94,
+              "weight_pct": 8.5,
+              "dollars": 4250.89,
+              "shares": 266.681,
+              "market_cap_b": 1.81
+            },
+            {
+              "ticker": "NRGV",
+              "sector": "Utilities",
+              "rating": "Buy",
+              "composite_score": 11.39,
+              "price": 5.86,
+              "weight_pct": 8.46,
+              "dollars": 4232.31,
+              "shares": 722.237,
+              "market_cap_b": 1.04
+            },
+            {
+              "ticker": "RKLB",
+              "sector": "Industrials",
+              "rating": "Buy",
+              "composite_score": 11.35,
+              "price": 123.32,
+              "weight_pct": 8.43,
+              "dollars": 4217.45,
+              "shares": 34.199,
+              "market_cap_b": 71.39
+            },
+            {
+              "ticker": "HUT",
+              "sector": "Financial Services",
+              "rating": "Buy",
+              "composite_score": 11.35,
+              "price": 133.02,
+              "weight_pct": 8.43,
+              "dollars": 4217.45,
+              "shares": 31.705,
+              "market_cap_b": 14.98
+            },
+            {
+              "ticker": "MU",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 11.29,
+              "price": 1064.1,
+              "weight_pct": 8.39,
+              "dollars": 4195.15,
+              "shares": 3.942,
+              "market_cap_b": 1200.02
+            },
+            {
+              "ticker": "VSCO",
+              "sector": "Consumer Cyclical",
+              "rating": "Strong Buy",
+              "composite_score": 11.24,
+              "price": 80.06,
+              "weight_pct": 8.35,
+              "dollars": 4176.58,
+              "shares": 52.168,
+              "market_cap_b": 4.31
+            },
+            {
+              "ticker": "VSH",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 11.19,
+              "price": 62.49,
+              "weight_pct": 8.32,
+              "dollars": 4158.0,
+              "shares": 66.539,
+              "market_cap_b": 8.51
+            },
+            {
+              "ticker": "SNDK",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 11.1,
+              "price": 1716.36,
+              "weight_pct": 8.25,
+              "dollars": 4124.55,
+              "shares": 2.403,
+              "market_cap_b": 254.18
+            },
+            {
+              "ticker": "AMN",
+              "sector": "Healthcare",
+              "rating": "Strong Buy",
+              "composite_score": 11.08,
+              "price": 30.25,
+              "weight_pct": 8.23,
+              "dollars": 4117.12,
+              "shares": 136.103,
+              "market_cap_b": 1.17
+            },
+            {
+              "ticker": "RIOT",
+              "sector": "Financial Services",
+              "rating": "Buy",
+              "composite_score": 11.07,
+              "price": 27.32,
+              "weight_pct": 8.23,
+              "dollars": 4113.41,
+              "shares": 150.564,
+              "market_cap_b": 10.33
+            },
+            {
+              "ticker": "BWA",
+              "sector": "Consumer Cyclical",
+              "rating": "Buy",
+              "composite_score": 11.04,
+              "price": 74.08,
+              "weight_pct": 8.2,
+              "dollars": 4102.26,
+              "shares": 55.376,
+              "market_cap_b": 15.19
+            },
+            {
+              "ticker": "VSTS",
+              "sector": "Industrials",
+              "rating": "Buy",
+              "composite_score": 11.02,
+              "price": 12.8,
+              "weight_pct": 8.19,
+              "dollars": 4094.83,
+              "shares": 319.909,
+              "market_cap_b": 1.69
+            }
+          ]
+        },
+        {
+          "id": "Balanced_250000",
+          "capital": 250000,
+          "aggressiveness": "Balanced",
+          "weight_scheme": "m_heavy",
+          "positions": [
+            {
+              "ticker": "RKLB",
+              "sector": "Industrials",
+              "rating": "Buy",
+              "composite_score": 11.35,
+              "price": 123.32,
+              "weight_pct": 5.15,
+              "dollars": 12877.24,
+              "shares": 104.421,
+              "market_cap_b": 71.39
+            },
+            {
+              "ticker": "HUT",
+              "sector": "Financial Services",
+              "rating": "Buy",
+              "composite_score": 11.35,
+              "price": 133.02,
+              "weight_pct": 5.15,
+              "dollars": 12877.24,
+              "shares": 96.807,
+              "market_cap_b": 14.98
+            },
+            {
+              "ticker": "MU",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 11.29,
+              "price": 1064.1,
+              "weight_pct": 5.12,
+              "dollars": 12809.17,
+              "shares": 12.038,
+              "market_cap_b": 1200.02
+            },
+            {
+              "ticker": "VSCO",
+              "sector": "Consumer Cyclical",
+              "rating": "Strong Buy",
+              "composite_score": 11.24,
+              "price": 80.06,
+              "weight_pct": 5.1,
+              "dollars": 12752.44,
+              "shares": 159.286,
+              "market_cap_b": 4.31
+            },
+            {
+              "ticker": "VSH",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 11.19,
+              "price": 62.49,
+              "weight_pct": 5.08,
+              "dollars": 12695.71,
+              "shares": 203.164,
+              "market_cap_b": 8.51
+            },
+            {
+              "ticker": "SNDK",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 11.1,
+              "price": 1716.36,
+              "weight_pct": 5.04,
+              "dollars": 12593.6,
+              "shares": 7.337,
+              "market_cap_b": 254.18
+            },
+            {
+              "ticker": "RIOT",
+              "sector": "Financial Services",
+              "rating": "Buy",
+              "composite_score": 11.07,
+              "price": 27.32,
+              "weight_pct": 5.02,
+              "dollars": 12559.56,
+              "shares": 459.72,
+              "market_cap_b": 10.33
+            },
+            {
+              "ticker": "BWA",
+              "sector": "Consumer Cyclical",
+              "rating": "Buy",
+              "composite_score": 11.04,
+              "price": 74.08,
+              "weight_pct": 5.01,
+              "dollars": 12525.53,
+              "shares": 169.081,
+              "market_cap_b": 15.19
+            },
+            {
+              "ticker": "QTUM",
+              "sector": "ETF",
+              "rating": "Hold",
+              "composite_score": 11.0,
+              "price": 168.76,
+              "weight_pct": 4.99,
+              "dollars": 12480.15,
+              "shares": 73.952,
+              "market_cap_b": 4.28
+            },
+            {
+              "ticker": "WULF",
+              "sector": "Financial Services",
+              "rating": "Strong Buy",
+              "composite_score": 10.94,
+              "price": 26.49,
+              "weight_pct": 4.96,
+              "dollars": 12412.07,
+              "shares": 468.557,
+              "market_cap_b": 13.13
+            },
+            {
+              "ticker": "COCO",
+              "sector": "Consumer Defensive",
+              "rating": "Buy",
+              "composite_score": 10.94,
+              "price": 74.45,
+              "weight_pct": 4.96,
+              "dollars": 12412.07,
+              "shares": 166.717,
+              "market_cap_b": 4.25
+            },
+            {
+              "ticker": "GH",
+              "sector": "Healthcare",
+              "rating": "Strong Buy",
+              "composite_score": 10.94,
+              "price": 130.17,
+              "weight_pct": 4.96,
+              "dollars": 12412.07,
+              "shares": 95.353,
+              "market_cap_b": 17.26
+            },
+            {
+              "ticker": "WT",
+              "sector": "Financial Services",
+              "rating": "Buy",
+              "composite_score": 10.94,
+              "price": 18.95,
+              "weight_pct": 4.96,
+              "dollars": 12412.07,
+              "shares": 654.991,
+              "market_cap_b": 2.9
+            },
+            {
+              "ticker": "MTRN",
+              "sector": "Basic Materials",
+              "rating": "Buy",
+              "composite_score": 10.89,
+              "price": 230.0,
+              "weight_pct": 4.94,
+              "dollars": 12355.34,
+              "shares": 53.719,
+              "market_cap_b": 4.78
+            },
+            {
+              "ticker": "VGNT",
+              "sector": "Consumer Cyclical",
+              "rating": "Strong Buy",
+              "composite_score": 10.89,
+              "price": 45.16,
+              "weight_pct": 4.94,
+              "dollars": 12355.34,
+              "shares": 273.59,
+              "market_cap_b": 3.2
+            },
+            {
+              "ticker": "IREN",
+              "sector": "Financial Services",
+              "rating": "Strong Buy",
+              "composite_score": 10.88,
+              "price": 66.6,
+              "weight_pct": 4.94,
+              "dollars": 12344.0,
+              "shares": 185.345,
+              "market_cap_b": 23.8
+            },
+            {
+              "ticker": "BAI",
+              "sector": "ETF",
+              "rating": "Hold",
+              "composite_score": 10.87,
+              "price": 51.92,
+              "weight_pct": 4.93,
+              "dollars": 12332.65,
+              "shares": 237.532,
+              "market_cap_b": 13.35
+            },
+            {
+              "ticker": "BE",
+              "sector": "Industrials",
+              "rating": "Buy",
+              "composite_score": 10.85,
+              "price": 302.85,
+              "weight_pct": 4.92,
+              "dollars": 12309.96,
+              "shares": 40.647,
+              "market_cap_b": 86.14
+            },
+            {
+              "ticker": "RXO",
+              "sector": "Industrials",
+              "rating": "Buy",
+              "composite_score": 10.79,
+              "price": 26.95,
+              "weight_pct": 4.9,
+              "dollars": 12241.89,
+              "shares": 454.245,
+              "market_cap_b": 4.44
+            },
+            {
+              "ticker": "ARCB",
+              "sector": "Industrials",
+              "rating": "Buy",
+              "composite_score": 10.79,
+              "price": 141.85,
+              "weight_pct": 4.9,
+              "dollars": 12241.89,
+              "shares": 86.302,
+              "market_cap_b": 3.16
+            }
+          ]
+        }
+      ]
+    },
+    "equal_10": {
+      "analyze": [
+        {
+          "id": "top5_equal",
+          "holdings": [
+            {
+              "ticker": "MU",
+              "shares": 10
+            },
+            {
+              "ticker": "NEM",
+              "shares": 10
+            },
+            {
+              "ticker": "NBIX",
+              "shares": 10
+            },
+            {
+              "ticker": "DAL",
+              "shares": 10
+            },
+            {
+              "ticker": "BKNG",
+              "shares": 10
+            }
+          ],
+          "result": {
+            "total_value": 15756.7,
+            "num_holdings": 5,
+            "num_stocks": 5,
+            "num_etfs": 0,
+            "num_unmatched": 0,
+            "unmatched_tickers": [],
+            "stock_weight": 100.0,
+            "etf_weight": 0.0,
+            "weighted_composite": 9.13,
+            "weighted_rating": "Strong Buy",
+            "pillar_scores": {
+              "Valuation": 7.308406392201413,
+              "Growth": 9.68302214296141,
+              "Profitability": 10.013731301605034,
+              "Momentum": 10.74167097171362,
+              "EPS Revisions": 7.905151459379185
+            },
+            "rating_distribution": {
+              "Buy": 0.6753317636307095,
+              "Strong Buy": 0.149054053196418,
+              "Strong Buy+": 0.1756141831728725
+            },
+            "hhi": 0.484,
+            "concentration_level": "Concentrated",
+            "sector_weights": {
+              "Technology": {
+                "weight": 0.6753317636307095,
+                "count": 1,
+                "avg_score": 9.24
+              },
+              "Consumer Cyclical": {
+                "weight": 0.10611993628107409,
+                "count": 1,
+                "avg_score": 8.79
+              },
+              "Healthcare": {
+                "weight": 0.09826930765959878,
+                "count": 1,
+                "avg_score": 8.94
+              },
+              "Basic Materials": {
+                "weight": 0.06949424689179841,
+                "count": 1,
+                "avg_score": 9.01
+              },
+              "Industrials": {
+                "weight": 0.05078474553681925,
+                "count": 1,
+                "avg_score": 8.9
+              }
+            },
+            "factor_tilts": {
+              "Valuation": {
+                "portfolio": 7.3,
+                "universe": 6.8,
+                "diff": 0.5,
+                "tilt": "Neutral"
+              },
+              "Growth": {
+                "portfolio": 9.7,
+                "universe": 7.0,
+                "diff": 2.7,
+                "tilt": "Overweight"
+              },
+              "Profitability": {
+                "portfolio": 10.0,
+                "universe": 7.0,
+                "diff": 3.0,
+                "tilt": "Overweight"
+              },
+              "Momentum": {
+                "portfolio": 10.7,
+                "universe": 7.0,
+                "diff": 3.7,
+                "tilt": "Overweight"
+              },
+              "EPS Revisions": {
+                "portfolio": 7.9,
+                "universe": 7.0,
+                "diff": 0.9,
+                "tilt": "Neutral"
+              }
+            },
+            "positions": [
+              {
+                "ticker": "MU",
+                "type": "stock",
+                "market_value": 10641.0,
+                "weight": 0.6753317636307095,
+                "composite": 9.24,
+                "rating": "Buy",
+                "sector": "Technology",
+                "gain_pct": null
+              },
+              {
+                "ticker": "NEM",
+                "type": "stock",
+                "market_value": 1095.0,
+                "weight": 0.06949424689179841,
+                "composite": 9.01,
+                "rating": "Strong Buy+",
+                "sector": "Basic Materials",
+                "gain_pct": null
+              },
+              {
+                "ticker": "NBIX",
+                "type": "stock",
+                "market_value": 1548.4,
+                "weight": 0.09826930765959878,
+                "composite": 8.94,
+                "rating": "Strong Buy",
+                "sector": "Healthcare",
+                "gain_pct": null
+              },
+              {
+                "ticker": "DAL",
+                "type": "stock",
+                "market_value": 800.1999999999999,
+                "weight": 0.05078474553681925,
+                "composite": 8.9,
+                "rating": "Strong Buy",
+                "sector": "Industrials",
+                "gain_pct": null
+              },
+              {
+                "ticker": "BKNG",
+                "type": "stock",
+                "market_value": 1672.1000000000001,
+                "weight": 0.10611993628107409,
+                "composite": 8.79,
+                "rating": "Strong Buy+",
+                "sector": "Consumer Cyclical",
+                "gain_pct": null
+              }
+            ]
+          }
+        },
+        {
+          "id": "varied_sizes",
+          "holdings": [
+            {
+              "ticker": "MU",
+              "shares": 100,
+              "cost_basis": null
+            },
+            {
+              "ticker": "DAL",
+              "shares": 5,
+              "cost_basis": 50.0
+            },
+            {
+              "ticker": "VST",
+              "shares": 33,
+              "cost_basis": 1000.0
+            },
+            {
+              "ticker": "MRK",
+              "shares": 12,
+              "cost_basis": 25.0
+            },
+            {
+              "ticker": "AFRM",
+              "shares": 7,
+              "cost_basis": 80.0
+            }
+          ],
+          "result": {
+            "total_value": 113907.98,
+            "num_holdings": 5,
+            "num_stocks": 5,
+            "num_etfs": 0,
+            "num_unmatched": 0,
+            "unmatched_tickers": [],
+            "stock_weight": 100.0,
+            "etf_weight": 0.0,
+            "weighted_composite": 9.19,
+            "weighted_rating": "Strong Buy",
+            "pillar_scores": {
+              "Valuation": 7.022120002479195,
+              "Growth": 9.768017613866915,
+              "Profitability": 10.073867537638714,
+              "Momentum": 11.715529178903884,
+              "EPS Revisions": 7.3794858577950375
+            },
+            "rating_distribution": {
+              "Buy": 0.9463586308878446,
+              "Hold": 0.004363785574987811,
+              "Strong Buy": 0.04927758353716746
+            },
+            "hhi": 0.875,
+            "concentration_level": "Concentrated",
+            "sector_weights": {
+              "Technology": {
+                "weight": 0.9341751122265533,
+                "count": 1,
+                "avg_score": 9.24
+              },
+              "Utilities": {
+                "weight": 0.04576509916162152,
+                "count": 1,
+                "avg_score": 8.61
+              },
+              "Healthcare": {
+                "weight": 0.012183518661291335,
+                "count": 1,
+                "avg_score": 8.22
+              },
+              "Financial Services": {
+                "weight": 0.004363785574987811,
+                "count": 1,
+                "avg_score": 7.93
+              },
+              "Industrials": {
+                "weight": 0.0035124843755459448,
+                "count": 1,
+                "avg_score": 8.9
+              }
+            },
+            "factor_tilts": {
+              "Valuation": {
+                "portfolio": 7.0,
+                "universe": 6.8,
+                "diff": 0.2,
+                "tilt": "Neutral"
+              },
+              "Growth": {
+                "portfolio": 9.8,
+                "universe": 7.0,
+                "diff": 2.8,
+                "tilt": "Overweight"
+              },
+              "Profitability": {
+                "portfolio": 10.1,
+                "universe": 7.0,
+                "diff": 3.1,
+                "tilt": "Overweight"
+              },
+              "Momentum": {
+                "portfolio": 11.7,
+                "universe": 7.0,
+                "diff": 4.7,
+                "tilt": "Overweight"
+              },
+              "EPS Revisions": {
+                "portfolio": 7.4,
+                "universe": 7.0,
+                "diff": 0.4,
+                "tilt": "Neutral"
+              }
+            },
+            "positions": [
+              {
+                "ticker": "MU",
+                "type": "stock",
+                "market_value": 106409.99999999999,
+                "weight": 0.9341751122265533,
+                "composite": 9.24,
+                "rating": "Buy",
+                "sector": "Technology",
+                "gain_pct": null
+              },
+              {
+                "ticker": "DAL",
+                "type": "stock",
+                "market_value": 400.09999999999997,
+                "weight": 0.0035124843755459448,
+                "composite": 8.9,
+                "rating": "Strong Buy",
+                "sector": "Industrials",
+                "gain_pct": 60.03999999999999
+              },
+              {
+                "ticker": "VST",
+                "type": "stock",
+                "market_value": 5213.01,
+                "weight": 0.04576509916162152,
+                "composite": 8.61,
+                "rating": "Strong Buy",
+                "sector": "Utilities",
+                "gain_pct": -84.20299999999999
+              },
+              {
+                "ticker": "MRK",
+                "type": "stock",
+                "market_value": 1387.8000000000002,
+                "weight": 0.012183518661291335,
+                "composite": 8.22,
+                "rating": "Buy",
+                "sector": "Healthcare",
+                "gain_pct": 362.6
+              },
+              {
+                "ticker": "AFRM",
+                "type": "stock",
+                "market_value": 497.07000000000005,
+                "weight": 0.004363785574987811,
+                "composite": 7.93,
+                "rating": "Hold",
+                "sector": "Financial Services",
+                "gain_pct": -11.237499999999994
+              }
+            ]
+          }
+        },
+        {
+          "id": "single_sector",
+          "holdings": [
+            {
+              "ticker": "MU",
+              "shares": 20
+            },
+            {
+              "ticker": "SNDK",
+              "shares": 20
+            },
+            {
+              "ticker": "NVDA",
+              "shares": 20
+            },
+            {
+              "ticker": "WDC",
+              "shares": 20
+            },
+            {
+              "ticker": "TSM",
+              "shares": 20
+            }
+          ],
+          "result": {
+            "total_value": 80261.40000000001,
+            "num_holdings": 5,
+            "num_stocks": 5,
+            "num_etfs": 0,
+            "num_unmatched": 0,
+            "unmatched_tickers": [],
+            "stock_weight": 100.0,
+            "etf_weight": 0.0,
+            "weighted_composite": 8.8,
+            "weighted_rating": "Buy",
+            "pillar_scores": {
+              "Valuation": 6.124011666878475,
+              "Growth": 9.664506848871312,
+              "Profitability": 10.06353340460047,
+              "Momentum": 10.853982761327362,
+              "EPS Revisions": 7.274568472516054
+            },
+            "rating_distribution": {
+              "Buy": 0.8331676247860116,
+              "Hold": 0.1113087985008983,
+              "Strong Buy": 0.05552357671308997
+            },
+            "hhi": 1.0,
+            "concentration_level": "Concentrated",
+            "sector_weights": {
+              "Technology": {
+                "weight": 0.9999999999999998,
+                "count": 5,
+                "avg_score": 8.693999999999999
+              }
+            },
+            "factor_tilts": {
+              "Valuation": {
+                "portfolio": 6.1,
+                "universe": 6.8,
+                "diff": -0.7,
+                "tilt": "Neutral"
+              },
+              "Growth": {
+                "portfolio": 9.7,
+                "universe": 7.0,
+                "diff": 2.7,
+                "tilt": "Overweight"
+              },
+              "Profitability": {
+                "portfolio": 10.1,
+                "universe": 7.0,
+                "diff": 3.0,
+                "tilt": "Overweight"
+              },
+              "Momentum": {
+                "portfolio": 10.9,
+                "universe": 7.0,
+                "diff": 3.8,
+                "tilt": "Overweight"
+              },
+              "EPS Revisions": {
+                "portfolio": 7.3,
+                "universe": 7.0,
+                "diff": 0.3,
+                "tilt": "Neutral"
+              }
+            },
+            "positions": [
+              {
+                "ticker": "MU",
+                "type": "stock",
+                "market_value": 21282.0,
+                "weight": 0.2651585942931471,
+                "composite": 9.24,
+                "rating": "Buy",
+                "sector": "Technology",
+                "gain_pct": null
+              },
+              {
+                "ticker": "SNDK",
+                "type": "stock",
+                "market_value": 34327.2,
+                "weight": 0.4276925147081909,
+                "composite": 8.75,
+                "rating": "Buy",
+                "sector": "Technology",
+                "gain_pct": null
+              },
+              {
+                "ticker": "NVDA",
+                "type": "stock",
+                "market_value": 4456.4,
+                "weight": 0.05552357671308997,
+                "composite": 8.67,
+                "rating": "Strong Buy",
+                "sector": "Technology",
+                "gain_pct": null
+              },
+              {
+                "ticker": "WDC",
+                "type": "stock",
+                "market_value": 11262.0,
+                "weight": 0.14031651578467355,
+                "composite": 8.65,
+                "rating": "Buy",
+                "sector": "Technology",
+                "gain_pct": null
+              },
+              {
+                "ticker": "TSM",
+                "type": "stock",
+                "market_value": 8933.8,
+                "weight": 0.1113087985008983,
+                "composite": 8.16,
+                "rating": "Hold",
+                "sector": "Technology",
+                "gain_pct": null
+              }
+            ]
+          }
+        },
+        {
+          "id": "etf_and_unmatched",
+          "holdings": [
+            {
+              "ticker": "XLK",
+              "shares": 15
+            },
+            {
+              "ticker": "BAI",
+              "shares": 15
+            },
+            {
+              "ticker": "NBIX",
+              "shares": 40
+            },
+            {
+              "ticker": "ZZZZ_NOPE",
+              "shares": 3
+            }
+          ],
+          "result": {
+            "total_value": 9945.550000000001,
+            "num_holdings": 3,
+            "num_stocks": 3,
+            "num_etfs": 0,
+            "num_unmatched": 1,
+            "unmatched_tickers": [
+              "ZZZZ_NOPE"
+            ],
+            "stock_weight": 100.0,
+            "etf_weight": 0.0,
+            "weighted_composite": 8.59,
+            "weighted_rating": "Buy",
+            "pillar_scores": {
+              "Valuation": 7.0,
+              "Growth": 8.868252635600847,
+              "Profitability": 8.120951581360508,
+              "Momentum": 10.548990453016675,
+              "EPS Revisions": 8.401189476700635
+            },
+            "rating_distribution": {
+              "Hold": 0.37724912146638445,
+              "Strong Buy": 0.6227508785336155
+            },
+            "hhi": 0.53,
+            "concentration_level": "Concentrated",
+            "sector_weights": {
+              "Healthcare": {
+                "weight": 0.6227508785336155,
+                "count": 1,
+                "avg_score": 8.94
+              },
+              "ETF": {
+                "weight": 0.37724912146638445,
+                "count": 2,
+                "avg_score": 8.0
+              }
+            },
+            "factor_tilts": {
+              "Valuation": {
+                "portfolio": 7.0,
+                "universe": 6.8,
+                "diff": 0.2,
+                "tilt": "Neutral"
+              },
+              "Growth": {
+                "portfolio": 8.9,
+                "universe": 7.0,
+                "diff": 1.9,
+                "tilt": "Overweight"
+              },
+              "Profitability": {
+                "portfolio": 8.1,
+                "universe": 7.0,
+                "diff": 1.1,
+                "tilt": "Overweight"
+              },
+              "Momentum": {
+                "portfolio": 10.5,
+                "universe": 7.0,
+                "diff": 3.5,
+                "tilt": "Overweight"
+              },
+              "EPS Revisions": {
+                "portfolio": 8.4,
+                "universe": 7.0,
+                "diff": 1.4,
+                "tilt": "Overweight"
+              }
+            },
+            "positions": [
+              {
+                "ticker": "XLK",
+                "type": "stock",
+                "market_value": 2973.15,
+                "weight": 0.29894274323692505,
+                "composite": 8.0,
+                "rating": "Hold",
+                "sector": "ETF",
+                "gain_pct": null
+              },
+              {
+                "ticker": "BAI",
+                "type": "stock",
+                "market_value": 778.8000000000001,
+                "weight": 0.0783063782294594,
+                "composite": 8.0,
+                "rating": "Hold",
+                "sector": "ETF",
+                "gain_pct": null
+              },
+              {
+                "ticker": "NBIX",
+                "type": "stock",
+                "market_value": 6193.6,
+                "weight": 0.6227508785336155,
+                "composite": 8.94,
+                "rating": "Strong Buy",
+                "sector": "Healthcare",
+                "gain_pct": null
+              }
+            ]
+          }
+        },
+        {
+          "id": "many",
+          "holdings": [
+            {
+              "ticker": "MU",
+              "shares": 1
+            },
+            {
+              "ticker": "NBIX",
+              "shares": 3
+            },
+            {
+              "ticker": "BKNG",
+              "shares": 5
+            },
+            {
+              "ticker": "NVDA",
+              "shares": 7
+            },
+            {
+              "ticker": "VST",
+              "shares": 2
+            },
+            {
+              "ticker": "OVV",
+              "shares": 4
+            },
+            {
+              "ticker": "MO",
+              "shares": 6
+            },
+            {
+              "ticker": "APP",
+              "shares": 1
+            },
+            {
+              "ticker": "HST",
+              "shares": 3
+            },
+            {
+              "ticker": "FDX",
+              "shares": 5
+            },
+            {
+              "ticker": "MRK",
+              "shares": 7
+            },
+            {
+              "ticker": "CCL",
+              "shares": 2
+            },
+            {
+              "ticker": "INCY",
+              "shares": 4
+            },
+            {
+              "ticker": "CF",
+              "shares": 6
+            },
+            {
+              "ticker": "FRT",
+              "shares": 1
+            }
+          ],
+          "result": {
+            "total_value": 9245.519999999999,
+            "num_holdings": 15,
+            "num_stocks": 15,
+            "num_etfs": 0,
+            "num_unmatched": 0,
+            "unmatched_tickers": [],
+            "stock_weight": 100.0,
+            "etf_weight": 0.0,
+            "weighted_composite": 8.54,
+            "weighted_rating": "Buy",
+            "pillar_scores": {
+              "Valuation": 7.646731357457452,
+              "Growth": 8.871578072406962,
+              "Profitability": 9.441232510448305,
+              "Momentum": 8.592816153120646,
+              "EPS Revisions": 8.143826685789444
+            },
+            "rating_distribution": {
+              "Buy": 0.26816014675215677,
+              "Hold": 0.08655002639116027,
+              "Strong Buy": 0.29209714542827236,
+              "Strong Buy+": 0.35319268142841076
+            },
+            "hhi": 0.167,
+            "concentration_level": "Moderate",
+            "sector_weights": {
+              "Technology": {
+                "weight": 0.2837958276008272,
+                "count": 2,
+                "avg_score": 8.955
+              },
+              "Industrials": {
+                "weight": 0.17792401076413228,
+                "count": 1,
+                "avg_score": 8.25
+              },
+              "Healthcare": {
+                "weight": 0.1777109345931868,
+                "count": 3,
+                "avg_score": 8.446666666666667
+              },
+              "Consumer Cyclical": {
+                "weight": 0.0964066921060146,
+                "count": 2,
+                "avg_score": 8.495
+              },
+              "Basic Materials": {
+                "weight": 0.0736443163824209,
+                "count": 1,
+                "avg_score": 8.16
+              },
+              "Communication Services": {
+                "weight": 0.06550523929427443,
+                "count": 1,
+                "avg_score": 8.35
+              },
+              "Consumer Defensive": {
+                "weight": 0.044934195156140486,
+                "count": 1,
+                "avg_score": 8.45
+              },
+              "Utilities": {
+                "weight": 0.034172226115999974,
+                "count": 1,
+                "avg_score": 8.61
+              },
+              "Energy": {
+                "weight": 0.02532686100944025,
+                "count": 1,
+                "avg_score": 8.49
+              },
+              "Real Estate": {
+                "weight": 0.020579696977563188,
+                "count": 2,
+                "avg_score": 8.21
+              }
+            },
+            "factor_tilts": {
+              "Valuation": {
+                "portfolio": 7.6,
+                "universe": 6.8,
+                "diff": 0.8,
+                "tilt": "Neutral"
+              },
+              "Growth": {
+                "portfolio": 8.9,
+                "universe": 7.0,
+                "diff": 1.9,
+                "tilt": "Overweight"
+              },
+              "Profitability": {
+                "portfolio": 9.4,
+                "universe": 7.0,
+                "diff": 2.4,
+                "tilt": "Overweight"
+              },
+              "Momentum": {
+                "portfolio": 8.6,
+                "universe": 7.0,
+                "diff": 1.6,
+                "tilt": "Overweight"
+              },
+              "EPS Revisions": {
+                "portfolio": 8.1,
+                "universe": 7.0,
+                "diff": 1.2,
+                "tilt": "Overweight"
+              }
+            },
+            "positions": [
+              {
+                "ticker": "MU",
+                "type": "stock",
+                "market_value": 1064.1,
+                "weight": 0.11509358045842744,
+                "composite": 9.24,
+                "rating": "Buy",
+                "sector": "Technology",
+                "gain_pct": null
+              },
+              {
+                "ticker": "NBIX",
+                "type": "stock",
+                "market_value": 464.52,
+                "weight": 0.050242712145990714,
+                "composite": 8.94,
+                "rating": "Strong Buy",
+                "sector": "Healthcare",
+                "gain_pct": null
+              },
+              {
+                "ticker": "BKNG",
+                "type": "stock",
+                "market_value": 836.0500000000001,
+                "weight": 0.09042758006039683,
+                "composite": 8.79,
+                "rating": "Strong Buy+",
+                "sector": "Consumer Cyclical",
+                "gain_pct": null
+              },
+              {
+                "ticker": "NVDA",
+                "type": "stock",
+                "market_value": 1559.74,
+                "weight": 0.1687022471423998,
+                "composite": 8.67,
+                "rating": "Strong Buy",
+                "sector": "Technology",
+                "gain_pct": null
+              },
+              {
+                "ticker": "VST",
+                "type": "stock",
+                "market_value": 315.94,
+                "weight": 0.034172226115999974,
+                "composite": 8.61,
+                "rating": "Strong Buy",
+                "sector": "Utilities",
+                "gain_pct": null
+              },
+              {
+                "ticker": "OVV",
+                "type": "stock",
+                "market_value": 234.16,
+                "weight": 0.02532686100944025,
+                "composite": 8.49,
+                "rating": "Strong Buy",
+                "sector": "Energy",
+                "gain_pct": null
+              },
+              {
+                "ticker": "MO",
+                "type": "stock",
+                "market_value": 415.43999999999994,
+                "weight": 0.044934195156140486,
+                "composite": 8.45,
+                "rating": "Strong Buy+",
+                "sector": "Consumer Defensive",
+                "gain_pct": null
+              },
+              {
+                "ticker": "APP",
+                "type": "stock",
+                "market_value": 605.63,
+                "weight": 0.06550523929427443,
+                "composite": 8.35,
+                "rating": "Buy",
+                "sector": "Communication Services",
+                "gain_pct": null
+              },
+              {
+                "ticker": "HST",
+                "type": "stock",
+                "market_value": 70.94999999999999,
+                "weight": 0.00767398696882382,
+                "composite": 8.29,
+                "rating": "Strong Buy",
+                "sector": "Real Estate",
+                "gain_pct": null
+              },
+              {
+                "ticker": "FDX",
+                "type": "stock",
+                "market_value": 1645.0,
+                "weight": 0.17792401076413228,
+                "composite": 8.25,
+                "rating": "Strong Buy+",
+                "sector": "Industrials",
+                "gain_pct": null
+              },
+              {
+                "ticker": "MRK",
+                "type": "stock",
+                "market_value": 809.5500000000001,
+                "weight": 0.08756132699945489,
+                "composite": 8.22,
+                "rating": "Buy",
+                "sector": "Healthcare",
+                "gain_pct": null
+              },
+              {
+                "ticker": "CCL",
+                "type": "stock",
+                "market_value": 55.28,
+                "weight": 0.005979112045617771,
+                "composite": 8.2,
+                "rating": "Strong Buy",
+                "sector": "Consumer Cyclical",
+                "gain_pct": null
+              },
+              {
+                "ticker": "INCY",
+                "type": "stock",
+                "market_value": 368.96,
+                "weight": 0.03990689544774118,
+                "composite": 8.18,
+                "rating": "Strong Buy+",
+                "sector": "Healthcare",
+                "gain_pct": null
+              },
+              {
+                "ticker": "CF",
+                "type": "stock",
+                "market_value": 680.88,
+                "weight": 0.0736443163824209,
+                "composite": 8.16,
+                "rating": "Hold",
+                "sector": "Basic Materials",
+                "gain_pct": null
+              },
+              {
+                "ticker": "FRT",
+                "type": "stock",
+                "market_value": 119.32,
+                "weight": 0.01290571000873937,
+                "composite": 8.13,
+                "rating": "Hold",
+                "sector": "Real Estate",
+                "gain_pct": null
+              }
+            ]
+          }
+        },
+        {
+          "id": "sub_floor_mix",
+          "holdings": [
+            {
+              "ticker": "MU",
+              "shares": 10
+            },
+            {
+              "ticker": "ECPG",
+              "shares": 25,
+              "cost_basis": 20.0
+            },
+            {
+              "ticker": "INDV",
+              "shares": 25,
+              "cost_basis": 20.0
+            },
+            {
+              "ticker": "QTUM",
+              "shares": 8
+            }
+          ],
+          "result": {
+            "total_value": 14786.08,
+            "num_holdings": 4,
+            "num_stocks": 1,
+            "num_etfs": 3,
+            "num_unmatched": 0,
+            "unmatched_tickers": [],
+            "stock_weight": 90.9,
+            "etf_weight": 9.1,
+            "weighted_composite": 7.32,
+            "weighted_rating": "Hold",
+            "pillar_scores": {
+              "Valuation": 5.5438374516225055,
+              "Growth": 7.721773593331348,
+              "Profitability": 8.078163143792795,
+              "Momentum": 9.503721345638583,
+              "EPS Revisions": 5.741831646323311
+            },
+            "rating_distribution": {
+              "Buy": 0.7196633590512157,
+              "Not Scored": 0.1890291409217318
+            },
+            "hhi": 0.547,
+            "concentration_level": "Concentrated",
+            "sector_weights": {
+              "Technology": {
+                "weight": 0.7196633590512157,
+                "count": 1,
+                "avg_score": 9.24
+              },
+              "Financial Services": {
+                "weight": 0.13203296614112733,
+                "count": 1,
+                "avg_score": 0.0
+              },
+              "ETF": {
+                "weight": 0.09130750002705247,
+                "count": 1,
+                "avg_score": 0.0
+              },
+              "Healthcare": {
+                "weight": 0.05699617478060446,
+                "count": 1,
+                "avg_score": 0.0
+              }
+            },
+            "factor_tilts": {
+              "Valuation": {
+                "portfolio": 5.5,
+                "universe": 6.8,
+                "diff": -1.3,
+                "tilt": "Underweight"
+              },
+              "Growth": {
+                "portfolio": 7.7,
+                "universe": 7.0,
+                "diff": 0.7,
+                "tilt": "Neutral"
+              },
+              "Profitability": {
+                "portfolio": 8.1,
+                "universe": 7.0,
+                "diff": 1.1,
+                "tilt": "Overweight"
+              },
+              "Momentum": {
+                "portfolio": 9.5,
+                "universe": 7.0,
+                "diff": 2.5,
+                "tilt": "Overweight"
+              },
+              "EPS Revisions": {
+                "portfolio": 5.7,
+                "universe": 7.0,
+                "diff": -1.2,
+                "tilt": "Underweight"
+              }
+            },
+            "positions": [
+              {
+                "ticker": "MU",
+                "type": "stock",
+                "market_value": 10641.0,
+                "weight": 0.7196633590512157,
+                "composite": 9.24,
+                "rating": "Buy",
+                "sector": "Technology",
+                "gain_pct": null
+              },
+              {
+                "ticker": "ECPG",
+                "type": "stock",
+                "market_value": 1952.25,
+                "weight": 0.13203296614112733,
+                "composite": null,
+                "rating": "Not Scored",
+                "sector": "Financial Services",
+                "gain_pct": 290.45
+              },
+              {
+                "ticker": "INDV",
+                "type": "stock",
+                "market_value": 842.75,
+                "weight": 0.05699617478060446,
+                "composite": null,
+                "rating": "Not Scored",
+                "sector": "Healthcare",
+                "gain_pct": 68.55
+              },
+              {
+                "ticker": "QTUM",
+                "type": "etf",
+                "market_value": 1350.08,
+                "weight": 0.09130750002705247,
+                "composite": null,
+                "rating": "N/A (ETF)",
+                "sector": "ETF",
+                "gain_pct": null
+              }
+            ]
+          }
+        }
+      ],
+      "quant": [
+        {
+          "id": "Balanced_100000",
+          "capital": 100000,
+          "aggressiveness": "Balanced",
+          "weight_scheme": "equal",
+          "positions": [
+            {
+              "ticker": "MU",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 9.24,
+              "price": 1064.1,
+              "weight_pct": 5.79,
+              "dollars": 5793.42,
+              "shares": 5.444,
+              "market_cap_b": 1200.02
+            },
+            {
+              "ticker": "NEM",
+              "sector": "Basic Materials",
+              "rating": "Strong Buy+",
+              "composite_score": 9.01,
+              "price": 109.5,
+              "weight_pct": 5.51,
+              "dollars": 5508.59,
+              "shares": 50.307,
+              "market_cap_b": 116.9
+            },
+            {
+              "ticker": "NBIX",
+              "sector": "Healthcare",
+              "rating": "Strong Buy",
+              "composite_score": 8.94,
+              "price": 154.84,
+              "weight_pct": 5.42,
+              "dollars": 5423.33,
+              "shares": 35.025,
+              "market_cap_b": 15.57
+            },
+            {
+              "ticker": "DAL",
+              "sector": "Industrials",
+              "rating": "Strong Buy",
+              "composite_score": 8.9,
+              "price": 80.02,
+              "weight_pct": 5.37,
+              "dollars": 5374.91,
+              "shares": 67.17,
+              "market_cap_b": 52.57
+            },
+            {
+              "ticker": "BKNG",
+              "sector": "Consumer Cyclical",
+              "rating": "Strong Buy+",
+              "composite_score": 8.79,
+              "price": 167.21,
+              "weight_pct": 5.24,
+              "dollars": 5242.87,
+              "shares": 31.355,
+              "market_cap_b": 129.57
+            },
+            {
+              "ticker": "SNDK",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 8.75,
+              "price": 1716.36,
+              "weight_pct": 5.2,
+              "dollars": 5195.26,
+              "shares": 3.027,
+              "market_cap_b": 254.18
+            },
+            {
+              "ticker": "NVDA",
+              "sector": "Technology",
+              "rating": "Strong Buy",
+              "composite_score": 8.67,
+              "price": 222.82,
+              "weight_pct": 5.1,
+              "dollars": 5100.69,
+              "shares": 22.892,
+              "market_cap_b": 5396.92
+            },
+            {
+              "ticker": "WDC",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 8.65,
+              "price": 563.1,
+              "weight_pct": 5.08,
+              "dollars": 5077.19,
+              "shares": 9.016,
+              "market_cap_b": 194.09
+            },
+            {
+              "ticker": "VST",
+              "sector": "Utilities",
+              "rating": "Strong Buy",
+              "composite_score": 8.61,
+              "price": 157.97,
+              "weight_pct": 5.03,
+              "dollars": 5030.34,
+              "shares": 31.844,
+              "market_cap_b": 53.26
+            },
+            {
+              "ticker": "APA",
+              "sector": "Energy",
+              "rating": "Strong Buy+",
+              "composite_score": 8.52,
+              "price": 37.81,
+              "weight_pct": 4.93,
+              "dollars": 4925.73,
+              "shares": 130.276,
+              "market_cap_b": 13.36
+            },
+            {
+              "ticker": "OVV",
+              "sector": "Energy",
+              "rating": "Strong Buy",
+              "composite_score": 8.49,
+              "price": 58.54,
+              "weight_pct": 4.89,
+              "dollars": 4891.1,
+              "shares": 83.551,
+              "market_cap_b": 16.45
+            },
+            {
+              "ticker": "LLY",
+              "sector": "Healthcare",
+              "rating": "Buy",
+              "composite_score": 8.45,
+              "price": 1064.15,
+              "weight_pct": 4.85,
+              "dollars": 4845.12,
+              "shares": 4.553,
+              "market_cap_b": 948.95
+            },
+            {
+              "ticker": "MO",
+              "sector": "Consumer Defensive",
+              "rating": "Strong Buy+",
+              "composite_score": 8.45,
+              "price": 69.24,
+              "weight_pct": 4.85,
+              "dollars": 4845.12,
+              "shares": 69.976,
+              "market_cap_b": 115.62
+            },
+            {
+              "ticker": "FCX",
+              "sector": "Basic Materials",
+              "rating": "Strong Buy",
+              "composite_score": 8.38,
+              "price": 71.72,
+              "weight_pct": 4.77,
+              "dollars": 4765.18,
+              "shares": 66.441,
+              "market_cap_b": 103.1
+            },
+            {
+              "ticker": "APP",
+              "sector": "Communication Services",
+              "rating": "Buy",
+              "composite_score": 8.35,
+              "price": 605.63,
+              "weight_pct": 4.73,
+              "dollars": 4731.12,
+              "shares": 7.812,
+              "market_cap_b": 203.46
+            },
+            {
+              "ticker": "UAL",
+              "sector": "Industrials",
+              "rating": "Strong Buy",
+              "composite_score": 8.35,
+              "price": 108.82,
+              "weight_pct": 4.73,
+              "dollars": 4731.12,
+              "shares": 43.477,
+              "market_cap_b": 35.32
+            },
+            {
+              "ticker": "HST",
+              "sector": "Real Estate",
+              "rating": "Strong Buy",
+              "composite_score": 8.29,
+              "price": 23.65,
+              "weight_pct": 4.66,
+              "dollars": 4663.37,
+              "shares": 197.183,
+              "market_cap_b": 16.41
+            },
+            {
+              "ticker": "EOG",
+              "sector": "Energy",
+              "rating": "Strong Buy+",
+              "composite_score": 8.28,
+              "price": 138.58,
+              "weight_pct": 4.65,
+              "dollars": 4652.13,
+              "shares": 33.57,
+              "market_cap_b": 73.81
+            },
+            {
+              "ticker": "FDX",
+              "sector": "Industrials",
+              "rating": "Strong Buy+",
+              "composite_score": 8.25,
+              "price": 329.0,
+              "weight_pct": 4.62,
+              "dollars": 4618.48,
+              "shares": 14.038,
+              "market_cap_b": 78.5
+            },
+            {
+              "ticker": "GOOGL",
+              "sector": "Communication Services",
+              "rating": "Strong Buy",
+              "composite_score": 8.22,
+              "price": 361.85,
+              "weight_pct": 4.58,
+              "dollars": 4584.95,
+              "shares": 12.671,
+              "market_cap_b": 4383.97
+            }
+          ]
+        },
+        {
+          "id": "Conservative_25000",
+          "capital": 25000,
+          "aggressiveness": "Conservative",
+          "weight_scheme": "equal",
+          "positions": [
+            {
+              "ticker": "MU",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 9.24,
+              "price": 1064.1,
+              "weight_pct": 3.81,
+              "dollars": 953.35,
+              "shares": 0.896,
+              "market_cap_b": 1200.02
+            },
+            {
+              "ticker": "NEM",
+              "sector": "Basic Materials",
+              "rating": "Strong Buy+",
+              "composite_score": 9.01,
+              "price": 109.5,
+              "weight_pct": 3.67,
+              "dollars": 917.98,
+              "shares": 8.383,
+              "market_cap_b": 116.9
+            },
+            {
+              "ticker": "NBIX",
+              "sector": "Healthcare",
+              "rating": "Strong Buy",
+              "composite_score": 8.94,
+              "price": 154.84,
+              "weight_pct": 3.63,
+              "dollars": 907.3,
+              "shares": 5.86,
+              "market_cap_b": 15.57
+            },
+            {
+              "ticker": "DAL",
+              "sector": "Industrials",
+              "rating": "Strong Buy",
+              "composite_score": 8.9,
+              "price": 80.02,
+              "weight_pct": 3.6,
+              "dollars": 901.22,
+              "shares": 11.262,
+              "market_cap_b": 52.57
+            },
+            {
+              "ticker": "BKNG",
+              "sector": "Consumer Cyclical",
+              "rating": "Strong Buy+",
+              "composite_score": 8.79,
+              "price": 167.21,
+              "weight_pct": 3.54,
+              "dollars": 884.56,
+              "shares": 5.29,
+              "market_cap_b": 129.57
+            },
+            {
+              "ticker": "SNDK",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 8.75,
+              "price": 1716.36,
+              "weight_pct": 3.51,
+              "dollars": 878.53,
+              "shares": 0.512,
+              "market_cap_b": 254.18
+            },
+            {
+              "ticker": "NVDA",
+              "sector": "Technology",
+              "rating": "Strong Buy",
+              "composite_score": 8.67,
+              "price": 222.82,
+              "weight_pct": 3.47,
+              "dollars": 866.51,
+              "shares": 3.889,
+              "market_cap_b": 5396.92
+            },
+            {
+              "ticker": "WDC",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 8.65,
+              "price": 563.1,
+              "weight_pct": 3.45,
+              "dollars": 863.51,
+              "shares": 1.533,
+              "market_cap_b": 194.09
+            },
+            {
+              "ticker": "VST",
+              "sector": "Utilities",
+              "rating": "Strong Buy",
+              "composite_score": 8.61,
+              "price": 157.97,
+              "weight_pct": 3.43,
+              "dollars": 857.53,
+              "shares": 5.428,
+              "market_cap_b": 53.26
+            },
+            {
+              "ticker": "APA",
+              "sector": "Energy",
+              "rating": "Strong Buy+",
+              "composite_score": 8.52,
+              "price": 37.81,
+              "weight_pct": 3.38,
+              "dollars": 844.12,
+              "shares": 22.325,
+              "market_cap_b": 13.36
+            },
+            {
+              "ticker": "OVV",
+              "sector": "Energy",
+              "rating": "Strong Buy",
+              "composite_score": 8.49,
+              "price": 58.54,
+              "weight_pct": 3.36,
+              "dollars": 839.67,
+              "shares": 14.344,
+              "market_cap_b": 16.45
+            },
+            {
+              "ticker": "LLY",
+              "sector": "Healthcare",
+              "rating": "Buy",
+              "composite_score": 8.45,
+              "price": 1064.15,
+              "weight_pct": 3.33,
+              "dollars": 833.74,
+              "shares": 0.783,
+              "market_cap_b": 948.95
+            },
+            {
+              "ticker": "MO",
+              "sector": "Consumer Defensive",
+              "rating": "Strong Buy+",
+              "composite_score": 8.45,
+              "price": 69.24,
+              "weight_pct": 3.33,
+              "dollars": 833.74,
+              "shares": 12.041,
+              "market_cap_b": 115.62
+            },
+            {
+              "ticker": "FCX",
+              "sector": "Basic Materials",
+              "rating": "Strong Buy",
+              "composite_score": 8.38,
+              "price": 71.72,
+              "weight_pct": 3.29,
+              "dollars": 823.4,
+              "shares": 11.481,
+              "market_cap_b": 103.1
+            },
+            {
+              "ticker": "APP",
+              "sector": "Communication Services",
+              "rating": "Buy",
+              "composite_score": 8.35,
+              "price": 605.63,
+              "weight_pct": 3.28,
+              "dollars": 818.98,
+              "shares": 1.352,
+              "market_cap_b": 203.46
+            },
+            {
+              "ticker": "UAL",
+              "sector": "Industrials",
+              "rating": "Strong Buy",
+              "composite_score": 8.35,
+              "price": 108.82,
+              "weight_pct": 3.28,
+              "dollars": 818.98,
+              "shares": 7.526,
+              "market_cap_b": 35.32
+            },
+            {
+              "ticker": "HST",
+              "sector": "Real Estate",
+              "rating": "Strong Buy",
+              "composite_score": 8.29,
+              "price": 23.65,
+              "weight_pct": 3.24,
+              "dollars": 810.17,
+              "shares": 34.257,
+              "market_cap_b": 16.41
+            },
+            {
+              "ticker": "EOG",
+              "sector": "Energy",
+              "rating": "Strong Buy+",
+              "composite_score": 8.28,
+              "price": 138.58,
+              "weight_pct": 3.23,
+              "dollars": 808.71,
+              "shares": 5.836,
+              "market_cap_b": 73.81
+            },
+            {
+              "ticker": "FDX",
+              "sector": "Industrials",
+              "rating": "Strong Buy+",
+              "composite_score": 8.25,
+              "price": 329.0,
+              "weight_pct": 3.22,
+              "dollars": 804.31,
+              "shares": 2.445,
+              "market_cap_b": 78.5
+            },
+            {
+              "ticker": "GOOGL",
+              "sector": "Communication Services",
+              "rating": "Strong Buy",
+              "composite_score": 8.22,
+              "price": 361.85,
+              "weight_pct": 3.2,
+              "dollars": 799.93,
+              "shares": 2.211,
+              "market_cap_b": 4383.97
+            },
+            {
+              "ticker": "MRK",
+              "sector": "Healthcare",
+              "rating": "Buy",
+              "composite_score": 8.22,
+              "price": 115.65,
+              "weight_pct": 3.2,
+              "dollars": 799.93,
+              "shares": 6.917,
+              "market_cap_b": 285.64
+            },
+            {
+              "ticker": "VRT",
+              "sector": "Industrials",
+              "rating": "Buy",
+              "composite_score": 8.21,
+              "price": 334.49,
+              "weight_pct": 3.19,
+              "dollars": 798.47,
+              "shares": 2.387,
+              "market_cap_b": 128.48
+            },
+            {
+              "ticker": "CCL",
+              "sector": "Consumer Cyclical",
+              "rating": "Strong Buy",
+              "composite_score": 8.2,
+              "price": 27.64,
+              "weight_pct": 3.19,
+              "dollars": 797.01,
+              "shares": 28.835,
+              "market_cap_b": 38.29
+            },
+            {
+              "ticker": "DINO",
+              "sector": "Energy",
+              "rating": "Strong Buy",
+              "composite_score": 8.2,
+              "price": 73.22,
+              "weight_pct": 3.19,
+              "dollars": 797.01,
+              "shares": 10.885,
+              "market_cap_b": 13.2
+            },
+            {
+              "ticker": "INCY",
+              "sector": "Healthcare",
+              "rating": "Strong Buy+",
+              "composite_score": 8.18,
+              "price": 92.24,
+              "weight_pct": 3.18,
+              "dollars": 794.1,
+              "shares": 8.609,
+              "market_cap_b": 18.43
+            },
+            {
+              "ticker": "META",
+              "sector": "Communication Services",
+              "rating": "Hold",
+              "composite_score": 8.17,
+              "price": 597.63,
+              "weight_pct": 3.17,
+              "dollars": 792.64,
+              "shares": 1.326,
+              "market_cap_b": 1517.04
+            },
+            {
+              "ticker": "CF",
+              "sector": "Basic Materials",
+              "rating": "Hold",
+              "composite_score": 8.16,
+              "price": 113.48,
+              "weight_pct": 3.16,
+              "dollars": 791.19,
+              "shares": 6.972,
+              "market_cap_b": 17.43
+            },
+            {
+              "ticker": "TSM",
+              "sector": "Technology",
+              "rating": "Hold",
+              "composite_score": 8.16,
+              "price": 446.69,
+              "weight_pct": 3.16,
+              "dollars": 791.19,
+              "shares": 1.771,
+              "market_cap_b": 2316.75
+            },
+            {
+              "ticker": "FRT",
+              "sector": "Real Estate",
+              "rating": "Hold",
+              "composite_score": 8.13,
+              "price": 119.32,
+              "weight_pct": 3.15,
+              "dollars": 786.83,
+              "shares": 6.594,
+              "market_cap_b": 10.37
+            },
+            {
+              "ticker": "IRM",
+              "sector": "Real Estate",
+              "rating": "Hold",
+              "composite_score": 8.12,
+              "price": 128.46,
+              "weight_pct": 3.14,
+              "dollars": 785.38,
+              "shares": 6.114,
+              "market_cap_b": 38.22
+            }
+          ]
+        },
+        {
+          "id": "Aggressive_50000",
+          "capital": 50000,
+          "aggressiveness": "Aggressive",
+          "weight_scheme": "equal",
+          "positions": [
+            {
+              "ticker": "MU",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 9.24,
+              "price": 1064.1,
+              "weight_pct": 11.26,
+              "dollars": 5630.04,
+              "shares": 5.291,
+              "market_cap_b": 1200.02
+            },
+            {
+              "ticker": "NEM",
+              "sector": "Basic Materials",
+              "rating": "Strong Buy+",
+              "composite_score": 9.01,
+              "price": 109.5,
+              "weight_pct": 10.57,
+              "dollars": 5286.2,
+              "shares": 48.276,
+              "market_cap_b": 116.9
+            },
+            {
+              "ticker": "NBIX",
+              "sector": "Healthcare",
+              "rating": "Strong Buy",
+              "composite_score": 8.94,
+              "price": 154.84,
+              "weight_pct": 10.37,
+              "dollars": 5184.13,
+              "shares": 33.481,
+              "market_cap_b": 15.57
+            },
+            {
+              "ticker": "DAL",
+              "sector": "Industrials",
+              "rating": "Strong Buy",
+              "composite_score": 8.9,
+              "price": 80.02,
+              "weight_pct": 10.25,
+              "dollars": 5126.33,
+              "shares": 64.063,
+              "market_cap_b": 52.57
+            },
+            {
+              "ticker": "BKNG",
+              "sector": "Consumer Cyclical",
+              "rating": "Strong Buy+",
+              "composite_score": 8.79,
+              "price": 167.21,
+              "weight_pct": 9.94,
+              "dollars": 4969.4,
+              "shares": 29.72,
+              "market_cap_b": 129.57
+            },
+            {
+              "ticker": "SNDK",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 8.75,
+              "price": 1716.36,
+              "weight_pct": 9.83,
+              "dollars": 4913.06,
+              "shares": 2.862,
+              "market_cap_b": 254.18
+            },
+            {
+              "ticker": "NVDA",
+              "sector": "Technology",
+              "rating": "Strong Buy",
+              "composite_score": 8.67,
+              "price": 222.82,
+              "weight_pct": 9.6,
+              "dollars": 4801.53,
+              "shares": 21.549,
+              "market_cap_b": 5396.92
+            },
+            {
+              "ticker": "WDC",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 8.65,
+              "price": 563.1,
+              "weight_pct": 9.55,
+              "dollars": 4773.89,
+              "shares": 8.478,
+              "market_cap_b": 194.09
+            },
+            {
+              "ticker": "VST",
+              "sector": "Utilities",
+              "rating": "Strong Buy",
+              "composite_score": 8.61,
+              "price": 157.97,
+              "weight_pct": 9.44,
+              "dollars": 4718.89,
+              "shares": 29.872,
+              "market_cap_b": 53.26
+            },
+            {
+              "ticker": "APA",
+              "sector": "Energy",
+              "rating": "Strong Buy+",
+              "composite_score": 8.52,
+              "price": 37.81,
+              "weight_pct": 9.19,
+              "dollars": 4596.54,
+              "shares": 121.569,
+              "market_cap_b": 13.36
+            }
+          ]
+        },
+        {
+          "id": "Balanced_250000",
+          "capital": 250000,
+          "aggressiveness": "Balanced",
+          "weight_scheme": "equal",
+          "positions": [
+            {
+              "ticker": "MU",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 9.24,
+              "price": 1064.1,
+              "weight_pct": 5.79,
+              "dollars": 14483.55,
+              "shares": 13.611,
+              "market_cap_b": 1200.02
+            },
+            {
+              "ticker": "NEM",
+              "sector": "Basic Materials",
+              "rating": "Strong Buy+",
+              "composite_score": 9.01,
+              "price": 109.5,
+              "weight_pct": 5.51,
+              "dollars": 13771.48,
+              "shares": 125.767,
+              "market_cap_b": 116.9
+            },
+            {
+              "ticker": "NBIX",
+              "sector": "Healthcare",
+              "rating": "Strong Buy",
+              "composite_score": 8.94,
+              "price": 154.84,
+              "weight_pct": 5.42,
+              "dollars": 13558.33,
+              "shares": 87.563,
+              "market_cap_b": 15.57
+            },
+            {
+              "ticker": "DAL",
+              "sector": "Industrials",
+              "rating": "Strong Buy",
+              "composite_score": 8.9,
+              "price": 80.02,
+              "weight_pct": 5.37,
+              "dollars": 13437.27,
+              "shares": 167.924,
+              "market_cap_b": 52.57
+            },
+            {
+              "ticker": "BKNG",
+              "sector": "Consumer Cyclical",
+              "rating": "Strong Buy+",
+              "composite_score": 8.79,
+              "price": 167.21,
+              "weight_pct": 5.24,
+              "dollars": 13107.16,
+              "shares": 78.387,
+              "market_cap_b": 129.57
+            },
+            {
+              "ticker": "SNDK",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 8.75,
+              "price": 1716.36,
+              "weight_pct": 5.2,
+              "dollars": 12988.14,
+              "shares": 7.567,
+              "market_cap_b": 254.18
+            },
+            {
+              "ticker": "NVDA",
+              "sector": "Technology",
+              "rating": "Strong Buy",
+              "composite_score": 8.67,
+              "price": 222.82,
+              "weight_pct": 5.1,
+              "dollars": 12751.73,
+              "shares": 57.229,
+              "market_cap_b": 5396.92
+            },
+            {
+              "ticker": "WDC",
+              "sector": "Technology",
+              "rating": "Buy",
+              "composite_score": 8.65,
+              "price": 563.1,
+              "weight_pct": 5.08,
+              "dollars": 12692.97,
+              "shares": 22.541,
+              "market_cap_b": 194.09
+            },
+            {
+              "ticker": "VST",
+              "sector": "Utilities",
+              "rating": "Strong Buy",
+              "composite_score": 8.61,
+              "price": 157.97,
+              "weight_pct": 5.03,
+              "dollars": 12575.85,
+              "shares": 79.609,
+              "market_cap_b": 53.26
+            },
+            {
+              "ticker": "APA",
+              "sector": "Energy",
+              "rating": "Strong Buy+",
+              "composite_score": 8.52,
+              "price": 37.81,
+              "weight_pct": 4.93,
+              "dollars": 12314.31,
+              "shares": 325.689,
+              "market_cap_b": 13.36
+            },
+            {
+              "ticker": "OVV",
+              "sector": "Energy",
+              "rating": "Strong Buy",
+              "composite_score": 8.49,
+              "price": 58.54,
+              "weight_pct": 4.89,
+              "dollars": 12227.75,
+              "shares": 208.879,
+              "market_cap_b": 16.45
+            },
+            {
+              "ticker": "LLY",
+              "sector": "Healthcare",
+              "rating": "Buy",
+              "composite_score": 8.45,
+              "price": 1064.15,
+              "weight_pct": 4.85,
+              "dollars": 12112.8,
+              "shares": 11.383,
+              "market_cap_b": 948.95
+            },
+            {
+              "ticker": "MO",
+              "sector": "Consumer Defensive",
+              "rating": "Strong Buy+",
+              "composite_score": 8.45,
+              "price": 69.24,
+              "weight_pct": 4.85,
+              "dollars": 12112.8,
+              "shares": 174.939,
+              "market_cap_b": 115.62
+            },
+            {
+              "ticker": "FCX",
+              "sector": "Basic Materials",
+              "rating": "Strong Buy",
+              "composite_score": 8.38,
+              "price": 71.72,
+              "weight_pct": 4.77,
+              "dollars": 11912.94,
+              "shares": 166.103,
+              "market_cap_b": 103.1
+            },
+            {
+              "ticker": "APP",
+              "sector": "Communication Services",
+              "rating": "Buy",
+              "composite_score": 8.35,
+              "price": 605.63,
+              "weight_pct": 4.73,
+              "dollars": 11827.8,
+              "shares": 19.53,
+              "market_cap_b": 203.46
+            },
+            {
+              "ticker": "UAL",
+              "sector": "Industrials",
+              "rating": "Strong Buy",
+              "composite_score": 8.35,
+              "price": 108.82,
+              "weight_pct": 4.73,
+              "dollars": 11827.8,
+              "shares": 108.691,
+              "market_cap_b": 35.32
+            },
+            {
+              "ticker": "HST",
+              "sector": "Real Estate",
+              "rating": "Strong Buy",
+              "composite_score": 8.29,
+              "price": 23.65,
+              "weight_pct": 4.66,
+              "dollars": 11658.43,
+              "shares": 492.957,
+              "market_cap_b": 16.41
+            },
+            {
+              "ticker": "EOG",
+              "sector": "Energy",
+              "rating": "Strong Buy+",
+              "composite_score": 8.28,
+              "price": 138.58,
+              "weight_pct": 4.65,
+              "dollars": 11630.32,
+              "shares": 83.925,
+              "market_cap_b": 73.81
+            },
+            {
+              "ticker": "FDX",
+              "sector": "Industrials",
+              "rating": "Strong Buy+",
+              "composite_score": 8.25,
+              "price": 329.0,
+              "weight_pct": 4.62,
+              "dollars": 11546.2,
+              "shares": 35.095,
+              "market_cap_b": 78.5
+            },
+            {
+              "ticker": "GOOGL",
+              "sector": "Communication Services",
+              "rating": "Strong Buy",
+              "composite_score": 8.22,
+              "price": 361.85,
+              "weight_pct": 4.58,
+              "dollars": 11462.38,
+              "shares": 31.677,
+              "market_cap_b": 4383.97
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

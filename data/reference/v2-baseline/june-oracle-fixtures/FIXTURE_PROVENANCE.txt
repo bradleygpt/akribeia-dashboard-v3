@@ -1,0 +1,9 @@
+Oracle application commit: cb4a146a9f562a6487e8a86e0d613a2f97fa0ea4
+Oracle generated_at: 2026-06-03T14:13:23
+Universe source: files embedded in the same Git commit
+Portfolio parity result: PASS
+Exact comparisons: 3368
+Near comparisons: 38
+Accepted boundary-tie reorderings: 2
+Numeric mismatches: 0
+Purpose: prove the V2 portfolio oracle is valid only against its matching June 2026 data vintage
