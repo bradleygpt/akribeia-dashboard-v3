@@ -1,0 +1,7 @@
+V2 application commit: b477349a8691fdc5000641a6ae2893dbbfae2de6
+V2 application build date: 2026-07-28
+Bulk data repository: bradleygpt/akribeia-data
+Bulk data commit: a1304c59706a93f6b2aae775743f511c61539845
+Bulk data publication date: 2026-07-25T04:50:09Z
+Source delivery: commit-pinned jsDelivr
+Purpose: immutable V2-to-V3 parity fixtures

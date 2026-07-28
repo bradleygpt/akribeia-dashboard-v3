@@ -1,0 +1,191 @@
+﻿{
+  "sources": {
+    "macro_forecasts": {
+      "source": "macro_forecasts.build_macro_forecasts \u2014 FRED SEP (Release 326) + World Bank GEP + IMF WEO live; bank house views curated",
+      "as_of": "2026-07-28",
+      "forecasters": [
+        "Federal Reserve (SEP)",
+        "World Bank (GEP)",
+        "IMF (WEO)",
+        "Wells Fargo Inv. Institute",
+        "Fannie Mae (ESR)",
+        "KPMG Economics",
+        "Guggenheim Investments",
+        "UBS CIO GWM",
+        "Goldman Sachs Research",
+        "Morgan Stanley Research",
+        "Yardeni Research",
+        "Vanguard (VEMO)"
+      ],
+      "n_live": 3,
+      "consumed_by": "Macro Outlook tab (consensus panel + FOMC dot plot)",
+      "check_status": "ok"
+    },
+    "earnings_reviews": {
+      "source": "bake.py vintage pass",
+      "as_of": "2026-07-28",
+      "generated_at": "2026-07-28T17:11:45",
+      "check_status": "ok"
+    },
+    "system_status": {
+      "source": "bake.py system_status block (c78q.json ppi+state, mlpred effective_date, US session snapshot)",
+      "as_of": "2026-07-28",
+      "ppi": "32.2 MODERATE (live c78q PPI, as-of 2026-07-28)",
+      "c78q_pnl": "null \u2014 no live mark newer than entry; not fabricated",
+      "consumed_by": "TRI-STAR landing (LandingDemoTab)",
+      "check_status": "ok"
+    },
+    "universe_floor0": {
+      "source": "bake.py vintage pass",
+      "as_of": "2026-07-28",
+      "generated_at": "2026-07-28T17:11:45",
+      "check_status": "ok"
+    },
+    "universe_floor1": {
+      "source": "bake.py vintage pass",
+      "as_of": "2026-07-28",
+      "generated_at": "2026-07-28T17:11:45",
+      "check_status": "ok"
+    },
+    "universe_floor10": {
+      "source": "bake.py vintage pass",
+      "as_of": "2026-07-28",
+      "generated_at": "2026-07-28T17:11:45",
+      "check_status": "ok"
+    },
+    "quarterly": {
+      "source": "bake.py vintage pass",
+      "as_of": "2026-07-28",
+      "generated_at": "2026-07-28T17:11:45",
+      "check_status": "ok"
+    },
+    "snapshots": {
+      "source": "bake.py vintage pass",
+      "as_of": "2026-07-28",
+      "generated_at": "2026-07-28T17:11:45",
+      "check_status": "ok"
+    },
+    "quant_backtest": {
+      "source": "bake.py vintage pass",
+      "as_of": "2026-07-28",
+      "generated_at": "2026-07-28T17:11:45",
+      "check_status": "ok"
+    },
+    "doppelganger": {
+      "source": "bake.py vintage pass",
+      "as_of": "2026-07-28",
+      "generated_at": "2026-07-28T17:11:45",
+      "check_status": "ok"
+    },
+    "etf": {
+      "source": "bake.py vintage pass",
+      "as_of": "2026-07-28",
+      "generated_at": "2026-07-28T17:11:45",
+      "check_status": "ok"
+    },
+    "market_static": {
+      "source": "bake.py vintage pass",
+      "as_of": "2026-07-28",
+      "generated_at": "2026-07-28T17:11:45",
+      "check_status": "ok"
+    },
+    "pundits": {
+      "source": "bake.py vintage pass",
+      "as_of": "2026-07-28",
+      "generated_at": "2026-07-28T17:11:45",
+      "check_status": "ok"
+    },
+    "help": {
+      "source": "bake.py vintage pass",
+      "as_of": "2026-07-28",
+      "generated_at": "2026-07-28T17:11:45",
+      "check_status": "ok"
+    }
+  },
+  "generated_at": "2026-07-28T17:11:45",
+  "blob": {
+    "version": "20260725T045009Z",
+    "published_at": "2026-07-25T04:50:09+00:00",
+    "base_url": "https://cdn.jsdelivr.net/gh/bradleygpt/akribeia-data@a1304c59706a93f6b2aae775743f511c61539845/data",
+    "commit_sha": "a1304c59706a93f6b2aae775743f511c61539845",
+    "manifest_key": "_manifest/version_manifest.json",
+    "files": {
+      "earnings_reviews.json": {
+        "key": "earnings_reviews.json",
+        "sha256": "80b04a67a56331504f75ece86bf201b2e6e3d4a2c9c938bd828b9659c6af375f",
+        "bytes": 6176191,
+        "as_of": "2026-07-25"
+      },
+      "universe_floor0.json": {
+        "key": "universe_floor0.json",
+        "sha256": "10624afb7f413c2a1c3490c29b99e37a9fa5c0776a0a58f53de6d7af73b337e4",
+        "bytes": 1805290,
+        "as_of": "2026-07-25"
+      },
+      "universe_floor1.json": {
+        "key": "universe_floor1.json",
+        "sha256": "11b2a48326c615e6d09ce0bc8cf78f7b50ff5c9b6176b2e166d0b190bab9bd83",
+        "bytes": 1718250,
+        "as_of": "2026-07-25"
+      },
+      "universe_floor10.json": {
+        "key": "universe_floor10.json",
+        "sha256": "a34fc842220f0552460939bf5a4a138988ae2537e068d38a6f0216188063984e",
+        "bytes": 863449,
+        "as_of": "2026-07-25"
+      },
+      "mlpred.json": {
+        "key": "mlpred.json",
+        "sha256": "7dcfc5914c474493be96c795d3e9e3d22830c38c16608f82c98baed6b6f51e57",
+        "bytes": 1447110,
+        "as_of": "2026-07-25"
+      },
+      "quarterly.json": {
+        "key": "quarterly.json",
+        "sha256": "31bac48d6a820b1de3e4ea06951dfcaf38b7fa0ca950ec8b024107872cc17dd0",
+        "bytes": 4023035,
+        "as_of": "2026-07-25"
+      },
+      "correlations_cache.json": {
+        "key": "correlations_cache.json",
+        "sha256": "42917fe9d1033033798fe1d131255e1646cdfa306e6cfa830b681e8a7575cc4d",
+        "bytes": 589499,
+        "as_of": "2026-07-01"
+      },
+      "fcf_distortion.json": {
+        "key": "fcf_distortion.json",
+        "sha256": "7c2db996ee943faf2dd2a0aab1c2e1d67aec81e6a8bb4a0a293cec6fc9c861f3",
+        "bytes": 581327,
+        "as_of": "2026-07-01"
+      },
+      "earnings_quality.json": {
+        "key": "earnings_quality.json",
+        "sha256": "b203bf2efc37b030f71b210eebcae5bdca1de50dbbb85246dbee0e8bdd9bc3f1",
+        "bytes": 341591,
+        "as_of": "2026-07-25"
+      }
+    },
+    "dirs": [
+      "detail",
+      "detail_timeseries",
+      "prices"
+    ],
+    "dir_stats": {
+      "detail_timeseries": {
+        "files": 1311,
+        "bytes": 394515966,
+        "as_of": "2026-07-25"
+      },
+      "detail": {
+        "files": 3339,
+        "bytes": 22075188,
+        "as_of": "2026-07-25"
+      },
+      "prices": {
+        "files": 1250,
+        "bytes": 5837253,
+        "as_of": "2026-07-25"
+      }
+    }
+  }
+}
