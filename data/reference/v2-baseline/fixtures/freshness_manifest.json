@@ -1,4 +1,4 @@
-﻿{
+{
   "sources": {
     "macro_forecasts": {
       "source": "macro_forecasts.build_macro_forecasts \u2014 FRED SEP (Release 326) + World Bank GEP + IMF WEO live; bank house views curated",
