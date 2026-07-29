@@ -10,5 +10,8 @@
   },
   "dependencies": {
     "@akribeia/contracts": "0.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1"
   }
 }
