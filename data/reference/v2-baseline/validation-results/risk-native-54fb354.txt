@@ -1,0 +1,5 @@
+> quant-dashboard-react@0.1.0 validate-risk
+> node --experimental-strip-types scripts/validate-risk.ts
+
+exact=56  near(<=1e-6 rel)=0  MISMATCH=0
+RISK PARITY PASSED

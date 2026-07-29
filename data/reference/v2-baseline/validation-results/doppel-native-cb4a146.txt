@@ -1,0 +1,6 @@
+> quant-dashboard-react@0.1.0 validate-doppelganger
+> node --experimental-strip-types scripts/validate-doppelganger.ts
+
+exact=1352  MISMATCH=0
+
+DOPPELGANGER PARITY PASSED

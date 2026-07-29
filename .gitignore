@@ -8,3 +8,5 @@ coverage/
 .DS_Store
 playwright-report/
 test-results/
+powershell/
+v2-baseline-worktree/
