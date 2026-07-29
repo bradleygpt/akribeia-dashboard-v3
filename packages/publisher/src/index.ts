@@ -188,3 +188,5 @@ export function evaluateManifest(input: ManifestEvaluationInput): ManifestEvalua
     reasons: parsedCandidate.data.publication.reasons,
   };
 }
+
+export * from "./atomic.js";
