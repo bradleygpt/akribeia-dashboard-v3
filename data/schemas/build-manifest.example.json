@@ -1,15 +1,39 @@
 {
-  "buildId": "2026-07-28T060000Z",
+  "buildId": "2026-07-29T170000Z",
   "schemaVersion": "3.0.0",
-  "modelVersion": "2-compatibility.0",
-  "generatedAt": "2026-07-28T06:15:00Z",
-  "publishedAt": "2026-07-28T06:16:00Z",
+  "modelVersion": "3.0.0",
+  "generatedAt": "2026-07-29T16:59:00Z",
+  "publishedAt": "2026-07-29T17:00:00Z",
   "status": "healthy",
+  "publication": {
+    "decision": "publish",
+    "evaluatedAt": "2026-07-29T17:00:00Z",
+    "reasons": []
+  },
   "files": {
     "scores": {
       "path": "scores.json.gz",
       "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-      "rowCount": 0
+      "byteSize": 128,
+      "rowCount": 1,
+      "status": "current",
+      "freshness": {
+        "status": "current",
+        "observedAt": "2026-07-29T16:58:00Z",
+        "retrievedAt": "2026-07-29T16:59:00Z",
+        "evaluatedAt": "2026-07-29T17:00:00Z",
+        "ageSeconds": 120,
+        "maxAgeSeconds": 3600,
+        "reason": null
+      },
+      "provenance": [
+        {
+          "sourceId": "akribeia-data",
+          "sourceType": "first-party",
+          "retrievedAt": "2026-07-29T16:59:00Z",
+          "sourceVersion": "a1304c5"
+        }
+      ]
     }
   }
 }

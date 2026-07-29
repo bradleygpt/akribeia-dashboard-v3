@@ -1,0 +1,7 @@
+# Canonical line endings for maintained repository text.
+* text=auto eol=lf
+
+# Preserve immutable Phase 0 evidence byte-for-byte.
+data/reference/v2-baseline/fixtures/** -text
+data/reference/v2-baseline/june-oracle-fixtures/** -text
+data/reference/v2-baseline/validation-results/*.txt -text
