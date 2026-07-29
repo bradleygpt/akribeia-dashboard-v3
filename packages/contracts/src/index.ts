@@ -1,12 +1,6 @@
 import { z } from "zod";
 
-export const DataStatusSchema = z.enum([
-  "current",
-  "delayed",
-  "stale",
-  "fallback",
-  "unavailable",
-]);
+export const DataStatusSchema = z.enum(["current", "delayed", "stale", "fallback", "unavailable"]);
 
 export const BuildManifestSchema = z.object({
   buildId: z.string().min(1),
@@ -15,11 +9,13 @@ export const BuildManifestSchema = z.object({
   generatedAt: z.string().datetime(),
   publishedAt: z.string().datetime().optional(),
   status: z.enum(["healthy", "degraded", "failed"]),
-  files: z.record(z.object({
-    path: z.string().min(1),
-    sha256: z.string().regex(/^[a-f0-9]{64}$/),
-    rowCount: z.number().int().nonnegative().optional(),
-  })),
+  files: z.record(
+    z.object({
+      path: z.string().min(1),
+      sha256: z.string().regex(/^[a-f0-9]{64}$/),
+      rowCount: z.number().int().nonnegative().optional(),
+    }),
+  ),
 });
 
 export type BuildManifest = z.infer<typeof BuildManifestSchema>;

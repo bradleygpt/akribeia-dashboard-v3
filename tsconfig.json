@@ -1,8 +1,8 @@
 {
   "files": [],
   "references": [
-    {"path": "./packages/contracts"},
-    {"path": "./packages/scoring"},
-    {"path": "./packages/portfolio"}
+    { "path": "./packages/contracts" },
+    { "path": "./packages/scoring" },
+    { "path": "./packages/portfolio" }
   ]
 }

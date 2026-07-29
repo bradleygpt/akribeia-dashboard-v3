@@ -8,7 +8,7 @@ All configured floors and presets reproduced the baked V2 composite scores and r
 
 ## Portfolio parity
 
-Status: FAIL — stale oracle/data-vintage mismatch
+Status: FAIL ï¿½ stale oracle/data-vintage mismatch
 
 - Oracle generated_at: 2026-06-03T14:13:23
 - Oracle Git commit: cb4a146a9f562a6487e8a86e0d613a2f97fa0ea4

@@ -13,7 +13,10 @@ const PILLARS: Pillar[] = ["valuation", "growth", "profitability", "momentum", "
 
 export function calculateComposite(values: PillarValues, weights: PillarWeights): CompositeResult {
   const normalizedWeights = Object.fromEntries(
-    PILLARS.map((pillar) => [pillar, Math.max(0, Number.isFinite(weights[pillar]) ? weights[pillar] : 0)]),
+    PILLARS.map((pillar) => [
+      pillar,
+      Math.max(0, Number.isFinite(weights[pillar]) ? weights[pillar] : 0),
+    ]),
   ) as PillarWeights;
 
   const totalWeight = PILLARS.reduce((sum, pillar) => sum + normalizedWeights[pillar], 0);
