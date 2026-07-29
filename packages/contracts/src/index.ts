@@ -179,7 +179,9 @@ export const BuildManifestSchema = z
 
     if (statuses.some((status) => status === "unavailable" || status === "invalid")) {
       expectedStatus = "failed";
-    } else if (statuses.some((status) => status === "stale" || status === "fallback")) {
+    } else if (
+      statuses.some((status) => status === "delayed" || status === "stale" || status === "fallback")
+    ) {
       expectedStatus = "degraded";
     }
 
