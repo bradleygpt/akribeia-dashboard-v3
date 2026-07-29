@@ -12,7 +12,8 @@ export interface CappedWeightResult {
 export function projectToCappedSimplex(inputs: CappedWeightInput[]): CappedWeightResult[] {
   if (inputs.length === 0) return [];
   const capTotal = inputs.reduce((sum, item) => sum + item.maxWeight, 0);
-  if (capTotal < 1 - 1e-12) throw new Error("Position caps cannot support a fully invested portfolio.");
+  if (capTotal < 1 - 1e-12)
+    throw new Error("Position caps cannot support a fully invested portfolio.");
 
   const remaining = new Set(inputs.map((item) => item.id));
   const result = new Map<string, number>();
@@ -25,7 +26,7 @@ export function projectToCappedSimplex(inputs: CappedWeightInput[]): CappedWeigh
 
     let cappedAny = false;
     for (const item of candidates) {
-      const proposed = remainingBudget * Math.max(0, item.rawWeight) / rawTotal;
+      const proposed = (remainingBudget * Math.max(0, item.rawWeight)) / rawTotal;
       if (proposed > item.maxWeight + 1e-12) {
         result.set(item.id, item.maxWeight);
         remainingBudget -= item.maxWeight;
@@ -36,7 +37,7 @@ export function projectToCappedSimplex(inputs: CappedWeightInput[]): CappedWeigh
 
     if (!cappedAny) {
       for (const item of candidates) {
-        result.set(item.id, remainingBudget * Math.max(0, item.rawWeight) / rawTotal);
+        result.set(item.id, (remainingBudget * Math.max(0, item.rawWeight)) / rawTotal);
       }
       break;
     }

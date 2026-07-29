@@ -1,0 +1,5 @@
+# Immutable Phase 0 source fixtures and captured validation evidence.
+# Preserve their historical bytes; validate them through hashes/parity tests.
+data/reference/v2-baseline/fixtures/**
+data/reference/v2-baseline/june-oracle-fixtures/**
+data/reference/v2-baseline/validation-results/*.txt
