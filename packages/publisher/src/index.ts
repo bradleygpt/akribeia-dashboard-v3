@@ -190,3 +190,4 @@ export function evaluateManifest(input: ManifestEvaluationInput): ManifestEvalua
 }
 
 export * from "./atomic.js";
+export * from "./active-build.js";
