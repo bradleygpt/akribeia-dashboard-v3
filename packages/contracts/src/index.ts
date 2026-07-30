@@ -1088,3 +1088,195 @@ export const EvidenceReproducibilityReportSchema = z
   })
   .strict();
 export type EvidenceReproducibilityReport = z.infer<typeof EvidenceReproducibilityReportSchema>;
+
+export const MODEL_VALIDATION_GATES = [
+  "software",
+  "scoring-parity",
+  "portfolio-parity",
+  "coverage",
+  "portfolio-constraints",
+  "benchmark",
+  "point-in-time",
+  "prospective",
+] as const;
+export const ModelValidationGateSchema = z.enum(MODEL_VALIDATION_GATES);
+export const ModelValidationStatusSchema = z.enum([
+  "pass",
+  "fail",
+  "not-started",
+  "insufficient-evidence",
+]);
+
+export const ModelCardSchema = z
+  .object({
+    modelCardSchemaVersion: z.literal("1.0.0"),
+    modelVersion: z.string().min(1),
+    title: z.string().min(1),
+    maturity: z.literal("research-preview"),
+    releaseEligible: z.literal(false),
+    activeBuildId: SafeBuildIdSchema,
+    recordedAt: IsoDateTimeSchema,
+    purpose: z.string().min(1),
+    intendedUses: z.array(z.string().min(1)).min(1),
+    prohibitedUses: z.array(z.string().min(1)).min(1),
+    method: z
+      .object({
+        name: z.literal("weighted-five-pillar"),
+        weights: z.record(ScoringPillarSchema, z.number().finite().nonnegative()),
+        missingDataPolicy: z.literal("require-complete"),
+        minimumCoverage: z.literal(1),
+        normalization: z.literal("total-weight"),
+      })
+      .strict(),
+    validation: z
+      .array(
+        z
+          .object({
+            gate: ModelValidationGateSchema,
+            status: ModelValidationStatusSchema,
+            summary: z.string().min(1),
+            evidence: z.array(z.string().min(1)),
+          })
+          .strict(),
+      )
+      .length(MODEL_VALIDATION_GATES.length),
+    limitations: z.array(z.string().min(1)).min(1),
+    changePolicy: z.string().min(1),
+    source: z
+      .object({
+        repositoryPath: z.string().min(1),
+        sourceCommit: z.string().min(1),
+        contentSha256: Sha256Schema,
+      })
+      .strict(),
+    notice: z.string().min(1),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    const gates = value.validation.map(({ gate }) => gate);
+
+    if (
+      new Set(gates).size !== MODEL_VALIDATION_GATES.length ||
+      value.validation.some(({ gate }, index) => gate !== MODEL_VALIDATION_GATES[index])
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Model validation gates must appear exactly once in canonical order.",
+        path: ["validation"],
+      });
+    }
+
+    const weightKeys = Object.keys(value.method.weights);
+    const weightTotal = Object.values(value.method.weights).reduce(
+      (sum, weight) => sum + weight,
+      0,
+    );
+
+    if (
+      weightKeys.length !== SCORING_PILLARS.length ||
+      !SCORING_PILLARS.every((pillar) => weightKeys.includes(pillar)) ||
+      Math.abs(weightTotal - 1) > 1e-12
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Model-card weights must cover every pillar and total one.",
+        path: ["method", "weights"],
+      });
+    }
+  });
+export type ModelCard = z.infer<typeof ModelCardSchema>;
+
+const MetricComponentSchema = z
+  .object({
+    key: z.string().min(1),
+    name: z.string().min(1),
+    direction: z.enum(["higher-is-better", "lower-is-better"]),
+  })
+  .strict();
+
+export const MetricDictionarySchema = z
+  .object({
+    dictionarySchemaVersion: z.literal("1.0.0"),
+    modelVersion: z.string().min(1),
+    source: z
+      .object({
+        repositoryPath: z.string().min(1),
+        sourceCommit: z.string().min(1),
+        contentSha256: Sha256Schema,
+      })
+      .strict(),
+    methodologyStatus: z.literal("component-list-preserved-transform-formulas-unavailable"),
+    pillars: z
+      .array(
+        z
+          .object({
+            pillar: ScoringPillarSchema,
+            displayName: z.string().min(1),
+            sourceField: z.string().min(1),
+            weight: z.number().finite().nonnegative(),
+            interpretation: z.string().min(1),
+            components: z.array(MetricComponentSchema).min(1),
+          })
+          .strict(),
+      )
+      .length(SCORING_PILLARS.length),
+    derivedMetrics: z
+      .array(
+        z
+          .object({
+            key: z.string().min(1),
+            name: z.string().min(1),
+            definition: z.string().min(1),
+            unit: z.string().min(1),
+          })
+          .strict(),
+      )
+      .min(1),
+    caveat: z.string().min(1),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    if (value.pillars.some(({ pillar }, index) => pillar !== SCORING_PILLARS[index])) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Metric dictionary pillars must use canonical scoring order.",
+        path: ["pillars"],
+      });
+    }
+
+    const componentKeys = value.pillars.flatMap(({ components }) =>
+      components.map(({ key }) => key),
+    );
+
+    if (new Set(componentKeys).size !== componentKeys.length) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Metric component keys must be unique.",
+        path: ["pillars"],
+      });
+    }
+  });
+export type MetricDictionary = z.infer<typeof MetricDictionarySchema>;
+
+export const V2MetricMetadataSchema = z
+  .object({
+    source_commit: z.string().min(1),
+    default_preset: z.string().min(1),
+    pillars: z.array(z.string().min(1)).length(SCORING_PILLARS.length),
+    presets: z.record(
+      z.object({
+        weights: z.record(z.string(), z.number().finite().nonnegative()),
+      }),
+    ),
+    pillar_metrics: z.record(
+      z.array(
+        z.object({
+          key: z.string().min(1),
+          name: z.string().min(1),
+          higher_is_better: z.boolean(),
+        }),
+      ),
+    ),
+  })
+  .passthrough();
+export type V2MetricMetadata = z.infer<typeof V2MetricMetadataSchema>;

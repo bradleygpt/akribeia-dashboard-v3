@@ -1,11 +1,27 @@
-import { DailyEvidenceRecordSchema, VerticalSliceDashboardSchema } from "@akribeia/contracts";
+import {
+  DailyEvidenceRecordSchema,
+  MetricDictionarySchema,
+  ModelCardSchema,
+  VerticalSliceDashboardSchema,
+} from "@akribeia/contracts";
 import { DataStatusBanner } from "./data-status-banner";
 import { EvidenceExplorer } from "./evidence-explorer";
 import activeDashboard from "./generated/active-dashboard.json";
 import activeDailyEvidence from "./generated/active-daily-evidence.json";
+import activeMetricDictionary from "./generated/active-metric-dictionary.json";
+import activeModelCard from "./generated/active-model-card.json";
 
 const dashboard = VerticalSliceDashboardSchema.parse(activeDashboard);
 const dailyEvidence = DailyEvidenceRecordSchema.parse(activeDailyEvidence);
+const metricDictionary = MetricDictionarySchema.parse(activeMetricDictionary);
+const modelCard = ModelCardSchema.parse(activeModelCard);
+
+if (
+  modelCard.modelVersion !== dashboard.modelVersion ||
+  metricDictionary.modelVersion !== dashboard.modelVersion
+) {
+  throw new Error("Active governance artifacts do not match the dashboard model version.");
+}
 
 function percent(value: number, digits = 0): string {
   return `${(value * 100).toFixed(digits)}%`;
@@ -65,6 +81,7 @@ export default function Home() {
           <a href="#scores">Scores</a>
           <a href="#portfolio">Portfolio</a>
           <a href="#daily-evidence">Evidence</a>
+          <a href="#model-governance">Method</a>
           <a href="#explore">Explain</a>
           <a href="#lineage">Lineage</a>
         </nav>
@@ -214,6 +231,89 @@ export default function Home() {
               <p>{dailyEvidence.benchmark.reason}</p>
               <p>{dailyEvidence.performance.reason}</p>
             </aside>
+          </div>
+        </section>
+
+        <section
+          className="model-governance"
+          id="model-governance"
+          aria-labelledby="model-governance-heading"
+        >
+          <div className="governance-heading">
+            <div>
+              <p className="mono-label">MODEL GOVERNANCE / {modelCard.modelVersion}</p>
+              <h2 id="model-governance-heading">What the model is—and is not</h2>
+              <p>{modelCard.purpose}</p>
+            </div>
+            <aside aria-label="Model maturity">
+              <span>{modelCard.maturity}</span>
+              <strong>Not release eligible</strong>
+              <p>{modelCard.limitations[4]}</p>
+            </aside>
+          </div>
+
+          <div className="validation-ledger" aria-label="Model validation gates">
+            {modelCard.validation.map((validation) => (
+              <article data-status={validation.status} key={validation.gate}>
+                <div>
+                  <strong>{validation.gate.replaceAll("-", " ")}</strong>
+                  <span>{validation.status.replaceAll("-", " ")}</span>
+                </div>
+                <p>{validation.summary}</p>
+              </article>
+            ))}
+          </div>
+
+          <div className="dictionary-heading">
+            <div>
+              <p className="mono-label">METRIC DICTIONARY</p>
+              <h3>Five pillars, 26 preserved components</h3>
+            </div>
+            <div className="governance-links">
+              <a
+                href={`/data/evidence/governance/models/${modelCard.modelVersion}/model-card.json`}
+              >
+                View model card
+              </a>
+              <a
+                href={`/data/evidence/governance/models/${modelCard.modelVersion}/metric-dictionary.json`}
+              >
+                View metric dictionary
+              </a>
+            </div>
+          </div>
+          <div className="metric-dictionary">
+            {metricDictionary.pillars.map((pillar) => (
+              <article key={pillar.pillar}>
+                <header>
+                  <div>
+                    <strong>{pillar.displayName}</strong>
+                    <code>{pillar.sourceField}</code>
+                  </div>
+                  <span>{percent(pillar.weight)}</span>
+                </header>
+                <ul>
+                  {pillar.components.map((component) => (
+                    <li key={component.key}>
+                      <span>{component.name}</span>
+                      <abbr
+                        title={
+                          component.direction === "higher-is-better"
+                            ? "Higher is better"
+                            : "Lower is better"
+                        }
+                      >
+                        {component.direction === "higher-is-better" ? "↑" : "↓"}
+                      </abbr>
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            ))}
+          </div>
+          <div className="method-caveat" role="note">
+            <strong>Known methodology gap</strong>
+            <p>{metricDictionary.caveat}</p>
           </div>
         </section>
 

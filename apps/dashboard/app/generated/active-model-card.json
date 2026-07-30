@@ -1,0 +1,115 @@
+{
+  "modelCardSchemaVersion": "1.0.0",
+  "modelVersion": "3.0.0-preview.3",
+  "title": "Akribeia V3 equal-weight five-pillar research model",
+  "maturity": "research-preview",
+  "releaseEligible": false,
+  "activeBuildId": "preview-20260728-pipeline-v4-a34fc842220f",
+  "recordedAt": "2026-07-30T04:36:30Z",
+  "purpose": "Rank a preserved large-cap research universe with transparent factor coverage and feed a deterministic constrained model portfolio.",
+  "intendedUses": [
+    "Inspect cross-sectional research scores and their factor contributions.",
+    "Evaluate deterministic portfolio construction and publication evidence.",
+    "Accumulate prospective validation records before any release decision."
+  ],
+  "prohibitedUses": [
+    "Do not treat scores, weights, or explanations as investment advice.",
+    "Do not infer expected returns or performance from this snapshot.",
+    "Do not use this preview for production trading or V2 replacement."
+  ],
+  "method": {
+    "name": "weighted-five-pillar",
+    "weights": {
+      "valuation": 0.2,
+      "growth": 0.2,
+      "profitability": 0.2,
+      "momentum": 0.2,
+      "revisions": 0.2
+    },
+    "missingDataPolicy": "require-complete",
+    "minimumCoverage": 1,
+    "normalization": "total-weight"
+  },
+  "validation": [
+    {
+      "gate": "software",
+      "status": "pass",
+      "summary": "Formatting, type, lint, build, unit, package, browser, audit, and CodeQL gates pass.",
+      "evidence": [
+        "docs/CODEX_EXECUTION_STATUS.md",
+        "docs/decisions/RELEASE-GATES.md"
+      ]
+    },
+    {
+      "gate": "scoring-parity",
+      "status": "pass",
+      "summary": "Frozen V2 composite scores and ratings reproduced with zero mismatches.",
+      "evidence": [
+        "data/reference/v2-baseline/V2_VALIDATION_FINDINGS.md"
+      ]
+    },
+    {
+      "gate": "portfolio-parity",
+      "status": "fail",
+      "summary": "The preserved V2 portfolio oracle is stale against the July 2026 data vintage and is not reproducible.",
+      "evidence": [
+        "data/reference/v2-baseline/V2_VALIDATION_FINDINGS.md"
+      ]
+    },
+    {
+      "gate": "coverage",
+      "status": "pass",
+      "summary": "643 securities satisfy the explicit 100% coverage gate.",
+      "evidence": [
+        "daily/2026-07-28/preview-20260728-pipeline-v4-a34fc842220f/evidence.json"
+      ]
+    },
+    {
+      "gate": "portfolio-constraints",
+      "status": "pass",
+      "summary": "The active portfolio reconciles exactly to one billion weight units under position and sector caps.",
+      "evidence": [
+        "daily/2026-07-28/preview-20260728-pipeline-v4-a34fc842220f/evidence.json"
+      ]
+    },
+    {
+      "gate": "benchmark",
+      "status": "not-started",
+      "summary": "No point-in-time benchmark input is present in the repository; no benchmark return was computed.",
+      "evidence": [
+        "daily/2026-07-28/preview-20260728-pipeline-v4-a34fc842220f/evidence.json"
+      ]
+    },
+    {
+      "gate": "point-in-time",
+      "status": "not-started",
+      "summary": "Filing availability, survivorship, ticker history, corporate actions, and execution timing are not yet implemented.",
+      "evidence": [
+        "ROADMAP.md"
+      ]
+    },
+    {
+      "gate": "prospective",
+      "status": "insufficient-evidence",
+      "summary": "One immutable research snapshot exists; the 30 consecutive healthy daily builds required for cutover do not.",
+      "evidence": [
+        "daily/2026-07-28/preview-20260728-pipeline-v4-a34fc842220f/evidence.json",
+        "MIGRATION.md"
+      ]
+    }
+  ],
+  "limitations": [
+    "The active source is a preserved repository snapshot rather than a live point-in-time feed.",
+    "Raw pillar transformation, normalization, and winsorization formulas are not present in the V3 repository.",
+    "The model has no validated benchmark, transaction-cost, turnover, or execution record.",
+    "The current-universe evidence is not survivorship-safe historical validation.",
+    "One daily record is insufficient for prospective performance assessment."
+  ],
+  "changePolicy": "Any weight, pillar, missing-data, normalization, or component-definition change requires a new model version and regenerated validation evidence.",
+  "source": {
+    "repositoryPath": "data/reference/v2-baseline/fixtures/meta.json",
+    "sourceCommit": "0de8cd6",
+    "contentSha256": "68c594f533a13424e1e21d6b0cd70980d91c62f019ae8173d6e75e3bb00bdadc"
+  },
+  "notice": "Research preview only. Scores and model weights are evidence artifacts, not investment advice or a promise of future performance."
+}

@@ -13,6 +13,8 @@ import {
   type EvidenceReproducibilityReport,
 } from "@akribeia/contracts";
 
+export * from "./governance.js";
+
 const REQUIRED_ARTIFACTS = ["dashboard", "portfolio", "scores"] as const;
 const BENCHMARK_REASON =
   "No point-in-time benchmark input is present in the repository; no benchmark return was computed.";
