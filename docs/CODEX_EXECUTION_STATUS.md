@@ -4,7 +4,7 @@ Last updated: 2026-07-30
 
 ## Whole-product completion
 
-Estimated completion: **90%**
+Estimated completion: **92%**
 
 This estimate reflects working, tested product behavior rather than roadmap line-item count. V3 now
 has the Phase 0 baseline, core publication trust primitives, a deployed visible preview, complete
@@ -19,7 +19,8 @@ control that excludes post-cutoff filings, and a deterministic comparison of obs
 entrants and exits, receipted corporate-action and exit-disposition diagnostics, and explicit
 execution-cost readiness that never converts missing costs into zero, plus a visible inventory of
 benchmark proxy candidates that never converts snapshot price changes into returns. It is not
-ready to replace V2.
+ready to replace V2. A consolidated fold gate now prevents partial Phase 3 evidence from becoming
+a walk-forward or out-of-sample claim.
 
 ## Completed milestones
 
@@ -57,25 +58,23 @@ ready to replace V2.
   #24.
 - Exact portfolio targets with explicit null execution, turnover, cost, and net-performance
   fields, privately deployed and merged through PR #25.
+- Eight benchmark proxy candidates with zero selected benchmarks or inferred returns, privately
+  deployed and merged through PR #26.
 
 ## Current milestone
 
-**Benchmark selection and return-series readiness**
+**Walk-forward and out-of-sample readiness**
 
-The current branch inventories broad U.S. equity proxy candidates without selecting or computing a
-benchmark:
+The current branch consolidates seven active evidence reports into one immutable fold gate:
 
-1. the June and July `$10B` snapshots must pass their strict contracts and SHA-256 receipts;
-2. universe-membership, historical-readiness, and SEC-crosswalk evidence must share build and
-   model lineage;
-3. eight explicit broad U.S. equity proxy candidates must exist in both snapshots;
-4. six exact current SEC registered-fund series/class associations are exposed, while SPLG and SPY
-   remain unmatched;
-5. source prices and arithmetic price changes are visible but are explicitly not labeled returns;
-6. benchmark selection, adjusted prices, distributions, and total returns remain unavailable;
-7. forged benchmark selection, return claims, or non-reconciling price comparisons fail the
-   contract;
-8. immutable retry and conflict behavior protects the report.
+1. all source reports must share active build and model lineage;
+2. the two receipted snapshots remain explicitly ineligible for point-in-time use;
+3. strict cross-section inventory and filing availability remain partial;
+4. survivorship, identity, actions, exits, execution, and benchmark controls remain blocked;
+5. no training-window, rebalance, embargo, parameter-freeze, or fold policy is invented;
+6. candidate, eligible, and evaluated fold counts remain zero;
+7. performance comparison count remains zero;
+8. forged fold, eligibility, or source-readiness claims fail the contract.
 
 Implementation, complete local CI, contract/generator/rendering/packaging/browser tests,
 dependency audit, and functional owner-only deployment pass. Final repository commit,
@@ -121,10 +120,10 @@ exact-commit hosted deployment, and pull-request gates remain for this unit.
 
 ## Test counts
 
-- Vitest suite: 161 tests across 22 files pass.
+- Vitest suite: 167 tests across 23 files pass.
 - Rendered deployment and browser suite: 6 tests pass.
-- Total automated tests: 167 pass.
-- Current unit validation: Prettier, typecheck, lint, every workspace build, 161 Vitest tests,
+- Total automated tests: 173 pass.
+- Current unit validation: Prettier, typecheck, lint, every workspace build, 167 Vitest tests,
   five rendered accessibility/integrity/API/package tests, one isolated-profile real-Chrome
   hydration smoke test, `git diff --check`, and `npm audit --audit-level=high` pass.
 
@@ -133,10 +132,10 @@ exact-commit hosted deployment, and pull-request gates remain for this unit.
 - V2 production: unchanged.
 - V3 local preview: generated and safely retried as immutable build `preview-20260728-pipeline-v4-a34fc842220f`; an interactive dev server is not currently running.
 - V3 hosted preview: deployed privately at <https://akribeia-v3-evidence-preview.akribeiainsights.chatgpt.site>.
-- V3 hosted preview source: exact PR #25 head `37a735696`, preserved in Sites source commit
-  `5cb258226` and deployed as version 38.
-- Current benchmark-readiness functional tree is preserved in Sites source commit `6ef998063` and
-  deployed owner-only as version 39.
+- V3 hosted preview source: exact PR #26 head `499515472`, preserved in Sites source commit
+  `f216ea19f` and deployed as version 40.
+- Current walk-forward-readiness functional tree is preserved in Sites source commit `74b3cca3c`
+  and deployed owner-only as version 41.
 - Hosted deployment status is successful. The current package passed an isolated-profile
   real-Chrome smoke test locally; a signed-in interactive browser was unavailable for a separate
   hosted-page smoke check.
@@ -192,6 +191,9 @@ exact-commit hosted deployment, and pull-request gates remain for this unit.
   current exact SEC fund association and two remain unmatched. No benchmark is selected, total
   return observations remain zero, and the immutable evidence and visible dashboard projection are
   deployed privately.
+- Walk-forward readiness: seven source reports reconcile locally to two ineligible snapshots, zero
+  candidate folds, zero eligible or evaluated folds, and zero performance comparisons. Immutable
+  evidence and the visible dashboard gate are deployed privately.
 - Historical validation: blocked by the readiness report; no backtest or performance comparison
   is claimed.
 - Prospective validation: not started.
