@@ -276,6 +276,30 @@ export default function Home() {
               <strong>{percent(dashboard.portfolio.totalWeight)}</strong>
             </div>
           </div>
+          <div className="allocation-evidence">
+            <p className="mono-label">EXACT CONSTRAINT LEDGER</p>
+            <dl>
+              <div>
+                <dt>Method</dt>
+                <dd>{dashboard.portfolio.construction.method}</dd>
+              </div>
+              <div>
+                <dt>Weight units</dt>
+                <dd>
+                  {dashboard.portfolio.totalWeightUnits.toLocaleString("en-US")} /{" "}
+                  {dashboard.portfolio.construction.weightScale.toLocaleString("en-US")}
+                </dd>
+              </div>
+              <div>
+                <dt>Capped capacity</dt>
+                <dd>{percent(dashboard.portfolio.construction.maximumFeasibleWeight)}</dd>
+              </div>
+              <div>
+                <dt>Binding sectors</dt>
+                <dd>{dashboard.portfolio.construction.bindingSectors.join(", ") || "None"}</dd>
+              </div>
+            </dl>
+          </div>
         </aside>
       </div>
 

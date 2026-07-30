@@ -350,6 +350,9 @@ const DashboardSecuritySchema = z.object({
 
 const DashboardPortfolioPositionSchema = DashboardSecuritySchema.extend({
   weight: z.number().positive().max(1),
+  weightUnits: z.number().int().positive(),
+  maxWeight: z.number().positive().max(1),
+  maxWeightUnits: z.number().int().positive(),
 });
 
 export const ScoreExclusionReasonSchema = z.enum([
@@ -639,6 +642,206 @@ export const PublishedScoresArtifactSchema = z
   });
 export type PublishedScoresArtifact = z.infer<typeof PublishedScoresArtifactSchema>;
 
+const PortfolioSectorCapacitySchema = z.object({
+  sector: z.string().min(1),
+  candidateCapacity: z.number().nonnegative(),
+  candidateCapacityUnits: z.number().int().nonnegative(),
+  cappedCapacity: z.number().nonnegative(),
+  cappedCapacityUnits: z.number().int().nonnegative(),
+});
+
+const DashboardPortfolioSchema = z
+  .object({
+    constraints: z.object({
+      maxPositionWeight: z.number().positive().max(1),
+      maxSectorWeight: z.number().positive().max(1),
+    }),
+    totalWeight: z.literal(1),
+    totalWeightUnits: z.number().int().positive(),
+    positions: z.array(DashboardPortfolioPositionSchema).min(1),
+    sectorWeights: z.record(z.string(), z.number().positive().max(1)),
+    sectorWeightUnits: z.record(z.string(), z.number().int().positive()),
+    construction: z.object({
+      method: z.literal("ranked-greedy-integer-units-v1"),
+      weightScale: z.literal(1_000_000_000),
+      candidateCount: z.number().int().positive(),
+      sectorCount: z.number().int().positive(),
+      maximumFeasibleWeight: z.number().min(1),
+      maximumFeasibleWeightUnits: z.number().int().min(1_000_000_000),
+      sectorCapacities: z.array(PortfolioSectorCapacitySchema).min(1),
+      bindingPositionIds: z.array(z.string().min(1)),
+      bindingSectors: z.array(z.string().min(1)),
+    }),
+  })
+  .superRefine((value, context) => {
+    const scale = value.construction.weightScale;
+    const expectedPositionCapUnits = Math.round(value.constraints.maxPositionWeight * scale);
+    const expectedSectorCapUnits = Math.round(value.constraints.maxSectorWeight * scale);
+    const positionWeightUnits = value.positions.reduce(
+      (sum, position) => sum + position.weightUnits,
+      0,
+    );
+
+    if (
+      Math.abs(value.constraints.maxPositionWeight * scale - expectedPositionCapUnits) > 1e-6 ||
+      Math.abs(value.constraints.maxSectorWeight * scale - expectedSectorCapUnits) > 1e-6
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Portfolio caps must be representable in the published integer weight scale.",
+        path: ["constraints"],
+      });
+    }
+
+    if (
+      value.totalWeightUnits !== scale ||
+      positionWeightUnits !== scale ||
+      Math.abs(value.positions.reduce((sum, position) => sum + position.weight, 0) - 1) > 1e-12
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "The published portfolio must reconcile exactly to one integer weight scale.",
+        path: ["totalWeightUnits"],
+      });
+    }
+
+    const derivedSectorUnits = new Map<string, number>();
+
+    value.positions.forEach((position, index) => {
+      if (
+        position.weightUnits > expectedPositionCapUnits ||
+        position.weightUnits > position.maxWeightUnits ||
+        position.maxWeightUnits > expectedPositionCapUnits ||
+        position.weight !== position.weightUnits / scale ||
+        position.maxWeight !== position.maxWeightUnits / scale
+      ) {
+        context.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Position "${position.ticker}" does not reconcile with its exact cap.`,
+          path: ["positions", index],
+        });
+      }
+
+      derivedSectorUnits.set(
+        position.sector,
+        (derivedSectorUnits.get(position.sector) ?? 0) + position.weightUnits,
+      );
+    });
+
+    const publishedSectors = new Set([
+      ...Object.keys(value.sectorWeights),
+      ...Object.keys(value.sectorWeightUnits),
+    ]);
+
+    if (
+      publishedSectors.size !== derivedSectorUnits.size ||
+      [...publishedSectors].some((sector) => !derivedSectorUnits.has(sector))
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Published sector keys must match the constructed positions.",
+        path: ["sectorWeights"],
+      });
+    }
+
+    for (const [sector, units] of derivedSectorUnits) {
+      if (
+        units > expectedSectorCapUnits ||
+        value.sectorWeightUnits[sector] !== units ||
+        value.sectorWeights[sector] !== units / scale
+      ) {
+        context.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Sector "${sector}" does not reconcile with its exact cap.`,
+          path: ["sectorWeights", sector],
+        });
+      }
+    }
+
+    const capacitySectors = new Set(
+      value.construction.sectorCapacities.map(({ sector }) => sector),
+    );
+    const maximumFeasibleWeightUnits = value.construction.sectorCapacities.reduce(
+      (sum, capacity, index) => {
+        if (
+          capacity.candidateCapacity !== capacity.candidateCapacityUnits / scale ||
+          capacity.cappedCapacity !== capacity.cappedCapacityUnits / scale ||
+          capacity.cappedCapacityUnits !==
+            Math.min(capacity.candidateCapacityUnits, expectedSectorCapUnits)
+        ) {
+          context.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `Capacity evidence for "${capacity.sector}" is inconsistent.`,
+            path: ["construction", "sectorCapacities", index],
+          });
+        }
+
+        return sum + capacity.cappedCapacityUnits;
+      },
+      0,
+    );
+
+    if (
+      capacitySectors.size !== value.construction.sectorCapacities.length ||
+      capacitySectors.size !== value.construction.sectorCount ||
+      value.construction.candidateCount < value.positions.length ||
+      value.construction.maximumFeasibleWeightUnits !== maximumFeasibleWeightUnits ||
+      value.construction.maximumFeasibleWeight !== maximumFeasibleWeightUnits / scale
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Portfolio construction evidence does not reconcile.",
+        path: ["construction"],
+      });
+    }
+
+    const expectedBindingPositionIds = value.positions
+      .filter((position) => position.weightUnits === position.maxWeightUnits)
+      .map((position) => position.ticker);
+    const expectedBindingSectors = [...derivedSectorUnits]
+      .filter(([, units]) => units === expectedSectorCapUnits)
+      .map(([sector]) => sector)
+      .sort();
+
+    if (
+      value.construction.bindingPositionIds.length !== expectedBindingPositionIds.length ||
+      value.construction.bindingPositionIds.some(
+        (id, index) => id !== expectedBindingPositionIds[index],
+      ) ||
+      value.construction.bindingSectors.length !== expectedBindingSectors.length ||
+      value.construction.bindingSectors.some(
+        (sector, index) => sector !== expectedBindingSectors[index],
+      )
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Binding portfolio constraints do not reconcile with final weights.",
+        path: ["construction"],
+      });
+    }
+  });
+
+export const PublishedPortfolioArtifactSchema = z
+  .object({
+    buildId: z.string().min(1),
+    generatedAt: IsoDateTimeSchema,
+    schemaVersion: z.string().min(1),
+    modelVersion: z.string().min(1),
+    scoring: ScoringSummarySchema,
+    portfolio: DashboardPortfolioSchema,
+    source: DashboardSourceSchema,
+  })
+  .superRefine((value, context) => {
+    if (value.portfolio.construction.candidateCount !== value.scoring.eligibleSecurities) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Portfolio candidate count must match eligible scored securities.",
+        path: ["portfolio", "construction", "candidateCount"],
+      });
+    }
+  });
+export type PublishedPortfolioArtifact = z.infer<typeof PublishedPortfolioArtifactSchema>;
+
 export const VerticalSliceDashboardSchema = z
   .object({
     buildId: z.string().min(1),
@@ -648,53 +851,17 @@ export const VerticalSliceDashboardSchema = z
     status: z.literal("healthy"),
     source: DashboardSourceSchema,
     scoring: ScoringSummarySchema,
-    portfolio: z.object({
-      constraints: z.object({
-        maxPositionWeight: z.number().positive().max(1),
-        maxSectorWeight: z.number().positive().max(1),
-      }),
-      totalWeight: z.number().positive().max(1),
-      positions: z.array(DashboardPortfolioPositionSchema).min(1),
-      sectorWeights: z.record(z.string(), z.number().positive().max(1)),
-    }),
+    portfolio: DashboardPortfolioSchema,
     topScores: z.array(DashboardSecuritySchema).min(1),
     notice: z.string().min(1),
   })
   .superRefine((value, context) => {
-    const portfolioWeight = value.portfolio.positions.reduce(
-      (sum, position) => sum + position.weight,
-      0,
-    );
-
-    if (
-      Math.abs(portfolioWeight - 1) > 1e-10 ||
-      Math.abs(value.portfolio.totalWeight - 1) > 1e-10
-    ) {
+    if (value.portfolio.construction.candidateCount !== value.scoring.eligibleSecurities) {
       context.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "The published portfolio must be fully invested.",
-        path: ["portfolio", "totalWeight"],
+        message: "Portfolio candidate count must match eligible scored securities.",
+        path: ["portfolio", "construction", "candidateCount"],
       });
     }
-
-    value.portfolio.positions.forEach((position, index) => {
-      if (position.weight > value.portfolio.constraints.maxPositionWeight + 1e-12) {
-        context.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: `Position "${position.ticker}" exceeds the position cap.`,
-          path: ["portfolio", "positions", index, "weight"],
-        });
-      }
-    });
-
-    Object.entries(value.portfolio.sectorWeights).forEach(([sector, weight]) => {
-      if (weight > value.portfolio.constraints.maxSectorWeight + 1e-12) {
-        context.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: `Sector "${sector}" exceeds the sector cap.`,
-          path: ["portfolio", "sectorWeights", sector],
-        });
-      }
-    });
   });
 export type VerticalSliceDashboard = z.infer<typeof VerticalSliceDashboardSchema>;
