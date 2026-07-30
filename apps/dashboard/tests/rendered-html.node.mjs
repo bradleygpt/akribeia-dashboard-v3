@@ -46,6 +46,16 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /Search all 1,361 securities/);
   assert.match(html, /aria-label="Akribeia product areas"/);
   assert.match(html, /Regime, macro, earnings, breadth and risk/);
+  assert.match(html, /data-market-health-state="loading"/);
+  assert.match(html, /Loading real V2 Market Health sources/);
+  assert.match(html, /Overall Market Health/);
+  assert.match(html, /Market regime/);
+  assert.match(html, /Macro health/);
+  assert.match(html, /Earnings health/);
+  assert.match(html, /Market breadth/);
+  assert.match(html, /Risk state/);
+  assert.match(html, /Computed across all 1,361 securities/);
+  assert.match(html, /no market-cap floor/i);
   assert.match(html, /Trust policy/);
   assert.match(html, /Fail closed/);
   assert.match(html, /preview-20260728-pipeline-v4-a34fc842220f/);

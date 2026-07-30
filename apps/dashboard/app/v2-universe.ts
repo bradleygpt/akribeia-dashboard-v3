@@ -50,6 +50,7 @@ export interface UniverseDisplayRow {
   rating: string;
   isEtf: boolean;
   momentum1m: number | null;
+  momentum3m: number | null;
   above50Sma: number | null;
   above200Sma: number | null;
 }
@@ -130,6 +131,7 @@ export function loadV2Universe(): V2Universe {
     rating: row.byPreset.equal?.r ?? "Unavailable",
     isEtf: row.sector === "ETF",
     momentum1m: row.raw.momentum_1m ?? null,
+    momentum3m: row.raw.momentum_3m ?? null,
     above50Sma: row.raw.momentum_vs_sma50 ?? null,
     above200Sma: row.raw.momentum_vs_sma200 ?? null,
   }));

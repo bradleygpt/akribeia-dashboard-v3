@@ -175,6 +175,17 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
     assert.match(stdout, /Open Market Health/);
     assert.match(stdout, /Search all 1,361 securities/);
     assert.match(stdout, /Research integrity/);
+    assert.match(
+      stdout,
+      /data-market-health-state="(?:loading|healthy|partial|stale|unavailable|error)"/,
+    );
+    assert.match(stdout, /Overall Market Health/);
+    assert.match(stdout, /Market regime/);
+    assert.match(stdout, /Macro health/);
+    assert.match(stdout, /Earnings health/);
+    assert.match(stdout, /Market breadth/);
+    assert.match(stdout, /Risk state/);
+    assert.match(stdout, /Computed across all 1,361 securities/);
     assert.match(stdout, /Every validated name\. No hidden cap floor\./);
     assert.match(stdout, /Search all securities/);
     assert.match(stdout, /1,361/);

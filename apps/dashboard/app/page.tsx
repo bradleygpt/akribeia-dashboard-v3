@@ -20,6 +20,8 @@ import {
 import { DataStatusBanner } from "./data-status-banner";
 import { EvidenceExplorer } from "./evidence-explorer";
 import { FullUniverseExplorer } from "./full-universe-explorer";
+import { MarketHealthPanel } from "./market-health-panel";
+import { computeMarketBreadth } from "./market-health";
 import { loadV2Universe } from "./v2-universe";
 import activeBenchmarkReadiness from "./generated/active-benchmark-readiness.json";
 import activeDashboard from "./generated/active-dashboard.json";
@@ -59,6 +61,7 @@ const securityMaster = SecurityMasterSchema.parse(activeSecurityMaster);
 const universeMembership = UniverseMembershipReadinessSchema.parse(activeUniverseMembership);
 const walkForwardReadiness = WalkForwardReadinessSchema.parse(activeWalkForwardReadiness);
 const v2Universe = loadV2Universe();
+const marketBreadth = computeMarketBreadth(v2Universe.rows);
 
 if (
   modelCard.modelVersion !== dashboard.modelVersion ||
@@ -251,18 +254,10 @@ export default function Home() {
           </nav>
         </section>
 
-        <section
-          className="market-health-shell"
-          id="market-health"
-          aria-labelledby="market-health-heading"
-        >
-          <p className="mono-label">LIVE MARKET CONTEXT</p>
-          <h2 id="market-health-heading">Market Health</h2>
-          <p role="status">
-            Connecting the authoritative V2 regime, macro, earnings, breadth and risk sources. No
-            placeholder score is shown while verification is incomplete.
-          </p>
-        </section>
+        <MarketHealthPanel
+          breadth={marketBreadth}
+          universeAsOf={v2Universe.provenance.publishedAt.slice(0, 10)}
+        />
 
         <section className="pipeline" aria-labelledby="pipeline-heading">
           <div className="section-heading">
