@@ -499,12 +499,43 @@ export async function handleEvidenceApi(
   }
 
   if (pathname === `${API_PREFIX}health`) {
-    return jsonResponse({
-      status: "ok",
-      service: "akribeia-v3-evidence-api",
-      aiMode: "deterministic-evidence",
-      externalModelConfigured: false,
-    });
+    if (request.method !== "GET") {
+      return errorResponse(405, "method_not_allowed", "Use GET for the health endpoint.");
+    }
+
+    try {
+      const evidence = await loadActiveEvidence(env, request);
+
+      return jsonResponse({
+        status: "healthy",
+        service: "akribeia-v3-evidence-api",
+        buildId: evidence.buildId,
+        schemaVersion: evidence.scores.schemaVersion,
+        modelVersion: evidence.scores.modelVersion,
+        checks: {
+          activePointer: "pass",
+          manifest: "pass",
+          scoreArtifact: "sha256-and-byte-size-pass",
+          portfolioArtifact: "sha256-and-byte-size-pass",
+          schemas: "pass",
+          lineage: "pass",
+        },
+        aiMode: "deterministic-evidence",
+        externalModelConfigured: false,
+      });
+    } catch {
+      return jsonResponse(
+        {
+          status: "unavailable",
+          service: "akribeia-v3-evidence-api",
+          error: {
+            code: "evidence_unavailable",
+            message: "Active evidence failed health verification.",
+          },
+        },
+        503,
+      );
+    }
   }
 
   return routeProtectedRequest(request, env, rateLimiter);

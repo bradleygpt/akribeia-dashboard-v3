@@ -4,9 +4,9 @@ Last updated: 2026-07-30
 
 ## Whole-product completion
 
-Estimated completion: **44%**
+Estimated completion: **48%**
 
-This estimate reflects working, tested product behavior rather than roadmap line-item count. V3 now has the Phase 0 baseline, core publication trust primitives, a deployed visible preview, complete coverage-aware scoring evidence, exact integer-unit portfolio construction, a retry-safe end-to-end publication/activation/rollback pipeline, an accessible runtime data-status surface, and protected server-side evidence and deterministic explanation capabilities for the current source. It is not ready to replace V2.
+This estimate reflects working, tested product behavior rather than roadmap line-item count. V3 now has the Phase 0 baseline, core publication trust primitives, a deployed visible preview, complete coverage-aware scoring evidence, exact integer-unit portfolio construction, a retry-safe end-to-end publication/activation/rollback pipeline, an accessible runtime data-status surface, protected server-side evidence capabilities, and explicit deployment health and recovery operations for the current source. It is not ready to replace V2.
 
 ## Completed milestones
 
@@ -21,30 +21,31 @@ This estimate reflects working, tested product behavior rather than roadmap line
 - Exact integer-unit portfolio construction and infeasibility evidence, privately deployed and merged through PR #9.
 - Retry-safe publication, manifest artifact verification, coordinated projection/activation, and product rollback, privately deployed and merged through PR #10.
 - Runtime freshness/integrity states, responsive accessibility improvements, and real-Chrome smoke coverage, privately deployed and merged through PR #11.
+- Protected server evidence lookup and deterministic cited explanations, privately deployed and merged through PR #12.
 
 ## Current milestone
 
-**Phase 1 protected server-side capabilities**
+**Deployment health and recovery operations**
 
-The current branch adds a useful server-side evidence workflow without exposing secrets:
+The current branch makes the isolated V3 deployment inspectable and recoverable:
 
-1. strict request contracts validate ticker and explanation focus while rejecting unknown fields;
-2. same-origin, JSON content type, and an explicit non-secret client header protect POST routes;
-3. request bodies are capped at 4,096 bytes;
-4. a bounded, best-effort per-isolate rate limiter controls bursts without paid infrastructure;
-5. the worker validates the active pointer and manifest, re-hashes score and portfolio artifacts, and reconciles schemas and lineage before responding;
-6. `/api/v3/evidence/security` returns structured active-build evidence for one ticker;
-7. `/api/v3/ai/explain` returns deterministic, cited explanations and explicitly records that no external model ran;
-8. the dashboard exposes the protected capability through an accessible “Ask the published build” workflow.
+1. `/api/v3/health` now performs deep pointer, manifest, score, portfolio, schema, and lineage verification;
+2. a tampered active artifact produces a fail-closed `503` health result;
+3. the built deployment package must contain the worker entrypoint and exact hosting metadata;
+4. packaged active evidence must match source bytes and every manifest digest and size;
+5. the deployment runbook defines exact validation, source, packaging, save, deploy, and status-poll requirements;
+6. application rollback procedures preserve coordinated pointer and dashboard projection state;
+7. hosted rollback procedures redeploy a previously validated saved version without rebuilding or rewriting history;
+8. explicit failure rules prevent V2 modification or V3 cutover when checks, health, security, or recovery evidence is incomplete.
 
-Implementation, complete local CI, dependency audit, and private preview deployment pass. Pull-request gates remain for this unit.
+Implementation, complete local CI, and dependency audit pass. Private preview deployment and pull-request gates remain for this unit.
 
 ## Remaining milestones
 
 - Replace the preserved snapshot input with scheduled, point-in-time live-source ingestion and daily orchestration once a suitable zero-cost source is established.
 - Add the remaining primary V3 workflows and complete a formal accessibility audit.
 - Add an external generative model only after provider, secret lifecycle, cost, output, and evaluation gates are approved.
-- Establish preview and production deployment operations, health checks, and rollback procedures.
+- Complete final-production configuration and cutover rehearsal only after all release gates pass.
 - Deliver the immutable daily evidence layer, model cards, metric dictionary, drift, and maturity labels.
 - Implement point-in-time historical controls, corporate actions, walk-forward evaluation, costs, and benchmarks.
 - Accumulate prospective daily validation evidence.
@@ -58,10 +59,10 @@ Implementation, complete local CI, dependency audit, and private preview deploym
 
 ## Test counts
 
-- Vitest suite: 81 tests across 9 files pass.
-- Rendered deployment and browser suite: 5 tests pass.
-- Total automated tests: 86 pass.
-- Current unit validation: Prettier, typecheck, lint, every workspace build, 81 Vitest tests, four rendered accessibility/integrity/API tests, one real-Chrome hydration smoke test, `git diff --check`, and `npm audit --audit-level=high` pass.
+- Vitest suite: 82 tests across 9 files pass.
+- Rendered deployment and browser suite: 6 tests pass.
+- Total automated tests: 88 pass.
+- Current unit validation: Prettier, typecheck, lint, every workspace build, 82 Vitest tests, five rendered accessibility/integrity/API/package tests, one isolated-profile real-Chrome hydration smoke test, `git diff --check`, and `npm audit --audit-level=high` pass.
 
 ## Deployment status
 
@@ -80,6 +81,7 @@ Implementation, complete local CI, dependency audit, and private preview deploym
 - V3 hosted end-to-end pipeline evidence: deployed from the tree validated in PR #10.
 - V3 hosted availability evidence: runtime pointer, manifest, schema, lineage, byte-size, and dashboard SHA-256 verification deployed from the tree validated in PR #11.
 - V3 protected evidence API: server-verified lookup and deterministic explanation routes deployed privately from validated commit `14703cc0f`.
+- V3 deep deployment health: implemented locally; private deployment is pending.
 - Published daily evidence history: not started.
 - Historical validation: not started.
 - Prospective validation: not started.

@@ -169,3 +169,35 @@ test("serves a protected explanation from the built worker without an external m
   assert.equal(payload.ticker, "MU");
   assert.match(payload.explanation, /exact position cap/);
 });
+
+test("packages a deployable worker and integrity-valid active evidence tree", async () => {
+  const [sourceHosting, packagedHosting, serverEntrypoint, pointerPayload] = await Promise.all([
+    readFile(new URL("../.openai/hosting.json", import.meta.url), "utf8"),
+    readFile(new URL("../dist/.openai/hosting.json", import.meta.url), "utf8"),
+    readFile(new URL("../dist/server/index.js", import.meta.url), "utf8"),
+    readFile(new URL("../dist/client/data/active-build.json", import.meta.url), "utf8"),
+  ]);
+  const pointer = JSON.parse(pointerPayload);
+  const buildRoot = new URL(
+    `../dist/client/data/builds/${pointer.activeBuildId}/`,
+    import.meta.url,
+  );
+  const manifest = JSON.parse(await readFile(new URL("manifest.json", buildRoot), "utf8"));
+
+  assert.equal(packagedHosting, sourceHosting);
+  assert.match(serverEntrypoint, /fetch/);
+  assert.equal(manifest.buildId, pointer.activeBuildId);
+
+  for (const artifact of Object.values(manifest.files)) {
+    const [packagedPayload, sourcePayload] = await Promise.all([
+      readFile(new URL(artifact.path, buildRoot)),
+      readFile(
+        new URL(`../public/data/builds/${pointer.activeBuildId}/${artifact.path}`, import.meta.url),
+      ),
+    ]);
+
+    assert.deepEqual(packagedPayload, sourcePayload);
+    assert.equal(packagedPayload.byteLength, artifact.byteSize);
+    assert.equal(createHash("sha256").update(packagedPayload).digest("hex"), artifact.sha256);
+  }
+});
