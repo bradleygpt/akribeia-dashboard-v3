@@ -3,6 +3,7 @@ import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import {
   BuildManifestSchema,
+  PublishedPortfolioArtifactSchema,
   PublishedScoresArtifactSchema,
   SCORING_PILLARS,
   V2BaselineMetadataSchema,
@@ -181,6 +182,9 @@ function mapPortfolioPosition(
   return {
     ...publishedSecurity(security),
     weight: position.weight,
+    weightUnits: position.weightUnits,
+    maxWeight: position.maxWeight,
+    maxWeightUnits: position.maxWeightUnits,
   };
 }
 
@@ -294,10 +298,13 @@ export async function runVerticalSlice(
     portfolio: {
       constraints: portfolio.constraints,
       totalWeight: portfolio.totalWeight,
+      totalWeightUnits: portfolio.totalWeightUnits,
       positions: portfolio.positions.map((position) =>
         mapPortfolioPosition(position, eligibleByTicker),
       ),
       sectorWeights: portfolio.sectorWeights,
+      sectorWeightUnits: portfolio.sectorWeightUnits,
+      construction: portfolio.construction,
     },
     topScores: eligible.slice(0, 12).map(publishedSecurity),
     notice: NOTICE,
@@ -311,20 +318,18 @@ export async function runVerticalSlice(
     securities: scored,
     source: dashboard.source,
   });
+  const publishedPortfolio = PublishedPortfolioArtifactSchema.parse({
+    buildId: recipe.buildId,
+    generatedAt: recipe.evaluatedAt,
+    schemaVersion: recipe.schemaVersion,
+    modelVersion: recipe.modelVersion,
+    scoring,
+    portfolio: dashboard.portfolio,
+    source: dashboard.source,
+  });
   const artifacts = {
     dashboard: deterministicJson(dashboard),
-    portfolio: deterministicJson({
-      buildId: recipe.buildId,
-      generatedAt: recipe.evaluatedAt,
-      schemaVersion: recipe.schemaVersion,
-      modelVersion: recipe.modelVersion,
-      scoring: dashboard.scoring,
-      constraints: dashboard.portfolio.constraints,
-      totalWeight: dashboard.portfolio.totalWeight,
-      positions: dashboard.portfolio.positions,
-      sectorWeights: dashboard.portfolio.sectorWeights,
-      source: dashboard.source,
-    }),
+    portfolio: deterministicJson(publishedPortfolio),
     scores: deterministicJson(scores),
   };
   const files = {
@@ -427,14 +432,21 @@ export async function verifyPublishedVerticalSlice(
   const scores = PublishedScoresArtifactSchema.parse(
     JSON.parse(await readFile(join(buildDirectory, "scores.json"), "utf8")) as unknown,
   );
+  const portfolio = PublishedPortfolioArtifactSchema.parse(
+    JSON.parse(await readFile(join(buildDirectory, "portfolio.json"), "utf8")) as unknown,
+  );
 
   if (
     scores.buildId !== dashboard.buildId ||
     scores.schemaVersion !== dashboard.schemaVersion ||
     scores.modelVersion !== dashboard.modelVersion ||
-    scores.source.contentSha256 !== dashboard.source.contentSha256
+    scores.source.contentSha256 !== dashboard.source.contentSha256 ||
+    portfolio.buildId !== dashboard.buildId ||
+    portfolio.schemaVersion !== dashboard.schemaVersion ||
+    portfolio.modelVersion !== dashboard.modelVersion ||
+    portfolio.source.contentSha256 !== dashboard.source.contentSha256
   ) {
-    throw new Error("Published scoring lineage does not match the active dashboard.");
+    throw new Error("Published scoring or portfolio lineage does not match the active dashboard.");
   }
 
   return dashboard;

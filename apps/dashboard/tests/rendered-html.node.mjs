@@ -35,12 +35,15 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /<title>Akribeia V3 — Evidence Preview<\/title>/i);
   assert.match(html, /From source to signal/);
   assert.match(html, /every gate visible/);
-  assert.match(html, /preview-20260728-coverage-v2-a34fc842220f/);
-  assert.match(html, /3\.0\.0-preview\.2/);
+  assert.match(html, /preview-20260728-portfolio-v3-a34fc842220f/);
+  assert.match(html, /3\.0\.0-preview\.3/);
   assert.match(html, />643</);
   assert.match(html, /Missing inputs stay visible/);
   assert.match(html, /pillars\.EPS Revisions/);
   assert.match(html, /total-weight/);
+  assert.match(html, /EXACT CONSTRAINT LEDGER/);
+  assert.match(html, /ranked-greedy-integer-units-v1/);
+  assert.match(html, /1,000,000,000/);
   assert.match(html, /Highest composite scores/);
   assert.match(html, /MU/);
   assert.match(html, /NVDA/);

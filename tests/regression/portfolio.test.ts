@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  PORTFOLIO_WEIGHT_SCALE,
   constructRankedCappedPortfolio,
   projectToCappedSimplex,
 } from "../../packages/portfolio/src/index.js";
@@ -12,10 +13,11 @@ describe("projectToCappedSimplex", () => {
       { id: "C", rawWeight: 0.1, maxWeight: 0.5 },
     ]);
     const byId = Object.fromEntries(result.map((x) => [x.id, x.weight]));
-    expect(byId.A).toBeCloseTo(0.5, 10);
-    expect(byId.B).toBeCloseTo(1 / 3, 10);
-    expect(byId.C).toBeCloseTo(1 / 6, 10);
-    expect(result.reduce((sum, x) => sum + x.weight, 0)).toBeCloseTo(1, 10);
+    expect(byId.A).toBe(0.5);
+    expect(byId.B).toBe(0.333_333_333);
+    expect(byId.C).toBe(0.166_666_667);
+    expect(result.reduce((sum, x) => sum + x.weight, 0)).toBe(1);
+    expect(result.reduce((sum, x) => sum + x.weightUnits, 0)).toBe(PORTFOLIO_WEIGHT_SCALE);
     expect(Math.max(...result.map((x) => x.weight))).toBeLessThanOrEqual(0.5 + 1e-12);
   });
 });
@@ -48,11 +50,17 @@ describe("constructRankedCappedPortfolio", () => {
     expect(first.status).toBe("constructed");
 
     if (first.status === "constructed") {
-      expect(first.totalWeight).toBeCloseTo(1, 12);
-      expect(Math.max(...first.positions.map((position) => position.weight))).toBeLessThanOrEqual(
-        0.12,
+      expect(first.totalWeight).toBe(1);
+      expect(first.totalWeightUnits).toBe(PORTFOLIO_WEIGHT_SCALE);
+      expect(first.positions.reduce((sum, position) => sum + position.weightUnits, 0)).toBe(
+        PORTFOLIO_WEIGHT_SCALE,
       );
-      expect(Math.max(...Object.values(first.sectorWeights))).toBeLessThanOrEqual(0.3);
+      expect(
+        Math.max(...first.positions.map((position) => position.weightUnits)),
+      ).toBeLessThanOrEqual(120_000_000);
+      expect(Math.max(...Object.values(first.sectorWeightUnits))).toBeLessThanOrEqual(300_000_000);
+      expect(first.construction.method).toBe("ranked-greedy-integer-units-v1");
+      expect(first.construction.bindingSectors).toEqual(["Energy", "Healthcare", "Technology"]);
       expect(first.positions.map((position) => position.id)).toEqual([
         "A",
         "B",
@@ -78,7 +86,103 @@ describe("constructRankedCappedPortfolio", () => {
 
     if (result.status === "infeasible") {
       expect(result.maximumFeasibleWeight).toBeCloseTo(0.3, 12);
-      expect(result.reasons[0]).toContain("1.000000 is required");
+      expect(result.maximumFeasibleWeightUnits).toBe(300_000_000);
+      expect(result.infeasibility).toMatchObject({
+        code: "insufficient-capped-capacity",
+        requiredWeightUnits: PORTFOLIO_WEIGHT_SCALE,
+        maximumFeasibleWeightUnits: 300_000_000,
+        shortfallWeightUnits: 700_000_000,
+      });
+      expect(result.infeasibility.sectorCapacities).toEqual([
+        {
+          sector: "Technology",
+          candidateCapacity: 0.6,
+          candidateCapacityUnits: 600_000_000,
+          cappedCapacity: 0.3,
+          cappedCapacityUnits: 300_000_000,
+        },
+      ]);
     }
+  });
+
+  it("honors candidate-specific caps and reports which exact caps bind", () => {
+    const result = constructRankedCappedPortfolio(
+      candidates.map((candidate) =>
+        candidate.id === "A" ? { ...candidate, maxWeight: 0.05 } : candidate,
+      ),
+      {
+        maxPositionWeight: 0.12,
+        maxSectorWeight: 0.3,
+      },
+    );
+
+    expect(result.status).toBe("constructed");
+
+    if (result.status === "constructed") {
+      const position = result.positions.find(({ id }) => id === "A");
+
+      expect(position).toMatchObject({
+        weight: 0.05,
+        weightUnits: 50_000_000,
+        maxWeight: 0.05,
+        maxWeightUnits: 50_000_000,
+      });
+      expect(result.construction.bindingPositionIds).toContain("A");
+    }
+  });
+
+  it("is permutation-stable across deterministic generated candidate sets", () => {
+    for (let seed = 1; seed <= 50; seed += 1) {
+      let state = seed;
+      const generated = Array.from({ length: 16 }, (_, index) => {
+        state = (state * 1_664_525 + 1_013_904_223) >>> 0;
+
+        return {
+          id: `S${String(index).padStart(2, "0")}`,
+          sector: `Sector-${index % 4}`,
+          score: state / 0xffff_ffff,
+        };
+      });
+      const rotated = [
+        ...generated.slice(seed % generated.length),
+        ...generated.slice(0, seed % generated.length),
+      ];
+      const constraints = {
+        maxPositionWeight: 0.2,
+        maxSectorWeight: 0.45,
+      };
+      const first = constructRankedCappedPortfolio(generated, constraints);
+      const second = constructRankedCappedPortfolio(rotated, constraints);
+
+      expect(first).toEqual(second);
+      expect(first.status).toBe("constructed");
+
+      if (first.status === "constructed") {
+        expect(first.positions.reduce((sum, position) => sum + position.weightUnits, 0)).toBe(
+          PORTFOLIO_WEIGHT_SCALE,
+        );
+        expect(
+          Math.max(...first.positions.map((position) => position.weightUnits)),
+        ).toBeLessThanOrEqual(200_000_000);
+        expect(Math.max(...Object.values(first.sectorWeightUnits))).toBeLessThanOrEqual(
+          450_000_000,
+        );
+      }
+    }
+  });
+
+  it("rejects noncanonical identifiers and caps beyond the exact unit precision", () => {
+    expect(() =>
+      constructRankedCappedPortfolio([{ id: " A", sector: "Technology", score: 1 }], {
+        maxPositionWeight: 0.2,
+        maxSectorWeight: 0.5,
+      }),
+    ).toThrow("contain no surrounding whitespace");
+    expect(() =>
+      constructRankedCappedPortfolio(candidates, {
+        maxPositionWeight: 0.123_456_789_1,
+        maxSectorWeight: 0.5,
+      }),
+    ).toThrow("representable to nine decimal places");
   });
 });

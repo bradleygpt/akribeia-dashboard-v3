@@ -4,6 +4,10 @@ data/reference/v2-baseline/fixtures/**
 data/reference/v2-baseline/june-oracle-fixtures/**
 data/reference/v2-baseline/validation-results/*.txt
 
+# Generated projections and immutable publication artifacts retain pipeline-sealed bytes.
+apps/dashboard/app/generated/**
+apps/dashboard/public/data/**
+
 # Generated application and deployment workspaces.
 **/.next/**
 **/.vinext/**

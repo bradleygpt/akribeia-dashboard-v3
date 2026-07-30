@@ -1,7 +1,10 @@
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { PublishedScoresArtifactSchema } from "../../packages/contracts/src/index.js";
+import {
+  PublishedScoresArtifactSchema,
+  VerticalSliceDashboardSchema,
+} from "../../packages/contracts/src/index.js";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
   runVerticalSlice,
@@ -50,11 +53,19 @@ describe("visible vertical-slice pipeline", () => {
     expect(verified.scoring.eligibleNormalization).toBe("total-weight");
     expect(verified.scoring.factorCoverage).toHaveLength(5);
     expect(verified.scoring.factorCoverage.every(({ coverage }) => coverage === 1)).toBe(true);
-    expect(verified.portfolio.totalWeight).toBeCloseTo(1, 12);
+    expect(verified.portfolio.totalWeight).toBe(1);
+    expect(verified.portfolio.totalWeightUnits).toBe(1_000_000_000);
+    expect(verified.portfolio.construction).toMatchObject({
+      method: "ranked-greedy-integer-units-v1",
+      weightScale: 1_000_000_000,
+      candidateCount: 643,
+    });
     expect(
-      Math.max(...verified.portfolio.positions.map((position) => position.weight)),
-    ).toBeLessThanOrEqual(0.12);
-    expect(Math.max(...Object.values(verified.portfolio.sectorWeights))).toBeLessThanOrEqual(0.3);
+      Math.max(...verified.portfolio.positions.map((position) => position.weightUnits)),
+    ).toBeLessThanOrEqual(120_000_000);
+    expect(Math.max(...Object.values(verified.portfolio.sectorWeightUnits))).toBeLessThanOrEqual(
+      300_000_000,
+    );
     expect(JSON.parse(await readFile(result.pointerPath, "utf8")) as unknown).toEqual({
       activeBuildId: "preview-integration-test",
       previousBuildId: null,
@@ -62,6 +73,16 @@ describe("visible vertical-slice pipeline", () => {
     expect(JSON.parse(await readFile(result.projectionPath, "utf8")) as unknown).toEqual(
       result.dashboard,
     );
+
+    const tampered = structuredClone(result.dashboard);
+    const sector = Object.keys(tampered.portfolio.sectorWeightUnits)[0];
+
+    expect(sector).toBeDefined();
+    if (sector === undefined) {
+      throw new Error("Expected a published portfolio sector.");
+    }
+    tampered.portfolio.sectorWeightUnits[sector] -= 1;
+    expect(VerticalSliceDashboardSchema.safeParse(tampered).success).toBe(false);
   });
 
   it("publishes factor-level coverage and explicit exclusions without renormalizing", async () => {
@@ -122,6 +143,31 @@ describe("visible vertical-slice pipeline", () => {
       }),
     ).rejects.toThrow("Source snapshot is stale by policy");
 
+    await expect(readFile(join(recipe().outputRoot, "active-build.json"))).rejects.toBeDefined();
+  });
+
+  it("fails closed with capacity evidence when exact caps are infeasible", async () => {
+    const source = JSON.parse(
+      await readFile(resolve("data/reference/v2-baseline/fixtures/universe_floor10.json"), "utf8"),
+    ) as {
+      meta: { n_total: number; n_stocks: number; n_etf: number; sectors: string[] };
+      rows: Array<{ sector: string }>;
+    };
+    source.rows = source.rows.slice(0, 3);
+    source.meta.n_total = source.rows.length;
+    source.meta.n_stocks = source.rows.length;
+    source.meta.n_etf = 0;
+    source.meta.sectors = [...new Set(source.rows.map(({ sector }) => sector))];
+    const sourcePath = join(temporaryDirectory, "infeasible-universe.json");
+    await writeFile(sourcePath, `${JSON.stringify(source, null, 2)}\n`);
+
+    await expect(
+      runVerticalSlice({
+        ...recipe(),
+        buildId: "preview-infeasible-portfolio-test",
+        sourcePath,
+      }),
+    ).rejects.toThrow("Candidate capacity reaches only");
     await expect(readFile(join(recipe().outputRoot, "active-build.json"))).rejects.toBeDefined();
   });
 });
