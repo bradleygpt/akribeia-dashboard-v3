@@ -27,6 +27,37 @@ export const ActiveBuildPointerSchema = z
   });
 export type ActiveBuildPointer = z.infer<typeof ActiveBuildPointerSchema>;
 
+export const EvidenceSecurityRequestSchema = z
+  .object({
+    ticker: z
+      .string()
+      .trim()
+      .toUpperCase()
+      .regex(/^[A-Z][A-Z0-9.-]{0,9}$/),
+  })
+  .strict();
+export type EvidenceSecurityRequest = z.infer<typeof EvidenceSecurityRequestSchema>;
+
+export const EvidenceExplanationRequestSchema = EvidenceSecurityRequestSchema.extend({
+  focus: z.enum(["summary", "factor-contributions", "portfolio"]).default("summary"),
+}).strict();
+export type EvidenceExplanationRequest = z.infer<typeof EvidenceExplanationRequestSchema>;
+
+export const EvidenceExplanationResponseSchema = z
+  .object({
+    buildId: SafeBuildIdSchema,
+    modelVersion: z.string().min(1),
+    mode: z.literal("deterministic-evidence"),
+    externalModelUsed: z.literal(false),
+    focus: z.enum(["summary", "factor-contributions", "portfolio"]),
+    ticker: z.string().regex(/^[A-Z][A-Z0-9.-]{0,9}$/),
+    explanation: z.string().min(1),
+    citations: z.array(z.string().min(1)).min(1),
+    notice: z.string().min(1),
+  })
+  .strict();
+export type EvidenceExplanationResponse = z.infer<typeof EvidenceExplanationResponseSchema>;
+
 export const DataStatusSchema = z.enum([
   "current",
   "delayed",

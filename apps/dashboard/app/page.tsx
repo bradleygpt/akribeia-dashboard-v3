@@ -1,5 +1,6 @@
 import { VerticalSliceDashboardSchema } from "@akribeia/contracts";
 import { DataStatusBanner } from "./data-status-banner";
+import { EvidenceExplorer } from "./evidence-explorer";
 import activeDashboard from "./generated/active-dashboard.json";
 
 const dashboard = VerticalSliceDashboardSchema.parse(activeDashboard);
@@ -61,6 +62,7 @@ export default function Home() {
         <nav className="primary-nav" aria-label="Primary navigation">
           <a href="#scores">Scores</a>
           <a href="#portfolio">Portfolio</a>
+          <a href="#explore">Explain</a>
           <a href="#lineage">Lineage</a>
         </nav>
         <div className="header-status" aria-label="Publication integrity">
@@ -332,6 +334,8 @@ export default function Home() {
             </div>
           </aside>
         </div>
+
+        <EvidenceExplorer />
 
         <section className="status-guide" aria-labelledby="status-guide-heading">
           <div>
