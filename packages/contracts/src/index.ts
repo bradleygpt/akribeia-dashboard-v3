@@ -2741,3 +2741,130 @@ export const ExecutionCostReadinessSchema = z
     }
   });
 export type ExecutionCostReadiness = z.infer<typeof ExecutionCostReadinessSchema>;
+
+const BENCHMARK_PROXY_TICKERS = [
+  "ITOT",
+  "IVV",
+  "SCHB",
+  "SPLG",
+  "SPTM",
+  "SPY",
+  "VOO",
+  "VTI",
+] as const;
+
+const BENCHMARK_READINESS_CONTROL_KEYS = [
+  "receipted-candidate-prices",
+  "current-sec-fund-associations",
+  "benchmark-mandate",
+  "observation-availability-times",
+  "distributions-corporate-actions",
+  "total-return-series",
+  "evaluation-interval",
+  "portfolio-execution-alignment",
+] as const;
+
+export const BenchmarkReadinessSchema = z
+  .object({
+    reportSchemaVersion: z.literal("1.0.0"),
+    buildId: SafeBuildIdSchema,
+    modelVersion: z.string().min(1),
+    assessedAt: IsoDateTimeSchema,
+    identityObservedAt: IsoDateTimeSchema,
+    status: z.literal("candidate-proxies-not-return-series"),
+    benchmarkSelected: z.literal(false),
+    benchmarkReturnEligible: z.literal(false),
+    comparison: z
+      .object({
+        earlierSnapshotId: z.literal("june-oracle"),
+        laterSnapshotId: z.literal("july-baseline"),
+        earlierEtfCount: z.number().int().positive(),
+        laterEtfCount: z.number().int().positive(),
+        candidateCount: z.number().int().positive(),
+        observedPriceComparisonCount: z.number().int().positive(),
+        totalReturnObservationCount: z.literal(0),
+        selectedBenchmarkId: z.literal(null),
+      })
+      .strict(),
+    candidates: z
+      .array(
+        z
+          .object({
+            ticker: z.enum([...BENCHMARK_PROXY_TICKERS]),
+            name: z.string().trim().min(1),
+            candidateRole: z.literal("broad-us-equity-proxy"),
+            earlierPrice: z.number().positive(),
+            laterPrice: z.number().positive(),
+            observedPriceChange: z.number().finite(),
+            currentSecFundAssociation: z
+              .object({
+                cik: z.string().regex(/^\d{10}$/),
+                seriesId: z.string().regex(/^S\d{9}$/),
+                classId: z.string().regex(/^C\d{9}$/),
+              })
+              .strict()
+              .nullable(),
+            benchmarkSelected: z.literal(false),
+            adjustedPricesAvailable: z.literal(false),
+            distributionsAvailable: z.literal(false),
+            totalReturn: z.literal(null),
+          })
+          .strict(),
+      )
+      .length(BENCHMARK_PROXY_TICKERS.length),
+    coverage: z
+      .object({
+        candidateCount: z.number().int().positive(),
+        currentSecFundAssociationCount: z.number().int().nonnegative(),
+        unmatchedCurrentAssociationCount: z.number().int().nonnegative(),
+        observedPriceComparisonCount: z.number().int().positive(),
+        totalReturnObservationCount: z.literal(0),
+      })
+      .strict(),
+    controls: z
+      .array(
+        z
+          .object({
+            key: z.enum([...BENCHMARK_READINESS_CONTROL_KEYS]),
+            status: z.enum(["pass", "partial", "blocked"]),
+            detail: z.string().min(1),
+          })
+          .strict(),
+      )
+      .length(BENCHMARK_READINESS_CONTROL_KEYS.length),
+    limitations: z.array(z.string().min(1)).min(5),
+    notice: z.string().min(1),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    const associationCount = value.candidates.filter(
+      ({ currentSecFundAssociation }) => currentSecFundAssociation !== null,
+    ).length;
+    const candidatesValid = value.candidates.every(
+      ({ ticker, earlierPrice, laterPrice, observedPriceChange }, index) =>
+        ticker === BENCHMARK_PROXY_TICKERS[index] &&
+        observedPriceChange === laterPrice / earlierPrice - 1,
+    );
+    const coverageValid =
+      value.comparison.candidateCount === value.candidates.length &&
+      value.comparison.observedPriceComparisonCount === value.candidates.length &&
+      value.coverage.candidateCount === value.candidates.length &&
+      value.coverage.currentSecFundAssociationCount === associationCount &&
+      value.coverage.unmatchedCurrentAssociationCount ===
+        value.candidates.length - associationCount &&
+      value.coverage.observedPriceComparisonCount === value.candidates.length;
+    const controlsValid =
+      value.controls.every(({ key }, index) => key === BENCHMARK_READINESS_CONTROL_KEYS[index]) &&
+      value.controls[0]?.status === "pass" &&
+      value.controls[1]?.status === "partial" &&
+      value.controls.slice(2).every(({ status }) => status === "blocked");
+
+    if (!candidatesValid || !coverageValid || !controlsValid) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Benchmark candidates, coverage, and fail-closed controls must reconcile.",
+        path: ["candidates"],
+      });
+    }
+  });
+export type BenchmarkReadiness = z.infer<typeof BenchmarkReadinessSchema>;

@@ -1,0 +1,208 @@
+{
+  "reportSchemaVersion": "1.0.0",
+  "buildId": "preview-20260728-pipeline-v4-a34fc842220f",
+  "modelVersion": "3.0.0-preview.3",
+  "assessedAt": "2026-07-30T04:36:30Z",
+  "identityObservedAt": "2026-07-30T06:49:38.889Z",
+  "status": "candidate-proxies-not-return-series",
+  "benchmarkSelected": false,
+  "benchmarkReturnEligible": false,
+  "comparison": {
+    "earlierSnapshotId": "june-oracle",
+    "laterSnapshotId": "july-baseline",
+    "earlierEtfCount": 55,
+    "laterEtfCount": 55,
+    "candidateCount": 8,
+    "observedPriceComparisonCount": 8,
+    "totalReturnObservationCount": 0,
+    "selectedBenchmarkId": null
+  },
+  "candidates": [
+    {
+      "ticker": "ITOT",
+      "name": "iShares Core S&P Total U.S. Sto",
+      "candidateRole": "broad-us-equity-proxy",
+      "earlierPrice": 166.26,
+      "laterPrice": 162.99,
+      "observedPriceChange": -0.019667989895344573,
+      "currentSecFundAssociation": {
+        "cik": "0001100663",
+        "seriesId": "S000004317",
+        "classId": "C000012047"
+      },
+      "benchmarkSelected": false,
+      "adjustedPricesAvailable": false,
+      "distributionsAvailable": false,
+      "totalReturn": null
+    },
+    {
+      "ticker": "IVV",
+      "name": "iShares Core S&P 500 ETF",
+      "candidateRole": "broad-us-equity-proxy",
+      "earlierPrice": 763.06,
+      "laterPrice": 746.36,
+      "observedPriceChange": -0.021885566010536484,
+      "currentSecFundAssociation": {
+        "cik": "0001100663",
+        "seriesId": "S000004310",
+        "classId": "C000012040"
+      },
+      "benchmarkSelected": false,
+      "adjustedPricesAvailable": false,
+      "distributionsAvailable": false,
+      "totalReturn": null
+    },
+    {
+      "ticker": "SCHB",
+      "name": "Schwab U.S. Broad Market ETF",
+      "candidateRole": "broad-us-equity-proxy",
+      "earlierPrice": 29.32,
+      "laterPrice": 28.74,
+      "observedPriceChange": -0.019781718963165162,
+      "currentSecFundAssociation": {
+        "cik": "0001454889",
+        "seriesId": "S000026631",
+        "classId": "C000079978"
+      },
+      "benchmarkSelected": false,
+      "adjustedPricesAvailable": false,
+      "distributionsAvailable": false,
+      "totalReturn": null
+    },
+    {
+      "ticker": "SPLG",
+      "name": "SPDR Portfolio S&P 500 ETF",
+      "candidateRole": "broad-us-equity-proxy",
+      "earlierPrice": 89.4,
+      "laterPrice": 87.48,
+      "observedPriceChange": -0.021476510067114152,
+      "currentSecFundAssociation": null,
+      "benchmarkSelected": false,
+      "adjustedPricesAvailable": false,
+      "distributionsAvailable": false,
+      "totalReturn": null
+    },
+    {
+      "ticker": "SPTM",
+      "name": "State Street SPDR Portfolio S&P",
+      "candidateRole": "broad-us-equity-proxy",
+      "earlierPrice": 92,
+      "laterPrice": 90.25,
+      "observedPriceChange": -0.01902173913043481,
+      "currentSecFundAssociation": {
+        "cik": "0001064642",
+        "seriesId": "S000006973",
+        "classId": "C000019026"
+      },
+      "benchmarkSelected": false,
+      "adjustedPricesAvailable": false,
+      "distributionsAvailable": false,
+      "totalReturn": null
+    },
+    {
+      "ticker": "SPY",
+      "name": "State Street SPDR S&P 500 ETF T",
+      "candidateRole": "broad-us-equity-proxy",
+      "earlierPrice": 759.57,
+      "laterPrice": 743.13,
+      "observedPriceChange": -0.021643824795608113,
+      "currentSecFundAssociation": null,
+      "benchmarkSelected": false,
+      "adjustedPricesAvailable": false,
+      "distributionsAvailable": false,
+      "totalReturn": null
+    },
+    {
+      "ticker": "VOO",
+      "name": "Vanguard S&P 500 ETF",
+      "candidateRole": "broad-us-equity-proxy",
+      "earlierPrice": 698.26,
+      "laterPrice": 683.03,
+      "observedPriceChange": -0.02181135966545411,
+      "currentSecFundAssociation": {
+        "cik": "0000036405",
+        "seriesId": "S000002839",
+        "classId": "C000092055"
+      },
+      "benchmarkSelected": false,
+      "adjustedPricesAvailable": false,
+      "distributionsAvailable": false,
+      "totalReturn": null
+    },
+    {
+      "ticker": "VTI",
+      "name": "Vanguard Total Stock Market ETF",
+      "candidateRole": "broad-us-equity-proxy",
+      "earlierPrice": 374.36,
+      "laterPrice": 367.01,
+      "observedPriceChange": -0.01963350785340323,
+      "currentSecFundAssociation": {
+        "cik": "0000036405",
+        "seriesId": "S000002848",
+        "classId": "C000007808"
+      },
+      "benchmarkSelected": false,
+      "adjustedPricesAvailable": false,
+      "distributionsAvailable": false,
+      "totalReturn": null
+    }
+  ],
+  "coverage": {
+    "candidateCount": 8,
+    "currentSecFundAssociationCount": 6,
+    "unmatchedCurrentAssociationCount": 2,
+    "observedPriceComparisonCount": 8,
+    "totalReturnObservationCount": 0
+  },
+  "controls": [
+    {
+      "key": "receipted-candidate-prices",
+      "status": "pass",
+      "detail": "8 broad-U.S.-equity proxy candidates have prices in both receipted $10B snapshots."
+    },
+    {
+      "key": "current-sec-fund-associations",
+      "status": "partial",
+      "detail": "6 of 8 candidates have an exact current SEC series/class association; current identity does not prove historical continuity."
+    },
+    {
+      "key": "benchmark-mandate",
+      "status": "blocked",
+      "detail": "No approved investment universe, benchmark policy, comparison objective, or selected benchmark identifier exists."
+    },
+    {
+      "key": "observation-availability-times",
+      "status": "blocked",
+      "detail": "The snapshots have timezone-unspecified generation metadata and no record-level availability timestamps."
+    },
+    {
+      "key": "distributions-corporate-actions",
+      "status": "blocked",
+      "detail": "No distribution, split, reinvestment, or other corporate-action ledger exists for any candidate."
+    },
+    {
+      "key": "total-return-series",
+      "status": "blocked",
+      "detail": "Snapshot prices are not an adjusted total-return series and cannot establish benchmark return."
+    },
+    {
+      "key": "evaluation-interval",
+      "status": "blocked",
+      "detail": "No decision-to-execution-to-valuation interval or market-session convention is defined."
+    },
+    {
+      "key": "portfolio-execution-alignment",
+      "status": "blocked",
+      "detail": "No executed portfolio, transaction-cost record, or timestamp-aligned benchmark observation exists."
+    }
+  ],
+  "limitations": [
+    "Candidate status is an inventory aid, not a benchmark selection or endorsement.",
+    "Observed price change is not a price return, total return, or investable performance result.",
+    "Ticker equality and current SEC series/class association do not prove point-in-time fund identity.",
+    "The repository does not contain distributions, reinvestment assumptions, adjusted prices, or index constituent history.",
+    "Two cross-sections cannot establish a benchmark series, risk statistics, or walk-forward comparison.",
+    "No candidate observation may be used to infer benchmark or portfolio performance."
+  ],
+  "notice": "Research preview only. Scores and model weights are evidence artifacts, not investment advice or a promise of future performance."
+}
