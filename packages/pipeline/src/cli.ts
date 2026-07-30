@@ -20,6 +20,7 @@ process.stdout.write(
       buildId: result.buildId,
       activePointer: result.pointerPath,
       dashboardProjection: result.projectionPath,
+      publicationDisposition: result.publicationDisposition,
       sourceRows: result.dashboard.source.rowCount,
       eligibleSecurities: result.dashboard.scoring.eligibleSecurities,
       portfolioPositions: result.dashboard.portfolio.positions.length,
