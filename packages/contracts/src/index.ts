@@ -2288,3 +2288,122 @@ export const FilingAvailabilityReportSchema = z
     }
   });
 export type FilingAvailabilityReport = z.infer<typeof FilingAvailabilityReportSchema>;
+
+const UNIVERSE_MEMBERSHIP_CONTROL_KEYS = [
+  "snapshot-membership-observed",
+  "eligibility-rules",
+  "membership-effective-intervals",
+  "identity-continuity",
+  "delisting-evidence",
+  "survivorship-bias-control",
+] as const;
+
+export const UniverseMembershipReadinessSchema = z
+  .object({
+    reportSchemaVersion: z.literal("1.0.0"),
+    buildId: SafeBuildIdSchema,
+    modelVersion: z.string().min(1),
+    assessedAt: IsoDateTimeSchema,
+    status: z.literal("observed-change-not-survivorship-controlled"),
+    survivorshipBiasControlled: z.literal(false),
+    historicalValidationEligible: z.literal(false),
+    comparison: z
+      .object({
+        earlierSnapshotId: z.literal("june-oracle"),
+        laterSnapshotId: z.literal("july-baseline"),
+        earlierTickerCount: z.number().int().positive(),
+        laterTickerCount: z.number().int().positive(),
+        continuingTickerCount: z.number().int().positive(),
+        entrantCount: z.number().int().nonnegative(),
+        exitCount: z.number().int().nonnegative(),
+        unionTickerCount: z.number().int().positive(),
+        jaccardContinuity: z.number().min(0).max(1),
+        entrantRate: z.number().min(0).max(1),
+        exitRate: z.number().min(0).max(1),
+        commonTickerClassificationChangeCount: z.number().int().nonnegative(),
+      })
+      .strict(),
+    entrants: z.array(
+      z
+        .object({
+          ticker: SecurityMasterTickerSchema,
+          name: z.string().trim().min(1),
+          laterMarketCapB: z.number().nonnegative(),
+        })
+        .strict(),
+    ),
+    exits: z.array(
+      z
+        .object({
+          ticker: SecurityMasterTickerSchema,
+          name: z.string().trim().min(1),
+          earlierMarketCapB: z.number().nonnegative(),
+        })
+        .strict(),
+    ),
+    controls: z
+      .array(
+        z
+          .object({
+            key: z.enum([...UNIVERSE_MEMBERSHIP_CONTROL_KEYS]),
+            status: z.enum(["pass", "blocked"]),
+            detail: z.string().min(1),
+          })
+          .strict(),
+      )
+      .length(6),
+    limitations: z.array(z.string().min(1)).min(4),
+    notice: z.string().min(1),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    const comparison = value.comparison;
+    const entrantTickers = value.entrants.map(({ ticker }) => ticker);
+    const exitTickers = value.exits.map(({ ticker }) => ticker);
+    const canonicalEntrants = [...entrantTickers].sort((left, right) => left.localeCompare(right));
+    const canonicalExits = [...exitTickers].sort((left, right) => left.localeCompare(right));
+    const tickerSetsValid =
+      new Set(entrantTickers).size === entrantTickers.length &&
+      new Set(exitTickers).size === exitTickers.length &&
+      entrantTickers.every((ticker) => !exitTickers.includes(ticker));
+    const countsReconcile =
+      comparison.entrantCount === value.entrants.length &&
+      comparison.exitCount === value.exits.length &&
+      comparison.earlierTickerCount === comparison.continuingTickerCount + comparison.exitCount &&
+      comparison.laterTickerCount === comparison.continuingTickerCount + comparison.entrantCount &&
+      comparison.unionTickerCount ===
+        comparison.continuingTickerCount + comparison.entrantCount + comparison.exitCount &&
+      comparison.jaccardContinuity ===
+        comparison.continuingTickerCount / comparison.unionTickerCount &&
+      comparison.entrantRate === comparison.entrantCount / comparison.laterTickerCount &&
+      comparison.exitRate === comparison.exitCount / comparison.earlierTickerCount;
+    const controlKeys = value.controls.map(({ key }) => key);
+    const controlsValid =
+      controlKeys.every((key, index) => key === UNIVERSE_MEMBERSHIP_CONTROL_KEYS[index]) &&
+      value.controls[0]?.status === "pass" &&
+      value.controls.slice(1).every(({ status }) => status === "blocked");
+
+    if (
+      !countsReconcile ||
+      comparison.commonTickerClassificationChangeCount > comparison.continuingTickerCount ||
+      !tickerSetsValid ||
+      !controlsValid
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Universe membership counts and fail-closed controls must reconcile.",
+        path: ["comparison"],
+      });
+    }
+    if (
+      entrantTickers.some((ticker, index) => ticker !== canonicalEntrants[index]) ||
+      exitTickers.some((ticker, index) => ticker !== canonicalExits[index])
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Universe entrants and exits must use canonical ticker order.",
+        path: ["entrants"],
+      });
+    }
+  });
+export type UniverseMembershipReadiness = z.infer<typeof UniverseMembershipReadinessSchema>;

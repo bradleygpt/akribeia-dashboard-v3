@@ -191,6 +191,10 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
     assert.match(stdout, /CIK 0000723125/);
     assert.match(stdout, /11 unresolved/);
     assert.match(stdout, /Current association only/);
+    assert.match(stdout, /The universe changed\. Eligibility history did not appear/);
+    assert.match(stdout, /Observed entrants/);
+    assert.match(stdout, /Observed exits/);
+    assert.match(stdout, /effective membership intervals available/);
     assert.match(stdout, /Two snapshots are not a backtest/);
     assert.match(stdout, /10<!-- --> controls unresolved/);
     assert.match(stdout, /No performance claim/);

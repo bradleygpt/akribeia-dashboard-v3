@@ -8,6 +8,7 @@ import {
   ModelCardSchema,
   SecRegistrantCrosswalkSchema,
   SecurityMasterSchema,
+  UniverseMembershipReadinessSchema,
   VerticalSliceDashboardSchema,
 } from "@akribeia/contracts";
 import { DataStatusBanner } from "./data-status-banner";
@@ -22,6 +23,7 @@ import activeModelCard from "./generated/active-model-card.json";
 import activeQualityReport from "./generated/active-quality-report.json";
 import activeSecRegistrants from "./generated/active-sec-registrants.json";
 import activeSecurityMaster from "./generated/active-security-master.json";
+import activeUniverseMembership from "./generated/active-universe-membership.json";
 
 const dashboard = VerticalSliceDashboardSchema.parse(activeDashboard);
 const dailyEvidence = DailyEvidenceRecordSchema.parse(activeDailyEvidence);
@@ -33,6 +35,7 @@ const modelCard = ModelCardSchema.parse(activeModelCard);
 const qualityReport = DataQualityReportSchema.parse(activeQualityReport);
 const secRegistrants = SecRegistrantCrosswalkSchema.parse(activeSecRegistrants);
 const securityMaster = SecurityMasterSchema.parse(activeSecurityMaster);
+const universeMembership = UniverseMembershipReadinessSchema.parse(activeUniverseMembership);
 
 if (
   modelCard.modelVersion !== dashboard.modelVersion ||
@@ -41,6 +44,8 @@ if (
   filingAvailability.modelVersion !== dashboard.modelVersion ||
   historicalReadiness.buildId !== dashboard.buildId ||
   historicalReadiness.modelVersion !== dashboard.modelVersion ||
+  universeMembership.buildId !== dashboard.buildId ||
+  universeMembership.modelVersion !== dashboard.modelVersion ||
   qualityReport.buildId !== dashboard.buildId ||
   maturity.buildId !== dashboard.buildId ||
   maturity.modelVersion !== dashboard.modelVersion ||
@@ -126,6 +131,7 @@ export default function Home() {
           <a href="#scores">Scores</a>
           <a href="#portfolio">Portfolio</a>
           <a href="#daily-evidence">Evidence</a>
+          <a href="#universe-membership">Membership</a>
           <a href="#filing-availability">Filings</a>
           <a href="#model-governance">Method</a>
           <a href="#data-quality">Quality</a>
@@ -220,6 +226,98 @@ export default function Home() {
               {percent(dashboard.portfolio.constraints.maxSectorWeight)} sector
             </span>
           </article>
+        </section>
+
+        <section
+          className="universe-membership"
+          id="universe-membership"
+          aria-labelledby="universe-membership-heading"
+        >
+          <div className="universe-membership-heading">
+            <div>
+              <p className="mono-label">UNIVERSE MEMBERSHIP / OBSERVED CHANGE</p>
+              <h2 id="universe-membership-heading">
+                The universe changed. Eligibility history did not appear.
+              </h2>
+              <p>
+                Receipted June and July $10B cross-sections show exactly which ticker labels entered
+                and exited. That makes membership drift visible—but does not turn two snapshots into
+                a survivorship-controlled history.
+              </p>
+            </div>
+            <a
+              href={`/data/evidence/universe-membership/builds/${universeMembership.buildId}/universe-membership.json`}
+            >
+              View immutable evidence
+            </a>
+          </div>
+          <div className="universe-membership-summary" aria-label="Observed membership comparison">
+            <article>
+              <span>Continuing</span>
+              <strong>{universeMembership.comparison.continuingTickerCount}</strong>
+              <p>of {universeMembership.comparison.unionTickerCount} distinct ticker labels</p>
+            </article>
+            <article>
+              <span>Entrants</span>
+              <strong>{universeMembership.comparison.entrantCount}</strong>
+              <p>{percent(universeMembership.comparison.entrantRate, 1)} of the July snapshot</p>
+            </article>
+            <article>
+              <span>Exits</span>
+              <strong>{universeMembership.comparison.exitCount}</strong>
+              <p>{percent(universeMembership.comparison.exitRate, 1)} of the June snapshot</p>
+            </article>
+            <article data-status="blocked">
+              <span>Historical eligibility</span>
+              <strong>0</strong>
+              <p>effective membership intervals available</p>
+            </article>
+          </div>
+          <div className="universe-membership-ledger">
+            <div>
+              <div className="membership-list-heading">
+                <strong>Observed entrants</strong>
+                <span>July only / {universeMembership.entrants.length}</span>
+              </div>
+              <ul aria-label="Ticker labels observed only in the July snapshot">
+                {universeMembership.entrants.map((entry) => (
+                  <li key={entry.ticker}>
+                    <strong>{entry.ticker}</strong>
+                    <span>{entry.name}</span>
+                    <small>${entry.laterMarketCapB.toFixed(1)}B</small>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <div className="membership-list-heading">
+                <strong>Observed exits</strong>
+                <span>June only / {universeMembership.exits.length}</span>
+              </div>
+              <ul aria-label="Ticker labels observed only in the June snapshot">
+                {universeMembership.exits.map((entry) => (
+                  <li key={entry.ticker}>
+                    <strong>{entry.ticker}</strong>
+                    <span>{entry.name}</span>
+                    <small>${entry.earlierMarketCapB.toFixed(1)}B</small>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <div className="membership-controls" aria-label="Universe membership controls">
+            {universeMembership.controls.map((control) => (
+              <article data-status={control.status} key={control.key}>
+                <span>{control.key.replaceAll("-", " ")}</span>
+                <strong>{control.status}</strong>
+                <p>{control.detail}</p>
+              </article>
+            ))}
+          </div>
+          <aside className="membership-limitation" role="note">
+            <strong>Observed difference, not a constituent event</strong>
+            <p>{universeMembership.limitations[0]}</p>
+          </aside>
         </section>
 
         <section
