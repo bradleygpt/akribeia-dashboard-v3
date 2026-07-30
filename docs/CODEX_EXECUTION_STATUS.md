@@ -39,7 +39,7 @@ The current branch makes the first daily model output durable, reproducible, and
 7. a SHA-256 reproduction report receipts every validation check and the reproduction command;
 8. exact public copies and an active projection make the record visible and downloadable in the preview.
 
-Implementation, complete local CI, evidence/rendering/packaging/browser tests, and dependency audit pass. Private preview deployment and pull-request gates remain for this unit.
+Implementation, complete local CI, evidence/rendering/packaging/browser tests, dependency audit, and private preview deployment pass. Pull-request gates remain for this unit.
 
 ## Remaining milestones
 
@@ -70,7 +70,7 @@ Implementation, complete local CI, evidence/rendering/packaging/browser tests, a
 - V2 production: unchanged.
 - V3 local preview: generated and safely retried as immutable build `preview-20260728-pipeline-v4-a34fc842220f`; an interactive dev server is not currently running.
 - V3 hosted preview: deployed privately at <https://akribeia-v3-evidence-preview.akribeiainsights.chatgpt.site>.
-- V3 hosted preview source: the merged deployment-health unit; daily evidence deployment is pending.
+- V3 hosted preview source: validated immutable-daily-evidence commit `ed88412d0`.
 - V3 production: not deployed.
 - Cutover: not authorized and not attempted.
 
@@ -83,7 +83,7 @@ Implementation, complete local CI, evidence/rendering/packaging/browser tests, a
 - V3 hosted availability evidence: runtime pointer, manifest, schema, lineage, byte-size, and dashboard SHA-256 verification deployed from the tree validated in PR #11.
 - V3 protected evidence API: server-verified lookup and deterministic explanation routes deployed privately from validated commit `14703cc0f`.
 - V3 deep deployment health: pointer, manifest, artifact integrity, schema, and lineage verification deployed privately from validated commit `25879907b`.
-- Published daily evidence history: one immutable research-preview record for source date `2026-07-28`, with three artifact receipts, 643 score records, nine portfolio records, exact weights, explicit benchmark unavailability, and a verified SHA-256 reproduction report. Private deployment is pending.
+- Published daily evidence history: one privately deployed immutable research-preview record for source date `2026-07-28`, with three artifact receipts, 643 score records, nine portfolio records, exact weights, explicit benchmark unavailability, and a verified SHA-256 reproduction report.
 - Historical validation: not started.
 - Prospective validation: not started.
 
