@@ -120,6 +120,10 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /KLAC/);
   assert.match(html, /10\.026/);
   assert.match(html, /No synthetic adjustment/);
+  assert.match(html, /Leaving the file is not a delisting/);
+  assert.match(html, /Current SEC association/);
+  assert.match(html, /BLD and HOLX remain unresolved/);
+  assert.match(html, /Current is not historical/);
   assert.match(html, /Two snapshots are not a backtest/);
   assert.match(html, /2<!-- --> snapshots inventoried/);
   assert.match(html, /timezone unspecified/);
@@ -263,6 +267,8 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
     sourceUniverseMembership,
     packagedCorporateActions,
     sourceCorporateActions,
+    packagedExitDisposition,
+    sourceExitDisposition,
   ] = await Promise.all([
     readFile(new URL("../.openai/hosting.json", import.meta.url), "utf8"),
     readFile(new URL("../dist/.openai/hosting.json", import.meta.url), "utf8"),
@@ -344,6 +350,17 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
       new URL("../public/data/evidence/corporate-action-readiness/active.json", import.meta.url),
       "utf8",
     ),
+    readFile(
+      new URL(
+        "../dist/client/data/evidence/exit-disposition-readiness/active.json",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+    readFile(
+      new URL("../public/data/evidence/exit-disposition-readiness/active.json", import.meta.url),
+      "utf8",
+    ),
   ]);
   const pointer = JSON.parse(pointerPayload);
   const buildRoot = new URL(
@@ -366,6 +383,7 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(packagedFilingAvailability, sourceFilingAvailability);
   assert.equal(packagedUniverseMembership, sourceUniverseMembership);
   assert.equal(packagedCorporateActions, sourceCorporateActions);
+  assert.equal(packagedExitDisposition, sourceExitDisposition);
 
   for (const artifact of Object.values(manifest.files)) {
     const [packagedPayload, sourcePayload] = await Promise.all([
@@ -536,4 +554,24 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(corporateActions.coverage.thresholdObservationCount, 5);
   assert.equal(corporateActions.coverage.possibleShareCountDiscontinuityCount, 3);
   assert.equal(corporateActions.coverage.verifiedCorporateActionCount, 0);
+  const exitDisposition = JSON.parse(packagedExitDisposition);
+  const versionedExitDisposition = await readFile(
+    new URL(
+      `../dist/client/data/evidence/exit-disposition-readiness/builds/${exitDisposition.buildId}/exit-disposition-readiness.json`,
+      import.meta.url,
+    ),
+    "utf8",
+  );
+  assert.equal(versionedExitDisposition, packagedExitDisposition);
+  assert.equal(exitDisposition.buildId, activeEvidence.build.buildId);
+  assert.equal(exitDisposition.historicalDelistingControlled, false);
+  assert.equal(exitDisposition.coverage.observedExitCount, 13);
+  assert.equal(exitDisposition.coverage.currentSecAssociationCount, 11);
+  assert.equal(exitDisposition.coverage.unmatchedCurrentAssociationCount, 2);
+  assert.deepEqual(
+    exitDisposition.entries
+      .filter(({ currentAssociationStatus }) => currentAssociationStatus === "unmatched")
+      .map(({ ticker }) => ticker),
+    ["BLD", "HOLX"],
+  );
 });

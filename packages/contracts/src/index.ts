@@ -2540,3 +2540,108 @@ export const CorporateActionReadinessSchema = z
     }
   });
 export type CorporateActionReadiness = z.infer<typeof CorporateActionReadinessSchema>;
+
+const EXIT_DISPOSITION_CONTROL_KEYS = [
+  "current-sec-association",
+  "permanent-listing-identity",
+  "ticker-effective-intervals",
+  "delisting-events",
+  "merger-successor-terms",
+] as const;
+
+export const ExitDispositionReadinessSchema = z
+  .object({
+    reportSchemaVersion: z.literal("1.0.0"),
+    buildId: SafeBuildIdSchema,
+    modelVersion: z.string().min(1),
+    assessedAt: IsoDateTimeSchema,
+    generatedAt: IsoDateTimeSchema,
+    status: z.literal("partial-current-association-not-disposition-history"),
+    historicalDelistingControlled: z.literal(false),
+    historicalTickerHistoryEligible: z.literal(false),
+    sourceReceipt: z
+      .object({
+        snapshotId: z.string().min(1),
+        retrievedAt: IsoDateTimeSchema,
+        lastModifiedAt: IsoDateTimeSchema,
+        sha256: Sha256Schema,
+        byteSize: z.number().int().positive(),
+        recordCount: z.number().int().positive(),
+      })
+      .strict(),
+    coverage: z
+      .object({
+        observedExitCount: z.number().int().positive(),
+        currentSecAssociationCount: z.number().int().nonnegative(),
+        unmatchedCurrentAssociationCount: z.number().int().nonnegative(),
+        historicalDispositionResolvedCount: z.literal(0),
+      })
+      .strict(),
+    entries: z
+      .array(
+        z
+          .object({
+            ticker: SecurityMasterTickerSchema,
+            snapshotName: z.string().trim().min(1),
+            earlierMarketCapB: z.number().positive(),
+            currentAssociationStatus: z.enum(["present", "unmatched"]),
+            currentSecAssociation: z
+              .object({
+                cik: z.string().regex(/^\d{10}$/),
+                title: z.string().trim().min(1),
+              })
+              .strict()
+              .nullable(),
+            historicalDispositionStatus: z.literal("unverified"),
+          })
+          .strict(),
+      )
+      .min(1),
+    controls: z
+      .array(
+        z
+          .object({
+            key: z.enum([...EXIT_DISPOSITION_CONTROL_KEYS]),
+            status: z.enum(["pass", "blocked"]),
+            detail: z.string().min(1),
+          })
+          .strict(),
+      )
+      .length(EXIT_DISPOSITION_CONTROL_KEYS.length),
+    limitations: z.array(z.string().min(1)).min(4),
+    notice: z.string().min(1),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    const presentCount = value.entries.filter(
+      ({ currentAssociationStatus }) => currentAssociationStatus === "present",
+    ).length;
+    const tickers = value.entries.map(({ ticker }) => ticker);
+    const sorted = [...tickers].sort((left, right) => left.localeCompare(right));
+    const entriesValid = value.entries.every(
+      ({ currentAssociationStatus, currentSecAssociation }) =>
+        (currentAssociationStatus === "present" && currentSecAssociation !== null) ||
+        (currentAssociationStatus === "unmatched" && currentSecAssociation === null),
+    );
+    const controlsValid =
+      value.controls.every(({ key }, index) => key === EXIT_DISPOSITION_CONTROL_KEYS[index]) &&
+      value.controls[0]?.status === "pass" &&
+      value.controls.slice(1).every(({ status }) => status === "blocked");
+
+    if (
+      value.coverage.observedExitCount !== value.entries.length ||
+      value.coverage.currentSecAssociationCount !== presentCount ||
+      value.coverage.unmatchedCurrentAssociationCount !== value.entries.length - presentCount ||
+      new Set(tickers).size !== tickers.length ||
+      tickers.some((ticker, index) => ticker !== sorted[index]) ||
+      !entriesValid ||
+      !controlsValid
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Exit disposition coverage, entries, and fail-closed controls must reconcile.",
+        path: ["entries"],
+      });
+    }
+  });
+export type ExitDispositionReadiness = z.infer<typeof ExitDispositionReadinessSchema>;

@@ -2,6 +2,7 @@ import {
   CorporateActionReadinessSchema,
   DailyEvidenceRecordSchema,
   DataQualityReportSchema,
+  ExitDispositionReadinessSchema,
   FilingAvailabilityReportSchema,
   HistoricalReadinessReportSchema,
   MaturityAssessmentSchema,
@@ -17,6 +18,7 @@ import { EvidenceExplorer } from "./evidence-explorer";
 import activeDashboard from "./generated/active-dashboard.json";
 import activeCorporateActionReadiness from "./generated/active-corporate-action-readiness.json";
 import activeDailyEvidence from "./generated/active-daily-evidence.json";
+import activeExitDispositionReadiness from "./generated/active-exit-disposition-readiness.json";
 import activeFilingAvailability from "./generated/active-filing-availability.json";
 import activeHistoricalReadiness from "./generated/active-historical-readiness.json";
 import activeMetricDictionary from "./generated/active-metric-dictionary.json";
@@ -32,6 +34,7 @@ const corporateActionReadiness = CorporateActionReadinessSchema.parse(
   activeCorporateActionReadiness,
 );
 const dailyEvidence = DailyEvidenceRecordSchema.parse(activeDailyEvidence);
+const exitDisposition = ExitDispositionReadinessSchema.parse(activeExitDispositionReadiness);
 const filingAvailability = FilingAvailabilityReportSchema.parse(activeFilingAvailability);
 const historicalReadiness = HistoricalReadinessReportSchema.parse(activeHistoricalReadiness);
 const metricDictionary = MetricDictionarySchema.parse(activeMetricDictionary);
@@ -46,6 +49,8 @@ if (
   modelCard.modelVersion !== dashboard.modelVersion ||
   corporateActionReadiness.buildId !== dashboard.buildId ||
   corporateActionReadiness.modelVersion !== dashboard.modelVersion ||
+  exitDisposition.buildId !== dashboard.buildId ||
+  exitDisposition.modelVersion !== dashboard.modelVersion ||
   metricDictionary.modelVersion !== dashboard.modelVersion ||
   filingAvailability.buildId !== dashboard.buildId ||
   filingAvailability.modelVersion !== dashboard.modelVersion ||
@@ -140,6 +145,7 @@ export default function Home() {
           <a href="#daily-evidence">Evidence</a>
           <a href="#universe-membership">Membership</a>
           <a href="#corporate-actions">Actions</a>
+          <a href="#exit-disposition">Exits</a>
           <a href="#filing-availability">Filings</a>
           <a href="#model-governance">Method</a>
           <a href="#data-quality">Quality</a>
@@ -433,6 +439,101 @@ export default function Home() {
           <aside className="corporate-action-limitation" role="note">
             <strong>No synthetic adjustment</strong>
             <p>{corporateActionReadiness.limitations[4]}</p>
+          </aside>
+        </section>
+
+        <section
+          className="exit-disposition"
+          id="exit-disposition"
+          aria-labelledby="exit-disposition-heading"
+        >
+          <div className="exit-disposition-heading">
+            <div>
+              <p className="mono-label">EXIT DISPOSITION / CURRENT ASSOCIATION CHECK</p>
+              <h2 id="exit-disposition-heading">Leaving the file is not a delisting.</h2>
+              <p>
+                Eleven of thirteen June-only ticker labels still appear in the checksum-pinned SEC
+                association snapshot. BLD and HOLX are unmatched, but neither result establishes a
+                historical listing event.
+              </p>
+            </div>
+            <a
+              href={`/data/evidence/exit-disposition-readiness/builds/${exitDisposition.buildId}/exit-disposition-readiness.json`}
+            >
+              View immutable evidence
+            </a>
+          </div>
+          <div className="exit-disposition-summary" aria-label="Observed exit disposition coverage">
+            <article>
+              <span>Observed exits</span>
+              <strong>{exitDisposition.coverage.observedExitCount}</strong>
+              <p>ticker labels present only in June</p>
+            </article>
+            <article>
+              <span>Current SEC association</span>
+              <strong>{exitDisposition.coverage.currentSecAssociationCount}</strong>
+              <p>evidence against equating exit with delisting</p>
+            </article>
+            <article>
+              <span>Current unmatched</span>
+              <strong>{exitDisposition.coverage.unmatchedCurrentAssociationCount}</strong>
+              <p>BLD and HOLX remain unresolved</p>
+            </article>
+            <article data-status="blocked">
+              <span>Historical disposition resolved</span>
+              <strong>{exitDisposition.coverage.historicalDispositionResolvedCount}</strong>
+              <p>no ticker or listing intervals</p>
+            </article>
+          </div>
+          <div
+            className="table-scroll exit-disposition-table"
+            tabIndex={0}
+            role="region"
+            aria-label="Current SEC association check for observed exits"
+          >
+            <table>
+              <caption className="sr-only">
+                Current SEC associations and unresolved historical disposition for observed exits
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Observed exit</th>
+                  <th scope="col">June snapshot</th>
+                  <th scope="col">Current association</th>
+                  <th scope="col">CIK</th>
+                  <th scope="col">Historical disposition</th>
+                </tr>
+              </thead>
+              <tbody>
+                {exitDisposition.entries.map((entry) => (
+                  <tr key={entry.ticker}>
+                    <td>
+                      <strong>{entry.ticker}</strong>
+                    </td>
+                    <td>
+                      {entry.snapshotName}
+                      <small>${entry.earlierMarketCapB.toFixed(1)}B</small>
+                    </td>
+                    <td data-status={entry.currentAssociationStatus}>
+                      <strong>{entry.currentAssociationStatus}</strong>
+                      <small>
+                        {entry.currentSecAssociation?.title ?? "No exact current match"}
+                      </small>
+                    </td>
+                    <td>
+                      <code>{entry.currentSecAssociation?.cik ?? "unavailable"}</code>
+                    </td>
+                    <td>
+                      <strong className="unverified">{entry.historicalDispositionStatus}</strong>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <aside className="exit-disposition-limitation" role="note">
+            <strong>Current is not historical</strong>
+            <p>{exitDisposition.limitations[1]}</p>
           </aside>
         </section>
 
