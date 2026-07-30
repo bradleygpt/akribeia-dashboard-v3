@@ -1,0 +1,401 @@
+import { createHash, randomUUID } from "node:crypto";
+import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
+import { dirname, join, resolve } from "node:path";
+import {
+  BuildManifestSchema,
+  V2BaselineMetadataSchema,
+  V2BaselineUniverseSnapshotSchema,
+  VerticalSliceDashboardSchema,
+  type ArtifactFile,
+  type VerticalSliceBuildRecipe,
+  type VerticalSliceDashboard,
+} from "@akribeia/contracts";
+import { constructRankedCappedPortfolio, type RankedPortfolioPosition } from "@akribeia/portfolio";
+import { activateBuild, evaluateManifest, publishBuildAtomically } from "@akribeia/publisher";
+import {
+  calculateCoverageAwareComposite,
+  type PillarValues,
+  type PillarWeights,
+} from "@akribeia/scoring";
+
+const SCORE_WEIGHTS: PillarWeights = {
+  valuation: 0.2,
+  growth: 0.2,
+  profitability: 0.2,
+  momentum: 0.2,
+  revisions: 0.2,
+};
+const MAX_POSITION_WEIGHT = 0.12;
+const MAX_SECTOR_WEIGHT = 0.3;
+const NOTICE =
+  "Research preview only. Scores and model weights are evidence artifacts, not investment advice or a promise of future performance.";
+
+interface ScoredSecurity {
+  ticker: string;
+  name: string;
+  sector: string;
+  industry: string;
+  score: number | null;
+  coverage: number;
+  missingPillars: Array<"valuation" | "growth" | "profitability" | "momentum" | "revisions">;
+  price: number;
+  marketCapB: number;
+  eligible: boolean;
+}
+
+export interface VerticalSliceRunResult {
+  buildId: string;
+  buildDirectory: string;
+  manifestPath: string;
+  pointerPath: string;
+  projectionPath: string;
+  dashboard: VerticalSliceDashboard;
+}
+
+function sha256(payload: Uint8Array): string {
+  return createHash("sha256").update(payload).digest("hex");
+}
+
+function deterministicJson(value: unknown): Uint8Array {
+  return new TextEncoder().encode(`${JSON.stringify(value, null, 2)}\n`);
+}
+
+function parseJson(path: string, payload: string): unknown {
+  try {
+    return JSON.parse(payload) as unknown;
+  } catch (error) {
+    throw new Error(`Invalid JSON at "${path}".`, { cause: error });
+  }
+}
+
+function sourceAgeSeconds(observedAt: string, evaluatedAt: string): number {
+  const observed = Date.parse(observedAt);
+  const evaluated = Date.parse(evaluatedAt);
+
+  if (!Number.isFinite(observed) || !Number.isFinite(evaluated) || evaluated < observed) {
+    throw new Error("The source observation and evaluation timestamps are inconsistent.");
+  }
+
+  return Math.floor((evaluated - observed) / 1000);
+}
+
+function publishedSecurity(security: ScoredSecurity & { score: number }) {
+  return {
+    ticker: security.ticker,
+    name: security.name,
+    sector: security.sector,
+    industry: security.industry,
+    score: security.score,
+    coverage: security.coverage,
+    missingPillars: security.missingPillars,
+    price: security.price,
+    marketCapB: security.marketCapB,
+  };
+}
+
+function artifactMetadata(
+  path: string,
+  payload: Uint8Array,
+  rowCount: number,
+  recipe: VerticalSliceBuildRecipe,
+  sourceHash: string,
+  ageSeconds: number,
+): ArtifactFile {
+  return {
+    path,
+    sha256: sha256(payload),
+    byteSize: payload.byteLength,
+    rowCount,
+    status: "current",
+    freshness: {
+      status: "current",
+      observedAt: recipe.observedAt,
+      retrievedAt: recipe.observedAt,
+      evaluatedAt: recipe.evaluatedAt,
+      ageSeconds,
+      maxAgeSeconds: recipe.maxAgeSeconds,
+      reason: null,
+    },
+    provenance: [
+      {
+        sourceId: "v2-baseline-universe-floor10",
+        sourceType: "first-party",
+        retrievedAt: recipe.observedAt,
+        sourceVersion: recipe.sourceCommit,
+        sourceUri: recipe.sourcePath.replaceAll("\\", "/"),
+        contentSha256: sourceHash,
+      },
+    ],
+  };
+}
+
+async function projectActiveDashboard(
+  projectionPath: string,
+  dashboardPayload: Uint8Array,
+): Promise<void> {
+  const absolutePath = resolve(projectionPath);
+  const temporaryPath = join(
+    dirname(absolutePath),
+    `.${randomUUID()}-${absolutePath.split(/[\\/]/).at(-1)}.tmp`,
+  );
+
+  await mkdir(dirname(absolutePath), { recursive: true });
+
+  try {
+    await writeFile(temporaryPath, dashboardPayload, { flag: "wx" });
+    await rename(temporaryPath, absolutePath);
+  } finally {
+    await rm(temporaryPath, { force: true });
+  }
+}
+
+function mapPortfolioPosition(
+  position: RankedPortfolioPosition,
+  eligibleByTicker: ReadonlyMap<string, ScoredSecurity & { score: number }>,
+) {
+  const security = eligibleByTicker.get(position.id);
+
+  if (security === undefined) {
+    throw new Error(`Portfolio position "${position.id}" is absent from scored securities.`);
+  }
+
+  return {
+    ...publishedSecurity(security),
+    weight: position.weight,
+  };
+}
+
+export async function runVerticalSlice(
+  recipe: VerticalSliceBuildRecipe,
+): Promise<VerticalSliceRunResult> {
+  const sourcePath = resolve(recipe.sourcePath);
+  const metadataPath = resolve(recipe.metadataPath);
+  const outputRoot = resolve(recipe.outputRoot);
+  const projectionPath = resolve(recipe.projectionPath);
+  const [sourcePayload, metadataPayload] = await Promise.all([
+    readFile(sourcePath),
+    readFile(metadataPath, "utf8"),
+  ]);
+  const snapshot = V2BaselineUniverseSnapshotSchema.parse(
+    parseJson(sourcePath, sourcePayload.toString("utf8")),
+  );
+  const sourceMetadata = V2BaselineMetadataSchema.parse(parseJson(metadataPath, metadataPayload));
+
+  if (sourceMetadata.source_commit !== recipe.sourceCommit) {
+    throw new Error(
+      `Recipe source commit "${recipe.sourceCommit}" does not match metadata commit "${sourceMetadata.source_commit}".`,
+    );
+  }
+
+  const ageSeconds = sourceAgeSeconds(recipe.observedAt, recipe.evaluatedAt);
+
+  if (ageSeconds > recipe.maxAgeSeconds) {
+    throw new Error(
+      `Source snapshot is stale by policy: ${ageSeconds} seconds exceeds ${recipe.maxAgeSeconds}.`,
+    );
+  }
+
+  const sourceHash = sha256(sourcePayload);
+  const scored: ScoredSecurity[] = snapshot.rows.map((row) => {
+    const values: PillarValues = {
+      valuation: row.pillars.Valuation,
+      growth: row.pillars.Growth,
+      profitability: row.pillars.Profitability,
+      momentum: row.pillars.Momentum,
+      revisions: row.pillars["EPS Revisions"],
+    };
+    const result = calculateCoverageAwareComposite(values, SCORE_WEIGHTS, {
+      minimumCoverage: 1,
+      missingDataPolicy: "require-complete",
+    });
+
+    return {
+      ticker: row.ticker,
+      name: row.name,
+      sector: row.sector,
+      industry: row.industry,
+      score: result.score,
+      coverage: result.coverage,
+      missingPillars: result.missingPillars,
+      price: row.price,
+      marketCapB: row.marketCapB,
+      eligible: result.eligible,
+    };
+  });
+  const eligible = scored
+    .filter(
+      (security): security is ScoredSecurity & { score: number } =>
+        security.eligible && security.score !== null,
+    )
+    .sort((left, right) => right.score - left.score || left.ticker.localeCompare(right.ticker));
+  const portfolio = constructRankedCappedPortfolio(
+    eligible.map((security) => ({
+      id: security.ticker,
+      sector: security.sector,
+      score: security.score,
+    })),
+    {
+      maxPositionWeight: MAX_POSITION_WEIGHT,
+      maxSectorWeight: MAX_SECTOR_WEIGHT,
+    },
+  );
+
+  if (portfolio.status === "infeasible") {
+    throw new Error(`Portfolio construction is infeasible: ${portfolio.reasons.join(" ")}`);
+  }
+
+  const eligibleByTicker = new Map(
+    eligible.map((security) => [security.ticker, security] as const),
+  );
+  const dashboard = VerticalSliceDashboardSchema.parse({
+    buildId: recipe.buildId,
+    generatedAt: recipe.evaluatedAt,
+    schemaVersion: recipe.schemaVersion,
+    modelVersion: recipe.modelVersion,
+    status: "healthy",
+    source: {
+      dataset: "V2 production baseline — $10B+ universe",
+      repositoryPath: recipe.sourcePath.replaceAll("\\", "/"),
+      sourceCommit: recipe.sourceCommit,
+      contentSha256: sourceHash,
+      observedAt: recipe.observedAt,
+      rowCount: snapshot.rows.length,
+      freshnessStatus: "current",
+    },
+    scoring: {
+      method: "weighted-five-pillar",
+      weights: SCORE_WEIGHTS,
+      missingDataPolicy: "require-complete",
+      minimumCoverage: 1,
+      eligibleSecurities: eligible.length,
+      excludedSecurities: scored.length - eligible.length,
+      averageCoverage: scored.reduce((sum, security) => sum + security.coverage, 0) / scored.length,
+    },
+    portfolio: {
+      constraints: portfolio.constraints,
+      totalWeight: portfolio.totalWeight,
+      positions: portfolio.positions.map((position) =>
+        mapPortfolioPosition(position, eligibleByTicker),
+      ),
+      sectorWeights: portfolio.sectorWeights,
+    },
+    topScores: eligible.slice(0, 12).map(publishedSecurity),
+    notice: NOTICE,
+  });
+  const artifacts = {
+    dashboard: deterministicJson(dashboard),
+    portfolio: deterministicJson({
+      buildId: recipe.buildId,
+      generatedAt: recipe.evaluatedAt,
+      constraints: dashboard.portfolio.constraints,
+      totalWeight: dashboard.portfolio.totalWeight,
+      positions: dashboard.portfolio.positions,
+      sectorWeights: dashboard.portfolio.sectorWeights,
+      source: dashboard.source,
+    }),
+    scores: deterministicJson({
+      buildId: recipe.buildId,
+      generatedAt: recipe.evaluatedAt,
+      scoring: dashboard.scoring,
+      securities: scored,
+      source: dashboard.source,
+    }),
+  };
+  const files = {
+    dashboard: artifactMetadata(
+      "dashboard.json",
+      artifacts.dashboard,
+      1,
+      recipe,
+      sourceHash,
+      ageSeconds,
+    ),
+    portfolio: artifactMetadata(
+      "portfolio.json",
+      artifacts.portfolio,
+      dashboard.portfolio.positions.length,
+      recipe,
+      sourceHash,
+      ageSeconds,
+    ),
+    scores: artifactMetadata(
+      "scores.json",
+      artifacts.scores,
+      scored.length,
+      recipe,
+      sourceHash,
+      ageSeconds,
+    ),
+  };
+  const manifestEvaluation = evaluateManifest({
+    buildId: recipe.buildId,
+    schemaVersion: recipe.schemaVersion,
+    modelVersion: recipe.modelVersion,
+    generatedAt: recipe.evaluatedAt,
+    evaluatedAt: recipe.evaluatedAt,
+    requiredArtifacts: ["dashboard", "portfolio", "scores"],
+    files,
+  });
+
+  if (manifestEvaluation.decision !== "publish" || manifestEvaluation.candidateManifest === null) {
+    throw new Error(
+      `Vertical slice failed closed at the publication gate: ${manifestEvaluation.reasons.join(" ")}`,
+    );
+  }
+
+  const publication = await publishBuildAtomically({
+    rootDirectory: outputRoot,
+    manifest: manifestEvaluation.candidateManifest,
+    artifacts,
+  });
+  const activation = await activateBuild({
+    rootDirectory: outputRoot,
+    buildId: recipe.buildId,
+  });
+
+  await projectActiveDashboard(projectionPath, artifacts.dashboard);
+
+  return {
+    buildId: recipe.buildId,
+    buildDirectory: publication.buildDirectory,
+    manifestPath: publication.manifestPath,
+    pointerPath: activation.pointerPath,
+    projectionPath,
+    dashboard,
+  };
+}
+
+export async function verifyPublishedVerticalSlice(
+  outputRoot: string,
+): Promise<VerticalSliceDashboard> {
+  const absoluteRoot = resolve(outputRoot);
+  const pointer = JSON.parse(
+    await readFile(join(absoluteRoot, "active-build.json"), "utf8"),
+  ) as unknown;
+
+  if (
+    typeof pointer !== "object" ||
+    pointer === null ||
+    !("activeBuildId" in pointer) ||
+    typeof pointer.activeBuildId !== "string"
+  ) {
+    throw new Error("Published vertical slice has a malformed active-build pointer.");
+  }
+
+  const buildDirectory = join(absoluteRoot, "builds", pointer.activeBuildId);
+  const manifest = BuildManifestSchema.parse(
+    JSON.parse(await readFile(join(buildDirectory, "manifest.json"), "utf8")) as unknown,
+  );
+
+  for (const artifact of Object.values(manifest.files)) {
+    const payload = await readFile(join(buildDirectory, artifact.path));
+
+    if (payload.byteLength !== artifact.byteSize || sha256(payload) !== artifact.sha256) {
+      throw new Error(`Published artifact "${artifact.path}" failed integrity verification.`);
+    }
+  }
+
+  return VerticalSliceDashboardSchema.parse(
+    JSON.parse(await readFile(join(buildDirectory, "dashboard.json"), "utf8")) as unknown,
+  );
+}

@@ -1,0 +1,20 @@
+{
+  "name": "@akribeia/pipeline",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "dependencies": {
+    "@akribeia/contracts": "0.0.1",
+    "@akribeia/portfolio": "0.0.1",
+    "@akribeia/publisher": "0.0.1",
+    "@akribeia/scoring": "0.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1"
+  }
+}
