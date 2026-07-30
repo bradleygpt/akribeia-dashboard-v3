@@ -1,0 +1,220 @@
+{
+  "dictionarySchemaVersion": "1.0.0",
+  "modelVersion": "3.0.0-preview.3",
+  "source": {
+    "repositoryPath": "data/reference/v2-baseline/fixtures/meta.json",
+    "sourceCommit": "0de8cd6",
+    "contentSha256": "68c594f533a13424e1e21d6b0cd70980d91c62f019ae8173d6e75e3bb00bdadc"
+  },
+  "methodologyStatus": "component-list-preserved-transform-formulas-unavailable",
+  "pillars": [
+    {
+      "pillar": "valuation",
+      "displayName": "Valuation",
+      "sourceField": "pillars.Valuation",
+      "weight": 0.2,
+      "interpretation": "Higher preserved V2 valuation pillar scores contribute more positively to the composite.",
+      "components": [
+        {
+          "key": "forwardPE",
+          "name": "Forward P/E",
+          "direction": "lower-is-better"
+        },
+        {
+          "key": "trailingPE",
+          "name": "Trailing P/E",
+          "direction": "lower-is-better"
+        },
+        {
+          "key": "pegRatio",
+          "name": "PEG Ratio",
+          "direction": "lower-is-better"
+        },
+        {
+          "key": "priceToBook",
+          "name": "Price / Book",
+          "direction": "lower-is-better"
+        },
+        {
+          "key": "priceToSalesTrailing12Months",
+          "name": "Price / Sales",
+          "direction": "lower-is-better"
+        },
+        {
+          "key": "enterpriseToEbitda",
+          "name": "EV / EBITDA",
+          "direction": "lower-is-better"
+        },
+        {
+          "key": "enterpriseToRevenue",
+          "name": "EV / Revenue",
+          "direction": "lower-is-better"
+        }
+      ]
+    },
+    {
+      "pillar": "growth",
+      "displayName": "Growth",
+      "sourceField": "pillars.Growth",
+      "weight": 0.2,
+      "interpretation": "Higher preserved V2 growth pillar scores contribute more positively to the composite.",
+      "components": [
+        {
+          "key": "revenueGrowth",
+          "name": "Revenue Growth (QoQ)",
+          "direction": "higher-is-better"
+        },
+        {
+          "key": "earningsGrowth",
+          "name": "Earnings Growth (QoQ)",
+          "direction": "higher-is-better"
+        },
+        {
+          "key": "revenueQuarterlyGrowth",
+          "name": "Revenue Growth (YoY)",
+          "direction": "higher-is-better"
+        },
+        {
+          "key": "earningsQuarterlyGrowth",
+          "name": "Earnings Growth (YoY)",
+          "direction": "higher-is-better"
+        }
+      ]
+    },
+    {
+      "pillar": "profitability",
+      "displayName": "Profitability",
+      "sourceField": "pillars.Profitability",
+      "weight": 0.2,
+      "interpretation": "Higher preserved V2 profitability pillar scores contribute more positively to the composite.",
+      "components": [
+        {
+          "key": "grossMargins",
+          "name": "Gross Margin",
+          "direction": "higher-is-better"
+        },
+        {
+          "key": "operatingMargins",
+          "name": "Operating Margin",
+          "direction": "higher-is-better"
+        },
+        {
+          "key": "profitMargins",
+          "name": "Net Margin",
+          "direction": "higher-is-better"
+        },
+        {
+          "key": "returnOnEquity",
+          "name": "Return on Equity",
+          "direction": "higher-is-better"
+        },
+        {
+          "key": "returnOnAssets",
+          "name": "Return on Assets",
+          "direction": "higher-is-better"
+        }
+      ]
+    },
+    {
+      "pillar": "momentum",
+      "displayName": "Momentum",
+      "sourceField": "pillars.Momentum",
+      "weight": 0.2,
+      "interpretation": "Higher preserved V2 momentum pillar scores contribute more positively to the composite.",
+      "components": [
+        {
+          "key": "momentum_1m",
+          "name": "1-Month Return",
+          "direction": "higher-is-better"
+        },
+        {
+          "key": "momentum_3m",
+          "name": "3-Month Return",
+          "direction": "higher-is-better"
+        },
+        {
+          "key": "momentum_6m",
+          "name": "6-Month Return",
+          "direction": "higher-is-better"
+        },
+        {
+          "key": "momentum_12m",
+          "name": "12-Month Return",
+          "direction": "higher-is-better"
+        },
+        {
+          "key": "momentum_vs_sma50",
+          "name": "Price vs 50-Day SMA",
+          "direction": "higher-is-better"
+        },
+        {
+          "key": "momentum_vs_sma200",
+          "name": "Price vs 200-Day SMA",
+          "direction": "higher-is-better"
+        }
+      ]
+    },
+    {
+      "pillar": "revisions",
+      "displayName": "EPS Revisions",
+      "sourceField": "pillars.EPS Revisions",
+      "weight": 0.2,
+      "interpretation": "Higher preserved V2 EPS-revisions pillar scores contribute more positively to the composite.",
+      "components": [
+        {
+          "key": "analyst_mean_target_upside",
+          "name": "Mean Target Upside %",
+          "direction": "higher-is-better"
+        },
+        {
+          "key": "analyst_recommendation_score",
+          "name": "Analyst Rec Score (inv)",
+          "direction": "lower-is-better"
+        },
+        {
+          "key": "earnings_surprise_pct",
+          "name": "Last Earnings Surprise %",
+          "direction": "higher-is-better"
+        },
+        {
+          "key": "analyst_count",
+          "name": "# Covering Analysts",
+          "direction": "higher-is-better"
+        }
+      ]
+    }
+  ],
+  "derivedMetrics": [
+    {
+      "key": "composite_score",
+      "name": "Composite score",
+      "definition": "Sum of each available pillar score times its configured weight, divided by total configured weight; strict product scoring requires all weighted pillars.",
+      "unit": "score points"
+    },
+    {
+      "key": "factor_coverage",
+      "name": "Factor coverage",
+      "definition": "Available configured pillar weight divided by total configured pillar weight.",
+      "unit": "proportion from 0 to 1"
+    },
+    {
+      "key": "weighted_contribution",
+      "name": "Weighted pillar contribution",
+      "definition": "Observed pillar score multiplied by that pillar's configured model weight.",
+      "unit": "weighted score points"
+    },
+    {
+      "key": "portfolio_weight",
+      "name": "Portfolio position weight",
+      "definition": "Final allocated integer weight units divided by the one-billion-unit portfolio scale.",
+      "unit": "portfolio proportion"
+    },
+    {
+      "key": "sector_weight",
+      "name": "Portfolio sector weight",
+      "definition": "Sum of final integer position weight units for securities in the sector.",
+      "unit": "portfolio proportion"
+    }
+  ],
+  "caveat": "The preserved metadata names component metrics and directionality, but does not contain the raw transformations, cross-sectional normalization, winsorization, or missing-value rules that produced each V2 pillar score."
+}

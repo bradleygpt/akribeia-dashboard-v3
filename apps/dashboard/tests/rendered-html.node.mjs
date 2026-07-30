@@ -73,6 +73,14 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /No synthetic comparison/);
   assert.match(html, /No point-in-time benchmark input is present/);
   assert.match(html, /View reproduction report/);
+  assert.match(html, /What the model is—and is not/);
+  assert.match(html, /Not release eligible/);
+  assert.match(html, /portfolio parity/);
+  assert.match(html, /stale against the July 2026 data vintage/);
+  assert.match(html, /Five pillars, 26 preserved components/);
+  assert.match(html, /Forward P\/E/);
+  assert.match(html, /Known methodology gap/);
+  assert.match(html, /does not contain the raw transformations/);
   assert.match(html, /not investment advice/i);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Your site is taking shape/i);
 });
@@ -183,6 +191,10 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
     pointerPayload,
     activeEvidencePayload,
     sourceEvidencePayload,
+    packagedModelCard,
+    sourceModelCard,
+    packagedDictionary,
+    sourceDictionary,
   ] = await Promise.all([
     readFile(new URL("../.openai/hosting.json", import.meta.url), "utf8"),
     readFile(new URL("../dist/.openai/hosting.json", import.meta.url), "utf8"),
@@ -190,6 +202,25 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
     readFile(new URL("../dist/client/data/active-build.json", import.meta.url), "utf8"),
     readFile(new URL("../dist/client/data/evidence/active.json", import.meta.url), "utf8"),
     readFile(new URL("../public/data/evidence/active.json", import.meta.url), "utf8"),
+    readFile(
+      new URL("../dist/client/data/evidence/governance/active-model-card.json", import.meta.url),
+      "utf8",
+    ),
+    readFile(
+      new URL("../public/data/evidence/governance/active-model-card.json", import.meta.url),
+      "utf8",
+    ),
+    readFile(
+      new URL(
+        "../dist/client/data/evidence/governance/active-metric-dictionary.json",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+    readFile(
+      new URL("../public/data/evidence/governance/active-metric-dictionary.json", import.meta.url),
+      "utf8",
+    ),
   ]);
   const pointer = JSON.parse(pointerPayload);
   const buildRoot = new URL(
@@ -202,6 +233,8 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.match(serverEntrypoint, /fetch/);
   assert.equal(manifest.buildId, pointer.activeBuildId);
   assert.equal(activeEvidencePayload, sourceEvidencePayload);
+  assert.equal(packagedModelCard, sourceModelCard);
+  assert.equal(packagedDictionary, sourceDictionary);
 
   for (const artifact of Object.values(manifest.files)) {
     const [packagedPayload, sourcePayload] = await Promise.all([
@@ -237,4 +270,25 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
     report.evidenceRecordSha256,
   );
   assert.equal(report.result, "verified");
+
+  const modelCard = JSON.parse(packagedModelCard);
+  const dictionary = JSON.parse(packagedDictionary);
+  const versionedGovernanceRoot = new URL(
+    `../dist/client/data/evidence/governance/models/${modelCard.modelVersion}/`,
+    import.meta.url,
+  );
+  const [versionedModelCard, versionedDictionary] = await Promise.all([
+    readFile(new URL("model-card.json", versionedGovernanceRoot), "utf8"),
+    readFile(new URL("metric-dictionary.json", versionedGovernanceRoot), "utf8"),
+  ]);
+
+  assert.equal(versionedModelCard, packagedModelCard);
+  assert.equal(versionedDictionary, packagedDictionary);
+  assert.equal(modelCard.modelVersion, activeEvidence.build.modelVersion);
+  assert.equal(modelCard.releaseEligible, false);
+  assert.equal(modelCard.validation.find(({ gate }) => gate === "portfolio-parity").status, "fail");
+  assert.equal(
+    dictionary.pillars.reduce((count, pillar) => count + pillar.components.length, 0),
+    26,
+  );
 });

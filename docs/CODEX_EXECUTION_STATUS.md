@@ -4,9 +4,9 @@ Last updated: 2026-07-30
 
 ## Whole-product completion
 
-Estimated completion: **54%**
+Estimated completion: **60%**
 
-This estimate reflects working, tested product behavior rather than roadmap line-item count. V3 now has the Phase 0 baseline, core publication trust primitives, a deployed visible preview, complete coverage-aware scoring evidence, exact integer-unit portfolio construction, a retry-safe end-to-end publication/activation/rollback pipeline, an accessible runtime data-status surface, protected server-side evidence capabilities, explicit deployment health and recovery operations, and the first immutable daily evidence record with a reproducibility receipt. It is not ready to replace V2.
+This estimate reflects working, tested product behavior rather than roadmap line-item count. V3 now has the Phase 0 baseline, core publication trust primitives, a deployed visible preview, complete coverage-aware scoring evidence, exact integer-unit portfolio construction, a retry-safe end-to-end publication/activation/rollback pipeline, an accessible runtime data-status surface, protected server-side evidence capabilities, explicit deployment health and recovery operations, the first immutable daily evidence record, and versioned model-governance evidence. It is not ready to replace V2.
 
 ## Completed milestones
 
@@ -23,23 +23,25 @@ This estimate reflects working, tested product behavior rather than roadmap line
 - Runtime freshness/integrity states, responsive accessibility improvements, and real-Chrome smoke coverage, privately deployed and merged through PR #11.
 - Protected server evidence lookup and deterministic cited explanations, privately deployed and merged through PR #12.
 - Deep deployment health, packaged-evidence verification, and V3-only recovery procedures, privately deployed and merged through PR #13.
+- Immutable daily evidence, explicit benchmark/performance limits, reproducibility reporting, and a visible evidence ledger, privately deployed and merged through PR #14.
 
 ## Current milestone
 
-**Immutable daily evidence**
+**Visible model governance**
 
-The current branch makes the first daily model output durable, reproducible, and visible:
+The current branch makes model maturity, definitions, and validation limits inspectable:
 
-1. the active pointer, manifest, artifact digests, runtime schemas, lineage, and exact portfolio weights are verified before recording;
-2. the source observation date addresses an immutable daily directory;
-3. identical retries reuse the existing bytes while conflicting writes fail closed;
-4. the record preserves model/schema versions, source lineage, factor coverage, all nine positions, exact weights, and artifact receipts;
-5. the repository’s missing point-in-time benchmark input is recorded as unavailable with no return;
-6. portfolio performance remains explicitly not computed rather than inferred from one snapshot;
-7. a SHA-256 reproduction report receipts every validation check and the reproduction command;
-8. exact public copies and an active projection make the record visible and downloadable in the preview.
+1. the active daily record and reproduction digest are verified before governance generation;
+2. metadata source commit, default preset, five pillars, and all active weights must reconcile;
+3. versioned immutable model-card and metric-dictionary artifacts are retry-safe and conflict-closed;
+4. research-preview maturity and release ineligibility are explicit;
+5. scoring parity, portfolio parity, coverage, constraints, benchmark, point-in-time, and prospective gates remain independent;
+6. the known V2 portfolio-parity failure is visible beside passing gates;
+7. all 26 preserved component names and directions are published;
+8. unavailable raw transform, normalization, winsorization, and component missing-value formulas are labeled rather than guessed;
+9. the dashboard exposes validation status, limitations, component definitions, and downloadable governance JSON.
 
-Implementation, complete local CI, evidence/rendering/packaging/browser tests, dependency audit, and private preview deployment pass. Pull-request gates remain for this unit.
+Implementation, complete local CI, governance/rendering/packaging/browser tests, and dependency audit pass. Private preview deployment and pull-request gates remain for this unit.
 
 ## Remaining milestones
 
@@ -47,7 +49,7 @@ Implementation, complete local CI, evidence/rendering/packaging/browser tests, d
 - Add the remaining primary V3 workflows and complete a formal accessibility audit.
 - Add an external generative model only after provider, secret lifecycle, cost, output, and evaluation gates are approved.
 - Complete final-production configuration and cutover rehearsal only after all release gates pass.
-- Add the metric dictionary, model cards, quality/drift reports, security master, and richer maturity governance.
+- Add quality/drift reports and a security master.
 - Implement point-in-time historical controls, corporate actions, walk-forward evaluation, costs, and benchmarks.
 - Accumulate prospective daily validation evidence.
 - Complete release-gate certification, recovery testing, accessibility review, and operational documentation.
@@ -60,10 +62,10 @@ Implementation, complete local CI, evidence/rendering/packaging/browser tests, d
 
 ## Test counts
 
-- Vitest suite: 89 tests across 10 files pass.
+- Vitest suite: 96 tests across 11 files pass.
 - Rendered deployment and browser suite: 6 tests pass.
-- Total automated tests: 95 pass.
-- Current unit validation: Prettier, typecheck, lint, every workspace build, 89 Vitest tests, five rendered accessibility/integrity/API/package tests, one isolated-profile real-Chrome hydration smoke test, `git diff --check`, and `npm audit --audit-level=high` pass.
+- Total automated tests: 102 pass.
+- Current unit validation: Prettier, typecheck, lint, every workspace build, 96 Vitest tests, five rendered accessibility/integrity/API/package tests, one isolated-profile real-Chrome hydration smoke test, `git diff --check`, and `npm audit --audit-level=high` pass.
 
 ## Deployment status
 
@@ -84,6 +86,7 @@ Implementation, complete local CI, evidence/rendering/packaging/browser tests, d
 - V3 protected evidence API: server-verified lookup and deterministic explanation routes deployed privately from validated commit `14703cc0f`.
 - V3 deep deployment health: pointer, manifest, artifact integrity, schema, and lineage verification deployed privately from validated commit `25879907b`.
 - Published daily evidence history: one privately deployed immutable research-preview record for source date `2026-07-28`, with three artifact receipts, 643 score records, nine portfolio records, exact weights, explicit benchmark unavailability, and a verified SHA-256 reproduction report.
+- Model governance: versioned model card and metric dictionary generated locally for `3.0.0-preview.3`; private deployment is pending.
 - Historical validation: not started.
 - Prospective validation: not started.
 
@@ -100,4 +103,5 @@ Implementation, complete local CI, evidence/rendering/packaging/browser tests, d
 - The zero-cost rate limiter is bounded and effective per worker isolate, but it is not a globally durable quota.
 - External generative AI is intentionally disabled; no provider secret, paid request, or unverifiable generated claim is present.
 - The daily ledger currently contains one preserved-snapshot observation, not a prospective series. Benchmark and performance fields fail closed as unavailable/not-computed until point-in-time benchmark, interval, execution, and cost inputs exist.
+- The preserved V2 metadata supplies 26 component names and directionality, but not the raw transform, normalization, winsorization, or component missing-value formulas. Governance artifacts expose this as a known methodology gap.
 - All displayed results are research evidence, not investment advice or performance guarantees.

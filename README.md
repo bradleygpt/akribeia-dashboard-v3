@@ -27,6 +27,7 @@ npm run test
 npm run build
 npm run preview:generate
 npm run evidence:generate
+npm run governance:generate
 ```
 
 ## Migration strategy
@@ -41,3 +42,4 @@ See `ROADMAP.md`, `MIGRATION.md`, and `docs/architecture/ADR-0001-separate-v3-re
 Execution evidence and honest readiness status are maintained in `docs/CODEX_EXECUTION_STATUS.md`.
 Deployment health and recovery procedures are maintained in `docs/operations/DEPLOYMENT_AND_RECOVERY.md`.
 Daily record semantics and reproduction are documented in `docs/evidence/DAILY_EVIDENCE.md`.
+Model maturity, validation gates, and metric definitions are documented in `docs/evidence/MODEL_GOVERNANCE.md`.

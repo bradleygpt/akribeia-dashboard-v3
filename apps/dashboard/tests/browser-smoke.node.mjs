@@ -173,6 +173,9 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
     assert.match(stdout, /Highest composite scores/);
     assert.match(stdout, /A dated receipt, with limits intact/);
     assert.match(stdout, /No point-in-time benchmark input is present/);
+    assert.match(stdout, /What the model is—and is not/);
+    assert.match(stdout, /Not release eligible/);
+    assert.match(stdout, /Known methodology gap/);
     assert.match(stdout, /Ask the published build/);
     assert.match(stdout, /Explain evidence/);
     assert.match(stdout, /Recheck status/);
