@@ -1280,3 +1280,98 @@ export const V2MetricMetadataSchema = z
   })
   .passthrough();
 export type V2MetricMetadata = z.infer<typeof V2MetricMetadataSchema>;
+
+export const DataQualityReportSchema = z
+  .object({
+    reportSchemaVersion: z.literal("1.0.0"),
+    buildId: SafeBuildIdSchema,
+    modelVersion: z.string().min(1),
+    recordedAt: IsoDateTimeSchema,
+    quality: z
+      .object({
+        status: z.enum(["pass", "warn", "fail"]),
+        rowCount: z.number().int().positive(),
+        uniqueTickerCount: z.number().int().nonnegative(),
+        duplicateTickers: z.array(z.string().min(1)),
+        invalidPriceCount: z.number().int().nonnegative(),
+        invalidMarketCapCount: z.number().int().nonnegative(),
+        eligibleSecurities: z.number().int().nonnegative(),
+        excludedSecurities: z.number().int().nonnegative(),
+        factorCoverage: z.array(FactorCoverageSchema).length(SCORING_PILLARS.length),
+        scoreDistribution: z
+          .object({
+            count: z.number().int().positive(),
+            minimum: z.number().finite(),
+            maximum: z.number().finite(),
+            mean: z.number().finite(),
+            median: z.number().finite(),
+          })
+          .strict(),
+        portfolio: z
+          .object({
+            positionCount: z.number().int().positive(),
+            totalWeightUnits: z.number().int().positive(),
+            weightScale: z.number().int().positive(),
+            reconciled: z.boolean(),
+          })
+          .strict(),
+      })
+      .strict(),
+    drift: z.discriminatedUnion("status", [
+      z
+        .object({
+          status: z.literal("insufficient-history"),
+          availableBuilds: z.literal(1),
+          requiredBuilds: z.number().int().min(2),
+          baselineBuildId: z.null(),
+          comparisons: z.array(z.never()).length(0),
+          reason: z.string().min(1),
+        })
+        .strict(),
+      z
+        .object({
+          status: z.literal("evaluated"),
+          availableBuilds: z.number().int().min(2),
+          requiredBuilds: z.number().int().min(2),
+          baselineBuildId: SafeBuildIdSchema,
+          comparisons: z
+            .array(
+              z
+                .object({
+                  metric: z.string().min(1),
+                  current: z.number().finite(),
+                  baseline: z.number().finite(),
+                  absoluteChange: z.number().finite(),
+                })
+                .strict(),
+            )
+            .min(1),
+          reason: z.null(),
+        })
+        .strict(),
+    ]),
+    notice: z.string().min(1),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    const quality = value.quality;
+    const countsReconcile =
+      quality.uniqueTickerCount + quality.duplicateTickers.length === quality.rowCount &&
+      quality.eligibleSecurities + quality.excludedSecurities === quality.rowCount &&
+      quality.scoreDistribution.count === quality.eligibleSecurities;
+    const passConditions =
+      countsReconcile &&
+      quality.duplicateTickers.length === 0 &&
+      quality.invalidPriceCount === 0 &&
+      quality.invalidMarketCapCount === 0 &&
+      quality.portfolio.reconciled;
+
+    if (!countsReconcile || (quality.status === "pass" && !passConditions)) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Quality counts or pass status do not reconcile.",
+        path: ["quality"],
+      });
+    }
+  });
+export type DataQualityReport = z.infer<typeof DataQualityReportSchema>;
