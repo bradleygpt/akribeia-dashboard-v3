@@ -44,7 +44,8 @@ The current branch replaces scattered maturity wording with one generated assess
 8. production approval always requires explicit final cutover authorization.
 
 Implementation, complete local CI, contract/generator/rendering/packaging/browser tests, and
-dependency audit pass. Owner-only preview deployment and pull-request gates remain for this unit.
+dependency audit pass. Owner-only preview deployment also passes; pull-request gates remain for
+this unit.
 
 ## Remaining milestones
 
@@ -74,9 +75,8 @@ dependency audit pass. Owner-only preview deployment and pull-request gates rema
 - V2 production: unchanged.
 - V3 local preview: generated and safely retried as immutable build `preview-20260728-pipeline-v4-a34fc842220f`; an interactive dev server is not currently running.
 - V3 hosted preview: deployed privately at <https://akribeia-v3-evidence-preview.akribeiainsights.chatgpt.site>.
-- V3 hosted preview source: exact PR #16 quality-and-drift tree from commit `252f0e35f`,
-  superseded by the security-master functional tree from commit `187fc9f6b`, preserved in Sites
-  source commit `481869f21` and deployed as version 21.
+- V3 hosted preview source: maturity-label functional tree from commit `31b4fc185`, preserved in
+  Sites source commit `d24522bd7` and deployed as version 23.
 - V3 production: not deployed.
 - Cutover: not authorized and not attempted.
 
@@ -98,7 +98,8 @@ dependency audit pass. Owner-only preview deployment and pull-request gates rema
   collisions; all remain provisional because permanent identifiers and ticker history are absent.
   The evidence and visible identity ledger are privately deployed.
 - Evidence maturity: local assessment labels the active build `research-preview`, not release
-  eligible, with one of 30 daily builds and 11 explicit blockers. Private deployment is pending.
+  eligible, with one of 30 daily builds and 11 explicit blockers. The assessment and visible
+  maturity ladder are privately deployed.
 - Historical validation: not started.
 - Prospective validation: not started.
 

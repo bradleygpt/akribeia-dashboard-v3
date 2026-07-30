@@ -27,3 +27,7 @@ data/evidence/maturity/builds/<build-id>/maturity.json
 
 The dashboard and browser-accessible active projection use the exact same bytes. Identical retries
 reuse the immutable assessment; conflicting bytes fail closed.
+
+The functional maturity-label tree is deployed in the owner-only V3 preview from commit
+`31b4fc185`, preserved as exact-tree Sites source commit `d24522bd7` and saved as Sites version 23.
+V2 is unchanged.
