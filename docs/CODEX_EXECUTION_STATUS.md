@@ -35,7 +35,7 @@ The current branch completes the operational path used by the visible slice:
 7. the dashboard exposes source age, freshness limits, artifact integrity, retry mode, activation, and rollback;
 8. a new immutable `preview.4` build preserves the exact-portfolio build as its rollback target.
 
-Implementation, complete local CI, and dependency audit pass. Private preview deployment and pull-request gates remain for this unit.
+Implementation, complete local CI, dependency audit, and private preview deployment pass. Pull-request gates remain for this unit.
 
 ## Remaining milestones
 
@@ -66,7 +66,7 @@ Implementation, complete local CI, and dependency audit pass. Private preview de
 - V2 production: unchanged.
 - V3 local preview: generated and safely retried as immutable build `preview-20260728-pipeline-v4-a34fc842220f`; an interactive dev server is not currently running.
 - V3 hosted preview: deployed privately at <https://akribeia-v3-evidence-preview.akribeiainsights.chatgpt.site>.
-- V3 hosted preview source: validated exact-portfolio PR head `790b273d9`.
+- V3 hosted preview source: validated end-to-end pipeline commit `41d8c0f55`.
 - V3 production: not deployed.
 - Cutover: not authorized and not attempted.
 
@@ -75,7 +75,7 @@ Implementation, complete local CI, and dependency audit pass. Private preview de
 - V2 baseline fixtures and native parity reports: preserved.
 - V3 immutable preview builds: four local manifest-addressed builds preserve artifact hashes, provenance, model/schema versions, and rollback linkage.
 - V3 active local evidence: `preview-20260728-pipeline-v4-a34fc842220f` with explicit freshness age/limit, verified retry reuse, three SHA-256 artifacts, 1,000,000,000 reconciled weight units, 643 score records, and five factor-coverage reports.
-- V3 hosted exact-portfolio evidence: deployed from validated PR head `790b273d9`.
+- V3 hosted end-to-end pipeline evidence: deployed from validated commit `41d8c0f55`.
 - Published daily evidence history: not started.
 - Historical validation: not started.
 - Prospective validation: not started.
