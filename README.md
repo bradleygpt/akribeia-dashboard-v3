@@ -4,9 +4,9 @@ A zero-cost, auditable quantitative research platform designed around reproducib
 
 ## Repository status
 
-**Phase 0: Baseline and scaffold**
+**Phase 1: Visible trust-foundation preview**
 
-V2 remains the production system. V3 is developed and validated independently until all cutover gates pass.
+V2 remains the production system. V3 now includes a working repository-data-to-dashboard preview with strict contracts, coverage-aware scoring, exact portfolio caps, immutable publication, and active-build selection. V3 is developed and validated independently until all cutover gates pass.
 
 ## Core principles
 
@@ -25,6 +25,7 @@ npm install
 npm run typecheck
 npm run test
 npm run build
+npm run preview:generate
 ```
 
 ## Migration strategy
@@ -36,3 +37,4 @@ npm run build
 5. Cut over only after software, data, quant, security, and operational gates pass.
 
 See `ROADMAP.md`, `MIGRATION.md`, and `docs/architecture/ADR-0001-separate-v3-repository.md`.
+Execution evidence and honest readiness status are maintained in `docs/CODEX_EXECUTION_STATUS.md`.

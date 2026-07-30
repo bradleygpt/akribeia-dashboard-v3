@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "strict": true,
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "outDir": "dist",
+    "rootDir": "src",
+    "skipLibCheck": true,
+    "types": ["node"]
+  },
+  "references": [
+    {
+      "path": "../contracts"
+    },
+    {
+      "path": "../scoring"
+    },
+    {
+      "path": "../portfolio"
+    },
+    {
+      "path": "../publisher"
+    }
+  ],
+  "include": ["src/**/*.ts"]
+}
