@@ -50,3 +50,6 @@ to remain blocked. A future eligibility claim therefore requires a reviewed sche
 contract, not a caller-supplied override.
 
 V2 is unchanged. No performance result, benchmark comparison, or investment claim is produced.
+
+The functional historical-readiness tree is deployed in the owner-only V3 preview from commit
+`8e9d6e6f2`, preserved as exact-tree Sites source commit `18f9951b3`, and saved as Sites version 25.

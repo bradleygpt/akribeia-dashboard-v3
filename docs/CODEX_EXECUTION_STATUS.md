@@ -56,7 +56,8 @@ immutable evidence:
 7. the dashboard states plainly that two snapshots are not a backtest.
 
 Implementation, complete local CI, contract/generator/rendering/packaging/browser tests, and
-dependency audit pass. Owner-only preview deployment and pull-request gates remain for this unit.
+dependency audit pass. Owner-only preview deployment also passes; pull-request gates remain for
+this unit.
 
 ## Remaining milestones
 
@@ -93,8 +94,8 @@ dependency audit pass. Owner-only preview deployment and pull-request gates rema
 - V2 production: unchanged.
 - V3 local preview: generated and safely retried as immutable build `preview-20260728-pipeline-v4-a34fc842220f`; an interactive dev server is not currently running.
 - V3 hosted preview: deployed privately at <https://akribeia-v3-evidence-preview.akribeiainsights.chatgpt.site>.
-- V3 hosted preview source: merged maturity-label tree `4b1806b3d`, preserved in Sites source
-  commit `6bc646211` and deployed as version 24.
+- V3 hosted preview source: historical-readiness functional tree `8e9d6e6f2`, preserved in Sites
+  source commit `18f9951b3` and deployed as version 25.
 - V3 production: not deployed.
 - Cutover: not authorized and not attempted.
 
@@ -120,7 +121,8 @@ dependency audit pass. Owner-only preview deployment and pull-request gates rema
   maturity ladder are privately deployed.
 - Historical readiness: two research cross-sections and four fixture files are locally
   inventoried with deterministic SHA-256 evidence. Ten controls remain blocked; the report cannot
-  claim historical eligibility. Deployment remains for the current unit.
+  claim historical eligibility. The immutable report and visible readiness ledger are privately
+  deployed.
 - Historical validation: blocked by the readiness report; no backtest or performance comparison
   is claimed.
 - Prospective validation: not started.
