@@ -1816,6 +1816,209 @@ h1 span {
   line-height: 1.55;
 }
 
+.corporate-actions {
+  padding: 72px 4vw;
+  border-bottom: 1px solid rgb(255 255 255 / 13%);
+  background: #251d18;
+  color: var(--panel);
+}
+
+.corporate-actions .mono-label {
+  color: #efb95e;
+}
+
+.corporate-actions-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.corporate-actions-heading h2 {
+  max-width: 860px;
+  margin: 12px 0 20px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(40px, 5.5vw, 72px);
+  font-weight: 400;
+  letter-spacing: -0.055em;
+  line-height: 0.95;
+}
+
+.corporate-actions-heading p:not(.mono-label) {
+  max-width: 760px;
+  color: #c0b5ad;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.corporate-actions-heading a {
+  flex: none;
+  padding: 10px 13px;
+  border: 1px solid #76665a;
+  color: #efb95e;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 9px;
+  font-weight: 800;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.corporate-actions-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  margin-top: 38px;
+  border: 1px solid #59483d;
+  background: #59483d;
+}
+
+.corporate-actions-summary article {
+  min-width: 0;
+  padding: 21px;
+  background: #30251f;
+}
+
+.corporate-actions-summary span,
+.corporate-actions-summary strong {
+  display: block;
+}
+
+.corporate-actions-summary span {
+  color: #a99b91;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.corporate-actions-summary strong {
+  margin-top: 14px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 400;
+}
+
+.corporate-actions-summary article[data-status="blocked"] strong {
+  color: #ff9b7a;
+}
+
+.corporate-actions-summary p {
+  color: #a99b91;
+  font-size: 10px;
+}
+
+.corporate-action-table {
+  margin-top: 20px;
+  border: 1px solid #59483d;
+}
+
+.corporate-action-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.corporate-action-table th,
+.corporate-action-table td {
+  padding: 14px;
+  border-bottom: 1px solid #493a31;
+  text-align: left;
+  vertical-align: top;
+}
+
+.corporate-action-table th {
+  color: #a99b91;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.corporate-action-table td {
+  font-size: 10px;
+}
+
+.corporate-action-table td strong,
+.corporate-action-table td small {
+  display: block;
+}
+
+.corporate-action-table td small {
+  margin-top: 6px;
+  color: #a99b91;
+  font-size: 8px;
+}
+
+.corporate-action-table .unverified {
+  color: #ff9b7a;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.corporate-action-controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin-top: 20px;
+  border: 1px solid #59483d;
+  background: #59483d;
+}
+
+.corporate-action-controls article {
+  padding: 16px;
+  background: #30251f;
+}
+
+.corporate-action-controls span,
+.corporate-action-controls strong {
+  display: block;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.corporate-action-controls strong {
+  margin-top: 9px;
+}
+
+.corporate-action-controls article[data-status="pass"] strong {
+  color: var(--acid);
+}
+
+.corporate-action-controls article[data-status="blocked"] strong {
+  color: #ff9b7a;
+}
+
+.corporate-action-controls p {
+  margin-bottom: 0;
+  color: #a99b91;
+  font-size: 9px;
+  line-height: 1.55;
+}
+
+.corporate-action-limitation {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.25fr) minmax(0, 1fr);
+  gap: 24px;
+  margin-top: 20px;
+  padding: 19px;
+  border-left: 5px solid var(--danger);
+  background: #39241d;
+}
+
+.corporate-action-limitation strong {
+  color: #ff9b7a;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.corporate-action-limitation p {
+  margin: 0;
+  color: #c0b5ad;
+  font-size: 10px;
+  line-height: 1.55;
+}
+
 .historical-readiness {
   padding: 72px 4vw;
   border-bottom: 1px solid var(--line);
@@ -2913,7 +3116,12 @@ footer p {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .membership-controls {
+  .membership-controls,
+  .corporate-action-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .corporate-actions-summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -3018,6 +3226,7 @@ footer p {
   .security-master,
   .sec-registrants,
   .universe-membership,
+  .corporate-actions,
   .historical-readiness,
   .maturity-assessment,
   .lineage,
@@ -3103,6 +3312,11 @@ footer p {
     flex-direction: column;
   }
 
+  .corporate-actions-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   .maturity-ladder,
   .maturity-evidence > dl,
   .cutover-lock {
@@ -3114,7 +3328,9 @@ footer p {
   .security-master-summary,
   .filing-availability-summary,
   .universe-membership-summary,
-  .membership-controls {
+  .membership-controls,
+  .corporate-actions-summary,
+  .corporate-action-controls {
     grid-template-columns: 1fr;
   }
 
@@ -3127,6 +3343,10 @@ footer p {
   }
 
   .membership-limitation {
+    grid-template-columns: 1fr;
+  }
+
+  .corporate-action-limitation {
     grid-template-columns: 1fr;
   }
 

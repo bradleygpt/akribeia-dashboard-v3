@@ -2407,3 +2407,136 @@ export const UniverseMembershipReadinessSchema = z
     }
   });
 export type UniverseMembershipReadiness = z.infer<typeof UniverseMembershipReadinessSchema>;
+
+const CORPORATE_ACTION_CONTROL_KEYS = [
+  "receipted-snapshot-prices",
+  "split-events",
+  "cash-distributions",
+  "mergers-spinoffs",
+  "delistings",
+  "adjusted-total-return-series",
+] as const;
+
+export const CorporateActionReadinessSchema = z
+  .object({
+    reportSchemaVersion: z.literal("1.0.0"),
+    buildId: SafeBuildIdSchema,
+    modelVersion: z.string().min(1),
+    assessedAt: IsoDateTimeSchema,
+    status: z.literal("blocked-unverified-adjustments"),
+    corporateActionsControlled: z.literal(false),
+    historicalValidationEligible: z.literal(false),
+    comparison: z
+      .object({
+        earlierSnapshotId: z.literal("june-oracle"),
+        laterSnapshotId: z.literal("july-baseline"),
+        commonTickerCount: z.number().int().positive(),
+        priceRatioLowerBoundary: z.literal(0.5),
+        priceRatioUpperBoundary: z.literal(2),
+        impliedSharesRatioLowerBoundary: z.literal(0.5),
+        impliedSharesRatioUpperBoundary: z.literal(2),
+        stableMarketCapRelativeBand: z.literal(0.15),
+      })
+      .strict(),
+    observations: z
+      .array(
+        z
+          .object({
+            ticker: SecurityMasterTickerSchema,
+            name: z.string().trim().min(1),
+            signal: z.enum([
+              "possible-share-count-discontinuity",
+              "price-and-market-cap-discontinuity",
+            ]),
+            earlierPrice: z.number().positive(),
+            laterPrice: z.number().positive(),
+            priceRatio: z.number().positive(),
+            earlierMarketCapB: z.number().positive(),
+            laterMarketCapB: z.number().positive(),
+            marketCapRatio: z.number().positive(),
+            impliedSharesRatio: z.number().positive(),
+            verifiedCorporateAction: z.literal(null),
+          })
+          .strict(),
+      )
+      .min(1),
+    coverage: z
+      .object({
+        thresholdObservationCount: z.number().int().positive(),
+        possibleShareCountDiscontinuityCount: z.number().int().nonnegative(),
+        priceAndMarketCapDiscontinuityCount: z.number().int().nonnegative(),
+        verifiedCorporateActionCount: z.literal(0),
+        verifiedAdjustedSeriesCount: z.literal(0),
+      })
+      .strict(),
+    controls: z
+      .array(
+        z
+          .object({
+            key: z.enum([...CORPORATE_ACTION_CONTROL_KEYS]),
+            status: z.enum(["pass", "blocked"]),
+            detail: z.string().min(1),
+          })
+          .strict(),
+      )
+      .length(CORPORATE_ACTION_CONTROL_KEYS.length),
+    limitations: z.array(z.string().min(1)).min(4),
+    notice: z.string().min(1),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    const possibleCount = value.observations.filter(
+      ({ signal }) => signal === "possible-share-count-discontinuity",
+    ).length;
+    const priceAndCapCount = value.observations.length - possibleCount;
+    const tickers = value.observations.map(({ ticker }) => ticker);
+    const canonicalTickers = [...tickers].sort((left, right) => left.localeCompare(right));
+    const controlsValid =
+      value.controls.every(({ key }, index) => key === CORPORATE_ACTION_CONTROL_KEYS[index]) &&
+      value.controls[0]?.status === "pass" &&
+      value.controls.slice(1).every(({ status }) => status === "blocked");
+    const observationsValid = value.observations.every((observation) => {
+      const priceRatio = observation.laterPrice / observation.earlierPrice;
+      const marketCapRatio = observation.laterMarketCapB / observation.earlierMarketCapB;
+      const impliedSharesRatio =
+        observation.laterMarketCapB /
+        observation.laterPrice /
+        (observation.earlierMarketCapB / observation.earlierPrice);
+      const extremePrice =
+        priceRatio <= value.comparison.priceRatioLowerBoundary ||
+        priceRatio >= value.comparison.priceRatioUpperBoundary;
+      const extremeShares =
+        impliedSharesRatio <= value.comparison.impliedSharesRatioLowerBoundary ||
+        impliedSharesRatio >= value.comparison.impliedSharesRatioUpperBoundary;
+      const stableMarketCap =
+        Math.abs(marketCapRatio - 1) <= value.comparison.stableMarketCapRelativeBand;
+
+      return (
+        observation.priceRatio === priceRatio &&
+        observation.marketCapRatio === marketCapRatio &&
+        observation.impliedSharesRatio === impliedSharesRatio &&
+        extremePrice &&
+        (observation.signal === "possible-share-count-discontinuity"
+          ? extremeShares && stableMarketCap
+          : !extremeShares && !stableMarketCap)
+      );
+    });
+
+    if (
+      value.coverage.thresholdObservationCount !== value.observations.length ||
+      value.coverage.possibleShareCountDiscontinuityCount !== possibleCount ||
+      value.coverage.priceAndMarketCapDiscontinuityCount !== priceAndCapCount ||
+      new Set(tickers).size !== tickers.length ||
+      tickers.some((ticker, index) => ticker !== canonicalTickers[index]) ||
+      !controlsValid ||
+      !observationsValid
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          "Corporate-action observations, coverage, and fail-closed controls must reconcile.",
+        path: ["observations"],
+      });
+    }
+  });
+export type CorporateActionReadiness = z.infer<typeof CorporateActionReadinessSchema>;

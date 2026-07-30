@@ -1,4 +1,5 @@
 import {
+  CorporateActionReadinessSchema,
   DailyEvidenceRecordSchema,
   DataQualityReportSchema,
   FilingAvailabilityReportSchema,
@@ -14,6 +15,7 @@ import {
 import { DataStatusBanner } from "./data-status-banner";
 import { EvidenceExplorer } from "./evidence-explorer";
 import activeDashboard from "./generated/active-dashboard.json";
+import activeCorporateActionReadiness from "./generated/active-corporate-action-readiness.json";
 import activeDailyEvidence from "./generated/active-daily-evidence.json";
 import activeFilingAvailability from "./generated/active-filing-availability.json";
 import activeHistoricalReadiness from "./generated/active-historical-readiness.json";
@@ -26,6 +28,9 @@ import activeSecurityMaster from "./generated/active-security-master.json";
 import activeUniverseMembership from "./generated/active-universe-membership.json";
 
 const dashboard = VerticalSliceDashboardSchema.parse(activeDashboard);
+const corporateActionReadiness = CorporateActionReadinessSchema.parse(
+  activeCorporateActionReadiness,
+);
 const dailyEvidence = DailyEvidenceRecordSchema.parse(activeDailyEvidence);
 const filingAvailability = FilingAvailabilityReportSchema.parse(activeFilingAvailability);
 const historicalReadiness = HistoricalReadinessReportSchema.parse(activeHistoricalReadiness);
@@ -39,6 +44,8 @@ const universeMembership = UniverseMembershipReadinessSchema.parse(activeUnivers
 
 if (
   modelCard.modelVersion !== dashboard.modelVersion ||
+  corporateActionReadiness.buildId !== dashboard.buildId ||
+  corporateActionReadiness.modelVersion !== dashboard.modelVersion ||
   metricDictionary.modelVersion !== dashboard.modelVersion ||
   filingAvailability.buildId !== dashboard.buildId ||
   filingAvailability.modelVersion !== dashboard.modelVersion ||
@@ -132,6 +139,7 @@ export default function Home() {
           <a href="#portfolio">Portfolio</a>
           <a href="#daily-evidence">Evidence</a>
           <a href="#universe-membership">Membership</a>
+          <a href="#corporate-actions">Actions</a>
           <a href="#filing-availability">Filings</a>
           <a href="#model-governance">Method</a>
           <a href="#data-quality">Quality</a>
@@ -317,6 +325,114 @@ export default function Home() {
           <aside className="membership-limitation" role="note">
             <strong>Observed difference, not a constituent event</strong>
             <p>{universeMembership.limitations[0]}</p>
+          </aside>
+        </section>
+
+        <section
+          className="corporate-actions"
+          id="corporate-actions"
+          aria-labelledby="corporate-actions-heading"
+        >
+          <div className="corporate-actions-heading">
+            <div>
+              <p className="mono-label">CORPORATE ACTIONS / PRICE COMPARABILITY</p>
+              <h2 id="corporate-actions-heading">
+                Five discontinuities. Zero verified adjustments.
+              </h2>
+              <p>
+                Extreme price changes across continuing ticker labels are measured against market
+                capitalization and implied shares. The signals expose where comparison can break;
+                they do not manufacture split ratios or adjusted returns.
+              </p>
+            </div>
+            <a
+              href={`/data/evidence/corporate-action-readiness/builds/${corporateActionReadiness.buildId}/corporate-action-readiness.json`}
+            >
+              View immutable evidence
+            </a>
+          </div>
+          <div className="corporate-actions-summary" aria-label="Corporate-action readiness">
+            <article>
+              <span>Compared</span>
+              <strong>{corporateActionReadiness.comparison.commonTickerCount}</strong>
+              <p>continuing ticker labels</p>
+            </article>
+            <article>
+              <span>Extreme price moves</span>
+              <strong>{corporateActionReadiness.coverage.thresholdObservationCount}</strong>
+              <p>outside 0.5×–2.0×</p>
+            </article>
+            <article>
+              <span>Possible share discontinuity</span>
+              <strong>
+                {corporateActionReadiness.coverage.possibleShareCountDiscontinuityCount}
+              </strong>
+              <p>unverified diagnostic signals</p>
+            </article>
+            <article data-status="blocked">
+              <span>Verified actions</span>
+              <strong>{corporateActionReadiness.coverage.verifiedCorporateActionCount}</strong>
+              <p>adjusted series also unavailable</p>
+            </article>
+          </div>
+          <div
+            className="table-scroll corporate-action-table"
+            tabIndex={0}
+            role="region"
+            aria-label="Unverified price comparability observations"
+          >
+            <table>
+              <caption className="sr-only">
+                Extreme snapshot price changes and unverified comparability signals
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Ticker</th>
+                  <th scope="col">Signal</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Market cap</th>
+                  <th scope="col">Implied shares</th>
+                  <th scope="col">Verification</th>
+                </tr>
+              </thead>
+              <tbody>
+                {corporateActionReadiness.observations.map((observation) => (
+                  <tr key={observation.ticker}>
+                    <td>
+                      <strong>{observation.ticker}</strong>
+                      <small>{observation.name}</small>
+                    </td>
+                    <td>{observation.signal.replaceAll("-", " ")}</td>
+                    <td>
+                      {observation.earlierPrice.toFixed(2)} → {observation.laterPrice.toFixed(2)}
+                      <small>{observation.priceRatio.toFixed(3)}×</small>
+                    </td>
+                    <td>
+                      ${observation.earlierMarketCapB.toFixed(1)}B → $
+                      {observation.laterMarketCapB.toFixed(1)}B
+                      <small>{observation.marketCapRatio.toFixed(3)}×</small>
+                    </td>
+                    <td>{observation.impliedSharesRatio.toFixed(3)}×</td>
+                    <td>
+                      <strong className="unverified">unverified</strong>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="corporate-action-controls" aria-label="Corporate-action controls">
+            {corporateActionReadiness.controls.map((control) => (
+              <article data-status={control.status} key={control.key}>
+                <span>{control.key.replaceAll("-", " ")}</span>
+                <strong>{control.status}</strong>
+                <p>{control.detail}</p>
+              </article>
+            ))}
+          </div>
+          <aside className="corporate-action-limitation" role="note">
+            <strong>No synthetic adjustment</strong>
+            <p>{corporateActionReadiness.limitations[4]}</p>
           </aside>
         </section>
 

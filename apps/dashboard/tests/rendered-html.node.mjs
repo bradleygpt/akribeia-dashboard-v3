@@ -115,6 +115,11 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /Observed exits/);
   assert.match(html, /effective membership intervals available/);
   assert.match(html, /Observed difference, not a constituent event/);
+  assert.match(html, /Five discontinuities\. Zero verified adjustments/);
+  assert.match(html, /Possible share discontinuity/);
+  assert.match(html, /KLAC/);
+  assert.match(html, /10\.026/);
+  assert.match(html, /No synthetic adjustment/);
   assert.match(html, /Two snapshots are not a backtest/);
   assert.match(html, /2<!-- --> snapshots inventoried/);
   assert.match(html, /timezone unspecified/);
@@ -256,6 +261,8 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
     sourceFilingAvailability,
     packagedUniverseMembership,
     sourceUniverseMembership,
+    packagedCorporateActions,
+    sourceCorporateActions,
   ] = await Promise.all([
     readFile(new URL("../.openai/hosting.json", import.meta.url), "utf8"),
     readFile(new URL("../dist/.openai/hosting.json", import.meta.url), "utf8"),
@@ -326,6 +333,17 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
       new URL("../public/data/evidence/universe-membership/active.json", import.meta.url),
       "utf8",
     ),
+    readFile(
+      new URL(
+        "../dist/client/data/evidence/corporate-action-readiness/active.json",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+    readFile(
+      new URL("../public/data/evidence/corporate-action-readiness/active.json", import.meta.url),
+      "utf8",
+    ),
   ]);
   const pointer = JSON.parse(pointerPayload);
   const buildRoot = new URL(
@@ -347,6 +365,7 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(packagedHistoricalReadiness, sourceHistoricalReadiness);
   assert.equal(packagedFilingAvailability, sourceFilingAvailability);
   assert.equal(packagedUniverseMembership, sourceUniverseMembership);
+  assert.equal(packagedCorporateActions, sourceCorporateActions);
 
   for (const artifact of Object.values(manifest.files)) {
     const [packagedPayload, sourcePayload] = await Promise.all([
@@ -502,4 +521,19 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(universeMembership.comparison.entrantCount, 14);
   assert.equal(universeMembership.comparison.exitCount, 13);
   assert.equal(universeMembership.controls.filter(({ status }) => status === "blocked").length, 5);
+  const corporateActions = JSON.parse(packagedCorporateActions);
+  const versionedCorporateActions = await readFile(
+    new URL(
+      `../dist/client/data/evidence/corporate-action-readiness/builds/${corporateActions.buildId}/corporate-action-readiness.json`,
+      import.meta.url,
+    ),
+    "utf8",
+  );
+  assert.equal(versionedCorporateActions, packagedCorporateActions);
+  assert.equal(corporateActions.buildId, activeEvidence.build.buildId);
+  assert.equal(corporateActions.corporateActionsControlled, false);
+  assert.equal(corporateActions.historicalValidationEligible, false);
+  assert.equal(corporateActions.coverage.thresholdObservationCount, 5);
+  assert.equal(corporateActions.coverage.possibleShareCountDiscontinuityCount, 3);
+  assert.equal(corporateActions.coverage.verifiedCorporateActionCount, 0);
 });
