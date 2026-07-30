@@ -24,3 +24,7 @@ data/evidence/security-master/builds/<build-id>/security-master.json
 
 The dashboard and browser-accessible active projection use the exact same bytes. Identical retries
 reuse the immutable record; conflicting bytes fail closed.
+
+The functional security-master tree is deployed in the owner-only V3 preview from commit
+`187fc9f6b`, preserved as exact-tree Sites source commit `481869f21` and saved as Sites version 21.
+V2 is unchanged.

@@ -43,7 +43,8 @@ The current branch makes the active identity set explicit without claiming unava
 8. point-in-time history and permanent identifiers remain required for historical validation.
 
 Implementation, complete local CI, contract/generator/rendering/packaging/browser tests, and
-dependency audit pass. Owner-only preview deployment and pull-request gates remain for this unit.
+dependency audit pass. Owner-only preview deployment also passes; pull-request gates remain for
+this unit.
 
 ## Remaining milestones
 
@@ -74,7 +75,8 @@ dependency audit pass. Owner-only preview deployment and pull-request gates rema
 - V3 local preview: generated and safely retried as immutable build `preview-20260728-pipeline-v4-a34fc842220f`; an interactive dev server is not currently running.
 - V3 hosted preview: deployed privately at <https://akribeia-v3-evidence-preview.akribeiainsights.chatgpt.site>.
 - V3 hosted preview source: exact PR #16 quality-and-drift tree from commit `252f0e35f`,
-  preserved in Sites source commit `ee8925c2e` and deployed as version 20.
+  superseded by the security-master functional tree from commit `187fc9f6b`, preserved in Sites
+  source commit `481869f21` and deployed as version 21.
 - V3 production: not deployed.
 - Cutover: not authorized and not attempted.
 
@@ -94,7 +96,7 @@ dependency audit pass. Owner-only preview deployment and pull-request gates rema
   and the report is privately deployed.
 - Security master: 643 unique ticker-derived research identities are generated locally with no
   collisions; all remain provisional because permanent identifiers and ticker history are absent.
-  Private deployment is pending.
+  The evidence and visible identity ledger are privately deployed.
 - Historical validation: not started.
 - Prospective validation: not started.
 
