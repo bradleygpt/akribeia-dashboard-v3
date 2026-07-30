@@ -205,6 +205,11 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
     assert.match(stdout, /No zero-cost shortcut/);
     assert.match(stdout, /Eight candidates\. No benchmark return/);
     assert.match(stdout, /Price change is not return/);
+    assert.match(stdout, /One day recorded\. Twenty-nine still must happen/);
+    assert.match(stdout, /Immutable observation days/);
+    assert.match(stdout, /Executable portfolios/);
+    assert.match(stdout, /Costed returns/);
+    assert.match(stdout, /Elapsed evidence cannot be generated on demand/);
     assert.match(stdout, /Two snapshots\. Zero eligible folds/);
     assert.match(stdout, /Readiness is not a backtest/);
     assert.match(stdout, /Two snapshots are not a backtest/);

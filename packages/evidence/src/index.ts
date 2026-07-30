@@ -22,6 +22,7 @@ export * from "./filing-availability.js";
 export * from "./historical-readiness.js";
 export * from "./maturity.js";
 export * from "./quality.js";
+export * from "./prospective-readiness.js";
 export * from "./sec-identity-source.js";
 export * from "./sec-registrants.js";
 export * from "./sec-submissions-source.js";

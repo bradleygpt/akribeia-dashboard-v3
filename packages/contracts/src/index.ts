@@ -2975,3 +2975,177 @@ export const WalkForwardReadinessSchema = z
     }
   });
 export type WalkForwardReadiness = z.infer<typeof WalkForwardReadinessSchema>;
+
+const PROSPECTIVE_CONTROL_KEYS = [
+  "immutable-daily-ledger",
+  "independent-observation-window",
+  "executable-portfolio-records",
+  "costed-net-returns",
+  "approved-benchmark-comparisons",
+  "monthly-validation-reports",
+  "prospective-protocol",
+  "model-drift-retirement-rules",
+] as const;
+
+const PROSPECTIVE_CERTIFICATION_KEYS = [
+  "thirty-immutable-observation-days",
+  "thirty-executable-portfolio-records",
+  "thirty-costed-return-observations",
+  "thirty-approved-benchmark-comparisons",
+  "one-monthly-validation-report",
+  "frozen-prospective-protocol",
+  "approved-drift-retirement-policy",
+] as const;
+
+export const ProspectiveReadinessSchema = z
+  .object({
+    reportSchemaVersion: z.literal("1.0.0"),
+    buildId: SafeBuildIdSchema,
+    modelVersion: z.string().min(1),
+    assessedAt: IsoDateTimeSchema,
+    status: z.literal("blocked-insufficient-prospective-history"),
+    prospectiveValidationEligible: z.literal(false),
+    certificationEligible: z.literal(false),
+    requirements: z
+      .object({
+        immutableDailyObservationDays: z.literal(30),
+        executablePortfolioRecords: z.literal(30),
+        costedReturnObservations: z.literal(30),
+        approvedBenchmarkComparisons: z.literal(30),
+        monthlyValidationReports: z.literal(1),
+      })
+      .strict(),
+    progress: z
+      .object({
+        immutableDailyEvidenceRecordCount: z.number().int().nonnegative(),
+        uniqueObservationDayCount: z.number().int().nonnegative(),
+        remainingObservationDayCount: z.number().int().nonnegative(),
+        executablePortfolioRecordCount: z.literal(0),
+        costedReturnObservationCount: z.literal(0),
+        approvedBenchmarkComparisonCount: z.literal(0),
+        monthlyValidationReportCount: z.literal(0),
+        earliestObservationDate: z.string().date().nullable(),
+        latestObservationDate: z.string().date().nullable(),
+      })
+      .strict(),
+    observations: z.array(
+      z
+        .object({
+          asOfDate: z.string().date(),
+          buildId: SafeBuildIdSchema,
+          modelVersion: z.string().min(1),
+          recordedAt: IsoDateTimeSchema,
+          evidenceRecordPath: z.string().min(1),
+          evidenceRecordSha256: Sha256Schema,
+          reproducibilityReportPath: z.string().min(1),
+          reproductionVerified: z.literal(true),
+          executionRecorded: z.literal(false),
+          costedReturnComputed: z.literal(false),
+          approvedBenchmarkCompared: z.literal(false),
+        })
+        .strict(),
+    ),
+    sourceReports: z
+      .array(
+        z
+          .object({
+            name: z.enum([
+              "daily-evidence",
+              "execution-cost-readiness",
+              "benchmark-readiness",
+              "walk-forward-readiness",
+            ]),
+            status: z.string().min(1),
+            eligibilityClaim: z.literal(false),
+          })
+          .strict(),
+      )
+      .length(4),
+    controls: z
+      .array(
+        z
+          .object({
+            key: z.enum([...PROSPECTIVE_CONTROL_KEYS]),
+            status: z.enum(["partial", "blocked"]),
+            detail: z.string().min(1),
+          })
+          .strict(),
+      )
+      .length(PROSPECTIVE_CONTROL_KEYS.length),
+    certificationConditions: z
+      .array(
+        z
+          .object({
+            key: z.enum([...PROSPECTIVE_CERTIFICATION_KEYS]),
+            requiredCount: z.number().int().positive().nullable(),
+            observedCount: z.number().int().nonnegative(),
+            satisfied: z.literal(false),
+            detail: z.string().min(1),
+          })
+          .strict(),
+      )
+      .length(PROSPECTIVE_CERTIFICATION_KEYS.length),
+    limitations: z.array(z.string().min(1)).min(5),
+    notice: z.string().min(1),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    const observationOrder = value.observations.map(
+      ({ asOfDate, buildId }) => `${asOfDate}/${buildId}`,
+    );
+    const canonicalObservationOrder = [...observationOrder].sort((left, right) =>
+      left.localeCompare(right),
+    );
+    const uniqueDays = new Set(value.observations.map(({ asOfDate }) => asOfDate));
+    const sourceOrder = value.sourceReports.map(({ name }) => name);
+    const expectedSourceOrder = [
+      "daily-evidence",
+      "execution-cost-readiness",
+      "benchmark-readiness",
+      "walk-forward-readiness",
+    ];
+    const controlsValid =
+      value.controls.every(({ key }, index) => key === PROSPECTIVE_CONTROL_KEYS[index]) &&
+      value.controls[0]?.status === "partial" &&
+      value.controls.slice(1).every(({ status }) => status === "blocked");
+    const conditionsValid =
+      value.certificationConditions.every(
+        ({ key }, index) => key === PROSPECTIVE_CERTIFICATION_KEYS[index],
+      ) &&
+      value.certificationConditions[0]?.requiredCount === 30 &&
+      value.certificationConditions[0]?.observedCount ===
+        value.progress.uniqueObservationDayCount &&
+      value.certificationConditions[1]?.requiredCount === 30 &&
+      value.certificationConditions[2]?.requiredCount === 30 &&
+      value.certificationConditions[3]?.requiredCount === 30 &&
+      value.certificationConditions[4]?.requiredCount === 1 &&
+      value.certificationConditions[5]?.requiredCount === null &&
+      value.certificationConditions[6]?.requiredCount === null &&
+      value.certificationConditions.slice(1).every(({ observedCount }) => observedCount === 0);
+    const earliest = value.observations.at(0)?.asOfDate ?? null;
+    const latest = value.observations.at(-1)?.asOfDate ?? null;
+    const progressValid =
+      value.progress.immutableDailyEvidenceRecordCount === value.observations.length &&
+      value.progress.uniqueObservationDayCount === uniqueDays.size &&
+      value.progress.remainingObservationDayCount ===
+        Math.max(0, value.requirements.immutableDailyObservationDays - uniqueDays.size) &&
+      value.progress.earliestObservationDate === earliest &&
+      value.progress.latestObservationDate === latest;
+
+    if (
+      observationOrder.some((entry, index) => entry !== canonicalObservationOrder[index]) ||
+      new Set(observationOrder).size !== observationOrder.length ||
+      sourceOrder.some((name, index) => name !== expectedSourceOrder[index]) ||
+      !controlsValid ||
+      !conditionsValid ||
+      !progressValid
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          "Prospective observation progress, source lineage, and certification controls must reconcile.",
+        path: ["progress"],
+      });
+    }
+  });
+export type ProspectiveReadiness = z.infer<typeof ProspectiveReadinessSchema>;

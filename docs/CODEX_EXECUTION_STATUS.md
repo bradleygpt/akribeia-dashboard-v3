@@ -4,7 +4,7 @@ Last updated: 2026-07-30
 
 ## Whole-product completion
 
-Estimated completion: **92%**
+Estimated completion: **94%**
 
 This estimate reflects working, tested product behavior rather than roadmap line-item count. V3 now
 has the Phase 0 baseline, core publication trust primitives, a deployed visible preview, complete
@@ -20,7 +20,7 @@ entrants and exits, receipted corporate-action and exit-disposition diagnostics,
 execution-cost readiness that never converts missing costs into zero, plus a visible inventory of
 benchmark proxy candidates that never converts snapshot price changes into returns. It is not
 ready to replace V2. A consolidated fold gate now prevents partial Phase 3 evidence from becoming
-a walk-forward or out-of-sample claim.
+a walk-forward or out-of-sample claim. A prospective-readiness gate now makes the live evidence clock explicit without treating one preserved receipt as a validation series.
 
 ## Completed milestones
 
@@ -60,25 +60,27 @@ a walk-forward or out-of-sample claim.
   fields, privately deployed and merged through PR #25.
 - Eight benchmark proxy candidates with zero selected benchmarks or inferred returns, privately
   deployed and merged through PR #26.
+- Consolidated walk-forward readiness with zero eligible folds or performance comparisons, privately
+  deployed and merged through PR #27.
 
 ## Current milestone
 
-**Walk-forward and out-of-sample readiness**
+**Prospective validation readiness**
 
-The current branch consolidates seven active evidence reports into one immutable fold gate:
+The current branch adds one immutable, fail-closed prospective certification gate:
 
-1. all source reports must share active build and model lineage;
-2. the two receipted snapshots remain explicitly ineligible for point-in-time use;
-3. strict cross-section inventory and filing availability remain partial;
-4. survivorship, identity, actions, exits, execution, and benchmark controls remain blocked;
-5. no training-window, rebalance, embargo, parameter-freeze, or fold policy is invented;
-6. candidate, eligible, and evaluated fold counts remain zero;
-7. performance comparison count remains zero;
-8. forged fold, eligibility, or source-readiness claims fail the contract.
+1. every immutable daily evidence record is discovered from the published ledger and schema validated;
+2. the active daily projection must match its immutable ledger bytes exactly;
+3. active daily, execution, benchmark, and walk-forward reports must share build and model lineage;
+4. independent observation dates are counted separately from repeated builds on one date;
+5. the current ledger reports one of 30 required observation days and 29 remaining;
+6. executable portfolio, costed-return, approved-benchmark-comparison, and monthly-report counts remain zero;
+7. the exact protocol, drift, escalation, suspension, and retirement policies required for certification remain explicit blockers;
+8. forged progress, source eligibility, or certification claims fail the contract.
 
-Implementation, complete local CI, contract/generator/rendering/packaging/browser tests,
-dependency audit, and functional owner-only deployment pass. Final repository commit,
-exact-commit hosted deployment, and pull-request gates remain for this unit.
+The contract, generator, CLI, immutable/public projections, dashboard surface, packaging checks, and
+seven deterministic unit tests are implemented in the handoff patch. Full repository validation,
+commit, hosted preview, pull request, and merge remain pending in the source repository.
 
 ## Remaining milestones
 
@@ -92,7 +94,8 @@ exact-commit hosted deployment, and pull-request gates remain for this unit.
   identifies a registrant and does not resolve this requirement.
 - Implement walk-forward/out-of-sample evaluation only after those inputs satisfy the readiness
   contract.
-- Accumulate prospective daily validation evidence.
+- Approve and version the prospective protocol, execution convention, benchmark mandate, monthly review template, and model drift/retirement rules.
+- Accumulate 30 distinct immutable prospective daily observations with executable portfolios, costed returns, and aligned benchmark comparisons.
 - Complete release-gate certification, recovery testing, accessibility review, and operational documentation.
 - Perform final V3 production cutover only with explicit authorization after all gates pass.
 
@@ -116,16 +119,15 @@ exact-commit hosted deployment, and pull-request gates remain for this unit.
   metadata rather than acquisition-time pipeline telemetry.
 - Eleven active tickers do not have an exact association in the captured SEC ticker files.
 - Permanent exchange-listing identity remains unavailable for all operating companies.
+- Prospective certification is blocked at one of 30 observation days, with zero executable portfolio records, zero costed returns, zero approved benchmark comparisons, and zero monthly validation reports.
 - Final V3 production cutover remains explicitly out of scope without user authorization.
 
 ## Test counts
 
-- Vitest suite: 167 tests across 23 files pass.
-- Rendered deployment and browser suite: 6 tests pass.
-- Total automated tests: 173 pass.
-- Current unit validation: Prettier, typecheck, lint, every workspace build, 167 Vitest tests,
-  five rendered accessibility/integrity/API/package tests, one isolated-profile real-Chrome
-  hydration smoke test, `git diff --check`, and `npm audit --audit-level=high` pass.
+- Main-branch baseline: 167 Vitest tests across 23 files pass.
+- Current prospective unit adds 7 deterministic Vitest tests in one new file.
+- Expected post-patch suite: 174 Vitest tests across 24 files plus 6 rendered/browser tests, 180 total.
+- Full current-unit validation remains pending after the handoff patch is applied in the source repository.
 
 ## Deployment status
 
@@ -134,8 +136,8 @@ exact-commit hosted deployment, and pull-request gates remain for this unit.
 - V3 hosted preview: deployed privately at <https://akribeia-v3-evidence-preview.akribeiainsights.chatgpt.site>.
 - V3 hosted preview source: exact PR #26 head `499515472`, preserved in Sites source commit
   `f216ea19f` and deployed as version 40.
-- Current walk-forward-readiness functional tree is preserved in Sites source commit `74b3cca3c`
-  and deployed owner-only as version 41.
+- The merged walk-forward-readiness tree is deployed owner-only.
+- The prospective-readiness handoff patch is not yet committed or deployed.
 - Hosted deployment status is successful. The current package passed an isolated-profile
   real-Chrome smoke test locally; a signed-in interactive browser was unavailable for a separate
   hosted-page smoke check.
@@ -196,7 +198,7 @@ exact-commit hosted deployment, and pull-request gates remain for this unit.
   evidence and the visible dashboard gate are deployed privately.
 - Historical validation: blocked by the readiness report; no backtest or performance comparison
   is claimed.
-- Prospective validation: not started.
+- Prospective validation: readiness is now represented explicitly as one of 30 immutable observation days, zero executable portfolio records, zero costed-return observations, zero approved benchmark comparisons, and zero monthly validation reports. The elapsed prospective series itself has not started under an approved frozen protocol.
 
 ## Risks and assumptions
 
