@@ -2019,6 +2019,173 @@ h1 span {
   line-height: 1.55;
 }
 
+.exit-disposition {
+  padding: 72px 4vw;
+  border-bottom: 1px solid var(--line);
+  background: #e7eae0;
+}
+
+.exit-disposition-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.exit-disposition-heading h2 {
+  max-width: 850px;
+  margin: 12px 0 20px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(40px, 5.5vw, 72px);
+  font-weight: 400;
+  letter-spacing: -0.055em;
+  line-height: 0.95;
+}
+
+.exit-disposition-heading p:not(.mono-label) {
+  max-width: 760px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.exit-disposition-heading a {
+  flex: none;
+  padding: 10px 13px;
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 9px;
+  font-weight: 800;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.exit-disposition-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  margin-top: 38px;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.exit-disposition-summary article {
+  padding: 20px;
+  background: #f7f8f1;
+}
+
+.exit-disposition-summary span,
+.exit-disposition-summary strong {
+  display: block;
+}
+
+.exit-disposition-summary span {
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.exit-disposition-summary strong {
+  margin-top: 14px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 400;
+}
+
+.exit-disposition-summary article[data-status="blocked"] strong {
+  color: var(--danger);
+}
+
+.exit-disposition-summary p {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.exit-disposition-table {
+  margin-top: 20px;
+  border: 1px solid var(--line);
+  background: #f7f8f1;
+}
+
+.exit-disposition-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.exit-disposition-table th,
+.exit-disposition-table td {
+  padding: 13px 15px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.exit-disposition-table th {
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.exit-disposition-table td {
+  font-size: 10px;
+}
+
+.exit-disposition-table td strong,
+.exit-disposition-table td small {
+  display: block;
+}
+
+.exit-disposition-table td small {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.exit-disposition-table td[data-status="present"] > strong {
+  color: #3e6618;
+}
+
+.exit-disposition-table td[data-status="unmatched"] > strong,
+.exit-disposition-table .unverified {
+  color: var(--danger);
+}
+
+.exit-disposition-table td > strong,
+.exit-disposition-table code {
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.exit-disposition-limitation {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.25fr) minmax(0, 1fr);
+  gap: 24px;
+  margin-top: 20px;
+  padding: 19px;
+  border-left: 5px solid var(--danger);
+  background: #f5e4dc;
+}
+
+.exit-disposition-limitation strong {
+  color: var(--danger);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.exit-disposition-limitation p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
 .historical-readiness {
   padding: 72px 4vw;
   border-bottom: 1px solid var(--line);
@@ -3125,6 +3292,10 @@ footer p {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .exit-disposition-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .maturity-heading,
   .maturity-evidence {
     grid-template-columns: 1fr;
@@ -3227,6 +3398,7 @@ footer p {
   .sec-registrants,
   .universe-membership,
   .corporate-actions,
+  .exit-disposition,
   .historical-readiness,
   .maturity-assessment,
   .lineage,
@@ -3317,6 +3489,11 @@ footer p {
     flex-direction: column;
   }
 
+  .exit-disposition-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   .maturity-ladder,
   .maturity-evidence > dl,
   .cutover-lock {
@@ -3334,6 +3511,10 @@ footer p {
     grid-template-columns: 1fr;
   }
 
+  .exit-disposition-summary {
+    grid-template-columns: 1fr;
+  }
+
   .universe-membership-ledger ul {
     grid-template-columns: 1fr;
   }
@@ -3347,6 +3528,10 @@ footer p {
   }
 
   .corporate-action-limitation {
+    grid-template-columns: 1fr;
+  }
+
+  .exit-disposition-limitation {
     grid-template-columns: 1fr;
   }
 

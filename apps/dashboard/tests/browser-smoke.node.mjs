@@ -198,6 +198,9 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
     assert.match(stdout, /Five discontinuities\. Zero verified adjustments/);
     assert.match(stdout, /Possible share discontinuity/);
     assert.match(stdout, /No synthetic adjustment/);
+    assert.match(stdout, /Leaving the file is not a delisting/);
+    assert.match(stdout, /BLD and HOLX remain unresolved/);
+    assert.match(stdout, /Current is not historical/);
     assert.match(stdout, /Two snapshots are not a backtest/);
     assert.match(stdout, /10<!-- --> controls unresolved/);
     assert.match(stdout, /No performance claim/);

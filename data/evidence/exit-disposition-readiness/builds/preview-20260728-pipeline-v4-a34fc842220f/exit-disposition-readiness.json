@@ -1,0 +1,198 @@
+{
+  "reportSchemaVersion": "1.0.0",
+  "buildId": "preview-20260728-pipeline-v4-a34fc842220f",
+  "modelVersion": "3.0.0-preview.3",
+  "assessedAt": "2026-07-30T04:36:30Z",
+  "generatedAt": "2026-07-30T06:49:38.889Z",
+  "status": "partial-current-association-not-disposition-history",
+  "historicalDelistingControlled": false,
+  "historicalTickerHistoryEligible": false,
+  "sourceReceipt": {
+    "snapshotId": "2026-07-30",
+    "retrievedAt": "2026-07-30T06:49:38.889Z",
+    "lastModifiedAt": "2026-07-24T13:32:43.000Z",
+    "sha256": "6a4f83335f24e07200fe7a323fb9b16811ee4967ca881035e1d78dd16e387955",
+    "byteSize": 798160,
+    "recordCount": 10432
+  },
+  "coverage": {
+    "observedExitCount": 13,
+    "currentSecAssociationCount": 11,
+    "unmatchedCurrentAssociationCount": 2,
+    "historicalDispositionResolvedCount": 0
+  },
+  "entries": [
+    {
+      "ticker": "BLD",
+      "snapshotName": "TopBuild Corp.",
+      "earlierMarketCapB": 11.5,
+      "currentAssociationStatus": "unmatched",
+      "currentSecAssociation": null,
+      "historicalDispositionStatus": "unverified"
+    },
+    {
+      "ticker": "BMNR",
+      "snapshotName": "BitMine Immersion Technologies,",
+      "earlierMarketCapB": 10.2,
+      "currentAssociationStatus": "present",
+      "currentSecAssociation": {
+        "cik": "0001829311",
+        "title": "BITMINE IMMERSION TECHNOLOGIES, INC."
+      },
+      "historicalDispositionStatus": "unverified"
+    },
+    {
+      "ticker": "DOCU",
+      "snapshotName": "DocuSign, Inc.",
+      "earlierMarketCapB": 10.7,
+      "currentAssociationStatus": "present",
+      "currentSecAssociation": {
+        "cik": "0001261333",
+        "title": "DOCUSIGN, INC."
+      },
+      "historicalDispositionStatus": "unverified"
+    },
+    {
+      "ticker": "ESI",
+      "snapshotName": "Element Solutions Inc.",
+      "earlierMarketCapB": 10.4,
+      "currentAssociationStatus": "present",
+      "currentSecAssociation": {
+        "cik": "0001590714",
+        "title": "Element Solutions Inc"
+      },
+      "historicalDispositionStatus": "unverified"
+    },
+    {
+      "ticker": "HOLX",
+      "snapshotName": "Hologic, Inc.",
+      "earlierMarketCapB": 17,
+      "currentAssociationStatus": "unmatched",
+      "currentSecAssociation": null,
+      "historicalDispositionStatus": "unverified"
+    },
+    {
+      "ticker": "IT",
+      "snapshotName": "Gartner, Inc.",
+      "earlierMarketCapB": 11.4,
+      "currentAssociationStatus": "present",
+      "currentSecAssociation": {
+        "cik": "0000749251",
+        "title": "GARTNER INC"
+      },
+      "historicalDispositionStatus": "unverified"
+    },
+    {
+      "ticker": "JOBY",
+      "snapshotName": "Joby Aviation, Inc.",
+      "earlierMarketCapB": 11.7,
+      "currentAssociationStatus": "present",
+      "currentSecAssociation": {
+        "cik": "0001819848",
+        "title": "Joby Aviation, Inc."
+      },
+      "historicalDispositionStatus": "unverified"
+    },
+    {
+      "ticker": "LUMN",
+      "snapshotName": "Lumen Technologies, Inc.",
+      "earlierMarketCapB": 10.9,
+      "currentAssociationStatus": "present",
+      "currentSecAssociation": {
+        "cik": "0000018926",
+        "title": "Lumen Technologies, Inc."
+      },
+      "historicalDispositionStatus": "unverified"
+    },
+    {
+      "ticker": "OKLO",
+      "snapshotName": "Oklo Inc.",
+      "earlierMarketCapB": 12.8,
+      "currentAssociationStatus": "present",
+      "currentSecAssociation": {
+        "cik": "0001849056",
+        "title": "Oklo Inc."
+      },
+      "historicalDispositionStatus": "unverified"
+    },
+    {
+      "ticker": "POWL",
+      "snapshotName": "Powell Industries, Inc.",
+      "earlierMarketCapB": 10.9,
+      "currentAssociationStatus": "present",
+      "currentSecAssociation": {
+        "cik": "0000080420",
+        "title": "POWELL INDUSTRIES INC"
+      },
+      "historicalDispositionStatus": "unverified"
+    },
+    {
+      "ticker": "RIOT",
+      "snapshotName": "Riot Platforms, Inc.",
+      "earlierMarketCapB": 10.3,
+      "currentAssociationStatus": "present",
+      "currentSecAssociation": {
+        "cik": "0001167419",
+        "title": "Riot Platforms, Inc."
+      },
+      "historicalDispositionStatus": "unverified"
+    },
+    {
+      "ticker": "SWKS",
+      "snapshotName": "Skyworks Solutions, Inc.",
+      "earlierMarketCapB": 11.9,
+      "currentAssociationStatus": "present",
+      "currentSecAssociation": {
+        "cik": "0000004127",
+        "title": "SKYWORKS SOLUTIONS, INC."
+      },
+      "historicalDispositionStatus": "unverified"
+    },
+    {
+      "ticker": "WULF",
+      "snapshotName": "TeraWulf Inc.",
+      "earlierMarketCapB": 13.1,
+      "currentAssociationStatus": "present",
+      "currentSecAssociation": {
+        "cik": "0001083301",
+        "title": "TERAWULF INC."
+      },
+      "historicalDispositionStatus": "unverified"
+    }
+  ],
+  "controls": [
+    {
+      "key": "current-sec-association",
+      "status": "pass",
+      "detail": "11 of 13 observed exits have an exact current SEC ticker association."
+    },
+    {
+      "key": "permanent-listing-identity",
+      "status": "blocked",
+      "detail": "CIK identifies a registrant, not a permanent exchange listing or security."
+    },
+    {
+      "key": "ticker-effective-intervals",
+      "status": "blocked",
+      "detail": "No ticker start, end, alias, reuse, or effective-date history is available."
+    },
+    {
+      "key": "delisting-events",
+      "status": "blocked",
+      "detail": "No exchange delisting notice, effective date, reason, or terminal value is available."
+    },
+    {
+      "key": "merger-successor-terms",
+      "status": "blocked",
+      "detail": "No cash-out, conversion ratio, successor identity, or merger-effective terms exist."
+    }
+  ],
+  "limitations": [
+    "A current SEC association does not prove that a security was continuously listed or investable.",
+    "An unmatched current association does not prove delisting, acquisition, or ticker change.",
+    "The SEC source is a current association snapshot, not an as-was historical series.",
+    "CIK continuity cannot substitute for permanent listing identity or historical ticker intervals.",
+    "All 13 observed exit dispositions remain historically unverified."
+  ],
+  "notice": "Research preview only. Scores and model weights are evidence artifacts, not investment advice or a promise of future performance."
+}

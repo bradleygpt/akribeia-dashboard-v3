@@ -4,7 +4,7 @@ Last updated: 2026-07-30
 
 ## Whole-product completion
 
-Estimated completion: **84%**
+Estimated completion: **86%**
 
 This estimate reflects working, tested product behavior rather than roadmap line-item count. V3 now
 has the Phase 0 baseline, core publication trust primitives, a deployed visible preview, complete
@@ -47,23 +47,26 @@ entrants and exits. It is not ready to replace V2.
   post-cutoff exclusions, privately deployed and merged through PR #21.
 - Receipted universe-membership comparison, 14 observed entrants, 13 observed exits, and five
   explicit survivorship blockers, privately deployed and merged through PR #22.
+- Receipted corporate-action comparability diagnostics, five visible discontinuities, and zero
+  synthetic adjustments, privately deployed and merged through PR #23.
 
 ## Current milestone
 
-**Corporate-action price comparability**
+**Observed-exit disposition readiness**
 
-The current branch uses the two receipted `$10B` cross-sections to expose concrete price
-comparability risks without inventing corporate actions:
+The current branch checks the 13 June-only ticker labels against the checksum-pinned current SEC
+association source:
 
-1. historical-readiness and universe-membership lineage must reconcile;
-2. both strict-contract-valid source files must pass their SHA-256 and row-count receipts;
-3. all 629 continuing ticker labels are compared;
-4. five price ratios cross the explicit `0.5×`/`2.0×` boundary;
-5. three have extreme implied-share changes with market capitalization inside a 15% stability
-   band; two move price and market capitalization together;
-6. every observation remains unverified and no adjustment factor is synthesized;
-7. split, distribution, merger/spin-off, delisting, and adjusted-series controls remain blocked;
-8. the responsive dashboard exposes exact ratios and the fail-closed interpretation.
+1. the SEC company-ticker source must pass its byte-size, SHA-256, record-count, and schema receipt;
+2. all 13 observed exits reconcile to immutable universe-membership evidence;
+3. 11 retain an exact current SEC association;
+4. BLD and HOLX are unmatched in the current association source;
+5. every historical disposition remains unverified;
+6. current association cannot prove continuous listing, and current absence cannot prove
+   delisting;
+7. permanent listing identity, ticker intervals, delisting events, and merger/successor terms
+   remain blocked;
+8. the responsive dashboard exposes all results and limitations.
 
 Implementation, complete local CI, contract/generator/rendering/packaging/browser tests,
 dependency audit, and functional owner-only deployment pass. Final repository commit,
@@ -94,6 +97,8 @@ exact-commit hosted deployment, and pull-request gates remain for this unit.
   semantics; they cannot support a survivorship-controlled backtest.
 - Five extreme price observations have no authoritative corporate-action event or adjustment
   evidence; no historical return may be computed from them.
+- Two observed exits have no current exact SEC association, but no exit has authoritative
+  historical disposition evidence.
 - Filing-availability coverage is currently limited to 12 visible tickers and is retrospective
   metadata rather than acquisition-time pipeline telemetry.
 - Eleven active tickers do not have an exact association in the captured SEC ticker files.
@@ -102,10 +107,10 @@ exact-commit hosted deployment, and pull-request gates remain for this unit.
 
 ## Test counts
 
-- Vitest suite: 142 tests across 19 files pass.
+- Vitest suite: 148 tests across 20 files pass.
 - Rendered deployment and browser suite: 6 tests pass.
-- Total automated tests: 148 pass.
-- Current unit validation: Prettier, typecheck, lint, every workspace build, 142 Vitest tests,
+- Total automated tests: 154 pass.
+- Current unit validation: Prettier, typecheck, lint, every workspace build, 148 Vitest tests,
   five rendered accessibility/integrity/API/package tests, one isolated-profile real-Chrome
   hydration smoke test, `git diff --check`, and `npm audit --audit-level=high` pass.
 
@@ -114,10 +119,10 @@ exact-commit hosted deployment, and pull-request gates remain for this unit.
 - V2 production: unchanged.
 - V3 local preview: generated and safely retried as immutable build `preview-20260728-pipeline-v4-a34fc842220f`; an interactive dev server is not currently running.
 - V3 hosted preview: deployed privately at <https://akribeia-v3-evidence-preview.akribeiainsights.chatgpt.site>.
-- V3 hosted preview source: exact PR #22 head `f1a9c342a`, preserved in Sites source commit
-  `6027e2496` and deployed as version 32.
-- Current corporate-action functional tree `53428bda3` is preserved in Sites source commit
-  `10cb4e19c` and deployed owner-only as version 33.
+- V3 hosted preview source: exact PR #23 head `ee2295eeb`, preserved in Sites source commit
+  `2a145c3cf` and deployed as version 34.
+- Current exit-disposition functional tree `fd178510b` is preserved in Sites source commit
+  `e17c61cec` and deployed owner-only as version 35.
 - Hosted deployment status is successful. The current package passed an isolated-profile
   real-Chrome smoke test locally; a signed-in interactive browser was unavailable for a separate
   hosted-page smoke check.
@@ -163,6 +168,8 @@ exact-commit hosted deployment, and pull-request gates remain for this unit.
 - Corporate-action readiness: five extreme price changes are measured locally. Three show possible
   implied-share discontinuities and two move with market capitalization; verified action and
   adjusted-series counts remain zero. Visible evidence is privately deployed.
+- Exit disposition: 11 of 13 observed exits have a current exact SEC association; BLD and HOLX do
+  not. All 13 historical dispositions remain unverified. Visible evidence is privately deployed.
 - Historical validation: blocked by the readiness report; no backtest or performance comparison
   is claimed.
 - Prospective validation: not started.
@@ -198,6 +205,8 @@ exact-commit hosted deployment, and pull-request gates remain for this unit.
   them; ticker equality does not establish permanent identity continuity.
 - The corporate-action signals use rounded market capitalization divided by price, not reported
   shares outstanding. They diagnose comparability risk and must not become synthetic adjustments.
+- Current SEC association presence or absence cannot establish historical listing, ticker,
+  delisting, merger, or terminal-value events.
 - Both $0B fixtures fail the strict input contract: June has one null-price issue and July has five
   classification issues. They are inventoried as historical material but are not used by the
   active $10B product build.
