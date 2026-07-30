@@ -5,6 +5,7 @@ import {
   MaturityAssessmentSchema,
   MetricDictionarySchema,
   ModelCardSchema,
+  SecRegistrantCrosswalkSchema,
   SecurityMasterSchema,
   VerticalSliceDashboardSchema,
 } from "@akribeia/contracts";
@@ -17,6 +18,7 @@ import activeMetricDictionary from "./generated/active-metric-dictionary.json";
 import activeMaturity from "./generated/active-maturity.json";
 import activeModelCard from "./generated/active-model-card.json";
 import activeQualityReport from "./generated/active-quality-report.json";
+import activeSecRegistrants from "./generated/active-sec-registrants.json";
 import activeSecurityMaster from "./generated/active-security-master.json";
 
 const dashboard = VerticalSliceDashboardSchema.parse(activeDashboard);
@@ -26,6 +28,7 @@ const metricDictionary = MetricDictionarySchema.parse(activeMetricDictionary);
 const maturity = MaturityAssessmentSchema.parse(activeMaturity);
 const modelCard = ModelCardSchema.parse(activeModelCard);
 const qualityReport = DataQualityReportSchema.parse(activeQualityReport);
+const secRegistrants = SecRegistrantCrosswalkSchema.parse(activeSecRegistrants);
 const securityMaster = SecurityMasterSchema.parse(activeSecurityMaster);
 
 if (
@@ -36,6 +39,8 @@ if (
   qualityReport.buildId !== dashboard.buildId ||
   maturity.buildId !== dashboard.buildId ||
   maturity.modelVersion !== dashboard.modelVersion ||
+  secRegistrants.buildId !== dashboard.buildId ||
+  secRegistrants.modelVersion !== dashboard.modelVersion ||
   securityMaster.buildId !== dashboard.buildId ||
   securityMaster.source.contentSha256 !== dashboard.source.contentSha256
 ) {
@@ -92,6 +97,10 @@ export default function Home() {
 
     return masterEntry;
   });
+  const leadingTickers = new Set(dashboard.topScores.map(({ ticker }) => ticker));
+  const visibleRegistrantEntries = secRegistrants.matches
+    .filter(({ ticker }) => leadingTickers.has(ticker))
+    .slice(0, 6);
 
   return (
     <>
@@ -115,6 +124,7 @@ export default function Home() {
           <a href="#model-governance">Method</a>
           <a href="#data-quality">Quality</a>
           <a href="#security-master">Master</a>
+          <a href="#sec-registrants">SEC</a>
           <a href="#historical-readiness">History</a>
           <a href="#maturity">Maturity</a>
           <a href="#explore">Explain</a>
@@ -409,9 +419,9 @@ export default function Home() {
               <p className="mono-label">SECURITY MASTER / {securityMaster.asOfDate}</p>
               <h2 id="security-master-heading">Identity evidence, without false permanence.</h2>
               <p>
-                Every active ticker resolves to one deterministic research identity. The source has
-                no permanent issuer identifiers or ticker history, so every identity stays visibly
-                provisional.
+                Every active ticker resolves to one deterministic research identity. This artifact
+                has no permanent issuer identifiers or ticker history, so every identity stays
+                visibly provisional; a separate current SEC association snapshot follows.
               </p>
             </div>
             <a
@@ -434,7 +444,7 @@ export default function Home() {
             <article>
               <span>Permanent identifiers</span>
               <strong>{securityMaster.coverage.permanentIdentifierCount}</strong>
-              <p>CIK, CUSIP, ISIN, and LEI unavailable</p>
+              <p>not embedded in this security-master artifact</p>
             </article>
             <article data-status={securityMaster.status}>
               <span>Identity status</span>
@@ -483,6 +493,128 @@ export default function Home() {
               <p>{securityMaster.limitations[2]}</p>
             </aside>
           </div>
+        </section>
+
+        <section
+          className="sec-registrants"
+          id="sec-registrants"
+          aria-labelledby="sec-registrants-heading"
+        >
+          <div className="sec-registrants-heading">
+            <div>
+              <p className="mono-label">
+                SEC REGISTRANT SNAPSHOT / {secRegistrants.sourceReceipt.snapshotId}
+              </p>
+              <h2 id="sec-registrants-heading">
+                Every ticker checked. Identity scope stays honest.
+              </h2>
+              <p>
+                Exact current-ticker matching connects the active universe to checksum-pinned SEC
+                filer and registered-fund records. Unmatched tickers stay unresolved, and a CIK is
+                never presented as permanent exchange-listing identity.
+              </p>
+            </div>
+            <a
+              href={`/data/evidence/sec-registrants/builds/${secRegistrants.buildId}/sec-registrants.json`}
+            >
+              View crosswalk evidence
+            </a>
+          </div>
+          <div className="sec-registrants-summary" aria-label="SEC registrant match coverage">
+            <article>
+              <span>Exact associations</span>
+              <strong>
+                {secRegistrants.coverage.matchedSecurityCount} /{" "}
+                {secRegistrants.coverage.activeSecurityCount}
+              </strong>
+              <p>
+                {percent(secRegistrants.coverage.registrantCoverage, 1)} current-ticker coverage
+              </p>
+            </article>
+            <article>
+              <span>Company CIK matches</span>
+              <strong>
+                {secRegistrants.coverage.companyCikMatchCount} /{" "}
+                {secRegistrants.coverage.operatingCompanyCount}
+              </strong>
+              <p>{percent(secRegistrants.coverage.companyCikCoverage, 1)} registrant coverage</p>
+            </article>
+            <article>
+              <span>Fund class matches</span>
+              <strong>
+                {secRegistrants.coverage.fundClassMatchCount} /{" "}
+                {secRegistrants.coverage.registeredFundCount}
+              </strong>
+              <p>{percent(secRegistrants.coverage.fundClassCoverage, 1)} class coverage</p>
+            </article>
+            <article data-status="blocked">
+              <span>Listing identity</span>
+              <strong>
+                {percent(secRegistrants.coverage.operatingCompanyListingIdentityCoverage)}
+              </strong>
+              <p>CIK identifies the registrant, not its exchange listing</p>
+            </article>
+          </div>
+          <div className="sec-registrants-ledger">
+            <div
+              className="table-scroll"
+              tabIndex={0}
+              role="region"
+              aria-label="Exact SEC registrant association examples"
+            >
+              <table>
+                <caption className="sr-only">
+                  Exact current-ticker SEC registrant associations for leading scores
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Ticker</th>
+                    <th scope="col">SEC identity</th>
+                    <th scope="col">Registrant or fund</th>
+                    <th scope="col">Scope</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {visibleRegistrantEntries.map((entry) => (
+                    <tr key={entry.provisionalSecurityId}>
+                      <td>
+                        <strong>{entry.ticker}</strong>
+                      </td>
+                      <td>
+                        <code>{`CIK ${entry.cik}`}</code>
+                        {entry.seriesId !== null && (
+                          <small>
+                            {entry.seriesId} / {entry.classId}
+                          </small>
+                        )}
+                      </td>
+                      <td>{entry.secTitle ?? "Registered fund class"}</td>
+                      <td>{entry.identityScope.replaceAll("-", " ")}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <aside aria-label="Unmatched SEC ticker associations">
+              <div>
+                <strong>{`${secRegistrants.coverage.unmatchedSecurityCount} unresolved`}</strong>
+                <span>{`${secRegistrants.coverage.ambiguousSecurityCount} ambiguous`}</span>
+              </div>
+              <p>No fuzzy or company-name fallback is used.</p>
+              <ul>
+                {secRegistrants.unmatched.map(({ ticker, expectedSource }) => (
+                  <li key={ticker}>
+                    <strong>{ticker}</strong>
+                    <span>{expectedSource.replaceAll("-", " ")}</span>
+                  </li>
+                ))}
+              </ul>
+            </aside>
+          </div>
+          <aside className="sec-registrants-limitation" role="note">
+            <strong>Current association only</strong>
+            <p>{secRegistrants.limitations[2]}</p>
+          </aside>
         </section>
 
         <section

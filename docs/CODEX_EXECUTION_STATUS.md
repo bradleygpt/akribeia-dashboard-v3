@@ -4,7 +4,7 @@ Last updated: 2026-07-30
 
 ## Whole-product completion
 
-Estimated completion: **74%**
+Estimated completion: **77%**
 
 This estimate reflects working, tested product behavior rather than roadmap line-item count. V3 now
 has the Phase 0 baseline, core publication trust primitives, a deployed visible preview, complete
@@ -13,8 +13,8 @@ end-to-end publication/activation/rollback pipeline, an accessible runtime data-
 protected server-side evidence capabilities, explicit deployment health and recovery operations,
 the first immutable daily evidence record, versioned model-governance evidence, an active-build
 quality report with honest drift eligibility, a provisional security master, fail-closed evidence
-maturity labels, and an immutable audit of historical point-in-time readiness. It is not ready to
-replace V2.
+maturity labels, an immutable audit of historical point-in-time readiness, and a checksum-pinned
+current SEC registrant crosswalk with explicit unresolved coverage. It is not ready to replace V2.
 
 ## Completed milestones
 
@@ -37,27 +37,31 @@ replace V2.
 - Provisional ticker-only security master, immutable identity evidence, and visible permanent-identifier limits, privately deployed and merged through PR #17.
 - Fail-closed evidence maturity labels, explicit release transitions, and non-overridable cutover
   blocking, privately deployed and merged through PR #18.
+- Immutable point-in-time readiness inventory, strict-contract issue evidence, and ten
+  fail-closed historical controls, privately deployed and merged through PR #19.
 
 ## Current milestone
 
-**Historical point-in-time readiness**
+**Current SEC registrant crosswalk**
 
-The current branch turns the repository's actual historical-data limitations into visible,
-immutable evidence:
+The current branch adds useful current registrant navigation while preserving the distinction
+between a filer and a permanent security identity:
 
-1. the June and July cross-sectional fixtures are independently hashed and inventoried;
-2. declared generation timestamps are preserved without inventing timezone semantics;
-3. all four $0B/$10B files have explicit row counts and strict-contract status;
-4. the June $0B fixture's null price and the July $0B fixture's five classification issues are
-   visible;
-5. availability time, survivorship, identity history, delistings, corporate actions, benchmark,
-   execution-cost, and walk-forward controls fail closed;
-6. schema version `1.0.0` cannot express historical eligibility;
-7. the dashboard states plainly that two snapshots are not a backtest.
+1. official SEC company and mutual-fund ticker files are preserved byte-for-byte with retrieval
+   time, provider modification time, record count, size, and SHA-256 receipts;
+2. active daily evidence, security-master lineage, receipt integrity, and official source URIs
+   must reconcile;
+3. exact current-ticker matching associates 632 of 643 active securities;
+4. company CIK coverage is 585 of 588 and registered-fund class coverage is 47 of 55;
+5. eleven unmatched tickers and zero ambiguities are visible;
+6. fuzzy and name matching are prohibited;
+7. the schema fixes historical eligibility and operating-company listing-identity coverage to
+   false and zero;
+8. the responsive dashboard exposes matches, unmatched records, source scope, and limitations.
 
 Implementation, complete local CI, contract/generator/rendering/packaging/browser tests, and
-dependency audit pass. Owner-only preview deployment also passes; pull-request gates remain for
-this unit.
+dependency audit pass. Owner-only preview deployment passes as Sites version 27; final
+pull-request gates remain for this unit.
 
 ## Remaining milestones
 
@@ -67,6 +71,8 @@ this unit.
 - Complete final-production configuration and cutover rehearsal only after all release gates pass.
 - Acquire or build point-in-time fundamentals, survivorship-aware membership, corporate actions,
   benchmarks, execution inputs, and a sufficiently long evaluation calendar.
+- Acquire or build permanent listing identifiers and point-in-time ticker/listing history; a CIK
+  identifies a registrant and does not resolve this requirement.
 - Implement walk-forward/out-of-sample evaluation only after those inputs satisfy the readiness
   contract.
 - Accumulate prospective daily validation evidence.
@@ -78,14 +84,16 @@ this unit.
 - No implementation blocker is active for the current repository unit.
 - Historical validation is blocked by missing point-in-time source, identity, corporate-action,
   benchmark, and execution evidence.
+- Eleven active tickers do not have an exact association in the captured SEC ticker files.
+- Permanent exchange-listing identity remains unavailable for all operating companies.
 - Final V3 production cutover remains explicitly out of scope without user authorization.
 
 ## Test counts
 
-- Vitest suite: 116 tests across 15 files pass.
+- Vitest suite: 123 tests across 16 files pass.
 - Rendered deployment and browser suite: 6 tests pass.
-- Total automated tests: 122 pass.
-- Current unit validation: Prettier, typecheck, lint, every workspace build, 116 Vitest tests, five
+- Total automated tests: 129 pass.
+- Current unit validation: Prettier, typecheck, lint, every workspace build, 123 Vitest tests, five
   rendered accessibility/integrity/API/package tests, one isolated-profile real-Chrome hydration
   smoke test, `git diff --check`, and `npm audit --audit-level=high` pass.
 
@@ -94,8 +102,11 @@ this unit.
 - V2 production: unchanged.
 - V3 local preview: generated and safely retried as immutable build `preview-20260728-pipeline-v4-a34fc842220f`; an interactive dev server is not currently running.
 - V3 hosted preview: deployed privately at <https://akribeia-v3-evidence-preview.akribeiainsights.chatgpt.site>.
-- V3 hosted preview source: historical-readiness functional tree `8e9d6e6f2`, preserved in Sites
-  source commit `18f9951b3` and deployed as version 25.
+- V3 hosted preview source: SEC-registrant functional tree `e88884023`, preserved in Sites source
+  commit `af38cc5a5` and deployed as version 27.
+- Hosted deployment status is successful. The current package passed an isolated-profile
+  real-Chrome smoke test locally; a signed-in interactive browser was unavailable for a separate
+  hosted-page smoke check.
 - V3 production: not deployed.
 - Cutover: not authorized and not attempted.
 
@@ -123,6 +134,10 @@ this unit.
   inventoried with deterministic SHA-256 evidence. Ten controls remain blocked; the report cannot
   claim historical eligibility. The immutable report and visible readiness ledger are privately
   deployed.
+- SEC registrant crosswalk: the immutable `2026-07-30` source receipt verifies 10,432 company and
+  28,427 mutual-fund association records. Exact matching resolves 632 of 643 active records to 595
+  unique CIKs; all 11 unmatched tickers, current-snapshot scope, and zero historical eligibility
+  are preserved in the evidence and privately deployed.
 - Historical validation: blocked by the readiness report; no backtest or performance comparison
   is claimed.
 - Prospective validation: not started.
@@ -143,6 +158,11 @@ this unit.
 - The preserved V2 metadata supplies 26 component names and directionality, but not the raw transform, normalization, winsorization, or component missing-value formulas. Governance artifacts expose this as a known methodology gap.
 - The source has no permanent issuer/listing identifier or ticker history. Current security IDs are
   deterministic research identifiers within a ticker-only scope, not permanent identities.
+- The SEC crosswalk is a current, periodically updated association snapshot. A CIK identifies a
+  filer or registrant, not an exchange listing; fund series/class identifiers do not provide
+  point-in-time trading or corporate-action history.
+- Exact matching intentionally leaves 11 records unresolved. No issuer-name, fuzzy, or
+  hand-maintained fallback is used.
 - The preserved June and July captures have timezone-unspecified generation metadata and no
   record-level availability times. They are reproducibility fixtures, not a point-in-time series.
 - Both $0B fixtures fail the strict input contract: June has one null-price issue and July has five
