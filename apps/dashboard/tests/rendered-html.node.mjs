@@ -73,6 +73,14 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /No synthetic comparison/);
   assert.match(html, /No point-in-time benchmark input is present/);
   assert.match(html, /View reproduction report/);
+  assert.match(html, /Accepted before the decision—or excluded/);
+  assert.match(html, /11(?:<!-- -->)? \/<!-- --> <!-- -->12/);
+  assert.match(html, /Post-cutoff excluded/);
+  assert.match(html, /retrospective metadata is not acquisition-time proof/i);
+  assert.match(html, /0000723125/);
+  assert.match(html, /10-Q/);
+  assert.match(html, /Captured/);
+  assert.match(html, />CTRA</);
   assert.match(html, /What the model is—and is not/);
   assert.match(html, /Not release eligible/);
   assert.match(html, /portfolio parity/);
@@ -236,6 +244,8 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
     sourceMaturity,
     packagedHistoricalReadiness,
     sourceHistoricalReadiness,
+    packagedFilingAvailability,
+    sourceFilingAvailability,
   ] = await Promise.all([
     readFile(new URL("../.openai/hosting.json", import.meta.url), "utf8"),
     readFile(new URL("../dist/.openai/hosting.json", import.meta.url), "utf8"),
@@ -290,6 +300,14 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
       new URL("../public/data/evidence/historical-readiness/active.json", import.meta.url),
       "utf8",
     ),
+    readFile(
+      new URL("../dist/client/data/evidence/filing-availability/active.json", import.meta.url),
+      "utf8",
+    ),
+    readFile(
+      new URL("../public/data/evidence/filing-availability/active.json", import.meta.url),
+      "utf8",
+    ),
   ]);
   const pointer = JSON.parse(pointerPayload);
   const buildRoot = new URL(
@@ -309,6 +327,7 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(packagedSecRegistrants, sourceSecRegistrants);
   assert.equal(packagedMaturity, sourceMaturity);
   assert.equal(packagedHistoricalReadiness, sourceHistoricalReadiness);
+  assert.equal(packagedFilingAvailability, sourceFilingAvailability);
 
   for (const artifact of Object.values(manifest.files)) {
     const [packagedPayload, sourcePayload] = await Promise.all([
@@ -429,4 +448,23 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(historicalReadiness.historicalValidationEligible, false);
   assert.equal(historicalReadiness.inventory.snapshotCount, 2);
   assert.equal(historicalReadiness.blockers.length, 10);
+  const filingAvailability = JSON.parse(packagedFilingAvailability);
+  const versionedFilingAvailability = await readFile(
+    new URL(
+      `../dist/client/data/evidence/filing-availability/builds/${filingAvailability.buildId}/filing-availability.json`,
+      import.meta.url,
+    ),
+    "utf8",
+  );
+  assert.equal(versionedFilingAvailability, packagedFilingAvailability);
+  assert.equal(filingAvailability.buildId, activeEvidence.build.buildId);
+  assert.equal(filingAvailability.status, "partial-retrospective-metadata");
+  assert.equal(filingAvailability.historicalValidationEligible, false);
+  assert.equal(filingAvailability.coverage.selectedTickerCount, 12);
+  assert.equal(filingAvailability.coverage.submissionHistoryCount, 11);
+  assert.equal(filingAvailability.coverage.periodicFilingAvailableCount, 11);
+  assert.equal(filingAvailability.coverage.excludedPostCutoffFilingCount, 12);
+  assert.deepEqual(filingAvailability.unmatched, [
+    { ticker: "CTRA", reason: "no-exact-sec-registrant-match" },
+  ]);
 });
