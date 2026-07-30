@@ -691,3 +691,11 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(prospectiveReadiness.progress.monthlyValidationReportCount, 0);
   assert.equal(prospectiveReadiness.certificationEligible, false);
 });
+test("binds deployed static assets to the worker runtime", async () => {
+  const wranglerConfig = JSON.parse(
+    await readFile(new URL("../dist/server/wrangler.json", import.meta.url), "utf8"),
+  );
+
+  assert.equal(wranglerConfig.assets?.binding, "ASSETS");
+  assert.equal(wranglerConfig.assets?.directory, "../client");
+});
