@@ -41,7 +41,8 @@ The current branch measures the active build and makes drift eligibility explici
 7. one observation produces `insufficient-history`, not a fabricated drift comparison;
 8. the dashboard exposes quality and drift status with downloadable JSON.
 
-Implementation, complete local CI, quality/rendering/packaging/browser tests, and dependency audit pass. Private preview deployment and pull-request gates remain for this unit.
+Implementation, complete local CI, quality/rendering/packaging/browser tests, dependency audit, and
+owner-only preview deployment pass. Pull-request gates remain for this unit.
 
 ## Remaining milestones
 
@@ -72,7 +73,8 @@ Implementation, complete local CI, quality/rendering/packaging/browser tests, an
 - V2 production: unchanged.
 - V3 local preview: generated and safely retried as immutable build `preview-20260728-pipeline-v4-a34fc842220f`; an interactive dev server is not currently running.
 - V3 hosted preview: deployed privately at <https://akribeia-v3-evidence-preview.akribeiainsights.chatgpt.site>.
-- V3 hosted preview source: validated visible-model-governance commit `f1111987f`.
+- V3 hosted preview source: exact quality-and-drift tree from commit `187a0635d`, preserved in Sites
+  source commit `5c75e023e` and deployed as version 19.
 - V3 production: not deployed.
 - Cutover: not authorized and not attempted.
 
@@ -87,7 +89,9 @@ Implementation, complete local CI, quality/rendering/packaging/browser tests, an
 - V3 deep deployment health: pointer, manifest, artifact integrity, schema, and lineage verification deployed privately from validated commit `25879907b`.
 - Published daily evidence history: one privately deployed immutable research-preview record for source date `2026-07-28`, with three artifact receipts, 643 score records, nine portfolio records, exact weights, explicit benchmark unavailability, and a verified SHA-256 reproduction report.
 - Model governance: versioned model card and 26-component metric dictionary for `3.0.0-preview.3` are privately deployed with independent validation-gate states and explicit methodology gaps.
-- Data quality: active report passes row uniqueness, value validity, coverage, score distribution, and portfolio reconciliation checks; temporal drift is correctly blocked by insufficient history. Private deployment is pending.
+- Data quality: active report passes row uniqueness, value validity, coverage, score distribution,
+  and portfolio reconciliation checks; temporal drift is correctly blocked by insufficient history
+  and the report is privately deployed.
 - Historical validation: not started.
 - Prospective validation: not started.
 

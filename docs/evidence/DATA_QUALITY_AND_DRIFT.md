@@ -19,3 +19,6 @@ data/evidence/quality/builds/<build-id>/quality-drift.json
 
 The dashboard and browser-accessible active projection use the exact same report bytes. These
 quality checks describe research evidence; they do not establish investment performance.
+
+The report is deployed in the owner-only V3 preview from functional commit `187a0635d`, preserved
+as exact-tree Sites source commit `5c75e023e` and saved as Sites version 19. V2 is unchanged.
