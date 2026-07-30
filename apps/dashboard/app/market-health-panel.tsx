@@ -142,7 +142,9 @@ export function MarketHealthPanel({
           )
         : null;
     const ismPeriod = text(macroData, "ism_asof");
-    const stale = staticData !== null && ismIsStale(ismPeriod ?? undefined);
+    const stale =
+      (staticData !== null && ismIsStale(ismPeriod ?? undefined)) ||
+      response?.live.pgi.stale === true;
     const earnings = staticData?.earnings_forecast ?? null;
     const risk = response?.live.vix.ok
       ? (response.live.vix.level ?? "VIX available")
@@ -464,7 +466,15 @@ function LiveGauges({
       label: "PGI",
       value: live?.pgi.ok ? percentage(live.pgi.value, 1) : "Unavailable",
       note: live?.pgi.ok
-        ? `${live.pgi.level} · ${live.pgi.fredKeyless ? "FRED live" : "fallback estimate flagged"}`
+        ? `${live.pgi.level} · ${
+            live.pgi.source === "live"
+              ? "FRED live"
+              : live.pgi.source === "baked"
+                ? `baked FRED${live.pgi.asOf ? ` · ${live.pgi.asOf}` : ""}${
+                    live.pgi.stale ? " · stale" : ""
+                  }`
+                : "hardcoded estimate flagged"
+          }`
         : "Potential Growth Indicator unavailable",
     },
   ];

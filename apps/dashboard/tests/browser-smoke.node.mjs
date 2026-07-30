@@ -81,7 +81,7 @@ async function assetResponse(request) {
   }
 }
 
-async function startDashboardServer() {
+async function startDashboardServer({ marketHealthResponder } = {}) {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("browser-smoke", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
@@ -94,7 +94,10 @@ async function startDashboardServer() {
         headers: incoming.headers,
         method: incoming.method,
       });
-      let response = await assetResponse(request);
+      let response =
+        requestUrl.pathname === "/api/v3/market-health" && marketHealthResponder
+          ? marketHealthResponder()
+          : await assetResponse(request);
 
       if (response.status === 404) {
         response = await worker.fetch(
@@ -128,6 +131,38 @@ async function startDashboardServer() {
   return server;
 }
 
+async function renderInChrome(browser, url, profileDirectory) {
+  const { stdout } = await execFileAsync(
+    browser,
+    [
+      "--headless=new",
+      "--no-sandbox",
+      "--disable-background-networking",
+      "--disable-component-update",
+      "--disable-default-apps",
+      "--disable-dev-shm-usage",
+      "--disable-extensions",
+      "--disable-gpu",
+      "--disable-sync",
+      "--metrics-recording-only",
+      "--no-first-run",
+      `--user-data-dir=${profileDirectory}`,
+      "--force-device-scale-factor=1",
+      "--window-size=390,844",
+      "--virtual-time-budget=5000",
+      "--dump-dom",
+      url,
+    ],
+    {
+      maxBuffer: 20 * 1024 * 1024,
+      timeout: 30_000,
+      windowsHide: true,
+    },
+  );
+
+  return stdout;
+}
+
 test("hydrates the responsive dashboard and verifies its active evidence in Chrome", async () => {
   const browser = await findBrowser();
   const server = await startDashboardServer();
@@ -137,33 +172,7 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
     const address = server.address();
     assert.ok(address && typeof address === "object");
     const url = `http://127.0.0.1:${address.port}/`;
-    const { stdout } = await execFileAsync(
-      browser,
-      [
-        "--headless=new",
-        "--no-sandbox",
-        "--disable-background-networking",
-        "--disable-component-update",
-        "--disable-default-apps",
-        "--disable-dev-shm-usage",
-        "--disable-extensions",
-        "--disable-gpu",
-        "--disable-sync",
-        "--metrics-recording-only",
-        "--no-first-run",
-        `--user-data-dir=${profileDirectory}`,
-        "--force-device-scale-factor=1",
-        "--window-size=390,844",
-        "--virtual-time-budget=5000",
-        "--dump-dom",
-        url,
-      ],
-      {
-        maxBuffer: 20 * 1024 * 1024,
-        timeout: 30_000,
-        windowsHide: true,
-      },
-    );
+    const stdout = await renderInChrome(browser, url, profileDirectory);
 
     assert.match(stdout, /data-state="(?:healthy|stale)"/);
     assert.doesNotMatch(stdout, /data-state="(?:loading|error|unavailable)"/);
@@ -246,5 +255,70 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
       server.close((error) => (error ? rejectClose(error) : resolveClose()));
     });
     await rm(profileDirectory, { force: true, recursive: true });
+  }
+});
+
+test("renders explicit partial and error Market Health states in Chrome", async () => {
+  const browser = await findBrowser();
+  const partialPayload = {
+    status: "partial",
+    generatedAt: "2026-07-30T18:00:00.000Z",
+    source: {
+      v2AppCommit: "b477349a8691fdc5000641a6ae2893dbbfae2de6",
+      v2SourceCommit: "1858840c581f406492dec2e809830d05764ad3d9",
+      staticUrl: "https://example.test/market_static.json",
+      pgiBakedUrl: "https://example.test/pgi_money_market.json",
+      staticAsOf: null,
+      liveProvider: "Yahoo Finance chart API + FRED fredgraph.csv",
+    },
+    staticData: null,
+    live: {
+      indices: [],
+      dxy: { ok: false },
+      spy: { ok: false },
+      vix: { ok: false },
+      yields: { ok: false },
+      buffett: { ok: false },
+      pgi: { ok: false },
+      dots: { ok: false },
+    },
+    unavailable: ["baked macro and earnings", "major indices", "VIX"],
+  };
+  const scenarios = [
+    {
+      expected: /data-market-health-state="partial"/,
+      responder: () => Response.json(partialPayload),
+      message: /Partial data: baked macro and earnings, major indices, VIX unavailable\./,
+    },
+    {
+      expected: /data-market-health-state="error"/,
+      responder: () => new Response("Upstream failure", { status: 500 }),
+      message: /Market Health could not be verified/,
+    },
+  ];
+
+  for (const scenario of scenarios) {
+    const server = await startDashboardServer({ marketHealthResponder: scenario.responder });
+    const profileDirectory = await mkdtemp(join(tmpdir(), "akribeia-market-health-state-"));
+
+    try {
+      const address = server.address();
+      assert.ok(address && typeof address === "object");
+      const stdout = await renderInChrome(
+        browser,
+        `http://127.0.0.1:${address.port}/#market-health`,
+        profileDirectory,
+      );
+
+      assert.match(stdout, scenario.expected);
+      assert.match(stdout, scenario.message);
+      assert.match(stdout, /Retry sources/);
+      assert.match(stdout, /Computed across all 1,361 securities/);
+    } finally {
+      await new Promise((resolveClose, rejectClose) => {
+        server.close((error) => (error ? rejectClose(error) : resolveClose()));
+      });
+      await rm(profileDirectory, { force: true, recursive: true });
+    }
   }
 });

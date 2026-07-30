@@ -9,6 +9,7 @@ const MARKET_HEALTH_PATH = "/api/v3/market-health";
 const V2_APP_COMMIT = "b477349a8691fdc5000641a6ae2893dbbfae2de6";
 const V2_SOURCE_COMMIT = "1858840c581f406492dec2e809830d05764ad3d9";
 const MARKET_STATIC_URL = `https://raw.githubusercontent.com/bradleygpt/quant-dashboard-pro-v2/${V2_APP_COMMIT}/public/data/market_static.json`;
+const PGI_BAKED_URL = `https://raw.githubusercontent.com/bradleygpt/quant-dashboard-pro-v2/${V2_APP_COMMIT}/public/data/pgi_money_market.json`;
 const USER_AGENT = "Mozilla/5.0 (compatible; Akribeia/3.0; +https://akribeia.com)";
 const US_GDP_TRILLIONS = 29.7;
 
@@ -23,6 +24,12 @@ interface MarketHealthDependencies {
   fetcher?: Fetcher;
   now?: Date;
   timeoutMs?: number;
+}
+
+interface PgiBakedData {
+  ok?: boolean;
+  money_market_t?: number;
+  as_of?: string;
 }
 
 const indices: ReadonlyArray<readonly [string, string]> = [
@@ -196,6 +203,24 @@ async function loadStaticData(
   }
 }
 
+async function loadPgiBakedData(fetcher: Fetcher, timeoutMs: number): Promise<PgiBakedData | null> {
+  const response = await timedFetch(fetcher, PGI_BAKED_URL, timeoutMs);
+  if (response === null) return null;
+
+  try {
+    const value = await response.json();
+    return asRecord(value) === null ? null : (value as PgiBakedData);
+  } catch {
+    return null;
+  }
+}
+
+function ageDays(asOf: string | undefined, now: Date): number | null {
+  if (asOf === undefined) return null;
+  const timestamp = Date.parse(asOf);
+  return Number.isFinite(timestamp) ? Math.floor((now.valueOf() - timestamp) / 86_400_000) : null;
+}
+
 function indexSnapshot(name: string, dated: DatedCloses | null): MarketIndexSnapshot {
   const current = dated?.closes.at(-1);
   if (dated === null || current === undefined) return { name, ok: false };
@@ -222,6 +247,7 @@ export async function buildMarketHealthSnapshot({
 }: MarketHealthDependencies = {}): Promise<MarketHealthApiResponse> {
   const [
     staticData,
+    pgiBaked,
     indexData,
     dxyData,
     vixData,
@@ -233,6 +259,7 @@ export async function buildMarketHealthSnapshot({
     sepLongRun,
   ] = await Promise.all([
     loadStaticData(fetcher, timeoutMs),
+    loadPgiBakedData(fetcher, timeoutMs),
     Promise.all(indices.map(([symbol]) => yahooClosesDated(fetcher, symbol, timeoutMs))),
     yahooClosesDated(fetcher, "DX-Y.NYB", timeoutMs),
     yahooClosesDated(fetcher, "^VIX", timeoutMs),
@@ -317,7 +344,9 @@ export async function buildMarketHealthSnapshot({
     })(),
     pgi: (() => {
       if (totalMarket === undefined) return { ok: false };
-      let moneyMarketTrillions = moneyMarketMillions === null ? 7 : moneyMarketMillions / 1_000_000;
+      const bakedMoneyMarket = pgiBaked?.ok === true ? finite(pgiBaked.money_market_t) : null;
+      let moneyMarketTrillions =
+        moneyMarketMillions !== null ? moneyMarketMillions / 1_000_000 : (bakedMoneyMarket ?? 7);
       if (moneyMarketTrillions < 1 || moneyMarketTrillions > 20) {
         moneyMarketTrillions = 7;
       }
@@ -335,6 +364,15 @@ export async function buildMarketHealthSnapshot({
         level,
         score,
         fredKeyless: moneyMarketMillions !== null,
+        source:
+          moneyMarketMillions !== null ? "live" : bakedMoneyMarket !== null ? "baked" : "estimate",
+        asOf: moneyMarketMillions !== null ? null : (pgiBaked?.as_of ?? null),
+        stale:
+          moneyMarketMillions !== null
+            ? false
+            : bakedMoneyMarket !== null
+              ? (ageDays(pgiBaked?.as_of, now) ?? Number.POSITIVE_INFINITY) > 210
+              : true,
       };
     })(),
     dots:
@@ -366,6 +404,7 @@ export async function buildMarketHealthSnapshot({
       v2AppCommit: V2_APP_COMMIT,
       v2SourceCommit: V2_SOURCE_COMMIT,
       staticUrl: MARKET_STATIC_URL,
+      pgiBakedUrl: PGI_BAKED_URL,
       staticAsOf:
         staticData?.macro_signals?.as_of ?? staticData?.generated_at?.slice(0, 10) ?? null,
       liveProvider: "Yahoo Finance chart API + FRED fredgraph.csv",

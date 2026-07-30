@@ -58,6 +58,9 @@ export interface LiveMarketSnapshot {
     level?: string;
     score?: number;
     fredKeyless?: boolean;
+    source?: "live" | "baked" | "estimate";
+    asOf?: string | null;
+    stale?: boolean;
   };
   dots: {
     ok: boolean;
@@ -123,6 +126,7 @@ export interface MarketHealthApiResponse {
     v2AppCommit: string;
     v2SourceCommit: string;
     staticUrl: string;
+    pgiBakedUrl: string;
     staticAsOf: string | null;
     liveProvider: "Yahoo Finance chart API + FRED fredgraph.csv";
   };
