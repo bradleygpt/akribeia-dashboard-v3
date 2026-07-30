@@ -233,13 +233,14 @@ export const FactorObservationSchema = z.object({
 });
 export type FactorObservation = z.infer<typeof FactorObservationSchema>;
 
-export const ScoringPillarSchema = z.enum([
+export const SCORING_PILLARS = [
   "valuation",
   "growth",
   "profitability",
   "momentum",
   "revisions",
-]);
+] as const;
+export const ScoringPillarSchema = z.enum(SCORING_PILLARS);
 export type ScoringPillar = z.infer<typeof ScoringPillarSchema>;
 
 export const V2BaselineUniverseRowSchema = z.object({
@@ -351,6 +352,293 @@ const DashboardPortfolioPositionSchema = DashboardSecuritySchema.extend({
   weight: z.number().positive().max(1),
 });
 
+export const ScoreExclusionReasonSchema = z.enum([
+  "below-minimum-coverage",
+  "missing-required-pillar",
+  "no-observed-weight",
+]);
+export type ScoreExclusionReason = z.infer<typeof ScoreExclusionReasonSchema>;
+
+export const ScoreContributionSchema = z.object({
+  pillar: ScoringPillarSchema,
+  value: z.number().finite().nullable(),
+  weight: z.number().finite().nonnegative(),
+  weightedValue: z.number().finite().nullable(),
+  status: z.enum(["available", "missing"]),
+});
+export type ScoreContribution = z.infer<typeof ScoreContributionSchema>;
+
+export const PublishedScoredSecuritySchema = z
+  .object({
+    ticker: z.string().min(1),
+    name: z.string().min(1),
+    sector: z.string().min(1),
+    industry: z.string().min(1),
+    score: z.number().finite().nullable(),
+    coverage: z.number().min(0).max(1),
+    availableWeight: z.number().finite().nonnegative(),
+    totalWeight: z.number().finite().positive(),
+    eligible: z.boolean(),
+    missingPillars: z.array(ScoringPillarSchema),
+    exclusionReasons: z.array(ScoreExclusionReasonSchema),
+    normalization: z.enum(["total-weight", "available-weight", "not-scored"]),
+    contributions: z.array(ScoreContributionSchema).length(SCORING_PILLARS.length),
+    price: z.number().positive(),
+    marketCapB: z.number().nonnegative(),
+  })
+  .superRefine((value, context) => {
+    const contributionPillars = new Set(value.contributions.map(({ pillar }) => pillar));
+
+    if (
+      contributionPillars.size !== SCORING_PILLARS.length ||
+      value.contributions.some(({ pillar }, index) => pillar !== SCORING_PILLARS[index])
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Every scoring pillar must appear exactly once in canonical order.",
+        path: ["contributions"],
+      });
+    }
+
+    value.contributions.forEach((contribution, index) => {
+      const isConsistent =
+        contribution.status === "available"
+          ? contribution.value !== null &&
+            contribution.weightedValue !== null &&
+            Math.abs(contribution.weightedValue - contribution.value * contribution.weight) <= 1e-12
+          : contribution.value === null && contribution.weightedValue === null;
+
+      if (!isConsistent) {
+        context.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Contribution for "${contribution.pillar}" is inconsistent with its availability.`,
+          path: ["contributions", index],
+        });
+      }
+    });
+
+    const expectedMissing = value.contributions
+      .filter(({ status, weight }) => status === "missing" && weight > 0)
+      .map(({ pillar }) => pillar);
+
+    if (
+      expectedMissing.length !== value.missingPillars.length ||
+      expectedMissing.some((pillar) => !value.missingPillars.includes(pillar))
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "missingPillars must match missing positively weighted contributions.",
+        path: ["missingPillars"],
+      });
+    }
+
+    const expectedAvailableWeight = value.contributions.reduce(
+      (sum, contribution) =>
+        contribution.status === "available" ? sum + contribution.weight : sum,
+      0,
+    );
+    const expectedTotalWeight = value.contributions.reduce(
+      (sum, contribution) => sum + contribution.weight,
+      0,
+    );
+
+    if (
+      Math.abs(value.availableWeight - expectedAvailableWeight) > 1e-12 ||
+      Math.abs(value.totalWeight - expectedTotalWeight) > 1e-12 ||
+      Math.abs(value.coverage - expectedAvailableWeight / expectedTotalWeight) > 1e-12
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Published score coverage must reconcile with its pillar contributions.",
+        path: ["coverage"],
+      });
+    }
+
+    if (value.eligible) {
+      if (
+        value.score === null ||
+        value.exclusionReasons.length > 0 ||
+        value.normalization === "not-scored"
+      ) {
+        context.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "An eligible security requires a score and no exclusion reasons.",
+          path: ["eligible"],
+        });
+      }
+
+      const weightedSum = value.contributions.reduce(
+        (sum, contribution) => sum + (contribution.weightedValue ?? 0),
+        0,
+      );
+      const denominator =
+        value.normalization === "available-weight" ? value.availableWeight : value.totalWeight;
+
+      if (value.score !== null && Math.abs(value.score - weightedSum / denominator) > 1e-12) {
+        context.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Published score must reconcile with its weighted contributions.",
+          path: ["score"],
+        });
+      }
+    } else if (
+      value.score !== null ||
+      value.exclusionReasons.length === 0 ||
+      value.normalization !== "not-scored"
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "An ineligible security must be unscored with an explicit exclusion reason.",
+        path: ["eligible"],
+      });
+    }
+  });
+export type PublishedScoredSecurity = z.infer<typeof PublishedScoredSecuritySchema>;
+
+export const FactorCoverageSchema = z.object({
+  pillar: ScoringPillarSchema,
+  sourceField: z.string().min(1),
+  weight: z.number().finite().nonnegative(),
+  availableSecurities: z.number().int().nonnegative(),
+  missingSecurities: z.number().int().nonnegative(),
+  coverage: z.number().min(0).max(1),
+});
+export type FactorCoverage = z.infer<typeof FactorCoverageSchema>;
+
+const ScoringSummarySchema = z
+  .object({
+    method: z.literal("weighted-five-pillar"),
+    weights: z.record(ScoringPillarSchema, z.number().finite().nonnegative()),
+    missingDataPolicy: z.enum(["require-complete", "renormalize-explicitly"]),
+    minimumCoverage: z.number().min(0).max(1),
+    eligibleNormalization: z.enum(["total-weight", "available-weight"]),
+    eligibleSecurities: z.number().int().nonnegative(),
+    excludedSecurities: z.number().int().nonnegative(),
+    averageCoverage: z.number().min(0).max(1),
+    factorCoverage: z.array(FactorCoverageSchema).length(SCORING_PILLARS.length),
+  })
+  .superRefine((value, context) => {
+    const factorPillars = new Set(value.factorCoverage.map(({ pillar }) => pillar));
+
+    if (factorPillars.size !== SCORING_PILLARS.length) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Factor coverage must report every scoring pillar exactly once.",
+        path: ["factorCoverage"],
+      });
+    }
+
+    const expectedNormalization =
+      value.missingDataPolicy === "renormalize-explicitly" ? "available-weight" : "total-weight";
+
+    if (value.eligibleNormalization !== expectedNormalization) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `The ${value.missingDataPolicy} policy requires ${expectedNormalization} normalization.`,
+        path: ["eligibleNormalization"],
+      });
+    }
+
+    value.factorCoverage.forEach((factor, index) => {
+      const configuredWeight = value.weights[factor.pillar];
+
+      if (configuredWeight === undefined || Math.abs(factor.weight - configuredWeight) > 1e-12) {
+        context.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Coverage weight for "${factor.pillar}" does not match the scoring model.`,
+          path: ["factorCoverage", index, "weight"],
+        });
+      }
+    });
+  });
+
+const DashboardSourceSchema = z.object({
+  dataset: z.string().min(1),
+  repositoryPath: z.string().min(1),
+  sourceCommit: z.string().min(1),
+  contentSha256: Sha256Schema,
+  observedAt: IsoDateTimeSchema,
+  rowCount: z.number().int().positive(),
+  freshnessStatus: z.literal("current"),
+});
+
+export const PublishedScoresArtifactSchema = z
+  .object({
+    buildId: z.string().min(1),
+    generatedAt: IsoDateTimeSchema,
+    schemaVersion: z.string().min(1),
+    modelVersion: z.string().min(1),
+    scoring: ScoringSummarySchema,
+    securities: z.array(PublishedScoredSecuritySchema).min(1),
+    source: DashboardSourceSchema,
+  })
+  .superRefine((value, context) => {
+    if (value.securities.length !== value.source.rowCount) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Published scores must contain one record for every source security.",
+        path: ["securities"],
+      });
+    }
+
+    const eligible = value.securities.filter(({ eligible }) => eligible).length;
+    const averageCoverage =
+      value.securities.reduce((sum, security) => sum + security.coverage, 0) /
+      value.securities.length;
+
+    if (
+      eligible !== value.scoring.eligibleSecurities ||
+      value.securities.length - eligible !== value.scoring.excludedSecurities ||
+      Math.abs(averageCoverage - value.scoring.averageCoverage) > 1e-12
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Published score eligibility counts do not reconcile.",
+        path: ["scoring"],
+      });
+    }
+
+    value.scoring.factorCoverage.forEach((factor, index) => {
+      if (
+        factor.availableSecurities + factor.missingSecurities !== value.source.rowCount ||
+        Math.abs(factor.coverage - factor.availableSecurities / value.source.rowCount) > 1e-12
+      ) {
+        context.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Coverage for "${factor.pillar}" does not reconcile with the source universe.`,
+          path: ["scoring", "factorCoverage", index],
+        });
+      }
+    });
+
+    value.securities.forEach((security, securityIndex) => {
+      const violatesCoverage = security.coverage + 1e-12 < value.scoring.minimumCoverage;
+      const violatesCompleteness =
+        value.scoring.missingDataPolicy === "require-complete" &&
+        security.missingPillars.length > 0;
+
+      if (
+        security.contributions.some((contribution) => {
+          const configuredWeight = value.scoring.weights[contribution.pillar];
+
+          return (
+            configuredWeight === undefined ||
+            Math.abs(contribution.weight - configuredWeight) > 1e-12
+          );
+        }) ||
+        (security.eligible && (violatesCoverage || violatesCompleteness)) ||
+        (security.eligible && security.normalization !== value.scoring.eligibleNormalization)
+      ) {
+        context.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Security "${security.ticker}" does not follow the published scoring policy.`,
+          path: ["securities", securityIndex],
+        });
+      }
+    });
+  });
+export type PublishedScoresArtifact = z.infer<typeof PublishedScoresArtifactSchema>;
+
 export const VerticalSliceDashboardSchema = z
   .object({
     buildId: z.string().min(1),
@@ -358,24 +646,8 @@ export const VerticalSliceDashboardSchema = z
     schemaVersion: z.string().min(1),
     modelVersion: z.string().min(1),
     status: z.literal("healthy"),
-    source: z.object({
-      dataset: z.string().min(1),
-      repositoryPath: z.string().min(1),
-      sourceCommit: z.string().min(1),
-      contentSha256: Sha256Schema,
-      observedAt: IsoDateTimeSchema,
-      rowCount: z.number().int().positive(),
-      freshnessStatus: z.literal("current"),
-    }),
-    scoring: z.object({
-      method: z.literal("weighted-five-pillar"),
-      weights: z.record(ScoringPillarSchema, z.number().nonnegative()),
-      missingDataPolicy: z.literal("require-complete"),
-      minimumCoverage: z.literal(1),
-      eligibleSecurities: z.number().int().nonnegative(),
-      excludedSecurities: z.number().int().nonnegative(),
-      averageCoverage: z.number().min(0).max(1),
-    }),
+    source: DashboardSourceSchema,
+    scoring: ScoringSummarySchema,
     portfolio: z.object({
       constraints: z.object({
         maxPositionWeight: z.number().positive().max(1),

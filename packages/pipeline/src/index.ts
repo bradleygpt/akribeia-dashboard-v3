@@ -3,10 +3,14 @@ import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import {
   BuildManifestSchema,
+  PublishedScoresArtifactSchema,
+  SCORING_PILLARS,
   V2BaselineMetadataSchema,
   V2BaselineUniverseSnapshotSchema,
   VerticalSliceDashboardSchema,
   type ArtifactFile,
+  type FactorCoverage,
+  type PublishedScoredSecurity,
   type VerticalSliceBuildRecipe,
   type VerticalSliceDashboard,
 } from "@akribeia/contracts";
@@ -29,19 +33,15 @@ const MAX_POSITION_WEIGHT = 0.12;
 const MAX_SECTOR_WEIGHT = 0.3;
 const NOTICE =
   "Research preview only. Scores and model weights are evidence artifacts, not investment advice or a promise of future performance.";
+const PILLAR_SOURCE_FIELDS = {
+  valuation: "pillars.Valuation",
+  growth: "pillars.Growth",
+  profitability: "pillars.Profitability",
+  momentum: "pillars.Momentum",
+  revisions: "pillars.EPS Revisions",
+} as const;
 
-interface ScoredSecurity {
-  ticker: string;
-  name: string;
-  sector: string;
-  industry: string;
-  score: number | null;
-  coverage: number;
-  missingPillars: Array<"valuation" | "growth" | "profitability" | "momentum" | "revisions">;
-  price: number;
-  marketCapB: number;
-  eligible: boolean;
-}
+type ScoredSecurity = PublishedScoredSecurity;
 
 export interface VerticalSliceRunResult {
   buildId: string;
@@ -91,6 +91,25 @@ function publishedSecurity(security: ScoredSecurity & { score: number }) {
     price: security.price,
     marketCapB: security.marketCapB,
   };
+}
+
+function calculateFactorCoverage(securities: ScoredSecurity[]): FactorCoverage[] {
+  return SCORING_PILLARS.map((pillar) => {
+    const availableSecurities = securities.filter(
+      ({ contributions }) =>
+        contributions.find((contribution) => contribution.pillar === pillar)?.status ===
+        "available",
+    ).length;
+
+    return {
+      pillar,
+      sourceField: PILLAR_SOURCE_FIELDS[pillar],
+      weight: SCORE_WEIGHTS[pillar],
+      availableSecurities,
+      missingSecurities: securities.length - availableSecurities,
+      coverage: availableSecurities / securities.length,
+    };
+  });
 }
 
 function artifactMetadata(
@@ -214,12 +233,9 @@ export async function runVerticalSlice(
       name: row.name,
       sector: row.sector,
       industry: row.industry,
-      score: result.score,
-      coverage: result.coverage,
-      missingPillars: result.missingPillars,
+      ...result,
       price: row.price,
       marketCapB: row.marketCapB,
-      eligible: result.eligible,
     };
   });
   const eligible = scored
@@ -247,6 +263,18 @@ export async function runVerticalSlice(
   const eligibleByTicker = new Map(
     eligible.map((security) => [security.ticker, security] as const),
   );
+  const factorCoverage = calculateFactorCoverage(scored);
+  const scoring = {
+    method: "weighted-five-pillar" as const,
+    weights: SCORE_WEIGHTS,
+    missingDataPolicy: "require-complete" as const,
+    minimumCoverage: 1,
+    eligibleNormalization: "total-weight" as const,
+    eligibleSecurities: eligible.length,
+    excludedSecurities: scored.length - eligible.length,
+    averageCoverage: scored.reduce((sum, security) => sum + security.coverage, 0) / scored.length,
+    factorCoverage,
+  };
   const dashboard = VerticalSliceDashboardSchema.parse({
     buildId: recipe.buildId,
     generatedAt: recipe.evaluatedAt,
@@ -262,15 +290,7 @@ export async function runVerticalSlice(
       rowCount: snapshot.rows.length,
       freshnessStatus: "current",
     },
-    scoring: {
-      method: "weighted-five-pillar",
-      weights: SCORE_WEIGHTS,
-      missingDataPolicy: "require-complete",
-      minimumCoverage: 1,
-      eligibleSecurities: eligible.length,
-      excludedSecurities: scored.length - eligible.length,
-      averageCoverage: scored.reduce((sum, security) => sum + security.coverage, 0) / scored.length,
-    },
+    scoring,
     portfolio: {
       constraints: portfolio.constraints,
       totalWeight: portfolio.totalWeight,
@@ -282,24 +302,30 @@ export async function runVerticalSlice(
     topScores: eligible.slice(0, 12).map(publishedSecurity),
     notice: NOTICE,
   });
+  const scores = PublishedScoresArtifactSchema.parse({
+    buildId: recipe.buildId,
+    generatedAt: recipe.evaluatedAt,
+    schemaVersion: recipe.schemaVersion,
+    modelVersion: recipe.modelVersion,
+    scoring,
+    securities: scored,
+    source: dashboard.source,
+  });
   const artifacts = {
     dashboard: deterministicJson(dashboard),
     portfolio: deterministicJson({
       buildId: recipe.buildId,
       generatedAt: recipe.evaluatedAt,
+      schemaVersion: recipe.schemaVersion,
+      modelVersion: recipe.modelVersion,
+      scoring: dashboard.scoring,
       constraints: dashboard.portfolio.constraints,
       totalWeight: dashboard.portfolio.totalWeight,
       positions: dashboard.portfolio.positions,
       sectorWeights: dashboard.portfolio.sectorWeights,
       source: dashboard.source,
     }),
-    scores: deterministicJson({
-      buildId: recipe.buildId,
-      generatedAt: recipe.evaluatedAt,
-      scoring: dashboard.scoring,
-      securities: scored,
-      source: dashboard.source,
-    }),
+    scores: deterministicJson(scores),
   };
   const files = {
     dashboard: artifactMetadata(
@@ -395,7 +421,21 @@ export async function verifyPublishedVerticalSlice(
     }
   }
 
-  return VerticalSliceDashboardSchema.parse(
+  const dashboard = VerticalSliceDashboardSchema.parse(
     JSON.parse(await readFile(join(buildDirectory, "dashboard.json"), "utf8")) as unknown,
   );
+  const scores = PublishedScoresArtifactSchema.parse(
+    JSON.parse(await readFile(join(buildDirectory, "scores.json"), "utf8")) as unknown,
+  );
+
+  if (
+    scores.buildId !== dashboard.buildId ||
+    scores.schemaVersion !== dashboard.schemaVersion ||
+    scores.modelVersion !== dashboard.modelVersion ||
+    scores.source.contentSha256 !== dashboard.source.contentSha256
+  ) {
+    throw new Error("Published scoring lineage does not match the active dashboard.");
+  }
+
+  return dashboard;
 }

@@ -1,0 +1,195 @@
+{
+  "buildId": "preview-20260728-coverage-v2-a34fc842220f",
+  "generatedAt": "2026-07-30T04:06:28Z",
+  "schemaVersion": "3.0.0-preview.2",
+  "modelVersion": "3.0.0-preview.2",
+  "scoring": {
+    "method": "weighted-five-pillar",
+    "weights": {
+      "valuation": 0.2,
+      "growth": 0.2,
+      "profitability": 0.2,
+      "momentum": 0.2,
+      "revisions": 0.2
+    },
+    "missingDataPolicy": "require-complete",
+    "minimumCoverage": 1,
+    "eligibleNormalization": "total-weight",
+    "eligibleSecurities": 643,
+    "excludedSecurities": 0,
+    "averageCoverage": 1,
+    "factorCoverage": [
+      {
+        "pillar": "valuation",
+        "sourceField": "pillars.Valuation",
+        "weight": 0.2,
+        "availableSecurities": 643,
+        "missingSecurities": 0,
+        "coverage": 1
+      },
+      {
+        "pillar": "growth",
+        "sourceField": "pillars.Growth",
+        "weight": 0.2,
+        "availableSecurities": 643,
+        "missingSecurities": 0,
+        "coverage": 1
+      },
+      {
+        "pillar": "profitability",
+        "sourceField": "pillars.Profitability",
+        "weight": 0.2,
+        "availableSecurities": 643,
+        "missingSecurities": 0,
+        "coverage": 1
+      },
+      {
+        "pillar": "momentum",
+        "sourceField": "pillars.Momentum",
+        "weight": 0.2,
+        "availableSecurities": 643,
+        "missingSecurities": 0,
+        "coverage": 1
+      },
+      {
+        "pillar": "revisions",
+        "sourceField": "pillars.EPS Revisions",
+        "weight": 0.2,
+        "availableSecurities": 643,
+        "missingSecurities": 0,
+        "coverage": 1
+      }
+    ]
+  },
+  "constraints": {
+    "maxPositionWeight": 0.12,
+    "maxSectorWeight": 0.3
+  },
+  "totalWeight": 1,
+  "positions": [
+    {
+      "ticker": "MU",
+      "name": "Micron Technology, Inc.",
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "score": 9.801904761904762,
+      "coverage": 1,
+      "missingPillars": [],
+      "price": 939.15,
+      "marketCapB": 1118.3,
+      "weight": 0.12
+    },
+    {
+      "ticker": "NVDA",
+      "name": "NVIDIA Corporation",
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "score": 8.877619047619048,
+      "coverage": 1,
+      "missingPillars": [],
+      "price": 209.75,
+      "marketCapB": 5072.8,
+      "weight": 0.12
+    },
+    {
+      "ticker": "OVV",
+      "name": "Ovintiv Inc. (DE)",
+      "sector": "Energy",
+      "industry": "Oil & Gas E&P",
+      "score": 8.860000000000001,
+      "coverage": 1,
+      "missingPillars": [],
+      "price": 63.25,
+      "marketCapB": 17.6,
+      "weight": 0.12
+    },
+    {
+      "ticker": "BKNG",
+      "name": "Booking Holdings Inc. Common St",
+      "sector": "Consumer Cyclical",
+      "industry": "Travel Services",
+      "score": 8.803809523809525,
+      "coverage": 1,
+      "missingPillars": [],
+      "price": 179.15,
+      "marketCapB": 139.3,
+      "weight": 0.12
+    },
+    {
+      "ticker": "PCG",
+      "name": "Pacific Gas & Electric Co.",
+      "sector": "Utilities",
+      "industry": "Utilities - Regulated Electric",
+      "score": 8.758095238095239,
+      "coverage": 1,
+      "missingPillars": [],
+      "price": 17.88,
+      "marketCapB": 47.9,
+      "weight": 0.12
+    },
+    {
+      "ticker": "NBIX",
+      "name": "Neurocrine Biosciences, Inc.",
+      "sector": "Healthcare",
+      "industry": "Drug Manufacturers - Specialty & Generic",
+      "score": 8.754761904761905,
+      "coverage": 1,
+      "missingPillars": [],
+      "price": 175.76,
+      "marketCapB": 17.8,
+      "weight": 0.12
+    },
+    {
+      "ticker": "VST",
+      "name": "Vistra Corp.",
+      "sector": "Utilities",
+      "industry": "Utilities - Independent Power Producers",
+      "score": 8.70904761904762,
+      "coverage": 1,
+      "missingPillars": [],
+      "price": 168.44,
+      "marketCapB": 57.1,
+      "weight": 0.12
+    },
+    {
+      "ticker": "CTRA",
+      "name": "Coterra Energy Inc.",
+      "sector": "Energy",
+      "industry": "Oil & Gas E&P",
+      "score": 8.528571428571428,
+      "coverage": 1,
+      "missingPillars": [],
+      "price": 32.56,
+      "marketCapB": 24.7,
+      "weight": 0.12
+    },
+    {
+      "ticker": "SNDK",
+      "name": "Sandisk Corporation",
+      "sector": "Technology",
+      "industry": "Computer Hardware",
+      "score": 8.507142857142858,
+      "coverage": 1,
+      "missingPillars": [],
+      "price": 1503,
+      "marketCapB": 224.1,
+      "weight": 0.040000000000000036
+    }
+  ],
+  "sectorWeights": {
+    "Consumer Cyclical": 0.12,
+    "Energy": 0.24,
+    "Healthcare": 0.12,
+    "Technology": 0.28,
+    "Utilities": 0.24
+  },
+  "source": {
+    "dataset": "V2 production baseline — $10B+ universe",
+    "repositoryPath": "data/reference/v2-baseline/fixtures/universe_floor10.json",
+    "sourceCommit": "0de8cd6",
+    "contentSha256": "a34fc842220f0552460939bf5a4a138988ae2537e068d38a6f0216188063984e",
+    "observedAt": "2026-07-28T17:06:46Z",
+    "rowCount": 643,
+    "freshnessStatus": "current"
+  }
+}

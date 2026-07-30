@@ -1,6 +1,6 @@
 {
-  "buildId": "preview-20260728-a34fc842220f",
-  "evaluatedAt": "2026-07-30T03:38:40Z",
+  "buildId": "preview-20260728-coverage-v2-a34fc842220f",
+  "evaluatedAt": "2026-07-30T04:06:28Z",
   "observedAt": "2026-07-28T17:06:46Z",
   "maxAgeSeconds": 604800,
   "sourcePath": "data/reference/v2-baseline/fixtures/universe_floor10.json",
@@ -8,6 +8,6 @@
   "outputRoot": "apps/dashboard/public/data",
   "projectionPath": "apps/dashboard/app/generated/active-dashboard.json",
   "sourceCommit": "0de8cd6",
-  "schemaVersion": "3.0.0-preview.1",
-  "modelVersion": "3.0.0-preview.1"
+  "schemaVersion": "3.0.0-preview.2",
+  "modelVersion": "3.0.0-preview.2"
 }
