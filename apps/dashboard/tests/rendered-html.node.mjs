@@ -33,6 +33,9 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   const html = await response.text();
 
   assert.match(html, /<title>Akribeia — Quantitative Market Research<\/title>/i);
+  assert.match(html, /og-wave1\.png/);
+  assert.match(html, /1731/);
+  assert.match(html, /908/);
   assert.match(html, /class="skip-link" href="#main-content"/);
   assert.match(html, /<nav class="primary-nav" aria-label="Primary navigation">/);
   assert.match(html, /aria-label="Research integrity navigation"/);

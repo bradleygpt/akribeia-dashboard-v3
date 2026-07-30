@@ -48,6 +48,10 @@ main {
   min-height: 100vh;
 }
 
+section[id] {
+  scroll-margin-top: 118px;
+}
+
 .skip-link {
   position: fixed;
   z-index: 100;
@@ -3286,6 +3290,10 @@ h1 span {
   border-bottom: 1px solid var(--line);
 }
 
+.content-grid > * {
+  min-width: 0;
+}
+
 .panel {
   padding: 58px 4vw;
   background: var(--panel);
@@ -3796,7 +3804,7 @@ footer p {
   .content-grid,
   .daily-evidence,
   .governance-heading {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .hero-evidence {
@@ -4558,6 +4566,10 @@ footer p {
 @media (max-width: 620px) {
   .site-header {
     min-height: auto;
+  }
+
+  section[id] {
+    scroll-margin-top: 112px;
   }
 
   .header-status {
