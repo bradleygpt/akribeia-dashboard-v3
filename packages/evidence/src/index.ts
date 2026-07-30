@@ -22,6 +22,7 @@ export * from "./sec-identity-source.js";
 export * from "./sec-registrants.js";
 export * from "./sec-submissions-source.js";
 export * from "./security-master.js";
+export * from "./universe-membership.js";
 
 const REQUIRED_ARTIFACTS = ["dashboard", "portfolio", "scores"] as const;
 const BENCHMARK_REASON =

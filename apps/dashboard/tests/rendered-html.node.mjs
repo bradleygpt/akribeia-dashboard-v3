@@ -107,6 +107,14 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /No fuzzy or company-name fallback is used/);
   assert.match(html, /CIK identifies the registrant, not its exchange listing/);
   assert.match(html, /Current association only/);
+  assert.match(html, /The universe changed\. Eligibility history did not appear/);
+  assert.match(html, /629/);
+  assert.match(html, /14/);
+  assert.match(html, /13/);
+  assert.match(html, /Observed entrants/);
+  assert.match(html, /Observed exits/);
+  assert.match(html, /effective membership intervals available/);
+  assert.match(html, /Observed difference, not a constituent event/);
   assert.match(html, /Two snapshots are not a backtest/);
   assert.match(html, /2<!-- --> snapshots inventoried/);
   assert.match(html, /timezone unspecified/);
@@ -246,6 +254,8 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
     sourceHistoricalReadiness,
     packagedFilingAvailability,
     sourceFilingAvailability,
+    packagedUniverseMembership,
+    sourceUniverseMembership,
   ] = await Promise.all([
     readFile(new URL("../.openai/hosting.json", import.meta.url), "utf8"),
     readFile(new URL("../dist/.openai/hosting.json", import.meta.url), "utf8"),
@@ -308,6 +318,14 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
       new URL("../public/data/evidence/filing-availability/active.json", import.meta.url),
       "utf8",
     ),
+    readFile(
+      new URL("../dist/client/data/evidence/universe-membership/active.json", import.meta.url),
+      "utf8",
+    ),
+    readFile(
+      new URL("../public/data/evidence/universe-membership/active.json", import.meta.url),
+      "utf8",
+    ),
   ]);
   const pointer = JSON.parse(pointerPayload);
   const buildRoot = new URL(
@@ -328,6 +346,7 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(packagedMaturity, sourceMaturity);
   assert.equal(packagedHistoricalReadiness, sourceHistoricalReadiness);
   assert.equal(packagedFilingAvailability, sourceFilingAvailability);
+  assert.equal(packagedUniverseMembership, sourceUniverseMembership);
 
   for (const artifact of Object.values(manifest.files)) {
     const [packagedPayload, sourcePayload] = await Promise.all([
@@ -467,4 +486,20 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.deepEqual(filingAvailability.unmatched, [
     { ticker: "CTRA", reason: "no-exact-sec-registrant-match" },
   ]);
+  const universeMembership = JSON.parse(packagedUniverseMembership);
+  const versionedUniverseMembership = await readFile(
+    new URL(
+      `../dist/client/data/evidence/universe-membership/builds/${universeMembership.buildId}/universe-membership.json`,
+      import.meta.url,
+    ),
+    "utf8",
+  );
+  assert.equal(versionedUniverseMembership, packagedUniverseMembership);
+  assert.equal(universeMembership.buildId, activeEvidence.build.buildId);
+  assert.equal(universeMembership.survivorshipBiasControlled, false);
+  assert.equal(universeMembership.historicalValidationEligible, false);
+  assert.equal(universeMembership.comparison.continuingTickerCount, 629);
+  assert.equal(universeMembership.comparison.entrantCount, 14);
+  assert.equal(universeMembership.comparison.exitCount, 13);
+  assert.equal(universeMembership.controls.filter(({ status }) => status === "blocked").length, 5);
 });

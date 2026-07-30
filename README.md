@@ -32,6 +32,7 @@ npm run quality:generate
 npm run master:generate
 npm run maturity:generate
 npm run historical-readiness:generate
+npm run universe-membership:generate
 npm run sec-identity:fetch
 npm run registrants:generate
 npm run filing-sources:fetch
@@ -51,6 +52,7 @@ Evidence-layer details include
 [`docs/evidence/SECURITY_MASTER.md`](docs/evidence/SECURITY_MASTER.md) and
 [`docs/evidence/SEC_REGISTRANT_CROSSWALK.md`](docs/evidence/SEC_REGISTRANT_CROSSWALK.md),
 [`docs/evidence/FILING_AVAILABILITY.md`](docs/evidence/FILING_AVAILABILITY.md),
+[`docs/evidence/UNIVERSE_MEMBERSHIP_READINESS.md`](docs/evidence/UNIVERSE_MEMBERSHIP_READINESS.md),
 [`docs/evidence/MATURITY_LABELS.md`](docs/evidence/MATURITY_LABELS.md), and
 [`docs/evidence/HISTORICAL_READINESS.md`](docs/evidence/HISTORICAL_READINESS.md).
 Execution evidence and honest readiness status are maintained in `docs/CODEX_EXECUTION_STATUS.md`.

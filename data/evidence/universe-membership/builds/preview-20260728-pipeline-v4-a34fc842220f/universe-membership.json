@@ -1,0 +1,202 @@
+{
+  "reportSchemaVersion": "1.0.0",
+  "buildId": "preview-20260728-pipeline-v4-a34fc842220f",
+  "modelVersion": "3.0.0-preview.3",
+  "assessedAt": "2026-07-30T04:36:30Z",
+  "status": "observed-change-not-survivorship-controlled",
+  "survivorshipBiasControlled": false,
+  "historicalValidationEligible": false,
+  "comparison": {
+    "earlierSnapshotId": "june-oracle",
+    "laterSnapshotId": "july-baseline",
+    "earlierTickerCount": 642,
+    "laterTickerCount": 643,
+    "continuingTickerCount": 629,
+    "entrantCount": 14,
+    "exitCount": 13,
+    "unionTickerCount": 656,
+    "jaccardContinuity": 0.9588414634146342,
+    "entrantRate": 0.02177293934681182,
+    "exitRate": 0.020249221183800622,
+    "commonTickerClassificationChangeCount": 0
+  },
+  "entrants": [
+    {
+      "ticker": "BAX",
+      "name": "Baxter International Inc.",
+      "laterMarketCapB": 11.7
+    },
+    {
+      "ticker": "CART",
+      "name": "Maplebear Inc.",
+      "laterMarketCapB": 10.1
+    },
+    {
+      "ticker": "CORT",
+      "name": "Corcept Therapeutics Incorporat",
+      "laterMarketCapB": 10.2
+    },
+    {
+      "ticker": "CRDO",
+      "name": "Credo Technology Group Holding",
+      "laterMarketCapB": 40.2
+    },
+    {
+      "ticker": "CRL",
+      "name": "Charles River Laboratories Inte",
+      "laterMarketCapB": 11
+    },
+    {
+      "ticker": "DAR",
+      "name": "Darling Ingredients Inc.",
+      "laterMarketCapB": 10.1
+    },
+    {
+      "ticker": "ENSG",
+      "name": "The Ensign Group, Inc.",
+      "laterMarketCapB": 10.1
+    },
+    {
+      "ticker": "JKHY",
+      "name": "Jack Henry & Associates, Inc.",
+      "laterMarketCapB": 10.7
+    },
+    {
+      "ticker": "LITE",
+      "name": "Lumentum Holdings Inc.",
+      "laterMarketCapB": 60.4
+    },
+    {
+      "ticker": "MOH",
+      "name": "Molina Healthcare Inc",
+      "laterMarketCapB": 10.3
+    },
+    {
+      "ticker": "ORI",
+      "name": "Old Republic International Corp",
+      "laterMarketCapB": 10.1
+    },
+    {
+      "ticker": "SCI",
+      "name": "Service Corporation Internation",
+      "laterMarketCapB": 11.3
+    },
+    {
+      "ticker": "TECH",
+      "name": "Bio-Techne Corp",
+      "laterMarketCapB": 11.2
+    },
+    {
+      "ticker": "ZION",
+      "name": "Zions Bancorporation N.A.",
+      "laterMarketCapB": 10.1
+    }
+  ],
+  "exits": [
+    {
+      "ticker": "BLD",
+      "name": "TopBuild Corp.",
+      "earlierMarketCapB": 11.5
+    },
+    {
+      "ticker": "BMNR",
+      "name": "BitMine Immersion Technologies,",
+      "earlierMarketCapB": 10.2
+    },
+    {
+      "ticker": "DOCU",
+      "name": "DocuSign, Inc.",
+      "earlierMarketCapB": 10.7
+    },
+    {
+      "ticker": "ESI",
+      "name": "Element Solutions Inc.",
+      "earlierMarketCapB": 10.4
+    },
+    {
+      "ticker": "HOLX",
+      "name": "Hologic, Inc.",
+      "earlierMarketCapB": 17
+    },
+    {
+      "ticker": "IT",
+      "name": "Gartner, Inc.",
+      "earlierMarketCapB": 11.4
+    },
+    {
+      "ticker": "JOBY",
+      "name": "Joby Aviation, Inc.",
+      "earlierMarketCapB": 11.7
+    },
+    {
+      "ticker": "LUMN",
+      "name": "Lumen Technologies, Inc.",
+      "earlierMarketCapB": 10.9
+    },
+    {
+      "ticker": "OKLO",
+      "name": "Oklo Inc.",
+      "earlierMarketCapB": 12.8
+    },
+    {
+      "ticker": "POWL",
+      "name": "Powell Industries, Inc.",
+      "earlierMarketCapB": 10.9
+    },
+    {
+      "ticker": "RIOT",
+      "name": "Riot Platforms, Inc.",
+      "earlierMarketCapB": 10.3
+    },
+    {
+      "ticker": "SWKS",
+      "name": "Skyworks Solutions, Inc.",
+      "earlierMarketCapB": 11.9
+    },
+    {
+      "ticker": "WULF",
+      "name": "TeraWulf Inc.",
+      "earlierMarketCapB": 13.1
+    }
+  ],
+  "controls": [
+    {
+      "key": "snapshot-membership-observed",
+      "status": "pass",
+      "detail": "Two receipted, strict-contract-valid $10B research cross-sections expose their observed ticker membership."
+    },
+    {
+      "key": "eligibility-rules",
+      "status": "blocked",
+      "detail": "The snapshots do not record the index, exchange, liquidity, security-type, or market-cap eligibility rule evaluated for each ticker."
+    },
+    {
+      "key": "membership-effective-intervals",
+      "status": "blocked",
+      "detail": "No security has a membership start, membership end, or record-level availability timestamp."
+    },
+    {
+      "key": "identity-continuity",
+      "status": "blocked",
+      "detail": "Ticker equality is only an observed label match; permanent issuer and listing identifiers remain unavailable."
+    },
+    {
+      "key": "delisting-evidence",
+      "status": "blocked",
+      "detail": "An exit from the later snapshot is not evidence of delisting, merger, acquisition, ticker change, or investability loss."
+    },
+    {
+      "key": "survivorship-bias-control",
+      "status": "blocked",
+      "detail": "Two cross-sections cannot establish a point-in-time eligible universe for historical scoring or portfolio evaluation."
+    }
+  ],
+  "limitations": [
+    "Entrants and exits describe differences between two preserved research files, not verified historical constituent events.",
+    "Market-cap changes, source coverage changes, ticker changes, corporate actions, or upstream collection differences may explain membership changes.",
+    "Ticker labels are not permanent security identities and may be reused or changed.",
+    "Neither snapshot provides record-level availability time or eligibility-effective intervals.",
+    "This evidence must not be used for a survivorship-controlled backtest or investment-performance claim."
+  ],
+  "notice": "Research preview only. Scores and model weights are evidence artifacts, not investment advice or a promise of future performance."
+}
