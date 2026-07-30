@@ -34,7 +34,7 @@ The current branch completes the portfolio controls used by the visible slice:
 7. the dashboard exposes construction method, unit balance, capacity, and binding constraints;
 8. a new immutable `preview.3` build preserves the coverage-aware build as its rollback target.
 
-Implementation, complete local CI, and dependency audit pass. Private preview deployment and pull-request gates remain for this unit.
+Implementation, complete local CI, dependency audit, and private preview deployment pass. Pull-request gates remain for this unit.
 
 ## Remaining milestones
 
@@ -65,7 +65,7 @@ Implementation, complete local CI, and dependency audit pass. Private preview de
 - V2 production: unchanged.
 - V3 local preview: generated as immutable build `preview-20260728-portfolio-v3-a34fc842220f`; an interactive dev server is not currently running.
 - V3 hosted preview: deployed privately at <https://akribeia-v3-evidence-preview.akribeiainsights.chatgpt.site>.
-- V3 hosted preview source: validated coverage-aware scoring PR head `c2bc3c7d9`.
+- V3 hosted preview source: validated exact-portfolio commit `5dbac0a35`.
 - V3 production: not deployed.
 - Cutover: not authorized and not attempted.
 
@@ -74,7 +74,7 @@ Implementation, complete local CI, and dependency audit pass. Private preview de
 - V2 baseline fixtures and native parity reports: preserved.
 - V3 immutable preview builds: three local manifest-addressed builds preserve artifact hashes, provenance, model/schema versions, and rollback linkage.
 - V3 active local evidence: `preview-20260728-portfolio-v3-a34fc842220f` with 1,000,000,000 reconciled weight units, exact position/sector ledgers, 643 score records, five factor-coverage reports, and per-security score decomposition.
-- V3 hosted coverage-aware scoring evidence: deployed from validated PR head `c2bc3c7d9`.
+- V3 hosted exact-portfolio evidence: deployed from validated commit `5dbac0a35`.
 - Published daily evidence history: not started.
 - Historical validation: not started.
 - Prospective validation: not started.
