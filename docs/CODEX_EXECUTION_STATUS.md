@@ -38,7 +38,7 @@ The current branch makes the isolated V3 deployment inspectable and recoverable:
 7. hosted rollback procedures redeploy a previously validated saved version without rebuilding or rewriting history;
 8. explicit failure rules prevent V2 modification or V3 cutover when checks, health, security, or recovery evidence is incomplete.
 
-Implementation, complete local CI, and dependency audit pass. Private preview deployment and pull-request gates remain for this unit.
+Implementation, complete local CI, dependency audit, and private preview deployment pass. Pull-request gates remain for this unit.
 
 ## Remaining milestones
 
@@ -69,7 +69,7 @@ Implementation, complete local CI, and dependency audit pass. Private preview de
 - V2 production: unchanged.
 - V3 local preview: generated and safely retried as immutable build `preview-20260728-pipeline-v4-a34fc842220f`; an interactive dev server is not currently running.
 - V3 hosted preview: deployed privately at <https://akribeia-v3-evidence-preview.akribeiainsights.chatgpt.site>.
-- V3 hosted preview source: validated protected-capabilities commit `14703cc0f`.
+- V3 hosted preview source: validated deployment-health commit `25879907b`.
 - V3 production: not deployed.
 - Cutover: not authorized and not attempted.
 
@@ -81,7 +81,7 @@ Implementation, complete local CI, and dependency audit pass. Private preview de
 - V3 hosted end-to-end pipeline evidence: deployed from the tree validated in PR #10.
 - V3 hosted availability evidence: runtime pointer, manifest, schema, lineage, byte-size, and dashboard SHA-256 verification deployed from the tree validated in PR #11.
 - V3 protected evidence API: server-verified lookup and deterministic explanation routes deployed privately from validated commit `14703cc0f`.
-- V3 deep deployment health: implemented locally; private deployment is pending.
+- V3 deep deployment health: pointer, manifest, artifact integrity, schema, and lineage verification deployed privately from validated commit `25879907b`.
 - Published daily evidence history: not started.
 - Historical validation: not started.
 - Prospective validation: not started.
