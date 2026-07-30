@@ -24,6 +24,8 @@
     "historical-readiness:generate": "npm run typecheck && node packages/evidence/dist/historical-readiness-cli.js",
     "sec-identity:fetch": "npm run typecheck && node packages/evidence/dist/sec-identity-source-cli.js",
     "registrants:generate": "npm run typecheck && node packages/evidence/dist/sec-registrants-cli.js",
+    "filing-sources:fetch": "npm run typecheck && node packages/evidence/dist/sec-submissions-source-cli.js",
+    "filing-availability:generate": "npm run typecheck && node packages/evidence/dist/filing-availability-cli.js",
     "validate": "npm run typecheck && npm run lint && npm run build && npm run test:ci",
     "ci": "npm run format:check && npm run validate"
   },

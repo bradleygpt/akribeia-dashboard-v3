@@ -173,6 +173,11 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
     assert.match(stdout, /Highest composite scores/);
     assert.match(stdout, /A dated receipt, with limits intact/);
     assert.match(stdout, /No point-in-time benchmark input is present/);
+    assert.match(stdout, /Accepted before the decision—or excluded/);
+    assert.match(stdout, /11<!-- --> \/<!-- --> <!-- -->12/);
+    assert.match(stdout, /Post-cutoff excluded/);
+    assert.match(stdout, /Retrospective metadata/);
+    assert.match(stdout, /CTRA/);
     assert.match(stdout, /What the model is—and is not/);
     assert.match(stdout, /Not release eligible/);
     assert.match(stdout, /Known methodology gap/);

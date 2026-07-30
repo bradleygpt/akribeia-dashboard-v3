@@ -34,6 +34,8 @@ npm run maturity:generate
 npm run historical-readiness:generate
 npm run sec-identity:fetch
 npm run registrants:generate
+npm run filing-sources:fetch
+npm run filing-availability:generate
 ```
 
 ## Migration strategy
@@ -48,6 +50,7 @@ See `ROADMAP.md`, `MIGRATION.md`, and `docs/architecture/ADR-0001-separate-v3-re
 Evidence-layer details include
 [`docs/evidence/SECURITY_MASTER.md`](docs/evidence/SECURITY_MASTER.md) and
 [`docs/evidence/SEC_REGISTRANT_CROSSWALK.md`](docs/evidence/SEC_REGISTRANT_CROSSWALK.md),
+[`docs/evidence/FILING_AVAILABILITY.md`](docs/evidence/FILING_AVAILABILITY.md),
 [`docs/evidence/MATURITY_LABELS.md`](docs/evidence/MATURITY_LABELS.md), and
 [`docs/evidence/HISTORICAL_READINESS.md`](docs/evidence/HISTORICAL_READINESS.md).
 Execution evidence and honest readiness status are maintained in `docs/CODEX_EXECUTION_STATUS.md`.

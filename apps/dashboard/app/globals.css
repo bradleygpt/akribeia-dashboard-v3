@@ -666,6 +666,194 @@ h1 span {
   line-height: 1.6;
 }
 
+.filing-availability {
+  padding: 72px 4vw;
+  border-bottom: 1px solid var(--line);
+  background: #dfe5da;
+}
+
+.filing-availability-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.filing-availability-heading h2 {
+  max-width: 880px;
+  margin: 12px 0 20px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(40px, 5.5vw, 72px);
+  font-weight: 400;
+  letter-spacing: -0.055em;
+  line-height: 0.95;
+}
+
+.filing-availability-heading p:not(.mono-label) {
+  max-width: 760px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.filing-availability-heading a {
+  flex: none;
+  padding: 10px 13px;
+  border: 1px solid var(--ink);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 9px;
+  font-weight: 800;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.filing-availability-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  margin-top: 40px;
+  border: 1px solid #b9c1b6;
+  background: #b9c1b6;
+}
+
+.filing-availability-summary article {
+  min-width: 0;
+  padding: 21px;
+  background: var(--panel);
+}
+
+.filing-availability-summary span,
+.filing-availability-summary strong {
+  display: block;
+}
+
+.filing-availability-summary span {
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.filing-availability-summary strong {
+  margin-top: 15px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(30px, 4vw, 46px);
+  font-weight: 400;
+}
+
+.filing-availability-summary article[data-status="blocked"] {
+  box-shadow: inset 0 4px 0 var(--danger);
+}
+
+.filing-availability-summary article[data-status="blocked"] strong {
+  color: var(--danger);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+.filing-availability-summary p {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.filing-availability-ledger {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.45fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.filing-availability-ledger .table-scroll {
+  border: 1px solid #b9c1b6;
+  background: var(--panel);
+}
+
+.filing-availability-ledger table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
+}
+
+.filing-availability-ledger th,
+.filing-availability-ledger td {
+  padding: 13px 15px;
+  border-bottom: 1px solid #d7dbd3;
+  text-align: left;
+  vertical-align: top;
+}
+
+.filing-availability-ledger th {
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.filing-availability-ledger td strong,
+.filing-availability-ledger td code,
+.filing-availability-ledger td small {
+  display: block;
+}
+
+.filing-availability-ledger td strong {
+  color: var(--acid-dark);
+}
+
+.filing-availability-ledger td code,
+.filing-availability-ledger td small {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.filing-availability-ledger aside {
+  padding: 21px;
+  border-left: 5px solid var(--warning);
+  background: #f3f3e9;
+}
+
+.filing-availability-ledger aside > strong {
+  color: var(--warning);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.filing-availability-ledger aside > p {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.65;
+}
+
+.filing-availability-ledger dl {
+  margin: 18px 0 0;
+}
+
+.filing-availability-ledger dl div {
+  padding: 10px 0;
+  border-top: 1px solid #d7dbd3;
+}
+
+.filing-availability-ledger dt,
+.filing-availability-ledger dd {
+  margin: 0;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 8px;
+}
+
+.filing-availability-ledger dt {
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.filing-availability-ledger dd {
+  margin-top: 5px;
+  overflow-wrap: anywhere;
+}
+
 .model-governance {
   padding: 72px 4vw;
   border-bottom: 1px solid var(--line);
@@ -2454,6 +2642,14 @@ footer p {
     grid-template-columns: repeat(3, 1fr);
   }
 
+  .filing-availability-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .filing-availability-ledger {
+    grid-template-columns: 1fr;
+  }
+
   .validation-ledger {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -2582,6 +2778,7 @@ footer p {
   .pipeline,
   .factor-audit,
   .daily-evidence,
+  .filing-availability,
   .model-governance,
   .data-quality,
   .security-master,
@@ -2651,6 +2848,11 @@ footer p {
     flex-direction: column;
   }
 
+  .filing-availability-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   .security-master-heading {
     align-items: flex-start;
     flex-direction: column;
@@ -2669,7 +2871,8 @@ footer p {
 
   .quality-grid,
   .drift-state,
-  .security-master-summary {
+  .security-master-summary,
+  .filing-availability-summary {
     grid-template-columns: 1fr;
   }
 

@@ -1,6 +1,7 @@
 import {
   DailyEvidenceRecordSchema,
   DataQualityReportSchema,
+  FilingAvailabilityReportSchema,
   HistoricalReadinessReportSchema,
   MaturityAssessmentSchema,
   MetricDictionarySchema,
@@ -13,6 +14,7 @@ import { DataStatusBanner } from "./data-status-banner";
 import { EvidenceExplorer } from "./evidence-explorer";
 import activeDashboard from "./generated/active-dashboard.json";
 import activeDailyEvidence from "./generated/active-daily-evidence.json";
+import activeFilingAvailability from "./generated/active-filing-availability.json";
 import activeHistoricalReadiness from "./generated/active-historical-readiness.json";
 import activeMetricDictionary from "./generated/active-metric-dictionary.json";
 import activeMaturity from "./generated/active-maturity.json";
@@ -23,6 +25,7 @@ import activeSecurityMaster from "./generated/active-security-master.json";
 
 const dashboard = VerticalSliceDashboardSchema.parse(activeDashboard);
 const dailyEvidence = DailyEvidenceRecordSchema.parse(activeDailyEvidence);
+const filingAvailability = FilingAvailabilityReportSchema.parse(activeFilingAvailability);
 const historicalReadiness = HistoricalReadinessReportSchema.parse(activeHistoricalReadiness);
 const metricDictionary = MetricDictionarySchema.parse(activeMetricDictionary);
 const maturity = MaturityAssessmentSchema.parse(activeMaturity);
@@ -34,6 +37,8 @@ const securityMaster = SecurityMasterSchema.parse(activeSecurityMaster);
 if (
   modelCard.modelVersion !== dashboard.modelVersion ||
   metricDictionary.modelVersion !== dashboard.modelVersion ||
+  filingAvailability.buildId !== dashboard.buildId ||
+  filingAvailability.modelVersion !== dashboard.modelVersion ||
   historicalReadiness.buildId !== dashboard.buildId ||
   historicalReadiness.modelVersion !== dashboard.modelVersion ||
   qualityReport.buildId !== dashboard.buildId ||
@@ -121,6 +126,7 @@ export default function Home() {
           <a href="#scores">Scores</a>
           <a href="#portfolio">Portfolio</a>
           <a href="#daily-evidence">Evidence</a>
+          <a href="#filing-availability">Filings</a>
           <a href="#model-governance">Method</a>
           <a href="#data-quality">Quality</a>
           <a href="#security-master">Master</a>
@@ -214,6 +220,125 @@ export default function Home() {
               {percent(dashboard.portfolio.constraints.maxSectorWeight)} sector
             </span>
           </article>
+        </section>
+
+        <section
+          className="filing-availability"
+          id="filing-availability"
+          aria-labelledby="filing-availability-heading"
+        >
+          <div className="filing-availability-heading">
+            <div>
+              <p className="mono-label">
+                FILING AVAILABILITY / CUTOFF {filingAvailability.decisionCutoffAt.slice(0, 10)}
+              </p>
+              <h2 id="filing-availability-heading">Accepted before the decision—or excluded.</h2>
+              <p>
+                SEC acceptance timestamps define the earliest supported filing boundary for the
+                visible top-score and active-portfolio set. Filings after the model cutoff are
+                counted and excluded, never allowed to leak backward.
+              </p>
+            </div>
+            <a
+              href={`/data/evidence/filing-availability/builds/${filingAvailability.buildId}/filing-availability.json`}
+            >
+              View availability evidence
+            </a>
+          </div>
+          <div className="filing-availability-summary" aria-label="Filing availability coverage">
+            <article>
+              <span>Submission histories</span>
+              <strong>
+                {filingAvailability.coverage.submissionHistoryCount} /{" "}
+                {filingAvailability.coverage.selectedTickerCount}
+              </strong>
+              <p>
+                {percent(filingAvailability.coverage.submissionCoverage, 1)} selected-set coverage
+              </p>
+            </article>
+            <article>
+              <span>Periodic filing available</span>
+              <strong>{filingAvailability.coverage.periodicFilingAvailableCount}</strong>
+              <p>10-K or 10-Q family at/before cutoff</p>
+            </article>
+            <article>
+              <span>Post-cutoff excluded</span>
+              <strong>{filingAvailability.coverage.excludedPostCutoffFilingCount}</strong>
+              <p>captured filings withheld from the decision</p>
+            </article>
+            <article data-status="blocked">
+              <span>Historical validation</span>
+              <strong>Blocked</strong>
+              <p>retrospective metadata is not acquisition-time proof</p>
+            </article>
+          </div>
+          <div className="filing-availability-ledger">
+            <div
+              className="table-scroll"
+              tabIndex={0}
+              role="region"
+              aria-label="SEC filing availability examples"
+            >
+              <table>
+                <caption className="sr-only">
+                  Latest eligible periodic and current filings by selected ticker
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Ticker / CIK</th>
+                    <th scope="col">Latest periodic</th>
+                    <th scope="col">Latest current</th>
+                    <th scope="col">Later excluded</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filingAvailability.entries.slice(0, 7).map((entry) => (
+                    <tr key={entry.provisionalSecurityId}>
+                      <td>
+                        <strong>{entry.ticker}</strong>
+                        <code>{entry.cik}</code>
+                      </td>
+                      <td>
+                        <strong>{entry.latestPeriodic?.form ?? "Unavailable"}</strong>
+                        <small>
+                          {entry.latestPeriodic === null
+                            ? "No eligible filing"
+                            : observedDate(entry.latestPeriodic.acceptedAt)}
+                        </small>
+                      </td>
+                      <td>
+                        <strong>{entry.latestCurrent?.form ?? "Unavailable"}</strong>
+                        <small>
+                          {entry.latestCurrent === null
+                            ? "No eligible filing"
+                            : observedDate(entry.latestCurrent.acceptedAt)}
+                        </small>
+                      </td>
+                      <td>{entry.filingsAfterCutoffExcluded}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <aside aria-label="Filing availability boundary">
+              <strong>Retrospective metadata</strong>
+              <p>{filingAvailability.limitations[0]}</p>
+              <dl>
+                <div>
+                  <dt>Decision cutoff</dt>
+                  <dd>{observedDate(filingAvailability.decisionCutoffAt)}</dd>
+                </div>
+                <div>
+                  <dt>Captured</dt>
+                  <dd>{observedDate(filingAvailability.generatedAt)}</dd>
+                </div>
+                <div>
+                  <dt>Unmatched</dt>
+                  <dd>{filingAvailability.unmatched.map(({ ticker }) => ticker).join(", ")}</dd>
+                </div>
+              </dl>
+            </aside>
+          </div>
         </section>
 
         <section

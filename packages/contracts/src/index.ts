@@ -2052,3 +2052,239 @@ export const SecRegistrantCrosswalkSchema = z
     }
   });
 export type SecRegistrantCrosswalk = z.infer<typeof SecRegistrantCrosswalkSchema>;
+
+const SecAccessionNumberSchema = z.string().regex(/^\d{10}-\d{2}-\d{6}$/);
+
+export const SecSubmissionHistorySchema = z
+  .object({
+    cik: SecCikSchema,
+    name: z.string().trim().min(1),
+    tickers: z.array(SecTickerSchema),
+    exchanges: z.array(z.string()),
+    filings: z
+      .object({
+        recent: z
+          .object({
+            accessionNumber: z.array(SecAccessionNumberSchema).min(1),
+            filingDate: z.array(z.string().date()).min(1),
+            reportDate: z.array(z.union([z.string().date(), z.literal("")])).min(1),
+            acceptanceDateTime: z.array(IsoDateTimeSchema).min(1),
+            form: z.array(z.string().trim().min(1)).min(1),
+            primaryDocument: z.array(z.string()).min(1),
+          })
+          .passthrough(),
+      })
+      .passthrough(),
+  })
+  .passthrough()
+  .superRefine((value, context) => {
+    const recent = value.filings.recent;
+    const expected = recent.accessionNumber.length;
+    const aligned = [
+      recent.filingDate,
+      recent.reportDate,
+      recent.acceptanceDateTime,
+      recent.form,
+      recent.primaryDocument,
+    ].every(({ length }) => length === expected);
+
+    if (!aligned) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "SEC submission recent-filing columns must have equal lengths.",
+        path: ["filings", "recent"],
+      });
+    }
+  });
+export type SecSubmissionHistory = z.infer<typeof SecSubmissionHistorySchema>;
+
+export const SecSubmissionSourceReceiptSchema = z
+  .object({
+    receiptSchemaVersion: z.literal("1.0.0"),
+    snapshotId: z.string().date(),
+    retrievedAt: IsoDateTimeSchema,
+    sourcePolicy: z
+      .object({
+        provider: z.literal("U.S. Securities and Exchange Commission"),
+        api: z.literal("EDGAR Submissions"),
+        access: z.literal("public-no-api-key"),
+        declaredUserAgent: z.literal(true),
+        maxRequestsPerSecond: z.literal(10),
+        updateSchedule: z.literal("real-time-as-disseminated"),
+      })
+      .strict(),
+    sources: z
+      .array(
+        z
+          .object({
+            cik: SecCikSchema,
+            uri: z.string().url(),
+            path: z.string().min(1),
+            retrievedAt: IsoDateTimeSchema,
+            sha256: Sha256Schema,
+            byteSize: z.number().int().positive(),
+            recentFilingCount: z.number().int().positive(),
+          })
+          .strict(),
+      )
+      .min(1),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    const ciks = value.sources.map(({ cik }) => cik);
+    const canonical = [...ciks].sort((left, right) => left.localeCompare(right));
+    const sourcesValid = value.sources.every(
+      ({ cik, uri, retrievedAt }, index) =>
+        cik === canonical[index] &&
+        uri === `https://data.sec.gov/submissions/CIK${cik}.json` &&
+        retrievedAt === value.retrievedAt,
+    );
+
+    if (!sourcesValid || new Set(ciks).size !== ciks.length) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "SEC submission sources must use unique canonical CIKs and official URIs.",
+        path: ["sources"],
+      });
+    }
+  });
+export type SecSubmissionSourceReceipt = z.infer<typeof SecSubmissionSourceReceiptSchema>;
+
+const FilingAvailabilityRecordSchema = z
+  .object({
+    accessionNumber: SecAccessionNumberSchema,
+    form: z.enum(["10-K", "10-K/A", "10-Q", "10-Q/A", "8-K", "8-K/A"]),
+    filingDate: z.string().date(),
+    reportDate: z.string().date().nullable(),
+    acceptedAt: IsoDateTimeSchema,
+    primaryDocument: z.string(),
+    availabilityBasis: z.literal("edgar-acceptance-time"),
+    eligibleAtCutoff: z.literal(true),
+  })
+  .strict();
+
+export const FilingAvailabilityReportSchema = z
+  .object({
+    reportSchemaVersion: z.literal("1.0.0"),
+    buildId: SafeBuildIdSchema,
+    modelVersion: z.string().min(1),
+    generatedAt: IsoDateTimeSchema,
+    decisionCutoffAt: IsoDateTimeSchema,
+    status: z.literal("partial-retrospective-metadata"),
+    historicalValidationEligible: z.literal(false),
+    sourceReceipt: z
+      .object({
+        path: z.string().min(1),
+        sha256: Sha256Schema,
+        snapshotId: z.string().date(),
+        retrievedAt: IsoDateTimeSchema,
+      })
+      .strict(),
+    selection: z
+      .object({
+        policy: z.literal("dashboard-top-scores-and-active-portfolio"),
+        topScoreTickerCount: z.number().int().positive(),
+        portfolioTickerCount: z.number().int().positive(),
+        selectedTickerCount: z.number().int().positive(),
+        submissionHistoryCount: z.number().int().positive(),
+        unmatchedTickerCount: z.number().int().nonnegative(),
+      })
+      .strict(),
+    entries: z
+      .array(
+        z
+          .object({
+            ticker: SecurityMasterTickerSchema,
+            provisionalSecurityId: z.string().regex(/^AKR-TICKER:[A-Z][A-Z0-9.-]{0,9}$/),
+            cik: SecCikSchema,
+            secName: z.string().trim().min(1),
+            tickerPresentInSubmission: z.boolean(),
+            latestPeriodic: FilingAvailabilityRecordSchema.nullable(),
+            latestCurrent: FilingAvailabilityRecordSchema.nullable(),
+            filingsAfterCutoffExcluded: z.number().int().nonnegative(),
+          })
+          .strict(),
+      )
+      .min(1),
+    unmatched: z.array(
+      z
+        .object({
+          ticker: SecurityMasterTickerSchema,
+          reason: z.literal("no-exact-sec-registrant-match"),
+        })
+        .strict(),
+    ),
+    coverage: z
+      .object({
+        selectedTickerCount: z.number().int().positive(),
+        submissionHistoryCount: z.number().int().positive(),
+        tickerVerifiedCount: z.number().int().nonnegative(),
+        periodicFilingAvailableCount: z.number().int().nonnegative(),
+        currentFilingAvailableCount: z.number().int().nonnegative(),
+        excludedPostCutoffFilingCount: z.number().int().nonnegative(),
+        submissionCoverage: z.number().min(0).max(1),
+      })
+      .strict(),
+    limitations: z.array(z.string().min(1)).min(4),
+    notice: z.string().min(1),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    const entryTickers = value.entries.map(({ ticker }) => ticker);
+    const unmatchedTickers = value.unmatched.map(({ ticker }) => ticker);
+    const allTickers = [...entryTickers, ...unmatchedTickers];
+    const sortedEntries = [...entryTickers].sort((left, right) => left.localeCompare(right));
+    const sortedUnmatched = [...unmatchedTickers].sort((left, right) => left.localeCompare(right));
+    const acceptedAtOrBeforeCutoff = value.entries.every(({ latestPeriodic, latestCurrent }) =>
+      [latestPeriodic, latestCurrent]
+        .filter((filing) => filing !== null)
+        .every((filing) => Date.parse(filing.acceptedAt) <= Date.parse(value.decisionCutoffAt)),
+    );
+    const coverage = value.coverage;
+    const countsReconcile =
+      value.generatedAt === value.sourceReceipt.retrievedAt &&
+      value.selection.selectedTickerCount === allTickers.length &&
+      value.selection.submissionHistoryCount === value.entries.length &&
+      value.selection.unmatchedTickerCount === value.unmatched.length &&
+      coverage.selectedTickerCount === allTickers.length &&
+      coverage.submissionHistoryCount === value.entries.length &&
+      coverage.tickerVerifiedCount ===
+        value.entries.filter(({ tickerPresentInSubmission }) => tickerPresentInSubmission).length &&
+      coverage.periodicFilingAvailableCount ===
+        value.entries.filter(({ latestPeriodic }) => latestPeriodic !== null).length &&
+      coverage.currentFilingAvailableCount ===
+        value.entries.filter(({ latestCurrent }) => latestCurrent !== null).length &&
+      coverage.excludedPostCutoffFilingCount ===
+        value.entries.reduce(
+          (count, { filingsAfterCutoffExcluded }) => count + filingsAfterCutoffExcluded,
+          0,
+        ) &&
+      coverage.submissionCoverage === value.entries.length / allTickers.length;
+
+    if (
+      !countsReconcile ||
+      !acceptedAtOrBeforeCutoff ||
+      new Set(allTickers).size !== allTickers.length
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Filing availability coverage, cutoff eligibility, and counts must reconcile.",
+        path: ["coverage"],
+      });
+    }
+
+    if (
+      entryTickers.some((ticker, index) => ticker !== sortedEntries[index]) ||
+      unmatchedTickers.some((ticker, index) => ticker !== sortedUnmatched[index]) ||
+      value.entries.some(
+        ({ ticker, provisionalSecurityId }) => provisionalSecurityId !== `AKR-TICKER:${ticker}`,
+      )
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Filing availability records must use canonical ticker order and research IDs.",
+        path: ["entries"],
+      });
+    }
+  });
+export type FilingAvailabilityReport = z.infer<typeof FilingAvailabilityReportSchema>;

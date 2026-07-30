@@ -4,7 +4,7 @@ Last updated: 2026-07-30
 
 ## Whole-product completion
 
-Estimated completion: **77%**
+Estimated completion: **80%**
 
 This estimate reflects working, tested product behavior rather than roadmap line-item count. V3 now
 has the Phase 0 baseline, core publication trust primitives, a deployed visible preview, complete
@@ -14,7 +14,9 @@ protected server-side evidence capabilities, explicit deployment health and reco
 the first immutable daily evidence record, versioned model-governance evidence, an active-build
 quality report with honest drift eligibility, a provisional security master, fail-closed evidence
 maturity labels, an immutable audit of historical point-in-time readiness, and a checksum-pinned
-current SEC registrant crosswalk with explicit unresolved coverage. It is not ready to replace V2.
+current SEC registrant crosswalk with explicit unresolved coverage. The first bounded
+filing-availability control now also excludes post-cutoff filings from a visible selected set. It
+is not ready to replace V2.
 
 ## Completed milestones
 
@@ -39,28 +41,30 @@ current SEC registrant crosswalk with explicit unresolved coverage. It is not re
   blocking, privately deployed and merged through PR #18.
 - Immutable point-in-time readiness inventory, strict-contract issue evidence, and ten
   fail-closed historical controls, privately deployed and merged through PR #19.
+- Checksum-pinned SEC registrant sources, exact association coverage, visible unmatched records,
+  and explicit identity limits, privately deployed and merged through PR #20.
 
 ## Current milestone
 
-**Current SEC registrant crosswalk**
+**Filing availability boundary**
 
-The current branch adds useful current registrant navigation while preserving the distinction
-between a filer and a permanent security identity:
+The current branch introduces the first bounded Phase 3 point-in-time control:
 
-1. official SEC company and mutual-fund ticker files are preserved byte-for-byte with retrieval
-   time, provider modification time, record count, size, and SHA-256 receipts;
-2. active daily evidence, security-master lineage, receipt integrity, and official source URIs
-   must reconcile;
-3. exact current-ticker matching associates 632 of 643 active securities;
-4. company CIK coverage is 585 of 588 and registered-fund class coverage is 47 of 55;
-5. eleven unmatched tickers and zero ambiguities are visible;
-6. fuzzy and name matching are prohibited;
-7. the schema fixes historical eligibility and operating-company listing-identity coverage to
-   false and zero;
-8. the responsive dashboard exposes matches, unmatched records, source scope, and limitations.
+1. eleven official SEC EDGAR submission histories are preserved byte-for-byte with CIK, size,
+   filing count, retrieval time, and SHA-256 receipts;
+2. the scope is the union of visible top scores and active portfolio positions: 12 tickers;
+3. eleven operating-company CIK histories reconcile; `CTRA` remains explicitly unmatched;
+4. all eleven histories have eligible periodic and current filings at or before the active
+   `2026-07-28T17:06:46Z` cutoff;
+5. twelve filings accepted after that cutoff are counted and excluded;
+6. daily-evidence, dashboard, registrant, selection, source, and filing-column lineage must
+   reconcile;
+7. schema version `1.0.0` cannot claim historical eligibility or include a post-cutoff filing;
+8. the responsive dashboard exposes the timestamps, coverage, exclusions, and retrospective
+   metadata limitation.
 
 Implementation, complete local CI, contract/generator/rendering/packaging/browser tests, and
-dependency audit pass. Owner-only preview deployment passes as Sites version 27; final
+dependency audit pass. The owner-only functional preview is deployed as Sites version 29; final
 pull-request gates remain for this unit.
 
 ## Remaining milestones
@@ -84,26 +88,30 @@ pull-request gates remain for this unit.
 - No implementation blocker is active for the current repository unit.
 - Historical validation is blocked by missing point-in-time source, identity, corporate-action,
   benchmark, and execution evidence.
+- Filing-availability coverage is currently limited to 12 visible tickers and is retrospective
+  metadata rather than acquisition-time pipeline telemetry.
 - Eleven active tickers do not have an exact association in the captured SEC ticker files.
 - Permanent exchange-listing identity remains unavailable for all operating companies.
 - Final V3 production cutover remains explicitly out of scope without user authorization.
 
 ## Test counts
 
-- Vitest suite: 123 tests across 16 files pass.
+- Vitest suite: 130 tests across 17 files pass.
 - Rendered deployment and browser suite: 6 tests pass.
-- Total automated tests: 129 pass.
-- Current unit validation: Prettier, typecheck, lint, every workspace build, 123 Vitest tests, five
-  rendered accessibility/integrity/API/package tests, one isolated-profile real-Chrome hydration
-  smoke test, `git diff --check`, and `npm audit --audit-level=high` pass.
+- Total automated tests: 136 pass.
+- Current unit validation: Prettier, typecheck, lint, every workspace build, 130 Vitest tests,
+  five rendered accessibility/integrity/API/package tests, one isolated-profile real-Chrome
+  hydration smoke test, `git diff --check`, and `npm audit --audit-level=high` pass.
 
 ## Deployment status
 
 - V2 production: unchanged.
 - V3 local preview: generated and safely retried as immutable build `preview-20260728-pipeline-v4-a34fc842220f`; an interactive dev server is not currently running.
 - V3 hosted preview: deployed privately at <https://akribeia-v3-evidence-preview.akribeiainsights.chatgpt.site>.
-- V3 hosted preview source: SEC-registrant functional tree `e88884023`, preserved in Sites source
-  commit `af38cc5a5` and deployed as version 27.
+- V3 hosted preview source: exact PR #20 head `31c118dc4`, preserved in Sites source commit
+  `72f34984a` and deployed as version 28.
+- Current filing-availability functional tree `13d8eabb7` is preserved in Sites source commit
+  `48e13f059` and deployed owner-only as version 29.
 - Hosted deployment status is successful. The current package passed an isolated-profile
   real-Chrome smoke test locally; a signed-in interactive browser was unavailable for a separate
   hosted-page smoke check.
@@ -138,6 +146,10 @@ pull-request gates remain for this unit.
   28,427 mutual-fund association records. Exact matching resolves 632 of 643 active records to 595
   unique CIKs; all 11 unmatched tickers, current-snapshot scope, and zero historical eligibility
   are preserved in the evidence and privately deployed.
+- Filing availability: 11 EDGAR submission histories with 10,097 recent filing records are
+  checksum-pinned locally. The current report covers 11 of 12 selected visible tickers, provides
+  eligible periodic/current acceptance timestamps for all 11, and excludes 12 post-cutoff
+  filings. The visible report is privately deployed.
 - Historical validation: blocked by the readiness report; no backtest or performance comparison
   is claimed.
 - Prospective validation: not started.
@@ -163,6 +175,9 @@ pull-request gates remain for this unit.
   point-in-time trading or corporate-action history.
 - Exact matching intentionally leaves 11 records unresolved. No issuer-name, fuzzy, or
   hand-maintained fallback is used.
+- SEC acceptance timestamps provide a defensible availability boundary, but this retrospective
+  capture does not prove acquisition or model-ingestion timing. Current submission histories can
+  be revised and are not as-was API snapshots.
 - The preserved June and July captures have timezone-unspecified generation metadata and no
   record-level availability times. They are reproducibility fixtures, not a point-in-time series.
 - Both $0B fixtures fail the strict input contract: June has one null-price issue and July has five
