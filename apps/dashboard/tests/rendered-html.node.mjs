@@ -726,4 +726,5 @@ test("binds deployed static assets to the worker runtime", async () => {
 
   assert.equal(wranglerConfig.assets?.binding, "ASSETS");
   assert.equal(wranglerConfig.assets?.directory, "../client");
+  assert.equal(wranglerConfig.preview_urls, false);
 });
