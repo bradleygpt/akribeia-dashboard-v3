@@ -2,55 +2,56 @@ export type Pillar = "valuation" | "growth" | "profitability" | "momentum" | "re
 export type PillarValues = Partial<Record<Pillar, number | null>>;
 export type PillarWeights = Record<Pillar, number>;
 
-export interface CompositeResult {
-  score: number | null;
-  coverage: number;
-  availableWeight: number;
-  totalWeight: number;
-}
-
-const PILLARS: Pillar[] = ["valuation", "growth", "profitability", "momentum", "revisions"];
+export const PILLARS: readonly Pillar[] = [
+  "valuation",
+  "growth",
+  "profitability",
+  "momentum",
+  "revisions",
+];
 
 export type MissingDataPolicy = "require-complete" | "renormalize-explicitly";
+export type ScoreExclusionReason =
+  "below-minimum-coverage" | "missing-required-pillar" | "no-observed-weight";
+
+export interface PillarContribution {
+  pillar: Pillar;
+  value: number | null;
+  weight: number;
+  weightedValue: number | null;
+  status: "available" | "missing";
+}
 
 export interface CoverageAwareCompositeOptions {
   minimumCoverage: number;
   missingDataPolicy: MissingDataPolicy;
 }
 
-export interface CoverageAwareCompositeResult extends CompositeResult {
+export interface CoverageAwareCompositeResult {
+  score: number | null;
+  coverage: number;
+  availableWeight: number;
+  totalWeight: number;
   eligible: boolean;
   missingPillars: Pillar[];
+  exclusionReasons: ScoreExclusionReason[];
+  contributions: PillarContribution[];
   normalization: "total-weight" | "available-weight" | "not-scored";
   missingDataPolicy: MissingDataPolicy;
 }
 
-export function calculateComposite(values: PillarValues, weights: PillarWeights): CompositeResult {
-  const normalizedWeights = Object.fromEntries(
-    PILLARS.map((pillar) => [
-      pillar,
-      Math.max(0, Number.isFinite(weights[pillar]) ? weights[pillar] : 0),
-    ]),
-  ) as PillarWeights;
-
-  const totalWeight = PILLARS.reduce((sum, pillar) => sum + normalizedWeights[pillar], 0);
-  if (totalWeight <= 0) throw new Error("At least one positive pillar weight is required.");
-
-  let weightedSum = 0;
-  let availableWeight = 0;
+function validateWeights(weights: PillarWeights): PillarWeights {
   for (const pillar of PILLARS) {
-    const value = values[pillar];
-    if (value === null || value === undefined || !Number.isFinite(value)) continue;
-    weightedSum += value * normalizedWeights[pillar];
-    availableWeight += normalizedWeights[pillar];
+    if (!Number.isFinite(weights[pillar]) || weights[pillar] < 0) {
+      throw new Error(`Weight for "${pillar}" must be a finite nonnegative number.`);
+    }
   }
 
-  return {
-    score: availableWeight > 0 ? weightedSum / availableWeight : null,
-    coverage: availableWeight / totalWeight,
-    availableWeight,
-    totalWeight,
-  };
+  if (PILLARS.every((pillar) => weights[pillar] === 0)) {
+    throw new Error("At least one positive pillar weight is required.");
+  }
+
+  return { ...weights };
 }
 
 export function calculateCoverageAwareComposite(
@@ -66,37 +67,41 @@ export function calculateCoverageAwareComposite(
     throw new Error("minimumCoverage must be between 0 and 1.");
   }
 
-  const normalizedWeights = Object.fromEntries(
-    PILLARS.map((pillar) => [
-      pillar,
-      Math.max(0, Number.isFinite(weights[pillar]) ? weights[pillar] : 0),
-    ]),
-  ) as PillarWeights;
-  const totalWeight = PILLARS.reduce((sum, pillar) => sum + normalizedWeights[pillar], 0);
-
-  if (totalWeight <= 0) {
-    throw new Error("At least one positive pillar weight is required.");
-  }
-
-  const missingPillars = PILLARS.filter((pillar) => {
+  const validatedWeights = validateWeights(weights);
+  const totalWeight = PILLARS.reduce((sum, pillar) => sum + validatedWeights[pillar], 0);
+  const contributions = PILLARS.map((pillar): PillarContribution => {
     const value = values[pillar];
+    const available = value !== null && value !== undefined && Number.isFinite(value);
 
-    return (
-      normalizedWeights[pillar] > 0 &&
-      (value === null || value === undefined || !Number.isFinite(value))
-    );
+    return {
+      pillar,
+      value: available ? value : null,
+      weight: validatedWeights[pillar],
+      weightedValue: available ? value * validatedWeights[pillar] : null,
+      status: available ? "available" : "missing",
+    };
   });
-  const availableWeight = PILLARS.reduce(
-    (sum, pillar) => (missingPillars.includes(pillar) ? sum : sum + normalizedWeights[pillar]),
+  const missingPillars = contributions
+    .filter((contribution) => contribution.weight > 0 && contribution.status === "missing")
+    .map((contribution) => contribution.pillar);
+  const availableWeight = contributions.reduce(
+    (sum, contribution) => (contribution.status === "available" ? sum + contribution.weight : sum),
     0,
   );
   const coverage = availableWeight / totalWeight;
-  const meetsCoverage = coverage + 1e-12 >= options.minimumCoverage;
-  const completeWhenRequired =
-    options.missingDataPolicy !== "require-complete" || missingPillars.length === 0;
-  const eligible = meetsCoverage && completeWhenRequired;
+  const exclusionReasons: ScoreExclusionReason[] = [];
 
-  if (!eligible || availableWeight <= 0) {
+  if (coverage + 1e-12 < options.minimumCoverage) {
+    exclusionReasons.push("below-minimum-coverage");
+  }
+  if (options.missingDataPolicy === "require-complete" && missingPillars.length > 0) {
+    exclusionReasons.push("missing-required-pillar");
+  }
+  if (availableWeight <= 0) {
+    exclusionReasons.push("no-observed-weight");
+  }
+
+  if (exclusionReasons.length > 0) {
     return {
       score: null,
       coverage,
@@ -104,18 +109,17 @@ export function calculateCoverageAwareComposite(
       totalWeight,
       eligible: false,
       missingPillars,
+      exclusionReasons,
+      contributions,
       normalization: "not-scored",
       missingDataPolicy: options.missingDataPolicy,
     };
   }
 
-  const weightedSum = PILLARS.reduce((sum, pillar) => {
-    const value = values[pillar];
-
-    return value === null || value === undefined || !Number.isFinite(value)
-      ? sum
-      : sum + value * normalizedWeights[pillar];
-  }, 0);
+  const weightedSum = contributions.reduce(
+    (sum, contribution) => sum + (contribution.weightedValue ?? 0),
+    0,
+  );
   const denominator =
     options.missingDataPolicy === "renormalize-explicitly" ? availableWeight : totalWeight;
 
@@ -126,6 +130,8 @@ export function calculateCoverageAwareComposite(
     totalWeight,
     eligible: true,
     missingPillars,
+    exclusionReasons,
+    contributions,
     normalization:
       options.missingDataPolicy === "renormalize-explicitly" ? "available-weight" : "total-weight",
     missingDataPolicy: options.missingDataPolicy,

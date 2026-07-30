@@ -229,6 +229,7 @@ h1 span {
 }
 
 .pipeline,
+.factor-audit,
 .lineage {
   padding: 72px 4vw;
 }
@@ -337,6 +338,104 @@ h1 span {
   font-size: clamp(44px, 4vw, 64px);
   font-weight: 400;
   letter-spacing: -0.05em;
+}
+
+.factor-audit {
+  border-bottom: 1px solid var(--line);
+  background: #eef0e8;
+}
+
+.factor-intro {
+  max-width: 690px;
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.factor-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1px;
+  margin-top: 38px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+
+.factor-grid article {
+  min-width: 0;
+  padding: 22px;
+  background: var(--panel);
+}
+
+.factor-grid article > div:first-child {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.factor-grid article > div:first-child strong {
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  text-transform: capitalize;
+}
+
+.factor-grid article > div:first-child span {
+  color: var(--acid-dark);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.factor-track {
+  height: 5px;
+  margin: 15px 0 17px;
+  overflow: hidden;
+  background: #d8ddd3;
+}
+
+.factor-track span {
+  display: block;
+  height: 100%;
+  background: var(--acid-dark);
+}
+
+.factor-grid dl {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin: 0 0 18px;
+}
+
+.factor-grid dl div:last-child {
+  text-align: right;
+}
+
+.factor-grid dt,
+.factor-grid dd {
+  margin: 0;
+  font-size: 9px;
+}
+
+.factor-grid dt {
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.factor-grid dd {
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.factor-grid code {
+  display: block;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .content-grid {
@@ -632,6 +731,10 @@ footer p {
     border-bottom: 1px solid var(--line);
   }
 
+  .factor-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
   .rankings {
     border-right: 0;
     border-bottom: 1px solid var(--line);
@@ -669,6 +772,7 @@ footer p {
   }
 
   .pipeline,
+  .factor-audit,
   .lineage,
   .panel {
     padding-top: 50px;
@@ -695,6 +799,10 @@ footer p {
 
   .metrics article:last-child {
     border-bottom: 0;
+  }
+
+  .factor-grid {
+    grid-template-columns: 1fr;
   }
 
   .panel-heading {

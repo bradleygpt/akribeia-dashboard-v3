@@ -131,6 +131,46 @@ export default function Home() {
         </article>
       </section>
 
+      <section className="factor-audit" aria-labelledby="factor-audit-heading">
+        <div className="section-heading">
+          <p className="mono-label">FACTOR COVERAGE</p>
+          <h2 id="factor-audit-heading">Missing inputs stay visible</h2>
+        </div>
+        <p className="factor-intro">
+          Each pillar is measured against the full source universe before scoring. Incomplete
+          securities are excluded with a recorded reason; their remaining factors are never silently
+          reweighted.
+        </p>
+        <div className="factor-grid">
+          {dashboard.scoring.factorCoverage.map((factor) => (
+            <article key={factor.pillar}>
+              <div>
+                <strong>{factor.pillar}</strong>
+                <span>{percent(factor.coverage, 1)}</span>
+              </div>
+              <div
+                className="factor-track"
+                role="img"
+                aria-label={`${factor.pillar} coverage is ${percent(factor.coverage, 1)}`}
+              >
+                <span style={{ width: percent(factor.coverage) }} />
+              </div>
+              <dl>
+                <div>
+                  <dt>Available</dt>
+                  <dd>{factor.availableSecurities}</dd>
+                </div>
+                <div>
+                  <dt>Missing</dt>
+                  <dd>{factor.missingSecurities}</dd>
+                </div>
+              </dl>
+              <code>{factor.sourceField}</code>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <div className="content-grid">
         <section className="panel rankings" aria-labelledby="rankings-heading">
           <div className="panel-heading">
@@ -271,6 +311,10 @@ export default function Home() {
             <div>
               <dt>Missing-data policy</dt>
               <dd>{dashboard.scoring.missingDataPolicy}</dd>
+            </div>
+            <div>
+              <dt>Eligible normalization</dt>
+              <dd>{dashboard.scoring.eligibleNormalization}</dd>
             </div>
           </dl>
         </div>

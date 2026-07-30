@@ -1,6 +1,7 @@
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
+import { PublishedScoresArtifactSchema } from "../../packages/contracts/src/index.js";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
   runVerticalSlice,
@@ -46,6 +47,9 @@ describe("visible vertical-slice pipeline", () => {
     expect(verified.source.rowCount).toBe(643);
     expect(verified.scoring.eligibleSecurities).toBeGreaterThan(600);
     expect(verified.scoring.missingDataPolicy).toBe("require-complete");
+    expect(verified.scoring.eligibleNormalization).toBe("total-weight");
+    expect(verified.scoring.factorCoverage).toHaveLength(5);
+    expect(verified.scoring.factorCoverage.every(({ coverage }) => coverage === 1)).toBe(true);
     expect(verified.portfolio.totalWeight).toBeCloseTo(1, 12);
     expect(
       Math.max(...verified.portfolio.positions.map((position) => position.weight)),
@@ -58,6 +62,56 @@ describe("visible vertical-slice pipeline", () => {
     expect(JSON.parse(await readFile(result.projectionPath, "utf8")) as unknown).toEqual(
       result.dashboard,
     );
+  });
+
+  it("publishes factor-level coverage and explicit exclusions without renormalizing", async () => {
+    const source = JSON.parse(
+      await readFile(resolve("data/reference/v2-baseline/fixtures/universe_floor10.json"), "utf8"),
+    ) as {
+      rows: Array<{ ticker: string; pillars: { Growth: number | null } }>;
+    };
+    const excludedTicker = source.rows[0].ticker;
+    source.rows[0].pillars.Growth = null;
+    const sourcePath = join(temporaryDirectory, "universe-with-missing-growth.json");
+    await writeFile(sourcePath, `${JSON.stringify(source, null, 2)}\n`);
+
+    const result = await runVerticalSlice({
+      ...recipe(),
+      buildId: "preview-missing-factor-test",
+      sourcePath,
+    });
+    const scores = PublishedScoresArtifactSchema.parse(
+      JSON.parse(await readFile(join(result.buildDirectory, "scores.json"), "utf8")) as unknown,
+    );
+    const growthCoverage = scores.scoring.factorCoverage.find(({ pillar }) => pillar === "growth");
+    const excluded = scores.securities.find(({ ticker }) => ticker === excludedTicker);
+
+    expect(scores.scoring.eligibleSecurities).toBe(642);
+    expect(scores.scoring.excludedSecurities).toBe(1);
+    expect(growthCoverage).toMatchObject({
+      sourceField: "pillars.Growth",
+      availableSecurities: 642,
+      missingSecurities: 1,
+      coverage: 642 / 643,
+    });
+    expect(excluded).toMatchObject({
+      score: null,
+      coverage: 0.8,
+      eligible: false,
+      missingPillars: ["growth"],
+      exclusionReasons: ["below-minimum-coverage", "missing-required-pillar"],
+      normalization: "not-scored",
+    });
+
+    const tampered = structuredClone(scores);
+    const eligibleSecurity = tampered.securities.find(({ eligible }) => eligible);
+
+    expect(eligibleSecurity).toBeDefined();
+    if (eligibleSecurity === undefined) {
+      throw new Error("Expected an eligible security in the scoring artifact.");
+    }
+    eligibleSecurity.score = (eligibleSecurity.score ?? 0) + 1;
+    expect(PublishedScoresArtifactSchema.safeParse(tampered).success).toBe(false);
   });
 
   it("fails closed before publication when the repository snapshot is stale", async () => {
