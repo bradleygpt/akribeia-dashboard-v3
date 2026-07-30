@@ -1,0 +1,17 @@
+{
+  "name": "@akribeia/evidence",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "dependencies": {
+    "@akribeia/contracts": "0.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1"
+  }
+}

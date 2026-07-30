@@ -68,6 +68,11 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /Verified history remains visible with a freshness warning/);
   assert.match(html, /Missing or failed evidence is withheld/);
   assert.match(html, /No silent renormalization/);
+  assert.match(html, /A dated receipt, with limits intact/);
+  assert.match(html, /2026-07-28/);
+  assert.match(html, /No synthetic comparison/);
+  assert.match(html, /No point-in-time benchmark input is present/);
+  assert.match(html, /View reproduction report/);
   assert.match(html, /not investment advice/i);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Your site is taking shape/i);
 });
@@ -171,11 +176,20 @@ test("serves a protected explanation from the built worker without an external m
 });
 
 test("packages a deployable worker and integrity-valid active evidence tree", async () => {
-  const [sourceHosting, packagedHosting, serverEntrypoint, pointerPayload] = await Promise.all([
+  const [
+    sourceHosting,
+    packagedHosting,
+    serverEntrypoint,
+    pointerPayload,
+    activeEvidencePayload,
+    sourceEvidencePayload,
+  ] = await Promise.all([
     readFile(new URL("../.openai/hosting.json", import.meta.url), "utf8"),
     readFile(new URL("../dist/.openai/hosting.json", import.meta.url), "utf8"),
     readFile(new URL("../dist/server/index.js", import.meta.url), "utf8"),
     readFile(new URL("../dist/client/data/active-build.json", import.meta.url), "utf8"),
+    readFile(new URL("../dist/client/data/evidence/active.json", import.meta.url), "utf8"),
+    readFile(new URL("../public/data/evidence/active.json", import.meta.url), "utf8"),
   ]);
   const pointer = JSON.parse(pointerPayload);
   const buildRoot = new URL(
@@ -187,6 +201,7 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(packagedHosting, sourceHosting);
   assert.match(serverEntrypoint, /fetch/);
   assert.equal(manifest.buildId, pointer.activeBuildId);
+  assert.equal(activeEvidencePayload, sourceEvidencePayload);
 
   for (const artifact of Object.values(manifest.files)) {
     const [packagedPayload, sourcePayload] = await Promise.all([
@@ -200,4 +215,26 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
     assert.equal(packagedPayload.byteLength, artifact.byteSize);
     assert.equal(createHash("sha256").update(packagedPayload).digest("hex"), artifact.sha256);
   }
+
+  const activeEvidence = JSON.parse(activeEvidencePayload);
+  const evidenceRoot = new URL(
+    `../dist/client/data/evidence/daily/${activeEvidence.asOfDate}/${activeEvidence.build.buildId}/`,
+    import.meta.url,
+  );
+  const [immutableEvidencePayload, reportPayload] = await Promise.all([
+    readFile(new URL("evidence.json", evidenceRoot), "utf8"),
+    readFile(new URL("reproducibility.json", evidenceRoot), "utf8"),
+  ]);
+  const report = JSON.parse(reportPayload);
+
+  assert.equal(immutableEvidencePayload, activeEvidencePayload);
+  assert.equal(activeEvidence.build.buildId, pointer.activeBuildId);
+  assert.equal(activeEvidence.benchmark.status, "unavailable");
+  assert.equal(activeEvidence.benchmark.return, null);
+  assert.equal(activeEvidence.performance.status, "not-computed");
+  assert.equal(
+    createHash("sha256").update(immutableEvidencePayload).digest("hex"),
+    report.evidenceRecordSha256,
+  );
+  assert.equal(report.result, "verified");
 });
