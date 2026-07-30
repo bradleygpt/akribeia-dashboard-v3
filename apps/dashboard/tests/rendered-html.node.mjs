@@ -130,6 +130,11 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /Eight candidates\. No benchmark return/);
   assert.match(html, /SPLG and SPY remain unmatched/);
   assert.match(html, /Price change is not return/);
+  assert.match(html, /One day recorded\. Twenty-nine still must happen/);
+  assert.match(html, /Immutable observation days/);
+  assert.match(html, /Executable portfolios/);
+  assert.match(html, /Costed returns/);
+  assert.match(html, /Elapsed evidence cannot be generated on demand/);
   assert.match(html, /Two snapshots\. Zero eligible folds/);
   assert.match(html, /Readiness is not a backtest/);
   assert.match(html, /Two snapshots are not a backtest/);
@@ -283,6 +288,8 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
     sourceBenchmarkReadiness,
     packagedWalkForwardReadiness,
     sourceWalkForwardReadiness,
+    packagedProspectiveReadiness,
+    sourceProspectiveReadiness,
   ] = await Promise.all([
     readFile(new URL("../.openai/hosting.json", import.meta.url), "utf8"),
     readFile(new URL("../dist/.openai/hosting.json", import.meta.url), "utf8"),
@@ -399,6 +406,14 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
       new URL("../public/data/evidence/walk-forward-readiness/active.json", import.meta.url),
       "utf8",
     ),
+    readFile(
+      new URL("../dist/client/data/evidence/prospective-readiness/active.json", import.meta.url),
+      "utf8",
+    ),
+    readFile(
+      new URL("../public/data/evidence/prospective-readiness/active.json", import.meta.url),
+      "utf8",
+    ),
   ]);
   const pointer = JSON.parse(pointerPayload);
   const buildRoot = new URL(
@@ -425,6 +440,7 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(packagedExecutionCosts, sourceExecutionCosts);
   assert.equal(packagedBenchmarkReadiness, sourceBenchmarkReadiness);
   assert.equal(packagedWalkForwardReadiness, sourceWalkForwardReadiness);
+  assert.equal(packagedProspectiveReadiness, sourceProspectiveReadiness);
 
   for (const artifact of Object.values(manifest.files)) {
     const [packagedPayload, sourcePayload] = await Promise.all([
@@ -657,4 +673,21 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(walkForwardReadiness.calendar.eligibleFoldCount, 0);
   assert.equal(walkForwardReadiness.calendar.performanceComparisonCount, 0);
   assert.equal(walkForwardReadiness.walkForwardEligible, false);
+  const prospectiveReadiness = JSON.parse(packagedProspectiveReadiness);
+  const versionedProspectiveReadiness = await readFile(
+    new URL(
+      `../dist/client/data/evidence/prospective-readiness/builds/${prospectiveReadiness.buildId}/prospective-readiness.json`,
+      import.meta.url,
+    ),
+    "utf8",
+  );
+  assert.equal(versionedProspectiveReadiness, packagedProspectiveReadiness);
+  assert.equal(prospectiveReadiness.buildId, activeEvidence.build.buildId);
+  assert.equal(prospectiveReadiness.progress.uniqueObservationDayCount, 1);
+  assert.equal(prospectiveReadiness.progress.remainingObservationDayCount, 29);
+  assert.equal(prospectiveReadiness.progress.executablePortfolioRecordCount, 0);
+  assert.equal(prospectiveReadiness.progress.costedReturnObservationCount, 0);
+  assert.equal(prospectiveReadiness.progress.approvedBenchmarkComparisonCount, 0);
+  assert.equal(prospectiveReadiness.progress.monthlyValidationReportCount, 0);
+  assert.equal(prospectiveReadiness.certificationEligible, false);
 });

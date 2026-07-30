@@ -10,6 +10,7 @@ import {
   MaturityAssessmentSchema,
   MetricDictionarySchema,
   ModelCardSchema,
+  ProspectiveReadinessSchema,
   SecRegistrantCrosswalkSchema,
   SecurityMasterSchema,
   UniverseMembershipReadinessSchema,
@@ -29,6 +30,7 @@ import activeHistoricalReadiness from "./generated/active-historical-readiness.j
 import activeMetricDictionary from "./generated/active-metric-dictionary.json";
 import activeMaturity from "./generated/active-maturity.json";
 import activeModelCard from "./generated/active-model-card.json";
+import activeProspectiveReadiness from "./generated/active-prospective-readiness.json";
 import activeQualityReport from "./generated/active-quality-report.json";
 import activeSecRegistrants from "./generated/active-sec-registrants.json";
 import activeSecurityMaster from "./generated/active-security-master.json";
@@ -48,6 +50,7 @@ const historicalReadiness = HistoricalReadinessReportSchema.parse(activeHistoric
 const metricDictionary = MetricDictionarySchema.parse(activeMetricDictionary);
 const maturity = MaturityAssessmentSchema.parse(activeMaturity);
 const modelCard = ModelCardSchema.parse(activeModelCard);
+const prospectiveReadiness = ProspectiveReadinessSchema.parse(activeProspectiveReadiness);
 const qualityReport = DataQualityReportSchema.parse(activeQualityReport);
 const secRegistrants = SecRegistrantCrosswalkSchema.parse(activeSecRegistrants);
 const securityMaster = SecurityMasterSchema.parse(activeSecurityMaster);
@@ -73,6 +76,8 @@ if (
   universeMembership.modelVersion !== dashboard.modelVersion ||
   walkForwardReadiness.buildId !== dashboard.buildId ||
   walkForwardReadiness.modelVersion !== dashboard.modelVersion ||
+  prospectiveReadiness.buildId !== dashboard.buildId ||
+  prospectiveReadiness.modelVersion !== dashboard.modelVersion ||
   qualityReport.buildId !== dashboard.buildId ||
   maturity.buildId !== dashboard.buildId ||
   maturity.modelVersion !== dashboard.modelVersion ||
@@ -158,6 +163,7 @@ export default function Home() {
           <a href="#scores">Scores</a>
           <a href="#portfolio">Portfolio</a>
           <a href="#daily-evidence">Evidence</a>
+          <a href="#prospective-readiness">Prospective</a>
           <a href="#walk-forward-readiness">Folds</a>
           <a href="#universe-membership">Membership</a>
           <a href="#corporate-actions">Actions</a>
@@ -258,6 +264,100 @@ export default function Home() {
               {percent(dashboard.portfolio.constraints.maxSectorWeight)} sector
             </span>
           </article>
+        </section>
+
+        <section
+          className="exit-disposition prospective-readiness"
+          id="prospective-readiness"
+          aria-labelledby="prospective-readiness-heading"
+        >
+          <div className="exit-disposition-heading">
+            <div>
+              <p className="mono-label">PROSPECTIVE VALIDATION / LIVE CLOCK</p>
+              <h2 id="prospective-readiness-heading">
+                One day recorded. Twenty-nine still must happen.
+              </h2>
+              <p>
+                The repository can receipt a daily research build, but elapsed calendar evidence
+                cannot be backfilled. Certification stays blocked until independent observation days
+                also contain executable portfolios, costed returns, an approved benchmark, and a
+                completed monthly review.
+              </p>
+            </div>
+            <a
+              href={`/data/evidence/prospective-readiness/builds/${prospectiveReadiness.buildId}/prospective-readiness.json`}
+            >
+              View immutable evidence
+            </a>
+          </div>
+          <div className="exit-disposition-summary" aria-label="Prospective validation progress">
+            <article>
+              <span>Immutable observation days</span>
+              <strong>
+                {prospectiveReadiness.progress.uniqueObservationDayCount} /{" "}
+                {prospectiveReadiness.requirements.immutableDailyObservationDays}
+              </strong>
+              <p>
+                {prospectiveReadiness.progress.remainingObservationDayCount} independent days remain
+              </p>
+            </article>
+            <article data-status="blocked">
+              <span>Executable portfolios</span>
+              <strong>{prospectiveReadiness.progress.executablePortfolioRecordCount}</strong>
+              <p>fills and prior holdings absent</p>
+            </article>
+            <article data-status="blocked">
+              <span>Costed returns</span>
+              <strong>{prospectiveReadiness.progress.costedReturnObservationCount}</strong>
+              <p>missing costs never become zero</p>
+            </article>
+            <article data-status="blocked">
+              <span>Monthly validation reports</span>
+              <strong>{prospectiveReadiness.progress.monthlyValidationReportCount}</strong>
+              <p>first 30-day window incomplete</p>
+            </article>
+          </div>
+          <div
+            className="table-scroll exit-disposition-table"
+            tabIndex={0}
+            role="region"
+            aria-label="Prospective certification conditions"
+          >
+            <table>
+              <caption className="sr-only">
+                Evidence conditions required before prospective certification
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Certification condition</th>
+                  <th scope="col">Progress</th>
+                  <th scope="col">Required evidence</th>
+                </tr>
+              </thead>
+              <tbody>
+                {prospectiveReadiness.certificationConditions.map((condition) => (
+                  <tr key={condition.key}>
+                    <td>
+                      <strong>{condition.key.replaceAll("-", " ")}</strong>
+                    </td>
+                    <td data-status="unmatched">
+                      <strong className="unverified">
+                        {condition.observedCount}
+                        {condition.requiredCount === null
+                          ? " / policy"
+                          : ` / ${condition.requiredCount}`}
+                      </strong>
+                    </td>
+                    <td>{condition.detail}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <aside className="exit-disposition-limitation" role="note">
+            <strong>Elapsed evidence cannot be generated on demand</strong>
+            <p>{prospectiveReadiness.limitations[0]}</p>
+          </aside>
         </section>
 
         <section

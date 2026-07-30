@@ -1,0 +1,166 @@
+{
+  "reportSchemaVersion": "1.0.0",
+  "buildId": "preview-20260728-pipeline-v4-a34fc842220f",
+  "modelVersion": "3.0.0-preview.3",
+  "assessedAt": "2026-07-30T04:36:30Z",
+  "status": "blocked-insufficient-prospective-history",
+  "prospectiveValidationEligible": false,
+  "certificationEligible": false,
+  "requirements": {
+    "immutableDailyObservationDays": 30,
+    "executablePortfolioRecords": 30,
+    "costedReturnObservations": 30,
+    "approvedBenchmarkComparisons": 30,
+    "monthlyValidationReports": 1
+  },
+  "progress": {
+    "immutableDailyEvidenceRecordCount": 1,
+    "uniqueObservationDayCount": 1,
+    "remainingObservationDayCount": 29,
+    "executablePortfolioRecordCount": 0,
+    "costedReturnObservationCount": 0,
+    "approvedBenchmarkComparisonCount": 0,
+    "monthlyValidationReportCount": 0,
+    "earliestObservationDate": "2026-07-28",
+    "latestObservationDate": "2026-07-28"
+  },
+  "observations": [
+    {
+      "asOfDate": "2026-07-28",
+      "buildId": "preview-20260728-pipeline-v4-a34fc842220f",
+      "modelVersion": "3.0.0-preview.3",
+      "recordedAt": "2026-07-30T04:36:30Z",
+      "evidenceRecordPath": "daily/2026-07-28/preview-20260728-pipeline-v4-a34fc842220f/evidence.json",
+      "evidenceRecordSha256": "82409751141892e4a0aa9f2ca6df923818c5c08e66fda0470e061f1e7f5862d9",
+      "reproducibilityReportPath": "daily/2026-07-28/preview-20260728-pipeline-v4-a34fc842220f/reproducibility.json",
+      "reproductionVerified": true,
+      "executionRecorded": false,
+      "costedReturnComputed": false,
+      "approvedBenchmarkCompared": false
+    }
+  ],
+  "sourceReports": [
+    {
+      "name": "daily-evidence",
+      "status": "partial-observation-window",
+      "eligibilityClaim": false
+    },
+    {
+      "name": "execution-cost-readiness",
+      "status": "blocked-no-execution-economics",
+      "eligibilityClaim": false
+    },
+    {
+      "name": "benchmark-readiness",
+      "status": "candidate-proxies-not-return-series",
+      "eligibilityClaim": false
+    },
+    {
+      "name": "walk-forward-readiness",
+      "status": "blocked-no-eligible-folds",
+      "eligibilityClaim": false
+    }
+  ],
+  "controls": [
+    {
+      "key": "immutable-daily-ledger",
+      "status": "partial",
+      "detail": "1 of 30 required independent daily observation dates are present in the immutable ledger."
+    },
+    {
+      "key": "independent-observation-window",
+      "status": "blocked",
+      "detail": "The repository has not yet accumulated 30 distinct post-publication observation dates under a frozen prospective protocol."
+    },
+    {
+      "key": "executable-portfolio-records",
+      "status": "blocked",
+      "detail": "No daily record contains capital, prior holdings, executable prices, fills, or realized trade quantities."
+    },
+    {
+      "key": "costed-net-returns",
+      "status": "blocked",
+      "detail": "No daily observation contains turnover, transaction costs, gross return, or net return; missing costs remain null rather than zero."
+    },
+    {
+      "key": "approved-benchmark-comparisons",
+      "status": "blocked",
+      "detail": "No approved benchmark mandate or distribution-inclusive total-return comparison is attached to a daily observation."
+    },
+    {
+      "key": "monthly-validation-reports",
+      "status": "blocked",
+      "detail": "No completed monthly prospective-validation report exists because the first 30-day observation window is incomplete."
+    },
+    {
+      "key": "prospective-protocol",
+      "status": "blocked",
+      "detail": "No frozen policy yet defines the daily decision time, execution convention, benchmark, review cadence, exceptions, and certification thresholds."
+    },
+    {
+      "key": "model-drift-retirement-rules",
+      "status": "blocked",
+      "detail": "No approved prospective thresholds define model drift alerts, investigation, suspension, retirement, or replacement decisions."
+    }
+  ],
+  "certificationConditions": [
+    {
+      "key": "thirty-immutable-observation-days",
+      "requiredCount": 30,
+      "observedCount": 1,
+      "satisfied": false,
+      "detail": "Collect 30 distinct immutable daily evidence dates without backfilling or rewriting records."
+    },
+    {
+      "key": "thirty-executable-portfolio-records",
+      "requiredCount": 30,
+      "observedCount": 0,
+      "satisfied": false,
+      "detail": "Record executable portfolio decisions, fills, and prior-holding lineage for each observation date."
+    },
+    {
+      "key": "thirty-costed-return-observations",
+      "requiredCount": 30,
+      "observedCount": 0,
+      "satisfied": false,
+      "detail": "Compute gross and net returns only from receipted fills, costs, and valuation timestamps."
+    },
+    {
+      "key": "thirty-approved-benchmark-comparisons",
+      "requiredCount": 30,
+      "observedCount": 0,
+      "satisfied": false,
+      "detail": "Use one approved, point-in-time, distribution-inclusive benchmark series aligned to portfolio valuation."
+    },
+    {
+      "key": "one-monthly-validation-report",
+      "requiredCount": 1,
+      "observedCount": 0,
+      "satisfied": false,
+      "detail": "Publish an immutable monthly report covering completeness, exceptions, costs, benchmark comparison, and limitations."
+    },
+    {
+      "key": "frozen-prospective-protocol",
+      "requiredCount": null,
+      "observedCount": 0,
+      "satisfied": false,
+      "detail": "Approve and version the prospective protocol before additional observations can count toward certification."
+    },
+    {
+      "key": "approved-drift-retirement-policy",
+      "requiredCount": null,
+      "observedCount": 0,
+      "satisfied": false,
+      "detail": "Approve versioned drift, escalation, suspension, and model-retirement rules before certification."
+    }
+  ],
+  "limitations": [
+    "The single preserved daily record is a research-preview receipt, not a prospective performance result.",
+    "Repeated builds on one date do not create additional independent observation days.",
+    "No execution, cost, return, benchmark, excess-return, risk, or attribution statistic is computed.",
+    "Thirty dates alone cannot satisfy certification without complete execution, benchmark, protocol, and monthly-review evidence.",
+    "Future records must remain immutable, chronological, reproducible, and free of retroactive model selection.",
+    "This report cannot support an investment-performance or V2-replacement claim."
+  ],
+  "notice": "Research preview only. Scores and model weights are evidence artifacts, not investment advice or a promise of future performance."
+}
