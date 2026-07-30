@@ -14,6 +14,7 @@ import {
   SecurityMasterSchema,
   UniverseMembershipReadinessSchema,
   VerticalSliceDashboardSchema,
+  WalkForwardReadinessSchema,
 } from "@akribeia/contracts";
 import { DataStatusBanner } from "./data-status-banner";
 import { EvidenceExplorer } from "./evidence-explorer";
@@ -32,6 +33,7 @@ import activeQualityReport from "./generated/active-quality-report.json";
 import activeSecRegistrants from "./generated/active-sec-registrants.json";
 import activeSecurityMaster from "./generated/active-security-master.json";
 import activeUniverseMembership from "./generated/active-universe-membership.json";
+import activeWalkForwardReadiness from "./generated/active-walk-forward-readiness.json";
 
 const benchmarkReadiness = BenchmarkReadinessSchema.parse(activeBenchmarkReadiness);
 const dashboard = VerticalSliceDashboardSchema.parse(activeDashboard);
@@ -50,6 +52,7 @@ const qualityReport = DataQualityReportSchema.parse(activeQualityReport);
 const secRegistrants = SecRegistrantCrosswalkSchema.parse(activeSecRegistrants);
 const securityMaster = SecurityMasterSchema.parse(activeSecurityMaster);
 const universeMembership = UniverseMembershipReadinessSchema.parse(activeUniverseMembership);
+const walkForwardReadiness = WalkForwardReadinessSchema.parse(activeWalkForwardReadiness);
 
 if (
   modelCard.modelVersion !== dashboard.modelVersion ||
@@ -68,6 +71,8 @@ if (
   historicalReadiness.modelVersion !== dashboard.modelVersion ||
   universeMembership.buildId !== dashboard.buildId ||
   universeMembership.modelVersion !== dashboard.modelVersion ||
+  walkForwardReadiness.buildId !== dashboard.buildId ||
+  walkForwardReadiness.modelVersion !== dashboard.modelVersion ||
   qualityReport.buildId !== dashboard.buildId ||
   maturity.buildId !== dashboard.buildId ||
   maturity.modelVersion !== dashboard.modelVersion ||
@@ -153,6 +158,7 @@ export default function Home() {
           <a href="#scores">Scores</a>
           <a href="#portfolio">Portfolio</a>
           <a href="#daily-evidence">Evidence</a>
+          <a href="#walk-forward-readiness">Folds</a>
           <a href="#universe-membership">Membership</a>
           <a href="#corporate-actions">Actions</a>
           <a href="#exit-disposition">Exits</a>
@@ -252,6 +258,89 @@ export default function Home() {
               {percent(dashboard.portfolio.constraints.maxSectorWeight)} sector
             </span>
           </article>
+        </section>
+
+        <section
+          className="exit-disposition walk-forward-readiness"
+          id="walk-forward-readiness"
+          aria-labelledby="walk-forward-readiness-heading"
+        >
+          <div className="exit-disposition-heading">
+            <div>
+              <p className="mono-label">WALK-FORWARD / FAIL-CLOSED</p>
+              <h2 id="walk-forward-readiness-heading">Two snapshots. Zero eligible folds.</h2>
+              <p>
+                The active Phase 3 reports now reconcile into one fold-readiness gate. Partial
+                inventory and filing evidence cannot substitute for point-in-time universes,
+                actions, execution, benchmark returns, or a frozen evaluation protocol.
+              </p>
+            </div>
+            <a
+              href={`/data/evidence/walk-forward-readiness/builds/${walkForwardReadiness.buildId}/walk-forward-readiness.json`}
+            >
+              View immutable evidence
+            </a>
+          </div>
+          <div className="exit-disposition-summary" aria-label="Walk-forward readiness">
+            <article>
+              <span>Snapshots inventoried</span>
+              <strong>{walkForwardReadiness.calendar.snapshotCount}</strong>
+              <p>both timezone unspecified</p>
+            </article>
+            <article data-status="blocked">
+              <span>Point-in-time eligible</span>
+              <strong>{walkForwardReadiness.calendar.pointInTimeEligibleSnapshotCount}</strong>
+              <p>record-level availability absent</p>
+            </article>
+            <article data-status="blocked">
+              <span>Eligible folds</span>
+              <strong>{walkForwardReadiness.calendar.eligibleFoldCount}</strong>
+              <p>no training or test interval</p>
+            </article>
+            <article data-status="blocked">
+              <span>Performance comparisons</span>
+              <strong>{walkForwardReadiness.calendar.performanceComparisonCount}</strong>
+              <p>no return is computed</p>
+            </article>
+          </div>
+          <div
+            className="table-scroll exit-disposition-table"
+            tabIndex={0}
+            role="region"
+            aria-label="Walk-forward readiness controls"
+          >
+            <table>
+              <caption className="sr-only">
+                Controls required before a walk-forward fold can be evaluated
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Control</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Evidence boundary</th>
+                </tr>
+              </thead>
+              <tbody>
+                {walkForwardReadiness.controls.map((control) => (
+                  <tr key={control.key}>
+                    <td>
+                      <strong>{control.key.replaceAll("-", " ")}</strong>
+                    </td>
+                    <td data-status={control.status}>
+                      <strong className={control.status === "blocked" ? "unverified" : undefined}>
+                        {control.status}
+                      </strong>
+                    </td>
+                    <td>{control.detail}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <aside className="exit-disposition-limitation" role="note">
+            <strong>Readiness is not a backtest</strong>
+            <p>{walkForwardReadiness.limitations[2]}</p>
+          </aside>
         </section>
 
         <section

@@ -1,0 +1,119 @@
+{
+  "reportSchemaVersion": "1.0.0",
+  "buildId": "preview-20260728-pipeline-v4-a34fc842220f",
+  "modelVersion": "3.0.0-preview.3",
+  "assessedAt": "2026-07-30T04:36:30Z",
+  "status": "blocked-no-eligible-folds",
+  "walkForwardEligible": false,
+  "outOfSampleEligible": false,
+  "calendar": {
+    "snapshotCount": 2,
+    "pointInTimeEligibleSnapshotCount": 0,
+    "candidateFoldCount": 0,
+    "eligibleFoldCount": 0,
+    "evaluatedFoldCount": 0,
+    "performanceComparisonCount": 0
+  },
+  "snapshots": [
+    {
+      "snapshotId": "june-oracle",
+      "declaredGeneratedAt": "2026-06-03T14:12:05",
+      "timestampStatus": "timezone-unspecified",
+      "pointInTimeEligible": false
+    },
+    {
+      "snapshotId": "july-baseline",
+      "declaredGeneratedAt": "2026-07-28T17:06:46",
+      "timestampStatus": "timezone-unspecified",
+      "pointInTimeEligible": false
+    }
+  ],
+  "sourceReports": [
+    {
+      "name": "historical-readiness",
+      "status": "blocked",
+      "eligibilityClaim": false
+    },
+    {
+      "name": "filing-availability",
+      "status": "partial-retrospective-metadata",
+      "eligibilityClaim": false
+    },
+    {
+      "name": "universe-membership",
+      "status": "observed-change-not-survivorship-controlled",
+      "eligibilityClaim": false
+    },
+    {
+      "name": "corporate-action-readiness",
+      "status": "blocked-unverified-adjustments",
+      "eligibilityClaim": false
+    },
+    {
+      "name": "exit-disposition-readiness",
+      "status": "partial-current-association-not-disposition-history",
+      "eligibilityClaim": false
+    },
+    {
+      "name": "execution-cost-readiness",
+      "status": "blocked-no-execution-economics",
+      "eligibilityClaim": false
+    },
+    {
+      "name": "benchmark-readiness",
+      "status": "candidate-proxies-not-return-series",
+      "eligibilityClaim": false
+    }
+  ],
+  "controls": [
+    {
+      "key": "strict-cross-section-inventory",
+      "status": "partial",
+      "detail": "Two receipted $10B cross-sections pass the strict input contract, but neither is point-in-time eligible."
+    },
+    {
+      "key": "filing-availability",
+      "status": "partial",
+      "detail": "Retrospective SEC acceptance timestamps cover 11 selected tickers at one decision cutoff; acquisition-time history is absent."
+    },
+    {
+      "key": "survivorship-aware-universe",
+      "status": "blocked",
+      "detail": "Observed membership changes lack eligibility rules, effective intervals, and survivorship control."
+    },
+    {
+      "key": "identity-actions-exits",
+      "status": "blocked",
+      "detail": "Permanent listing identity, ticker history, corporate actions, delistings, and successor terms remain unverified."
+    },
+    {
+      "key": "execution-and-costs",
+      "status": "blocked",
+      "detail": "No capital base, prior holdings, executable prices, turnover, slippage, fees, or net-return record exists."
+    },
+    {
+      "key": "benchmark-total-return",
+      "status": "blocked",
+      "detail": "No benchmark is selected and no adjusted, distribution-inclusive total-return series exists."
+    },
+    {
+      "key": "walk-forward-protocol",
+      "status": "blocked",
+      "detail": "No training window, rebalance cadence, embargo, parameter-freeze, or fold-construction policy exists."
+    },
+    {
+      "key": "out-of-sample-calendar",
+      "status": "blocked",
+      "detail": "Two timezone-unspecified snapshots cannot form a training, validation, and out-of-sample evaluation calendar."
+    }
+  ],
+  "limitations": [
+    "Zero candidate, eligible, or evaluated folds exist.",
+    "The report evaluates readiness controls; it does not run a backtest.",
+    "No portfolio return, benchmark return, excess return, risk statistic, or performance comparison is computed.",
+    "A longer calendar alone is insufficient without point-in-time identity, membership, actions, execution, and benchmark evidence.",
+    "Future folds must be immutable, deterministic, temporally ordered, and independently reproducible.",
+    "This report cannot support an investment-performance claim."
+  ],
+  "notice": "Research preview only. Scores and model weights are evidence artifacts, not investment advice or a promise of future performance."
+}

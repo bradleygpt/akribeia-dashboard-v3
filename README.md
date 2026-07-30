@@ -37,6 +37,7 @@ npm run corporate-actions:generate
 npm run exit-disposition:generate
 npm run execution-costs:generate
 npm run benchmark-readiness:generate
+npm run walk-forward-readiness:generate
 npm run sec-identity:fetch
 npm run registrants:generate
 npm run filing-sources:fetch
@@ -61,6 +62,7 @@ Evidence-layer details include
 [`docs/evidence/EXIT_DISPOSITION_READINESS.md`](docs/evidence/EXIT_DISPOSITION_READINESS.md),
 [`docs/evidence/EXECUTION_COST_READINESS.md`](docs/evidence/EXECUTION_COST_READINESS.md),
 [`docs/evidence/BENCHMARK_READINESS.md`](docs/evidence/BENCHMARK_READINESS.md),
+[`docs/evidence/WALK_FORWARD_READINESS.md`](docs/evidence/WALK_FORWARD_READINESS.md),
 [`docs/evidence/MATURITY_LABELS.md`](docs/evidence/MATURITY_LABELS.md), and
 [`docs/evidence/HISTORICAL_READINESS.md`](docs/evidence/HISTORICAL_READINESS.md).
 Execution evidence and honest readiness status are maintained in `docs/CODEX_EXECUTION_STATUS.md`.

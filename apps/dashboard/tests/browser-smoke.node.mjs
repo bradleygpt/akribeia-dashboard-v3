@@ -205,6 +205,8 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
     assert.match(stdout, /No zero-cost shortcut/);
     assert.match(stdout, /Eight candidates\. No benchmark return/);
     assert.match(stdout, /Price change is not return/);
+    assert.match(stdout, /Two snapshots\. Zero eligible folds/);
+    assert.match(stdout, /Readiness is not a backtest/);
     assert.match(stdout, /Two snapshots are not a backtest/);
     assert.match(stdout, /10<!-- --> controls unresolved/);
     assert.match(stdout, /No performance claim/);

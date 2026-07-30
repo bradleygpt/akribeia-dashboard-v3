@@ -2868,3 +2868,110 @@ export const BenchmarkReadinessSchema = z
     }
   });
 export type BenchmarkReadiness = z.infer<typeof BenchmarkReadinessSchema>;
+
+const WALK_FORWARD_CONTROL_KEYS = [
+  "strict-cross-section-inventory",
+  "filing-availability",
+  "survivorship-aware-universe",
+  "identity-actions-exits",
+  "execution-and-costs",
+  "benchmark-total-return",
+  "walk-forward-protocol",
+  "out-of-sample-calendar",
+] as const;
+
+export const WalkForwardReadinessSchema = z
+  .object({
+    reportSchemaVersion: z.literal("1.0.0"),
+    buildId: SafeBuildIdSchema,
+    modelVersion: z.string().min(1),
+    assessedAt: IsoDateTimeSchema,
+    status: z.literal("blocked-no-eligible-folds"),
+    walkForwardEligible: z.literal(false),
+    outOfSampleEligible: z.literal(false),
+    calendar: z
+      .object({
+        snapshotCount: z.literal(2),
+        pointInTimeEligibleSnapshotCount: z.literal(0),
+        candidateFoldCount: z.literal(0),
+        eligibleFoldCount: z.literal(0),
+        evaluatedFoldCount: z.literal(0),
+        performanceComparisonCount: z.literal(0),
+      })
+      .strict(),
+    snapshots: z
+      .array(
+        z
+          .object({
+            snapshotId: z.enum(["june-oracle", "july-baseline"]),
+            declaredGeneratedAt: z.string().datetime({ local: true }),
+            timestampStatus: z.literal("timezone-unspecified"),
+            pointInTimeEligible: z.literal(false),
+          })
+          .strict(),
+      )
+      .length(2),
+    sourceReports: z
+      .array(
+        z
+          .object({
+            name: z.enum([
+              "historical-readiness",
+              "filing-availability",
+              "universe-membership",
+              "corporate-action-readiness",
+              "exit-disposition-readiness",
+              "execution-cost-readiness",
+              "benchmark-readiness",
+            ]),
+            status: z.string().min(1),
+            eligibilityClaim: z.literal(false),
+          })
+          .strict(),
+      )
+      .length(7),
+    controls: z
+      .array(
+        z
+          .object({
+            key: z.enum([...WALK_FORWARD_CONTROL_KEYS]),
+            status: z.enum(["partial", "blocked"]),
+            detail: z.string().min(1),
+          })
+          .strict(),
+      )
+      .length(WALK_FORWARD_CONTROL_KEYS.length),
+    limitations: z.array(z.string().min(1)).min(5),
+    notice: z.string().min(1),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    const snapshotOrder = value.snapshots.map(({ snapshotId }) => snapshotId);
+    const sourceOrder = value.sourceReports.map(({ name }) => name);
+    const expectedSources = [
+      "historical-readiness",
+      "filing-availability",
+      "universe-membership",
+      "corporate-action-readiness",
+      "exit-disposition-readiness",
+      "execution-cost-readiness",
+      "benchmark-readiness",
+    ];
+    const controlsValid =
+      value.controls.every(({ key }, index) => key === WALK_FORWARD_CONTROL_KEYS[index]) &&
+      value.controls.slice(0, 2).every(({ status }) => status === "partial") &&
+      value.controls.slice(2).every(({ status }) => status === "blocked");
+
+    if (
+      snapshotOrder.join(",") !== "june-oracle,july-baseline" ||
+      sourceOrder.some((name, index) => name !== expectedSources[index]) ||
+      !controlsValid
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Walk-forward source lineage, calendar, and controls must remain fail closed.",
+        path: ["controls"],
+      });
+    }
+  });
+export type WalkForwardReadiness = z.infer<typeof WalkForwardReadinessSchema>;
