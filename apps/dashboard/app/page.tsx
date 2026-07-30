@@ -19,6 +19,8 @@ import {
 } from "@akribeia/contracts";
 import { DataStatusBanner } from "./data-status-banner";
 import { EvidenceExplorer } from "./evidence-explorer";
+import { FullUniverseExplorer } from "./full-universe-explorer";
+import { loadV2Universe } from "./v2-universe";
 import activeBenchmarkReadiness from "./generated/active-benchmark-readiness.json";
 import activeDashboard from "./generated/active-dashboard.json";
 import activeCorporateActionReadiness from "./generated/active-corporate-action-readiness.json";
@@ -56,6 +58,7 @@ const secRegistrants = SecRegistrantCrosswalkSchema.parse(activeSecRegistrants);
 const securityMaster = SecurityMasterSchema.parse(activeSecurityMaster);
 const universeMembership = UniverseMembershipReadinessSchema.parse(activeUniverseMembership);
 const walkForwardReadiness = WalkForwardReadinessSchema.parse(activeWalkForwardReadiness);
+const v2Universe = loadV2Universe();
 
 if (
   modelCard.modelVersion !== dashboard.modelVersion ||
@@ -264,6 +267,49 @@ export default function Home() {
               {percent(dashboard.portfolio.constraints.maxSectorWeight)} sector
             </span>
           </article>
+        </section>
+
+        <section className="full-universe" id="universe" aria-labelledby="full-universe-heading">
+          <div className="full-universe-heading">
+            <div>
+              <p className="mono-label">AUTHORITATIVE V2 COVERAGE</p>
+              <h2 id="full-universe-heading">Every validated name. No hidden cap floor.</h2>
+              <p>
+                Search the complete preserved V2 universe. The equal-weight composite and rating
+                below are the V2-authored values; V3 does not recalculate or silently remove rows.
+              </p>
+            </div>
+            <dl aria-label="Full universe reconciliation">
+              <div>
+                <dt>Total</dt>
+                <dd>{v2Universe.total.toLocaleString("en-US")}</dd>
+              </div>
+              <div>
+                <dt>Stocks</dt>
+                <dd>{v2Universe.stocks.toLocaleString("en-US")}</dd>
+              </div>
+              <div>
+                <dt>ETFs</dt>
+                <dd>{v2Universe.etfs.toLocaleString("en-US")}</dd>
+              </div>
+              <div>
+                <dt>Excluded</dt>
+                <dd>0</dd>
+              </div>
+            </dl>
+          </div>
+
+          <FullUniverseExplorer rows={v2Universe.rows} sectors={v2Universe.sectors} />
+
+          <div className="universe-provenance">
+            <span>
+              V2 app {v2Universe.provenance.appCommit.slice(0, 9)} · data{" "}
+              {v2Universe.provenance.bulkDataCommit.slice(0, 9)}
+            </span>
+            <span>
+              SHA-256 <code>{v2Universe.provenance.sha256}</code>
+            </span>
+          </div>
         </section>
 
         <section

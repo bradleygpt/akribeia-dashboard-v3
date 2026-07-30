@@ -170,6 +170,10 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
     assert.match(stdout, /Active evidence build verified|Source freshness window has elapsed/);
     assert.match(stdout, /preview-20260728-pipeline-v4-a34fc842220f/);
     assert.match(stdout, /Skip to main content/);
+    assert.match(stdout, /Every validated name\. No hidden cap floor\./);
+    assert.match(stdout, /Search all securities/);
+    assert.match(stdout, /1,361/);
+    assert.match(stdout, /authoritative no-floor universe/);
     assert.match(stdout, /Highest composite scores/);
     assert.match(stdout, /A dated receipt, with limits intact/);
     assert.match(stdout, /No point-in-time benchmark input is present/);

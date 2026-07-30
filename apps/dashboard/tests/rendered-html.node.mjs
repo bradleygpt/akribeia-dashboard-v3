@@ -54,6 +54,14 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /3 SHA-256 artifacts/);
   assert.match(html, /verify-and-reuse/);
   assert.match(html, /validated-pointer-and-projection/);
+  assert.match(html, /Every validated name\. No hidden cap floor\./);
+  assert.match(html, /Search all securities/);
+  assert.match(html, /authoritative no-floor universe/);
+  assert.match(html, />1,361</);
+  assert.match(html, />1,291</);
+  assert.match(html, />70</);
+  assert.match(html, /SHA-256/);
+  assert.match(html, /10624afb7f413c2a1c3490c29b99e37a9fa5c0776a0a58f53de6d7af73b337e4/);
   assert.match(html, /Highest composite scores/);
   assert.match(html, /MU/);
   assert.match(html, /NVDA/);
