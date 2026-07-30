@@ -20,12 +20,18 @@ function observedDate(value: string): string {
 }
 
 const pipelineStages = [
-  ["01", "Repository snapshot"],
-  ["02", "Contract validation"],
-  ["03", "Coverage gate"],
-  ["04", "Portfolio caps"],
-  ["05", "Atomic publish"],
-  ["06", "Active selection"],
+  [
+    "01",
+    "Repository snapshot",
+    `${Math.floor(dashboard.source.ageSeconds / 3600)}h / ${Math.floor(
+      dashboard.source.maxAgeSeconds / 3600,
+    )}h`,
+  ],
+  ["02", "Contract validation", `${dashboard.source.rowCount} rows valid`],
+  ["03", "Coverage gate", `${dashboard.scoring.factorCoverage.length} factors reconciled`],
+  ["04", "Portfolio caps", `${dashboard.portfolio.totalWeightUnits.toLocaleString("en-US")} units`],
+  ["05", "Atomic publish", `${dashboard.pipeline.requiredArtifacts.length} SHA-256 artifacts`],
+  ["06", "Active selection", "Pointer + rollback"],
 ] as const;
 
 export default function Home() {
@@ -95,11 +101,11 @@ export default function Home() {
           <h2 id="pipeline-heading">One build, end to end</h2>
         </div>
         <ol>
-          {pipelineStages.map(([number, label]) => (
+          {pipelineStages.map(([number, label, detail]) => (
             <li key={number}>
               <span>{number}</span>
               <strong>{label}</strong>
-              <small>Passed</small>
+              <small>{detail}</small>
             </li>
           ))}
         </ol>
@@ -339,6 +345,14 @@ export default function Home() {
             <div>
               <dt>Eligible normalization</dt>
               <dd>{dashboard.scoring.eligibleNormalization}</dd>
+            </div>
+            <div>
+              <dt>Retry mode</dt>
+              <dd>{dashboard.pipeline.retryMode}</dd>
+            </div>
+            <div>
+              <dt>Rollback mode</dt>
+              <dd>{dashboard.pipeline.rollbackMode}</dd>
             </div>
           </dl>
         </div>

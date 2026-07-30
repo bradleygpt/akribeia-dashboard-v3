@@ -1,6 +1,6 @@
-import { randomUUID } from "node:crypto";
-import { lstat, readFile, rename, rm, writeFile } from "node:fs/promises";
-import { basename, dirname, join, resolve } from "node:path";
+import { createHash, randomUUID } from "node:crypto";
+import { lstat, readFile, realpath, rename, rm, writeFile } from "node:fs/promises";
+import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { BuildManifestSchema, type BuildManifest } from "@akribeia/contracts";
 
 export const ACTIVE_BUILD_POINTER_FILENAME = "active-build.json";
@@ -40,6 +40,10 @@ interface ValidatedBuild {
   manifestPath: string;
 }
 
+function sha256(payload: Uint8Array): string {
+  return createHash("sha256").update(payload).digest("hex");
+}
+
 function hasErrorCode(error: unknown, code: string): boolean {
   return (
     typeof error === "object" &&
@@ -76,6 +80,72 @@ function formatManifestIssues(manifestPath: string, value: unknown): BuildManife
     .join("; ");
 
   throw new Error(`Malformed build manifest at "${manifestPath}": ${issues}`);
+}
+
+function isContainedPath(parent: string, child: string): boolean {
+  const relativePath = relative(parent, child);
+
+  return (
+    relativePath.length > 0 &&
+    relativePath !== ".." &&
+    !relativePath.startsWith(`..${sep}`) &&
+    !isAbsolute(relativePath)
+  );
+}
+
+async function validateManifestArtifacts(
+  buildDirectory: string,
+  manifest: BuildManifest,
+): Promise<void> {
+  const canonicalBuildDirectory = await realpath(buildDirectory);
+
+  for (const [key, artifact] of Object.entries(manifest.files)) {
+    const artifactPath = resolve(buildDirectory, artifact.path);
+
+    if (!isContainedPath(buildDirectory, artifactPath)) {
+      throw new Error(`Build "${manifest.buildId}" artifact "${key}" resolves outside its build.`);
+    }
+
+    let artifactStat;
+
+    try {
+      artifactStat = await lstat(artifactPath);
+    } catch (error) {
+      if (hasErrorCode(error, "ENOENT")) {
+        throw new Error(
+          `Build "${manifest.buildId}" artifact "${key}" is missing at "${artifact.path}".`,
+          { cause: error },
+        );
+      }
+
+      throw error;
+    }
+
+    if (!artifactStat.isFile() || artifactStat.isSymbolicLink()) {
+      throw new Error(
+        `Build "${manifest.buildId}" artifact "${key}" is not a regular immutable file.`,
+      );
+    }
+
+    const canonicalArtifactPath = await realpath(artifactPath);
+
+    if (!isContainedPath(canonicalBuildDirectory, canonicalArtifactPath)) {
+      throw new Error(
+        `Build "${manifest.buildId}" artifact "${key}" resolves outside its canonical build.`,
+      );
+    }
+
+    const payload = await readFile(canonicalArtifactPath);
+
+    if (payload.byteLength !== artifact.byteSize) {
+      throw new Error(
+        `Build "${manifest.buildId}" artifact "${key}" failed byte-size verification.`,
+      );
+    }
+    if (sha256(payload) !== artifact.sha256.toLowerCase()) {
+      throw new Error(`Build "${manifest.buildId}" artifact "${key}" failed SHA-256 verification.`);
+    }
+  }
 }
 
 async function validateTargetBuild(
@@ -159,6 +229,8 @@ async function validateTargetBuild(
       `Build "${buildId}" is not eligible for activation: it must be healthy, published, and approved with a publish decision.`,
     );
   }
+
+  await validateManifestArtifacts(buildDirectory, manifest);
 
   return {
     buildId,

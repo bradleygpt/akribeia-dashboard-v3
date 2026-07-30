@@ -4,7 +4,10 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { ArtifactFile, BuildManifest } from "../../packages/contracts/src/index.js";
-import { publishBuildAtomically } from "../../packages/publisher/src/index.js";
+import {
+  publishBuildAtomically,
+  publishBuildIdempotently,
+} from "../../packages/publisher/src/index.js";
 
 const evaluatedAt = "2026-07-29T19:10:00Z";
 
@@ -200,5 +203,56 @@ describe("atomic build publisher", () => {
     ).rejects.toThrow("already exists");
 
     expect(await readFile(sentinelPath, "utf8")).toBe("preserve");
+  });
+
+  it("reuses an exact immutable build on a safe retry", async () => {
+    const { manifest, payload } = fixture();
+    const first = await publishBuildIdempotently({
+      rootDirectory,
+      manifest,
+      artifacts: {
+        scores: payload,
+      },
+    });
+    const before = await readFile(first.manifestPath, "utf8");
+    const second = await publishBuildIdempotently({
+      rootDirectory,
+      manifest,
+      artifacts: {
+        scores: payload,
+      },
+    });
+
+    expect(first.disposition).toBe("published");
+    expect(second).toEqual({
+      ...first,
+      disposition: "reused",
+    });
+    expect(await readFile(second.manifestPath, "utf8")).toBe(before);
+  });
+
+  it("rejects an idempotent retry whose immutable manifest changed", async () => {
+    const { manifest, payload } = fixture();
+
+    await publishBuildIdempotently({
+      rootDirectory,
+      manifest,
+      artifacts: {
+        scores: payload,
+      },
+    });
+
+    await expect(
+      publishBuildIdempotently({
+        rootDirectory,
+        manifest: {
+          ...manifest,
+          modelVersion: "3.0.1",
+        },
+        artifacts: {
+          scores: payload,
+        },
+      }),
+    ).rejects.toThrow("different immutable manifest");
   });
 });

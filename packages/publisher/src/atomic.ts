@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
-import { lstat, mkdir, mkdtemp, readFile, rename, rm, writeFile } from "node:fs/promises";
-import { join, resolve } from "node:path";
+import { lstat, mkdir, mkdtemp, readFile, readdir, rename, rm, writeFile } from "node:fs/promises";
+import { join, relative, resolve } from "node:path";
+import { isDeepStrictEqual } from "node:util";
 import { BuildManifestSchema, type ArtifactFile, type BuildManifest } from "@akribeia/contracts";
 
 export interface AtomicPublicationInput {
@@ -13,6 +14,10 @@ export interface AtomicPublicationResult {
   buildId: string;
   buildDirectory: string;
   manifestPath: string;
+}
+
+export interface IdempotentPublicationResult extends AtomicPublicationResult {
+  disposition: "published" | "reused";
 }
 
 interface PreparedArtifact {
@@ -201,6 +206,73 @@ async function verifyStagedArtifact(
   }
 }
 
+async function verifyExistingImmutableBuild(
+  rootDirectory: string,
+  manifest: BuildManifest,
+  preparedArtifacts: PreparedArtifact[],
+): Promise<AtomicPublicationResult> {
+  const buildDirectory = join(rootDirectory, "builds", manifest.buildId);
+  const manifestPath = join(buildDirectory, "manifest.json");
+  const buildStat = await lstat(buildDirectory);
+
+  if (!buildStat.isDirectory() || buildStat.isSymbolicLink()) {
+    throw new Error(
+      `Build "${manifest.buildId}" already exists but is not an immutable build directory.`,
+    );
+  }
+
+  const persistedManifest = BuildManifestSchema.parse(
+    JSON.parse(await readFile(manifestPath, "utf8")) as unknown,
+  );
+
+  if (!isDeepStrictEqual(persistedManifest, manifest)) {
+    throw new Error(
+      `Build "${manifest.buildId}" already exists with a different immutable manifest.`,
+    );
+  }
+
+  for (const artifact of preparedArtifacts) {
+    await verifyStagedArtifact(buildDirectory, artifact);
+  }
+
+  const entries = await readdir(buildDirectory, {
+    recursive: true,
+    withFileTypes: true,
+  });
+  const actualFiles: string[] = [];
+
+  for (const entry of entries) {
+    if (entry.isSymbolicLink()) {
+      throw new Error(`Build "${manifest.buildId}" contains a symbolic link.`);
+    }
+    if (entry.isFile()) {
+      actualFiles.push(
+        relative(buildDirectory, join(entry.parentPath, entry.name)).replaceAll("\\", "/"),
+      );
+    }
+  }
+
+  const expectedFiles = [
+    "manifest.json",
+    ...preparedArtifacts.map(({ relativePath }) => relativePath),
+  ].sort();
+
+  if (
+    actualFiles.length !== expectedFiles.length ||
+    actualFiles.sort().some((path, index) => path !== expectedFiles[index])
+  ) {
+    throw new Error(
+      `Build "${manifest.buildId}" already exists with unexpected immutable contents.`,
+    );
+  }
+
+  return {
+    buildId: manifest.buildId,
+    buildDirectory,
+    manifestPath,
+  };
+}
+
 export async function publishBuildAtomically(
   input: AtomicPublicationInput,
 ): Promise<AtomicPublicationResult> {
@@ -282,5 +354,35 @@ export async function publishBuildAtomically(
     }
 
     throw error;
+  }
+}
+
+export async function publishBuildIdempotently(
+  input: AtomicPublicationInput,
+): Promise<IdempotentPublicationResult> {
+  const manifest = deterministicManifest(parsePublishableManifest(input.manifest));
+  const preparedArtifacts = prepareArtifacts(manifest, input.artifacts);
+  const rootDirectory = resolve(input.rootDirectory);
+
+  try {
+    const publication = await publishBuildAtomically(input);
+
+    return {
+      ...publication,
+      disposition: "published",
+    };
+  } catch (error) {
+    const finalDirectory = join(rootDirectory, "builds", manifest.buildId);
+
+    if (!(await pathExists(finalDirectory))) {
+      throw error;
+    }
+
+    const existing = await verifyExistingImmutableBuild(rootDirectory, manifest, preparedArtifacts);
+
+    return {
+      ...existing,
+      disposition: "reused",
+    };
   }
 }

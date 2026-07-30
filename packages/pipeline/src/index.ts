@@ -16,7 +16,14 @@ import {
   type VerticalSliceDashboard,
 } from "@akribeia/contracts";
 import { constructRankedCappedPortfolio, type RankedPortfolioPosition } from "@akribeia/portfolio";
-import { activateBuild, evaluateManifest, publishBuildAtomically } from "@akribeia/publisher";
+import {
+  activateBuild,
+  evaluateManifest,
+  publishBuildIdempotently,
+  rollbackActiveBuild,
+  type BuildActivationResult,
+  type BuildRollbackResult,
+} from "@akribeia/publisher";
 import {
   calculateCoverageAwareComposite,
   type PillarValues,
@@ -50,11 +57,27 @@ export interface VerticalSliceRunResult {
   manifestPath: string;
   pointerPath: string;
   projectionPath: string;
+  publicationDisposition: "published" | "reused";
+  dashboard: VerticalSliceDashboard;
+}
+
+export interface VerticalSliceRollbackResult {
+  pointer: BuildRollbackResult;
+  projectionPath: string;
   dashboard: VerticalSliceDashboard;
 }
 
 function sha256(payload: Uint8Array): string {
   return createHash("sha256").update(payload).digest("hex");
+}
+
+function hasErrorCode(error: unknown, code: string): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    (error as { code?: unknown }).code === code
+  );
 }
 
 function deterministicJson(value: unknown): Uint8Array {
@@ -166,6 +189,60 @@ async function projectActiveDashboard(
     await rename(temporaryPath, absolutePath);
   } finally {
     await rm(temporaryPath, { force: true });
+  }
+}
+
+async function readOptionalProjection(projectionPath: string): Promise<Uint8Array | null> {
+  try {
+    return await readFile(resolve(projectionPath));
+  } catch (error) {
+    if (hasErrorCode(error, "ENOENT")) {
+      return null;
+    }
+
+    throw error;
+  }
+}
+
+async function restoreProjection(
+  projectionPath: string,
+  previousProjection: Uint8Array | null,
+): Promise<void> {
+  if (previousProjection === null) {
+    await rm(resolve(projectionPath), { force: true });
+    return;
+  }
+
+  await projectActiveDashboard(projectionPath, previousProjection);
+}
+
+async function activateProjectedBuild(
+  rootDirectory: string,
+  buildId: string,
+  projectionPath: string,
+  dashboardPayload: Uint8Array,
+): Promise<BuildActivationResult> {
+  const previousProjection = await readOptionalProjection(projectionPath);
+
+  await projectActiveDashboard(projectionPath, dashboardPayload);
+
+  try {
+    return await activateBuild({
+      rootDirectory,
+      buildId,
+    });
+  } catch (activationError) {
+    try {
+      await restoreProjection(projectionPath, previousProjection);
+    } catch (restorationError) {
+      throw new AggregateError(
+        [activationError, restorationError],
+        "Build activation failed and the dashboard projection could not be restored.",
+        { cause: restorationError },
+      );
+    }
+
+    throw activationError;
   }
 }
 
@@ -293,6 +370,8 @@ export async function runVerticalSlice(
       observedAt: recipe.observedAt,
       rowCount: snapshot.rows.length,
       freshnessStatus: "current",
+      ageSeconds,
+      maxAgeSeconds: recipe.maxAgeSeconds,
     },
     scoring,
     portfolio: {
@@ -305,6 +384,15 @@ export async function runVerticalSlice(
       sectorWeights: portfolio.sectorWeights,
       sectorWeightUnits: portfolio.sectorWeightUnits,
       construction: portfolio.construction,
+    },
+    pipeline: {
+      requiredArtifacts: ["dashboard", "portfolio", "scores"],
+      freshnessGate: "fail-closed",
+      publicationMode: "atomic-immutable-directory",
+      integrityMode: "sha256-and-byte-size",
+      retryMode: "verify-and-reuse",
+      activationMode: "atomic-active-build-pointer",
+      rollbackMode: "validated-pointer-and-projection",
     },
     topScores: eligible.slice(0, 12).map(publishedSecurity),
     notice: NOTICE,
@@ -374,17 +462,17 @@ export async function runVerticalSlice(
     );
   }
 
-  const publication = await publishBuildAtomically({
+  const publication = await publishBuildIdempotently({
     rootDirectory: outputRoot,
     manifest: manifestEvaluation.candidateManifest,
     artifacts,
   });
-  const activation = await activateBuild({
-    rootDirectory: outputRoot,
-    buildId: recipe.buildId,
-  });
-
-  await projectActiveDashboard(projectionPath, artifacts.dashboard);
+  const activation = await activateProjectedBuild(
+    outputRoot,
+    recipe.buildId,
+    projectionPath,
+    artifacts.dashboard,
+  );
 
   return {
     buildId: recipe.buildId,
@@ -392,8 +480,52 @@ export async function runVerticalSlice(
     manifestPath: publication.manifestPath,
     pointerPath: activation.pointerPath,
     projectionPath,
+    publicationDisposition: publication.disposition,
     dashboard,
   };
+}
+
+export async function rollbackVerticalSlice(
+  outputRoot: string,
+  projectionPath: string,
+): Promise<VerticalSliceRollbackResult> {
+  const absoluteRoot = resolve(outputRoot);
+  const absoluteProjectionPath = resolve(projectionPath);
+  const rollback = await rollbackActiveBuild({
+    rootDirectory: absoluteRoot,
+  });
+
+  try {
+    const dashboard = await verifyPublishedVerticalSlice(absoluteRoot);
+    await projectActiveDashboard(absoluteProjectionPath, deterministicJson(dashboard));
+
+    return {
+      pointer: rollback,
+      projectionPath: absoluteProjectionPath,
+      dashboard,
+    };
+  } catch (rollbackError) {
+    try {
+      const recovery = await rollbackActiveBuild({
+        rootDirectory: absoluteRoot,
+      });
+
+      if (recovery.activeBuildId !== rollback.rolledBackFromBuildId) {
+        throw new Error(
+          `Rollback recovery activated "${recovery.activeBuildId}" instead of "${rollback.rolledBackFromBuildId}".`,
+          { cause: rollbackError },
+        );
+      }
+    } catch (recoveryError) {
+      throw new AggregateError(
+        [rollbackError, recoveryError],
+        "Vertical-slice rollback failed and the original active build could not be restored.",
+        { cause: recoveryError },
+      );
+    }
+
+    throw rollbackError;
+  }
 }
 
 export async function verifyPublishedVerticalSlice(

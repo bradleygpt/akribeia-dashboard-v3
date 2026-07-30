@@ -555,15 +555,27 @@ const ScoringSummarySchema = z
     });
   });
 
-const DashboardSourceSchema = z.object({
-  dataset: z.string().min(1),
-  repositoryPath: z.string().min(1),
-  sourceCommit: z.string().min(1),
-  contentSha256: Sha256Schema,
-  observedAt: IsoDateTimeSchema,
-  rowCount: z.number().int().positive(),
-  freshnessStatus: z.literal("current"),
-});
+const DashboardSourceSchema = z
+  .object({
+    dataset: z.string().min(1),
+    repositoryPath: z.string().min(1),
+    sourceCommit: z.string().min(1),
+    contentSha256: Sha256Schema,
+    observedAt: IsoDateTimeSchema,
+    rowCount: z.number().int().positive(),
+    freshnessStatus: z.literal("current"),
+    ageSeconds: z.number().int().nonnegative(),
+    maxAgeSeconds: z.number().int().positive(),
+  })
+  .superRefine((value, context) => {
+    if (value.ageSeconds > value.maxAgeSeconds) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "A current source cannot exceed its maximum freshness age.",
+        path: ["ageSeconds"],
+      });
+    }
+  });
 
 export const PublishedScoresArtifactSchema = z
   .object({
@@ -852,6 +864,19 @@ export const VerticalSliceDashboardSchema = z
     source: DashboardSourceSchema,
     scoring: ScoringSummarySchema,
     portfolio: DashboardPortfolioSchema,
+    pipeline: z.object({
+      requiredArtifacts: z.tuple([
+        z.literal("dashboard"),
+        z.literal("portfolio"),
+        z.literal("scores"),
+      ]),
+      freshnessGate: z.literal("fail-closed"),
+      publicationMode: z.literal("atomic-immutable-directory"),
+      integrityMode: z.literal("sha256-and-byte-size"),
+      retryMode: z.literal("verify-and-reuse"),
+      activationMode: z.literal("atomic-active-build-pointer"),
+      rollbackMode: z.literal("validated-pointer-and-projection"),
+    }),
     topScores: z.array(DashboardSecuritySchema).min(1),
     notice: z.string().min(1),
   })

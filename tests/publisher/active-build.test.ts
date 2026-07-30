@@ -41,7 +41,7 @@ vi.mock("node:fs/promises", async (importOriginal) => {
 
 const evaluatedAt = "2026-07-29T20:00:00Z";
 const artifactPayload = '[{"symbol":"AAPL","score":91}]\n';
-const artifactSha256 = "6f83dc7c5a9559c2592449cc47d04bd90ca5bba8db1b89af91fdbb5f0ca7cfa5";
+const artifactSha256 = "9e4a6715d7dbff50e87df32d5d27aa8c97b449494675b2e21207f76ab79b91ec";
 
 let rootDirectory = "";
 
@@ -321,6 +321,42 @@ describe("active-build pointer", () => {
         buildId: "build-requested",
       }),
     ).rejects.toThrow('does not match requested build ID "build-requested"');
+  });
+
+  it("re-hashes artifacts before activation and preserves the last-known-good pointer", async () => {
+    await createBuild("build-good");
+    const tamperedDirectory = await createBuild("build-tampered");
+    await activateBuild({ rootDirectory, buildId: "build-good" });
+    await writeFile(join(tamperedDirectory, "scores.json"), artifactPayload.replace("91", "92"));
+
+    await expect(
+      activateBuild({
+        rootDirectory,
+        buildId: "build-tampered",
+      }),
+    ).rejects.toThrow('artifact "scores" failed SHA-256 verification');
+    expect(await readPointer()).toEqual({
+      activeBuildId: "build-good",
+      previousBuildId: null,
+    });
+  });
+
+  it("rejects a build with a missing artifact before changing the pointer", async () => {
+    await createBuild("build-good");
+    const incompleteDirectory = await createBuild("build-incomplete");
+    await activateBuild({ rootDirectory, buildId: "build-good" });
+    await rm(join(incompleteDirectory, "scores.json"));
+
+    await expect(
+      activateBuild({
+        rootDirectory,
+        buildId: "build-incomplete",
+      }),
+    ).rejects.toThrow('artifact "scores" is missing');
+    expect(await readPointer()).toEqual({
+      activeBuildId: "build-good",
+      previousBuildId: null,
+    });
   });
 
   it("refuses rollback when no previous build exists", async () => {

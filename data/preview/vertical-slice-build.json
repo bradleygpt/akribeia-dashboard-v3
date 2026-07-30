@@ -1,6 +1,6 @@
 {
-  "buildId": "preview-20260728-portfolio-v3-a34fc842220f",
-  "evaluatedAt": "2026-07-30T04:20:24Z",
+  "buildId": "preview-20260728-pipeline-v4-a34fc842220f",
+  "evaluatedAt": "2026-07-30T04:36:30Z",
   "observedAt": "2026-07-28T17:06:46Z",
   "maxAgeSeconds": 604800,
   "sourcePath": "data/reference/v2-baseline/fixtures/universe_floor10.json",
@@ -8,6 +8,6 @@
   "outputRoot": "apps/dashboard/public/data",
   "projectionPath": "apps/dashboard/app/generated/active-dashboard.json",
   "sourceCommit": "0de8cd6",
-  "schemaVersion": "3.0.0-preview.3",
+  "schemaVersion": "3.0.0-preview.4",
   "modelVersion": "3.0.0-preview.3"
 }
