@@ -366,6 +366,27 @@ export const V2BaselineUniverseSnapshotSchema = z
   });
 export type V2BaselineUniverseSnapshot = z.infer<typeof V2BaselineUniverseSnapshotSchema>;
 
+export const HistoricalFixtureInventoryShapeSchema = z
+  .object({
+    meta: z
+      .object({
+        floor: z.number().nonnegative(),
+        n_total: z.number().int().positive(),
+      })
+      .passthrough(),
+    rows: z.array(z.unknown()).min(1),
+  })
+  .passthrough()
+  .superRefine((value, context) => {
+    if (value.meta.n_total !== value.rows.length) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Historical fixture declares ${value.meta.n_total} rows but contains ${value.rows.length}.`,
+        path: ["meta", "n_total"],
+      });
+    }
+  });
+
 export const V2BaselineMetadataSchema = z
   .object({
     generated_at: z.string().min(1),
@@ -1636,3 +1657,160 @@ export const MaturityAssessmentSchema = z
     }
   });
 export type MaturityAssessment = z.infer<typeof MaturityAssessmentSchema>;
+
+export const POINT_IN_TIME_CONTROL_KEYS = [
+  "snapshot-inventory",
+  "snapshot-input-validity",
+  "availability-timestamps",
+  "point-in-time-fundamentals",
+  "survivorship-universe",
+  "permanent-identity-history",
+  "delistings-ticker-history",
+  "corporate-actions",
+  "benchmark-series",
+  "execution-costs",
+  "walk-forward-design",
+] as const;
+export const PointInTimeControlKeySchema = z.enum(POINT_IN_TIME_CONTROL_KEYS);
+
+const HistoricalSnapshotArtifactSchema = z
+  .object({
+    floorBillions: z.union([z.literal(0), z.literal(10)]),
+    path: z.string().min(1),
+    sha256: Sha256Schema,
+    rowCount: z.number().int().positive(),
+    strictInputContractStatus: z.enum(["pass", "fail"]),
+    strictInputIssueCount: z.number().int().nonnegative(),
+    strictInputIssues: z
+      .array(
+        z
+          .object({
+            path: z.string().min(1),
+            message: z.string().min(1),
+          })
+          .strict(),
+      )
+      .max(50),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    if (
+      (value.strictInputContractStatus === "pass" && value.strictInputIssueCount !== 0) ||
+      (value.strictInputContractStatus === "fail" && value.strictInputIssueCount === 0) ||
+      value.strictInputIssueCount !== value.strictInputIssues.length
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Strict input status and issue count must reconcile.",
+        path: ["strictInputContractStatus"],
+      });
+    }
+  });
+
+const HistoricalSnapshotInventorySchema = z
+  .object({
+    snapshotId: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+    label: z.string().min(1),
+    metadataPath: z.string().min(1),
+    metadataSha256: Sha256Schema,
+    declaredGeneratedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/),
+    timestampStatus: z.literal("timezone-unspecified"),
+    sourceCommit: z.string().regex(/^[a-f0-9]{7,40}$/),
+    observationKind: z.literal("cross-sectional-research-snapshot"),
+    pointInTimeEligible: z.literal(false),
+    artifacts: z.array(HistoricalSnapshotArtifactSchema).length(2),
+    limitation: z.string().min(1),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    if (value.artifacts[0]?.floorBillions !== 0 || value.artifacts[1]?.floorBillions !== 10) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Historical snapshot artifacts must use canonical 0 and 10 billion floors.",
+        path: ["artifacts"],
+      });
+    }
+  });
+
+const PointInTimeControlSchema = z
+  .object({
+    key: PointInTimeControlKeySchema,
+    status: z.enum(["pass", "blocked"]),
+    detail: z.string().min(1),
+    evidence: z.array(z.string().min(1)).min(1),
+  })
+  .strict();
+
+export const HistoricalReadinessReportSchema = z
+  .object({
+    historicalReadinessSchemaVersion: z.literal("1.0.0"),
+    buildId: SafeBuildIdSchema,
+    modelVersion: z.string().min(1),
+    assessedAt: IsoDateTimeSchema,
+    status: z.literal("blocked"),
+    historicalValidationEligible: z.literal(false),
+    inventory: z
+      .object({
+        snapshotCount: z.number().int().min(2),
+        crossSectionOnly: z.literal(true),
+        earliestDeclaredGeneratedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/),
+        latestDeclaredGeneratedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/),
+      })
+      .strict(),
+    snapshots: z.array(HistoricalSnapshotInventorySchema).min(2),
+    controls: z.array(PointInTimeControlSchema).length(POINT_IN_TIME_CONTROL_KEYS.length),
+    blockers: z.array(z.string().min(1)).min(1),
+    conclusion: z.string().min(1),
+    notice: z.string().min(1),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    if (value.controls.some(({ key }, index) => key !== POINT_IN_TIME_CONTROL_KEYS[index])) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Point-in-time controls must appear exactly once in canonical order.",
+        path: ["controls"],
+      });
+    }
+
+    if (
+      value.controls[0]?.status !== "pass" ||
+      value.controls.slice(1).some(({ status }) => status !== "blocked")
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          "Schema 1.0.0 permits snapshot inventory only; every validation-readiness control must remain blocked.",
+        path: ["controls"],
+      });
+    }
+
+    const expectedBlockers = value.controls
+      .filter(({ status }) => status === "blocked")
+      .map(({ detail }) => detail);
+    const declaredTimes = value.snapshots.map(({ declaredGeneratedAt }) => declaredGeneratedAt);
+
+    if (
+      value.inventory.snapshotCount !== value.snapshots.length ||
+      value.inventory.earliestDeclaredGeneratedAt !== [...declaredTimes].sort()[0] ||
+      value.inventory.latestDeclaredGeneratedAt !== [...declaredTimes].sort().at(-1)
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Historical snapshot inventory counts and dates must reconcile.",
+        path: ["inventory"],
+      });
+    }
+
+    if (
+      value.blockers.length !== expectedBlockers.length ||
+      value.blockers.some((blocker, index) => blocker !== expectedBlockers[index])
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Historical blockers must match blocked point-in-time controls.",
+        path: ["blockers"],
+      });
+    }
+  });
+export type HistoricalReadinessReport = z.infer<typeof HistoricalReadinessReportSchema>;
