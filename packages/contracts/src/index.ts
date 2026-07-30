@@ -2,6 +2,30 @@ import { z } from "zod";
 
 const IsoDateTimeSchema = z.string().datetime({ offset: true });
 const Sha256Schema = z.string().regex(/^[a-f0-9]{64}$/);
+const SafeBuildIdSchema = z
+  .string()
+  .regex(/^[A-Za-z0-9](?:[A-Za-z0-9._-]{0,126}[A-Za-z0-9_-])?$/)
+  .refine(
+    (buildId) => !/^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i.test(buildId),
+    "Build ID uses a reserved cross-platform name.",
+  );
+
+export const ActiveBuildPointerSchema = z
+  .object({
+    activeBuildId: SafeBuildIdSchema,
+    previousBuildId: SafeBuildIdSchema.nullable(),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    if (value.activeBuildId === value.previousBuildId) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Active and previous build IDs must differ.",
+        path: ["previousBuildId"],
+      });
+    }
+  });
+export type ActiveBuildPointer = z.infer<typeof ActiveBuildPointerSchema>;
 
 export const DataStatusSchema = z.enum([
   "current",

@@ -6,7 +6,7 @@ A zero-cost, auditable quantitative research platform designed around reproducib
 
 **Phase 1: Visible trust-foundation preview**
 
-V2 remains the production system. V3 now includes a working repository-data-to-dashboard preview with strict contracts, coverage-aware scoring, exact portfolio caps, immutable publication, and active-build selection. V3 is developed and validated independently until all cutover gates pass.
+V2 remains the production system. V3 now includes a working repository-data-to-dashboard preview with strict contracts, coverage-aware scoring, exact portfolio caps, immutable publication, active-build selection, and runtime freshness and integrity states. V3 is developed and validated independently until all cutover gates pass.
 
 ## Core principles
 
