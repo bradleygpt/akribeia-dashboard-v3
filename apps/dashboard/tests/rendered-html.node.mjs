@@ -90,6 +90,15 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /AKR-TICKER:MU/);
   assert.match(html, /Ticker history unavailable/);
   assert.match(html, /must not be treated as permanent across ticker changes or ticker reuse/);
+  assert.match(html, /Every ticker checked\. Identity scope stays honest/);
+  assert.match(html, /632(?:<!-- -->)? \/<!-- --> <!-- -->643/);
+  assert.match(html, /585(?:<!-- -->)? \/<!-- --> <!-- -->588/);
+  assert.match(html, /47(?:<!-- -->)? \/<!-- --> <!-- -->55/);
+  assert.match(html, /CIK 0000723125/);
+  assert.match(html, /11 unresolved/);
+  assert.match(html, /No fuzzy or company-name fallback is used/);
+  assert.match(html, /CIK identifies the registrant, not its exchange listing/);
+  assert.match(html, /Current association only/);
   assert.match(html, /Two snapshots are not a backtest/);
   assert.match(html, /2<!-- --> snapshots inventoried/);
   assert.match(html, /timezone unspecified/);
@@ -221,6 +230,8 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
     sourceQuality,
     packagedSecurityMaster,
     sourceSecurityMaster,
+    packagedSecRegistrants,
+    sourceSecRegistrants,
     packagedMaturity,
     sourceMaturity,
     packagedHistoricalReadiness,
@@ -261,6 +272,14 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
       new URL("../public/data/evidence/security-master/active.json", import.meta.url),
       "utf8",
     ),
+    readFile(
+      new URL("../dist/client/data/evidence/sec-registrants/active.json", import.meta.url),
+      "utf8",
+    ),
+    readFile(
+      new URL("../public/data/evidence/sec-registrants/active.json", import.meta.url),
+      "utf8",
+    ),
     readFile(new URL("../dist/client/data/evidence/maturity/active.json", import.meta.url), "utf8"),
     readFile(new URL("../public/data/evidence/maturity/active.json", import.meta.url), "utf8"),
     readFile(
@@ -287,6 +306,7 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(packagedDictionary, sourceDictionary);
   assert.equal(packagedQuality, sourceQuality);
   assert.equal(packagedSecurityMaster, sourceSecurityMaster);
+  assert.equal(packagedSecRegistrants, sourceSecRegistrants);
   assert.equal(packagedMaturity, sourceMaturity);
   assert.equal(packagedHistoricalReadiness, sourceHistoricalReadiness);
 
@@ -364,6 +384,23 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(securityMaster.coverage.uniqueSecurityIdCount, 643);
   assert.equal(securityMaster.coverage.permanentIdentifierCount, 0);
   assert.equal(securityMaster.identityPolicy.tickerReuseProtection, "unavailable");
+  const secRegistrants = JSON.parse(packagedSecRegistrants);
+  const versionedSecRegistrants = await readFile(
+    new URL(
+      `../dist/client/data/evidence/sec-registrants/builds/${secRegistrants.buildId}/sec-registrants.json`,
+      import.meta.url,
+    ),
+    "utf8",
+  );
+  assert.equal(versionedSecRegistrants, packagedSecRegistrants);
+  assert.equal(secRegistrants.buildId, activeEvidence.build.buildId);
+  assert.equal(secRegistrants.status, "partial-current-snapshot");
+  assert.equal(secRegistrants.historicalIdentityEligible, false);
+  assert.equal(secRegistrants.coverage.matchedSecurityCount, 632);
+  assert.equal(secRegistrants.coverage.unmatchedSecurityCount, 11);
+  assert.equal(secRegistrants.coverage.companyCikMatchCount, 585);
+  assert.equal(secRegistrants.coverage.fundClassMatchCount, 47);
+  assert.equal(secRegistrants.coverage.operatingCompanyListingIdentityCoverage, 0);
   const maturity = JSON.parse(packagedMaturity);
   const versionedMaturity = await readFile(
     new URL(

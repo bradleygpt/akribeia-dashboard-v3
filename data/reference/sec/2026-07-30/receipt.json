@@ -1,0 +1,34 @@
+{
+  "receiptSchemaVersion": "1.0.0",
+  "snapshotId": "2026-07-30",
+  "retrievedAt": "2026-07-30T06:49:38.889Z",
+  "sourcePolicy": {
+    "provider": "U.S. Securities and Exchange Commission",
+    "access": "public-no-api-key",
+    "declaredUserAgent": true,
+    "maxRequestsPerSecond": 10,
+    "accuracyGuarantee": "not-guaranteed-by-provider"
+  },
+  "sources": [
+    {
+      "kind": "company-tickers",
+      "uri": "https://www.sec.gov/files/company_tickers.json",
+      "path": "data/reference/sec/2026-07-30/company_tickers.json",
+      "retrievedAt": "2026-07-30T06:49:38.889Z",
+      "lastModifiedAt": "2026-07-24T13:32:43.000Z",
+      "sha256": "6a4f83335f24e07200fe7a323fb9b16811ee4967ca881035e1d78dd16e387955",
+      "byteSize": 798160,
+      "recordCount": 10432
+    },
+    {
+      "kind": "mutual-fund-tickers",
+      "uri": "https://www.sec.gov/files/company_tickers_mf.json",
+      "path": "data/reference/sec/2026-07-30/company_tickers_mf.json",
+      "retrievedAt": "2026-07-30T06:49:38.889Z",
+      "lastModifiedAt": "2026-07-27T21:25:39.000Z",
+      "sha256": "00932690a98f76eec0f83aa0ce7587beb61d6ded27897edf016471a0654763e1",
+      "byteSize": 1228336,
+      "recordCount": 28427
+    }
+  ]
+}

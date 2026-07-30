@@ -3,13 +3,16 @@
 `npm run master:generate` creates the active V3 security master only after the daily evidence
 receipt, quality report, score artifact digest, schema, build, model, and source lineage reconcile.
 
-The current source provides ticker, name, sector, and industry for 643 securities. It does not
+The scored source provides ticker, name, sector, and industry for 643 securities. It does not
 provide a permanent issuer or listing identifier. The master therefore assigns a deterministic
-`AKR-TICKER:<ticker>` research ID and labels every record `provisional-ticker-derived`.
+`AKR-TICKER:<ticker>` research ID and labels every record `provisional-ticker-derived`. A separate
+checksum-pinned SEC snapshot now associates 632 current tickers with registrant or fund-class
+records; it does not alter this artifact or make its IDs permanent. See
+`docs/evidence/SEC_REGISTRANT_CROSSWALK.md`.
 
 This is deliberately narrower than a production security master:
 
-- CIK, CUSIP, ISIN, and LEI remain null;
+- CIK, CUSIP, ISIN, and LEI remain null in the security-master artifact;
 - one snapshot cannot prove listing dates, delistings, aliases, ticker changes, mergers, or ticker
   reuse;
 - the generated ID is stable only within the documented ticker-only V3 scope;

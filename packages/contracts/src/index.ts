@@ -1814,3 +1814,241 @@ export const HistoricalReadinessReportSchema = z
     }
   });
 export type HistoricalReadinessReport = z.infer<typeof HistoricalReadinessReportSchema>;
+
+const SecTickerSchema = z.string().trim().min(1).max(20);
+const SecMutualFundSymbolSchema = z.string().trim().max(20);
+const SecCikSchema = z.string().regex(/^\d{10}$/);
+const SecSeriesIdSchema = z.string().regex(/^S\d{9}$/);
+const SecClassIdSchema = z.string().regex(/^C\d{9}$/);
+
+export const SecCompanyTickerAssociationsSchema = z.record(
+  z
+    .object({
+      cik_str: z.number().int().nonnegative(),
+      ticker: SecTickerSchema,
+      title: z.string().trim().min(1),
+    })
+    .strict(),
+);
+
+export const SecMutualFundTickerAssociationsSchema = z
+  .object({
+    fields: z.tuple([
+      z.literal("cik"),
+      z.literal("seriesId"),
+      z.literal("classId"),
+      z.literal("symbol"),
+    ]),
+    data: z
+      .array(
+        z.tuple([
+          z.number().int().nonnegative(),
+          SecSeriesIdSchema,
+          SecClassIdSchema,
+          SecMutualFundSymbolSchema,
+        ]),
+      )
+      .min(1),
+  })
+  .strict();
+
+const SecSourceKindSchema = z.enum(["company-tickers", "mutual-fund-tickers"]);
+
+export const SecIdentitySourceReceiptSchema = z
+  .object({
+    receiptSchemaVersion: z.literal("1.0.0"),
+    snapshotId: z.string().date(),
+    retrievedAt: IsoDateTimeSchema,
+    sourcePolicy: z
+      .object({
+        provider: z.literal("U.S. Securities and Exchange Commission"),
+        access: z.literal("public-no-api-key"),
+        declaredUserAgent: z.literal(true),
+        maxRequestsPerSecond: z.literal(10),
+        accuracyGuarantee: z.literal("not-guaranteed-by-provider"),
+      })
+      .strict(),
+    sources: z
+      .array(
+        z
+          .object({
+            kind: SecSourceKindSchema,
+            uri: z.string().url(),
+            path: z.string().min(1),
+            retrievedAt: IsoDateTimeSchema,
+            lastModifiedAt: IsoDateTimeSchema,
+            sha256: Sha256Schema,
+            byteSize: z.number().int().positive(),
+            recordCount: z.number().int().positive(),
+          })
+          .strict(),
+      )
+      .length(2),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    if (
+      value.sources[0]?.kind !== "company-tickers" ||
+      value.sources[1]?.kind !== "mutual-fund-tickers" ||
+      value.sources[0]?.uri !== "https://www.sec.gov/files/company_tickers.json" ||
+      value.sources[1]?.uri !== "https://www.sec.gov/files/company_tickers_mf.json" ||
+      value.sources.some(({ retrievedAt }) => retrievedAt !== value.retrievedAt)
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          "SEC identity sources must use official canonical URIs, canonical order, and one retrieval time.",
+        path: ["sources"],
+      });
+    }
+  });
+export type SecIdentitySourceReceipt = z.infer<typeof SecIdentitySourceReceiptSchema>;
+
+const SecRegistrantCompanyMatchSchema = z
+  .object({
+    ticker: SecurityMasterTickerSchema,
+    provisionalSecurityId: z.string().regex(/^AKR-TICKER:[A-Z][A-Z0-9.-]{0,9}$/),
+    sourceType: z.literal("company-ticker"),
+    matchMethod: z.literal("exact-current-ticker"),
+    cik: SecCikSchema,
+    secTitle: z.string().trim().min(1),
+    seriesId: z.null(),
+    classId: z.null(),
+    identityScope: z.literal("registrant-only"),
+  })
+  .strict();
+
+const SecRegistrantFundMatchSchema = z
+  .object({
+    ticker: SecurityMasterTickerSchema,
+    provisionalSecurityId: z.string().regex(/^AKR-TICKER:[A-Z][A-Z0-9.-]{0,9}$/),
+    sourceType: z.literal("mutual-fund-class"),
+    matchMethod: z.literal("exact-current-ticker"),
+    cik: SecCikSchema,
+    secTitle: z.null(),
+    seriesId: SecSeriesIdSchema,
+    classId: SecClassIdSchema,
+    identityScope: z.literal("registered-fund-class"),
+  })
+  .strict();
+
+export const SecRegistrantMatchSchema = z.discriminatedUnion("sourceType", [
+  SecRegistrantCompanyMatchSchema,
+  SecRegistrantFundMatchSchema,
+]);
+
+export const SecRegistrantCrosswalkSchema = z
+  .object({
+    crosswalkSchemaVersion: z.literal("1.0.0"),
+    buildId: SafeBuildIdSchema,
+    modelVersion: z.string().min(1),
+    generatedAt: IsoDateTimeSchema,
+    status: z.literal("partial-current-snapshot"),
+    historicalIdentityEligible: z.literal(false),
+    sourceReceipt: z
+      .object({
+        path: z.string().min(1),
+        sha256: Sha256Schema,
+        snapshotId: z.string().date(),
+        retrievedAt: IsoDateTimeSchema,
+      })
+      .strict(),
+    coverage: z
+      .object({
+        activeSecurityCount: z.number().int().positive(),
+        matchedSecurityCount: z.number().int().positive(),
+        unmatchedSecurityCount: z.number().int().positive(),
+        ambiguousSecurityCount: z.literal(0),
+        operatingCompanyCount: z.number().int().positive(),
+        companyCikMatchCount: z.number().int().positive(),
+        registeredFundCount: z.number().int().positive(),
+        fundClassMatchCount: z.number().int().positive(),
+        uniqueCikCount: z.number().int().positive(),
+        registrantCoverage: z.number().min(0).max(1),
+        companyCikCoverage: z.number().min(0).max(1),
+        fundClassCoverage: z.number().min(0).max(1),
+        operatingCompanyListingIdentityCoverage: z.literal(0),
+      })
+      .strict(),
+    matches: z.array(SecRegistrantMatchSchema).min(1),
+    unmatched: z
+      .array(
+        z
+          .object({
+            ticker: SecurityMasterTickerSchema,
+            provisionalSecurityId: z.string().regex(/^AKR-TICKER:[A-Z][A-Z0-9.-]{0,9}$/),
+            expectedSource: z.enum(["company-tickers", "mutual-fund-tickers"]),
+            reason: z.literal("no-exact-current-ticker-match"),
+          })
+          .strict(),
+      )
+      .min(1),
+    limitations: z.array(z.string().min(1)).min(4),
+    notice: z.string().min(1),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    const companyMatches = value.matches.filter(
+      ({ sourceType }) => sourceType === "company-ticker",
+    );
+    const fundMatches = value.matches.filter(
+      ({ sourceType }) => sourceType === "mutual-fund-class",
+    );
+    const unmatchedCompanies = value.unmatched.filter(
+      ({ expectedSource }) => expectedSource === "company-tickers",
+    );
+    const unmatchedFunds = value.unmatched.filter(
+      ({ expectedSource }) => expectedSource === "mutual-fund-tickers",
+    );
+    const tickers = value.matches.map(({ ticker }) => ticker);
+    const unmatchedTickers = value.unmatched.map(({ ticker }) => ticker);
+    const allTickers = [...tickers, ...unmatchedTickers];
+    const canonicalTickers = [...tickers].sort((left, right) => left.localeCompare(right));
+    const canonicalUnmatched = [...unmatchedTickers].sort((left, right) =>
+      left.localeCompare(right),
+    );
+    const coverage = value.coverage;
+    const countsReconcile =
+      value.generatedAt === value.sourceReceipt.retrievedAt &&
+      coverage.activeSecurityCount === value.matches.length + value.unmatched.length &&
+      coverage.matchedSecurityCount === value.matches.length &&
+      coverage.companyCikMatchCount === companyMatches.length &&
+      coverage.fundClassMatchCount === fundMatches.length &&
+      coverage.unmatchedSecurityCount === value.unmatched.length &&
+      coverage.operatingCompanyCount === companyMatches.length + unmatchedCompanies.length &&
+      coverage.registeredFundCount === fundMatches.length + unmatchedFunds.length &&
+      coverage.activeSecurityCount ===
+        coverage.operatingCompanyCount + coverage.registeredFundCount &&
+      coverage.uniqueCikCount === new Set(value.matches.map(({ cik }) => cik)).size &&
+      coverage.registrantCoverage ===
+        coverage.matchedSecurityCount / coverage.activeSecurityCount &&
+      coverage.companyCikCoverage ===
+        coverage.companyCikMatchCount / coverage.operatingCompanyCount &&
+      coverage.fundClassCoverage === coverage.fundClassMatchCount / coverage.registeredFundCount;
+
+    if (!countsReconcile || new Set(allTickers).size !== allTickers.length) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "SEC registrant coverage and match counts must reconcile.",
+        path: ["coverage"],
+      });
+    }
+
+    if (
+      tickers.some((ticker, index) => ticker !== canonicalTickers[index]) ||
+      unmatchedTickers.some((ticker, index) => ticker !== canonicalUnmatched[index]) ||
+      value.matches.some(
+        ({ ticker, provisionalSecurityId }) => provisionalSecurityId !== `AKR-TICKER:${ticker}`,
+      ) ||
+      value.unmatched.some(
+        ({ ticker, provisionalSecurityId }) => provisionalSecurityId !== `AKR-TICKER:${ticker}`,
+      )
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "SEC registrant matches must use canonical ticker order and research IDs.",
+        path: ["matches"],
+      });
+    }
+  });
+export type SecRegistrantCrosswalk = z.infer<typeof SecRegistrantCrosswalkSchema>;
