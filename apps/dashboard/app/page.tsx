@@ -3,6 +3,7 @@ import {
   DataQualityReportSchema,
   MetricDictionarySchema,
   ModelCardSchema,
+  SecurityMasterSchema,
   VerticalSliceDashboardSchema,
 } from "@akribeia/contracts";
 import { DataStatusBanner } from "./data-status-banner";
@@ -12,19 +13,23 @@ import activeDailyEvidence from "./generated/active-daily-evidence.json";
 import activeMetricDictionary from "./generated/active-metric-dictionary.json";
 import activeModelCard from "./generated/active-model-card.json";
 import activeQualityReport from "./generated/active-quality-report.json";
+import activeSecurityMaster from "./generated/active-security-master.json";
 
 const dashboard = VerticalSliceDashboardSchema.parse(activeDashboard);
 const dailyEvidence = DailyEvidenceRecordSchema.parse(activeDailyEvidence);
 const metricDictionary = MetricDictionarySchema.parse(activeMetricDictionary);
 const modelCard = ModelCardSchema.parse(activeModelCard);
 const qualityReport = DataQualityReportSchema.parse(activeQualityReport);
+const securityMaster = SecurityMasterSchema.parse(activeSecurityMaster);
 
 if (
   modelCard.modelVersion !== dashboard.modelVersion ||
   metricDictionary.modelVersion !== dashboard.modelVersion ||
-  qualityReport.buildId !== dashboard.buildId
+  qualityReport.buildId !== dashboard.buildId ||
+  securityMaster.buildId !== dashboard.buildId ||
+  securityMaster.source.contentSha256 !== dashboard.source.contentSha256
 ) {
-  throw new Error("Active governance artifacts do not match the dashboard model version.");
+  throw new Error("Active evidence artifacts do not match the dashboard build lineage.");
 }
 
 function percent(value: number, digits = 0): string {
@@ -65,6 +70,18 @@ export default function Home() {
   const sortedSectors = Object.entries(dashboard.portfolio.sectorWeights).sort(([left], [right]) =>
     left.localeCompare(right),
   );
+  const securityMasterByTicker = new Map(
+    securityMaster.securities.map((security) => [security.currentTicker, security]),
+  );
+  const visibleMasterEntries = dashboard.topScores.slice(0, 6).map((security) => {
+    const masterEntry = securityMasterByTicker.get(security.ticker);
+
+    if (masterEntry === undefined) {
+      throw new Error(`Security master is missing dashboard ticker "${security.ticker}".`);
+    }
+
+    return masterEntry;
+  });
 
   return (
     <>
@@ -87,6 +104,7 @@ export default function Home() {
           <a href="#daily-evidence">Evidence</a>
           <a href="#model-governance">Method</a>
           <a href="#data-quality">Quality</a>
+          <a href="#security-master">Master</a>
           <a href="#explore">Explain</a>
           <a href="#lineage">Lineage</a>
         </nav>
@@ -367,6 +385,92 @@ export default function Home() {
             </div>
             <p>{qualityReport.drift.reason}</p>
           </aside>
+        </section>
+
+        <section
+          className="security-master"
+          id="security-master"
+          aria-labelledby="security-master-heading"
+        >
+          <div className="security-master-heading">
+            <div>
+              <p className="mono-label">SECURITY MASTER / {securityMaster.asOfDate}</p>
+              <h2 id="security-master-heading">Identity evidence, without false permanence.</h2>
+              <p>
+                Every active ticker resolves to one deterministic research identity. The source has
+                no permanent issuer identifiers or ticker history, so every identity stays visibly
+                provisional.
+              </p>
+            </div>
+            <a
+              href={`/data/evidence/security-master/builds/${securityMaster.buildId}/security-master.json`}
+            >
+              View security master
+            </a>
+          </div>
+          <div className="security-master-summary" aria-label="Security master coverage">
+            <article>
+              <span>Observed securities</span>
+              <strong>{securityMaster.coverage.securityCount}</strong>
+              <p>one record per validated ticker</p>
+            </article>
+            <article>
+              <span>Unique research IDs</span>
+              <strong>{securityMaster.coverage.uniqueSecurityIdCount}</strong>
+              <p>{securityMaster.coverage.duplicateSecurityIds.length} collisions</p>
+            </article>
+            <article>
+              <span>Permanent identifiers</span>
+              <strong>{securityMaster.coverage.permanentIdentifierCount}</strong>
+              <p>CIK, CUSIP, ISIN, and LEI unavailable</p>
+            </article>
+            <article data-status={securityMaster.status}>
+              <span>Identity status</span>
+              <strong>{securityMaster.status}</strong>
+              <p>{securityMaster.identityPolicy.identifierBasis.replaceAll("-", " ")}</p>
+            </article>
+          </div>
+          <div className="security-master-ledger">
+            <div
+              className="table-scroll"
+              tabIndex={0}
+              role="region"
+              aria-label="Provisional security identity examples"
+            >
+              <table>
+                <caption className="sr-only">
+                  Example provisional security identities and current source classifications
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Current ticker</th>
+                    <th scope="col">Research identity</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Sector</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {visibleMasterEntries.map((security) => (
+                    <tr key={security.securityId}>
+                      <td>
+                        <strong>{security.currentTicker}</strong>
+                      </td>
+                      <td>
+                        <code>{security.securityId}</code>
+                      </td>
+                      <td>{security.name}</td>
+                      <td>{security.sector}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <aside data-status="provisional" aria-label="Identity limitation">
+              <strong>Ticker history unavailable</strong>
+              <p>{securityMaster.limitations[1]}</p>
+              <p>{securityMaster.limitations[2]}</p>
+            </aside>
+          </div>
         </section>
 
         <section className="factor-audit" id="scores" aria-labelledby="factor-audit-heading">

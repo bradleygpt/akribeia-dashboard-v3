@@ -1375,3 +1375,133 @@ export const DataQualityReportSchema = z
     }
   });
 export type DataQualityReport = z.infer<typeof DataQualityReportSchema>;
+
+const SecurityMasterTickerSchema = z.string().regex(/^[A-Z][A-Z0-9.-]{0,9}$/);
+
+export const SecurityMasterEntrySchema = z
+  .object({
+    securityId: z.string().regex(/^AKR-TICKER:[A-Z][A-Z0-9.-]{0,9}$/),
+    identifierStatus: z.literal("provisional-ticker-derived"),
+    currentTicker: SecurityMasterTickerSchema,
+    tickerEvidence: z
+      .array(
+        z
+          .object({
+            ticker: SecurityMasterTickerSchema,
+            observedOn: z.string().date(),
+            sourceRecordSha256: Sha256Schema,
+          })
+          .strict(),
+      )
+      .length(1),
+    name: z.string().trim().min(1),
+    sector: z.string().trim().min(1),
+    industry: z.string().trim().min(1),
+    observationStatus: z.literal("present-in-snapshot"),
+    permanentIdentifiers: z
+      .object({
+        cik: z.null(),
+        cusip: z.null(),
+        isin: z.null(),
+        lei: z.null(),
+      })
+      .strict(),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    if (value.securityId !== `AKR-TICKER:${value.currentTicker}`) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Provisional security ID must match its current ticker.",
+        path: ["securityId"],
+      });
+    }
+
+    if (value.tickerEvidence[0]?.ticker !== value.currentTicker) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Current ticker must match the single observed ticker.",
+        path: ["tickerEvidence"],
+      });
+    }
+  });
+export type SecurityMasterEntry = z.infer<typeof SecurityMasterEntrySchema>;
+
+export const SecurityMasterSchema = z
+  .object({
+    securityMasterSchemaVersion: z.literal("1.0.0"),
+    buildId: SafeBuildIdSchema,
+    recordedAt: IsoDateTimeSchema,
+    asOfDate: z.string().date(),
+    status: z.literal("provisional"),
+    source: DashboardSourceSchema,
+    identityPolicy: z
+      .object({
+        securityIdMethod: z.literal("ticker-prefix-v1"),
+        identifierBasis: z.literal("current-ticker-only"),
+        permanentIdentifiersAvailable: z.literal(false),
+        tickerHistoryAvailable: z.literal(false),
+        tickerReuseProtection: z.literal("unavailable"),
+      })
+      .strict(),
+    coverage: z
+      .object({
+        securityCount: z.number().int().positive(),
+        uniqueSecurityIdCount: z.number().int().positive(),
+        uniqueCurrentTickerCount: z.number().int().positive(),
+        provisionalIdentityCount: z.number().int().positive(),
+        permanentIdentifierCount: z.literal(0),
+        duplicateSecurityIds: z.array(z.string().min(1)).length(0),
+        duplicateCurrentTickers: z.array(z.string().min(1)).length(0),
+      })
+      .strict(),
+    securities: z.array(SecurityMasterEntrySchema).min(1),
+    limitations: z.array(z.string().min(1)).min(3),
+    notice: z.string().min(1),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    const securityIds = value.securities.map(({ securityId }) => securityId);
+    const tickers = value.securities.map(({ currentTicker }) => currentTicker);
+    const canonicalTickers = [...tickers].sort((left, right) => left.localeCompare(right));
+    const countsReconcile =
+      value.coverage.securityCount === value.securities.length &&
+      value.coverage.uniqueSecurityIdCount === new Set(securityIds).size &&
+      value.coverage.uniqueCurrentTickerCount === new Set(tickers).size &&
+      value.coverage.provisionalIdentityCount === value.securities.length &&
+      value.source.rowCount === value.securities.length;
+
+    if (
+      !countsReconcile ||
+      value.coverage.uniqueSecurityIdCount !== value.coverage.securityCount ||
+      value.coverage.uniqueCurrentTickerCount !== value.coverage.securityCount
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Security-master coverage and identity counts must reconcile.",
+        path: ["coverage"],
+      });
+    }
+
+    if (
+      value.asOfDate !== value.source.observedAt.slice(0, 10) ||
+      value.securities.some(
+        ({ tickerEvidence }) => tickerEvidence[0]?.observedOn !== value.asOfDate,
+      )
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Security-master observations must match the source date.",
+        path: ["asOfDate"],
+      });
+    }
+
+    if (tickers.some((ticker, index) => ticker !== canonicalTickers[index])) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Security-master entries must be ordered by current ticker.",
+        path: ["securities"],
+      });
+    }
+  });
+export type SecurityMaster = z.infer<typeof SecurityMasterSchema>;
