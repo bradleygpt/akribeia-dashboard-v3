@@ -90,6 +90,11 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /AKR-TICKER:MU/);
   assert.match(html, /Ticker history unavailable/);
   assert.match(html, /must not be treated as permanent across ticker changes or ticker reuse/);
+  assert.match(html, /Working product\. Research-preview evidence/);
+  assert.match(html, /validation candidate/);
+  assert.match(html, /1<!-- --> \/<!-- --> <!-- -->30/);
+  assert.match(html, /4<!-- --> \/<!-- --> <!-- -->8/);
+  assert.match(html, /Production cutover: (?:<!-- -->)?not authorized/);
   assert.match(html, /not investment advice/i);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Your site is taking shape/i);
 });
@@ -208,6 +213,8 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
     sourceQuality,
     packagedSecurityMaster,
     sourceSecurityMaster,
+    packagedMaturity,
+    sourceMaturity,
   ] = await Promise.all([
     readFile(new URL("../.openai/hosting.json", import.meta.url), "utf8"),
     readFile(new URL("../dist/.openai/hosting.json", import.meta.url), "utf8"),
@@ -244,6 +251,8 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
       new URL("../public/data/evidence/security-master/active.json", import.meta.url),
       "utf8",
     ),
+    readFile(new URL("../dist/client/data/evidence/maturity/active.json", import.meta.url), "utf8"),
+    readFile(new URL("../public/data/evidence/maturity/active.json", import.meta.url), "utf8"),
   ]);
   const pointer = JSON.parse(pointerPayload);
   const buildRoot = new URL(
@@ -260,6 +269,7 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(packagedDictionary, sourceDictionary);
   assert.equal(packagedQuality, sourceQuality);
   assert.equal(packagedSecurityMaster, sourceSecurityMaster);
+  assert.equal(packagedMaturity, sourceMaturity);
 
   for (const artifact of Object.values(manifest.files)) {
     const [packagedPayload, sourcePayload] = await Promise.all([
@@ -335,4 +345,18 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(securityMaster.coverage.uniqueSecurityIdCount, 643);
   assert.equal(securityMaster.coverage.permanentIdentifierCount, 0);
   assert.equal(securityMaster.identityPolicy.tickerReuseProtection, "unavailable");
+  const maturity = JSON.parse(packagedMaturity);
+  const versionedMaturity = await readFile(
+    new URL(
+      `../dist/client/data/evidence/maturity/builds/${maturity.buildId}/maturity.json`,
+      import.meta.url,
+    ),
+    "utf8",
+  );
+  assert.equal(versionedMaturity, packagedMaturity);
+  assert.equal(maturity.buildId, activeEvidence.build.buildId);
+  assert.equal(maturity.currentLevel, "research-preview");
+  assert.equal(maturity.releaseEligible, false);
+  assert.equal(maturity.observations.immutableDailyBuilds, 1);
+  assert.equal(maturity.cutover.status, "not-authorized");
 });

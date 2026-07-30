@@ -4,9 +4,9 @@ Last updated: 2026-07-30
 
 ## Whole-product completion
 
-Estimated completion: **68%**
+Estimated completion: **71%**
 
-This estimate reflects working, tested product behavior rather than roadmap line-item count. V3 now has the Phase 0 baseline, core publication trust primitives, a deployed visible preview, complete coverage-aware scoring evidence, exact integer-unit portfolio construction, a retry-safe end-to-end publication/activation/rollback pipeline, an accessible runtime data-status surface, protected server-side evidence capabilities, explicit deployment health and recovery operations, the first immutable daily evidence record, versioned model-governance evidence, an active-build quality report with honest drift eligibility, and a provisional security master that exposes its identifier limits. It is not ready to replace V2.
+This estimate reflects working, tested product behavior rather than roadmap line-item count. V3 now has the Phase 0 baseline, core publication trust primitives, a deployed visible preview, complete coverage-aware scoring evidence, exact integer-unit portfolio construction, a retry-safe end-to-end publication/activation/rollback pipeline, an accessible runtime data-status surface, protected server-side evidence capabilities, explicit deployment health and recovery operations, the first immutable daily evidence record, versioned model-governance evidence, an active-build quality report with honest drift eligibility, a provisional security master, and fail-closed evidence maturity labels. It is not ready to replace V2.
 
 ## Completed milestones
 
@@ -26,25 +26,25 @@ This estimate reflects working, tested product behavior rather than roadmap line
 - Immutable daily evidence, explicit benchmark/performance limits, reproducibility reporting, and a visible evidence ledger, privately deployed and merged through PR #14.
 - Versioned model card, 26-component metric dictionary, validation-gate ledger, and visible methodology limits, privately deployed and merged through PR #15.
 - Active-build data quality, honest insufficient-history drift status, and visible report evidence, privately deployed and merged through PR #16.
+- Provisional ticker-only security master, immutable identity evidence, and visible permanent-identifier limits, privately deployed and merged through PR #17.
 
 ## Current milestone
 
-**Provisional security master**
+**Fail-closed evidence maturity labels**
 
-The current branch makes the active identity set explicit without claiming unavailable permanence:
+The current branch replaces scattered maturity wording with one generated assessment:
 
-1. daily evidence, quality approval, score receipt, build, model, and source lineage must reconcile;
-2. all 643 validated tickers map one-to-one to unique deterministic research IDs;
-3. every identity is explicitly `provisional-ticker-derived`;
-4. unavailable CIK, CUSIP, ISIN, and LEI values remain null;
-5. ticker history and ticker-reuse protection remain explicitly unavailable;
-6. immutable records are retry-safe and conflict-closed;
-7. the dashboard exposes identity coverage, example mappings, and limitations;
-8. point-in-time history and permanent identifiers remain required for historical validation.
+1. immutable daily, reproduction, model, quality, and identity lineage must reconcile;
+2. levels appear in strict order from development through production approved;
+3. the active build is `research-preview` and not release eligible;
+4. only one of 30 required immutable daily builds exists;
+5. four of eight model validation gates pass;
+6. validation, release, and production blockers remain visible;
+7. no caller-supplied certification or cutover override exists;
+8. production approval always requires explicit final cutover authorization.
 
 Implementation, complete local CI, contract/generator/rendering/packaging/browser tests, and
-dependency audit pass. Owner-only preview deployment also passes; pull-request gates remain for
-this unit.
+dependency audit pass. Owner-only preview deployment and pull-request gates remain for this unit.
 
 ## Remaining milestones
 
@@ -64,10 +64,10 @@ this unit.
 
 ## Test counts
 
-- Vitest suite: 106 tests across 13 files pass.
+- Vitest suite: 111 tests across 14 files pass.
 - Rendered deployment and browser suite: 6 tests pass.
-- Total automated tests: 112 pass.
-- Current unit validation: Prettier, typecheck, lint, every workspace build, 106 Vitest tests, five rendered accessibility/integrity/API/package tests, one isolated-profile real-Chrome hydration smoke test, `git diff --check`, and `npm audit --audit-level=high` pass.
+- Total automated tests: 117 pass.
+- Current unit validation: Prettier, typecheck, lint, every workspace build, 111 Vitest tests, five rendered accessibility/integrity/API/package tests, one isolated-profile real-Chrome hydration smoke test, `git diff --check`, and `npm audit --audit-level=high` pass.
 
 ## Deployment status
 
@@ -97,6 +97,8 @@ this unit.
 - Security master: 643 unique ticker-derived research identities are generated locally with no
   collisions; all remain provisional because permanent identifiers and ticker history are absent.
   The evidence and visible identity ledger are privately deployed.
+- Evidence maturity: local assessment labels the active build `research-preview`, not release
+  eligible, with one of 30 daily builds and 11 explicit blockers. Private deployment is pending.
 - Historical validation: not started.
 - Prospective validation: not started.
 
