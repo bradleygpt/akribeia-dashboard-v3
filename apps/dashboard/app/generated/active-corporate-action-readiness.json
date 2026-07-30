@@ -1,0 +1,133 @@
+{
+  "reportSchemaVersion": "1.0.0",
+  "buildId": "preview-20260728-pipeline-v4-a34fc842220f",
+  "modelVersion": "3.0.0-preview.3",
+  "assessedAt": "2026-07-30T04:36:30Z",
+  "status": "blocked-unverified-adjustments",
+  "corporateActionsControlled": false,
+  "historicalValidationEligible": false,
+  "comparison": {
+    "earlierSnapshotId": "june-oracle",
+    "laterSnapshotId": "july-baseline",
+    "commonTickerCount": 629,
+    "priceRatioLowerBoundary": 0.5,
+    "priceRatioUpperBoundary": 2,
+    "impliedSharesRatioLowerBoundary": 0.5,
+    "impliedSharesRatioUpperBoundary": 2,
+    "stableMarketCapRelativeBand": 0.15
+  },
+  "observations": [
+    {
+      "ticker": "ASTS",
+      "name": "AST SpaceMobile, Inc.",
+      "signal": "price-and-market-cap-discontinuity",
+      "earlierPrice": 118.17,
+      "laterPrice": 56.82,
+      "priceRatio": 0.4808326986544808,
+      "earlierMarketCapB": 45.9,
+      "laterMarketCapB": 22.2,
+      "marketCapRatio": 0.48366013071895425,
+      "impliedSharesRatio": 1.005880282419198,
+      "verifiedCorporateAction": null
+    },
+    {
+      "ticker": "CRWD",
+      "name": "CrowdStrike Holdings, Inc.",
+      "signal": "possible-share-count-discontinuity",
+      "earlierPrice": 768.95,
+      "laterPrice": 183.81,
+      "priceRatio": 0.23904024969113724,
+      "earlierMarketCapB": 195.7,
+      "laterMarketCapB": 187,
+      "marketCapRatio": 0.9555442003065918,
+      "impliedSharesRatio": 3.997419687861127,
+      "verifiedCorporateAction": null
+    },
+    {
+      "ticker": "DD",
+      "name": "DuPont de Nemours, Inc.",
+      "signal": "possible-share-count-discontinuity",
+      "earlierPrice": 48.66,
+      "laterPrice": 137.51,
+      "priceRatio": 2.8259350595972053,
+      "earlierMarketCapB": 19.7,
+      "laterMarketCapB": 18.6,
+      "marketCapRatio": 0.9441624365482234,
+      "impliedSharesRatio": 0.33410620436649374,
+      "verifiedCorporateAction": null
+    },
+    {
+      "ticker": "KLAC",
+      "name": "KLA Corporation",
+      "signal": "possible-share-count-discontinuity",
+      "earlierPrice": 2045.2,
+      "laterPrice": 214,
+      "priceRatio": 0.10463524349696851,
+      "earlierMarketCapB": 267.2,
+      "laterMarketCapB": 280.3,
+      "marketCapRatio": 1.0490269461077846,
+      "impliedSharesRatio": 10.025560327942246,
+      "verifiedCorporateAction": null
+    },
+    {
+      "ticker": "ORCL",
+      "name": "Oracle Corporation",
+      "signal": "price-and-market-cap-discontinuity",
+      "earlierPrice": 244.58,
+      "laterPrice": 118.56,
+      "priceRatio": 0.4847493662605282,
+      "earlierMarketCapB": 703.4,
+      "laterMarketCapB": 339.6,
+      "marketCapRatio": 0.48279783906738705,
+      "impliedSharesRatio": 0.9959741521516661,
+      "verifiedCorporateAction": null
+    }
+  ],
+  "coverage": {
+    "thresholdObservationCount": 5,
+    "possibleShareCountDiscontinuityCount": 3,
+    "priceAndMarketCapDiscontinuityCount": 2,
+    "verifiedCorporateActionCount": 0,
+    "verifiedAdjustedSeriesCount": 0
+  },
+  "controls": [
+    {
+      "key": "receipted-snapshot-prices",
+      "status": "pass",
+      "detail": "629 common ticker prices and market capitalizations reconcile to receipted snapshots."
+    },
+    {
+      "key": "split-events",
+      "status": "blocked",
+      "detail": "No authoritative split ratio, ex-date, effective date, or source receipt exists."
+    },
+    {
+      "key": "cash-distributions",
+      "status": "blocked",
+      "detail": "No ordinary, special, or return-of-capital distribution ledger exists."
+    },
+    {
+      "key": "mergers-spinoffs",
+      "status": "blocked",
+      "detail": "No merger, acquisition, spin-off, conversion, or successor-security terms exist."
+    },
+    {
+      "key": "delistings",
+      "status": "blocked",
+      "detail": "No delisting date, terminal value, cash-out, or successor identity evidence exists."
+    },
+    {
+      "key": "adjusted-total-return-series",
+      "status": "blocked",
+      "detail": "No independently reproducible split- and distribution-adjusted price series exists."
+    }
+  ],
+  "limitations": [
+    "Threshold observations are diagnostics, not verified corporate-action events.",
+    "Implied shares use rounded snapshot market capitalization divided by price and are not shares-outstanding records.",
+    "Price and market-cap changes may reflect market movement, source errors, stale values, security changes, or corporate actions.",
+    "Without event-effective dates and adjustment factors, returns and portfolio transitions remain incomparable.",
+    "No observation may be used to synthesize a split factor or adjusted return."
+  ],
+  "notice": "Research preview only. Scores and model weights are evidence artifacts, not investment advice or a promise of future performance."
+}
