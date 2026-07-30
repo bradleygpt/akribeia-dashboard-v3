@@ -168,6 +168,8 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
     assert.match(stdout, /preview-20260728-pipeline-v4-a34fc842220f/);
     assert.match(stdout, /Skip to main content/);
     assert.match(stdout, /Highest composite scores/);
+    assert.match(stdout, /Ask the published build/);
+    assert.match(stdout, /Explain evidence/);
     assert.match(stdout, /Recheck status/);
   } finally {
     await new Promise((resolveClose, rejectClose) => {

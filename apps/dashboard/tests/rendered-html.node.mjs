@@ -58,6 +58,10 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /MU/);
   assert.match(html, /NVDA/);
   assert.match(html, /Sector exposure/);
+  assert.match(html, /Ask the published build/);
+  assert.match(html, /No external model, browser secret, or performance forecast is used/);
+  assert.match(html, /name="ticker" value="MU"/);
+  assert.match(html, /Explain evidence/);
   assert.match(html, /Composite score ranking table/);
   assert.match(html, /Highest composite scores with sector, factor coverage, score/);
   assert.match(html, /The interface says what it knows/);
@@ -116,4 +120,52 @@ test("preserves the dashboard accessibility contract", async () => {
   for (const referencedId of [...labelledBy, ...fragmentLinks]) {
     assert.ok(ids.includes(referencedId), `Missing referenced landmark ID "${referencedId}".`);
   }
+});
+
+test("serves a protected explanation from the built worker without an external model", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("api-test", `${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+  const response = await worker.fetch(
+    new Request("https://akribeia.example/api/v3/ai/explain", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        origin: "https://akribeia.example",
+        "x-akribeia-client": "dashboard-v3",
+      },
+      body: JSON.stringify({
+        ticker: "MU",
+        focus: "portfolio",
+      }),
+    }),
+    {
+      ASSETS: {
+        async fetch(request) {
+          const pathname = new URL(request.url).pathname.replace(/^\/+/, "");
+
+          try {
+            return new Response(
+              await readFile(new URL(`../dist/client/${pathname}`, import.meta.url)),
+              { status: 200 },
+            );
+          } catch {
+            return new Response("Not found", { status: 404 });
+          }
+        },
+      },
+    },
+    {
+      waitUntil() {},
+      passThroughOnException() {},
+    },
+  );
+  const payload = await response.json();
+
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get("cache-control"), "no-store");
+  assert.equal(payload.mode, "deterministic-evidence");
+  assert.equal(payload.externalModelUsed, false);
+  assert.equal(payload.ticker, "MU");
+  assert.match(payload.explanation, /exact position cap/);
 });

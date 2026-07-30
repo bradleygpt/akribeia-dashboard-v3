@@ -5,6 +5,7 @@ import {
   handleImageOptimization,
 } from "vinext/server/image-optimization";
 import handler from "vinext/server/app-router-entry";
+import { handleEvidenceApi } from "./evidence-api";
 
 interface Env {
   ASSETS: Fetcher;
@@ -31,6 +32,11 @@ interface ExecutionContext {
 const worker = {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
+    const apiResponse = await handleEvidenceApi(request, env);
+
+    if (apiResponse !== null) {
+      return apiResponse;
+    }
 
     if (url.pathname === "/_vinext/image") {
       const allowedWidths = [...DEFAULT_DEVICE_SIZES, ...DEFAULT_IMAGE_SIZES];
