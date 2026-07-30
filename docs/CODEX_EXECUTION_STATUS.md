@@ -37,7 +37,7 @@ The current branch adds a useful server-side evidence workflow without exposing 
 7. `/api/v3/ai/explain` returns deterministic, cited explanations and explicitly records that no external model ran;
 8. the dashboard exposes the protected capability through an accessible “Ask the published build” workflow.
 
-Implementation, complete local CI, and dependency audit pass. Private preview deployment and pull-request gates remain for this unit.
+Implementation, complete local CI, dependency audit, and private preview deployment pass. Pull-request gates remain for this unit.
 
 ## Remaining milestones
 
@@ -68,7 +68,7 @@ Implementation, complete local CI, and dependency audit pass. Private preview de
 - V2 production: unchanged.
 - V3 local preview: generated and safely retried as immutable build `preview-20260728-pipeline-v4-a34fc842220f`; an interactive dev server is not currently running.
 - V3 hosted preview: deployed privately at <https://akribeia-v3-evidence-preview.akribeiainsights.chatgpt.site>.
-- V3 hosted preview source: validated dashboard availability commit `aa482697a`.
+- V3 hosted preview source: validated protected-capabilities commit `14703cc0f`.
 - V3 production: not deployed.
 - Cutover: not authorized and not attempted.
 
@@ -78,8 +78,8 @@ Implementation, complete local CI, and dependency audit pass. Private preview de
 - V3 immutable preview builds: four local manifest-addressed builds preserve artifact hashes, provenance, model/schema versions, and rollback linkage.
 - V3 active local evidence: `preview-20260728-pipeline-v4-a34fc842220f` with explicit freshness age/limit, verified retry reuse, three SHA-256 artifacts, 1,000,000,000 reconciled weight units, 643 score records, and five factor-coverage reports.
 - V3 hosted end-to-end pipeline evidence: deployed from the tree validated in PR #10.
-- V3 hosted availability evidence: runtime pointer, manifest, schema, lineage, byte-size, and dashboard SHA-256 verification deployed from validated commit `aa482697a`.
-- V3 protected evidence API: implemented and locally validated; private deployment is pending.
+- V3 hosted availability evidence: runtime pointer, manifest, schema, lineage, byte-size, and dashboard SHA-256 verification deployed from the tree validated in PR #11.
+- V3 protected evidence API: server-verified lookup and deterministic explanation routes deployed privately from validated commit `14703cc0f`.
 - Published daily evidence history: not started.
 - Historical validation: not started.
 - Prospective validation: not started.
