@@ -32,15 +32,22 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
 
   const html = await response.text();
 
-  assert.match(html, /<title>Akribeia V3 — Evidence Preview<\/title>/i);
+  assert.match(html, /<title>Akribeia — Quantitative Market Research<\/title>/i);
   assert.match(html, /class="skip-link" href="#main-content"/);
   assert.match(html, /<nav class="primary-nav" aria-label="Primary navigation">/);
+  assert.match(html, /aria-label="Research integrity navigation"/);
   assert.match(html, /<main id="main-content" tabindex="-1">/);
   assert.match(html, /data-state="loading"/);
   assert.match(html, /aria-live="polite" role="status"/);
   assert.match(html, /Verifying the active evidence build/);
-  assert.match(html, /From source to signal/);
-  assert.match(html, /every gate visible/);
+  assert.match(html, /See the market whole/);
+  assert.match(html, /Test every signal/);
+  assert.match(html, /Open Market Health/);
+  assert.match(html, /Search all 1,361 securities/);
+  assert.match(html, /aria-label="Akribeia product areas"/);
+  assert.match(html, /Regime, macro, earnings, breadth and risk/);
+  assert.match(html, /Trust policy/);
+  assert.match(html, /Fail closed/);
   assert.match(html, /preview-20260728-pipeline-v4-a34fc842220f/);
   assert.match(html, /3\.0\.0-preview\.4/);
   assert.match(html, />643</);

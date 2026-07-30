@@ -153,78 +153,115 @@ export default function Home() {
         Skip to main content
       </a>
       <header className="site-header">
-        <a className="brand" href="#top" aria-label="Akribeia V3 evidence preview home">
+        <a className="brand" href="#top" aria-label="Akribeia quantitative research home">
           <span className="brand-mark" aria-hidden="true">
             A
           </span>
           <span>
             <strong>Akribeia</strong>
-            <small>V3 evidence preview</small>
+            <small>Quantitative research</small>
           </span>
         </a>
         <nav className="primary-nav" aria-label="Primary navigation">
-          <a href="#scores">Scores</a>
-          <a href="#portfolio">Portfolio</a>
+          <a href="#top">Home</a>
+          <a href="#market-health">Market Health</a>
+          <a href="#universe">Universe</a>
+          <a href="#scores">Research</a>
           <a href="#daily-evidence">Evidence</a>
-          <a href="#prospective-readiness">Prospective</a>
-          <a href="#walk-forward-readiness">Folds</a>
-          <a href="#universe-membership">Membership</a>
-          <a href="#corporate-actions">Actions</a>
-          <a href="#exit-disposition">Exits</a>
-          <a href="#execution-costs">Execution</a>
-          <a href="#benchmark-readiness">Benchmark</a>
-          <a href="#filing-availability">Filings</a>
-          <a href="#model-governance">Method</a>
-          <a href="#data-quality">Quality</a>
-          <a href="#security-master">Master</a>
-          <a href="#sec-registrants">SEC</a>
-          <a href="#historical-readiness">History</a>
-          <a href="#maturity">Maturity</a>
-          <a href="#explore">Explain</a>
-          <a href="#lineage">Lineage</a>
         </nav>
         <div className="header-status" aria-label="Publication integrity">
           <span className="status-dot" aria-hidden="true" />
-          Build published
+          Trust core active
         </div>
       </header>
+      <nav className="integrity-nav" aria-label="Research integrity navigation">
+        <span>Research integrity</span>
+        <a href="#daily-evidence">Receipts</a>
+        <a href="#model-governance">Method</a>
+        <a href="#data-quality">Data quality</a>
+        <a href="#prospective-readiness">Prospective gate</a>
+        <a href="#lineage">Lineage</a>
+      </nav>
 
       <main id="main-content" tabIndex={-1}>
         <DataStatusBanner />
 
         <section className="hero" id="top">
           <div className="eyebrow">
-            <span>Build {dashboard.buildId}</span>
-            <span>{dashboard.schemaVersion}</span>
+            <span>Market intelligence · quantitative research · visible evidence</span>
+            <span>V3 trust core / {dashboard.schemaVersion}</span>
           </div>
           <div className="hero-grid">
             <div>
               <h1>
-                From source to signal,
-                <span> every gate visible.</span>
+                See the market whole.
+                <span> Test every signal.</span>
               </h1>
               <p className="hero-copy">
-                A working V3 slice built from the preserved V2 baseline. Every score is coverage
-                checked, every weight obeys explicit caps, and every output resolves through one
-                immutable active build.
+                Akribeia connects market regime, macro and earnings health, quantitative scoring,
+                valuation, and portfolio research in one disciplined system. Explore the full market
+                surface, then inspect the evidence behind every published result.
               </p>
+              <div className="hero-actions" aria-label="Start exploring Akribeia">
+                <a href="#market-health">Open Market Health</a>
+                <a href="#universe">Search all 1,361 securities</a>
+              </div>
             </div>
-            <aside className="hero-evidence" aria-label="Active build evidence">
-              <p className="mono-label">PUBLISHED / VERIFIED</p>
-              <strong>{dashboard.source.rowCount}</strong>
-              <span>validated securities</span>
+            <aside className="hero-evidence" aria-label="Akribeia coverage and trust">
+              <p className="mono-label">COMPLETE V2 COVERAGE / V3 TRUST</p>
+              <strong>{v2Universe.total.toLocaleString("en-US")}</strong>
+              <span>securities available with zero product-level exclusions</span>
               <dl>
                 <div>
-                  <dt>Observed</dt>
-                  <dd>{observedDate(dashboard.source.observedAt)} UTC</dd>
+                  <dt>Market Health</dt>
+                  <dd>Regime · macro · earnings · breadth · risk</dd>
                 </div>
                 <div>
-                  <dt>Coverage policy</dt>
-                  <dd>100% required</dd>
+                  <dt>Published evidence</dt>
+                  <dd>{dashboard.buildId}</dd>
+                </div>
+                <div>
+                  <dt>Trust policy</dt>
+                  <dd>Fail closed · immutable · traceable</dd>
                 </div>
               </dl>
             </aside>
           </div>
+          <nav className="product-doors" aria-label="Akribeia product areas">
+            <a href="#market-health">
+              <span>01</span>
+              <strong>Market Health</strong>
+              <small>Regime, macro, earnings, breadth and risk</small>
+            </a>
+            <a href="#universe">
+              <span>02</span>
+              <strong>Full Universe</strong>
+              <small>1,361 scored securities without a hidden cap floor</small>
+            </a>
+            <a href="#scores">
+              <span>03</span>
+              <strong>Research Preview</strong>
+              <small>Scores, constraints and a published model portfolio</small>
+            </a>
+            <a href="#daily-evidence">
+              <span>04</span>
+              <strong>Evidence</strong>
+              <small>Receipts, lineage, quality and readiness gates</small>
+            </a>
+          </nav>
+        </section>
+
+        <section
+          className="market-health-shell"
+          id="market-health"
+          aria-labelledby="market-health-heading"
+        >
+          <p className="mono-label">LIVE MARKET CONTEXT</p>
+          <h2 id="market-health-heading">Market Health</h2>
+          <p role="status">
+            Connecting the authoritative V2 regime, macro, earnings, breadth and risk sources. No
+            placeholder score is shown while verification is incomplete.
+          </p>
         </section>
 
         <section className="pipeline" aria-labelledby="pipeline-heading">

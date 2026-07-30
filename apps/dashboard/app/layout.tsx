@@ -1,9 +1,9 @@
 import { headers } from "next/headers";
 import "./globals.css";
 
-const title = "Akribeia V3 — Evidence Preview";
+const title = "Akribeia — Quantitative Market Research";
 const description =
-  "An auditable V3 research preview connecting validated repository data to scores, a constrained portfolio, and immutable publication evidence.";
+  "Market Health, a complete quantitative security universe, and research signals backed by visible provenance and immutable publication evidence.";
 
 export async function generateMetadata() {
   const requestHeaders = await headers();
@@ -29,7 +29,7 @@ export async function generateMetadata() {
           url: socialImage,
           width: 1733,
           height: 909,
-          alt: "Akribeia V3 Evidence Preview",
+          alt: "Akribeia quantitative market research",
         },
       ],
     },

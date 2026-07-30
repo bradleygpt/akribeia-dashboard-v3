@@ -170,6 +170,11 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
     assert.match(stdout, /Active evidence build verified|Source freshness window has elapsed/);
     assert.match(stdout, /preview-20260728-pipeline-v4-a34fc842220f/);
     assert.match(stdout, /Skip to main content/);
+    assert.match(stdout, /See the market whole/);
+    assert.match(stdout, /Test every signal/);
+    assert.match(stdout, /Open Market Health/);
+    assert.match(stdout, /Search all 1,361 securities/);
+    assert.match(stdout, /Research integrity/);
     assert.match(stdout, /Every validated name\. No hidden cap floor\./);
     assert.match(stdout, /Search all securities/);
     assert.match(stdout, /1,361/);
