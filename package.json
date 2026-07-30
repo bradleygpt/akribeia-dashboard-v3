@@ -25,6 +25,7 @@
     "universe-membership:generate": "npm run typecheck && node packages/evidence/dist/universe-membership-cli.js",
     "corporate-actions:generate": "npm run typecheck && node packages/evidence/dist/corporate-action-readiness-cli.js",
     "exit-disposition:generate": "npm run typecheck && node packages/evidence/dist/exit-disposition-readiness-cli.js",
+    "execution-costs:generate": "npm run typecheck && node packages/evidence/dist/execution-cost-readiness-cli.js",
     "sec-identity:fetch": "npm run typecheck && node packages/evidence/dist/sec-identity-source-cli.js",
     "registrants:generate": "npm run typecheck && node packages/evidence/dist/sec-registrants-cli.js",
     "filing-sources:fetch": "npm run typecheck && node packages/evidence/dist/sec-submissions-source-cli.js",
