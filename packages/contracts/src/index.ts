@@ -3149,3 +3149,92 @@ export const ProspectiveReadinessSchema = z
     }
   });
 export type ProspectiveReadiness = z.infer<typeof ProspectiveReadinessSchema>;
+
+export const DailyObservationCollectionReceiptSchema = z
+  .object({
+    receiptSchemaVersion: z.literal("1.0.0"),
+    attemptedAt: IsoDateTimeSchema,
+    disposition: z.enum(["collected", "no-op-duplicate-date", "blocked-backdated-date"]),
+    candidate: z
+      .object({
+        asOfDate: z.string().date(),
+        observedAt: IsoDateTimeSchema,
+        buildId: SafeBuildIdSchema,
+        modelVersion: z.string().min(1),
+      })
+      .strict(),
+    ledger: z
+      .object({
+        observationDates: z.array(z.string().date()),
+        latestObservationDate: z.string().date().nullable(),
+        observationDayCountBefore: z.number().int().nonnegative(),
+        observationDayCountAfter: z.number().int().nonnegative(),
+      })
+      .strict(),
+    dailyEvidence: z
+      .object({
+        disposition: z.enum(["published", "reused"]),
+        evidencePath: z.string().min(1),
+        reproducibilityReportPath: z.string().min(1),
+      })
+      .strict()
+      .nullable(),
+    prospectiveReadiness: z
+      .object({
+        disposition: z.enum(["published", "reused"]),
+        reportPath: z.string().min(1),
+        uniqueObservationDayCount: z.number().int().nonnegative(),
+        remainingObservationDayCount: z.number().int().nonnegative(),
+      })
+      .strict()
+      .nullable(),
+    reason: z.string().min(1),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    const dates = value.ledger.observationDates;
+    const canonicalDates = [...dates].sort((left, right) => left.localeCompare(right));
+    const uniqueDates = new Set(dates);
+    const latest = dates.at(-1) ?? null;
+    const ledgerValid =
+      dates.every((date, index) => date === canonicalDates[index]) &&
+      uniqueDates.size === dates.length &&
+      value.ledger.latestObservationDate === latest &&
+      value.ledger.observationDayCountBefore === dates.length;
+    const candidateAlreadyExists = uniqueDates.has(value.candidate.asOfDate);
+    const candidateIsBackdated =
+      latest !== null && value.candidate.asOfDate < latest && !candidateAlreadyExists;
+    const collectedValid =
+      value.disposition === "collected" &&
+      !candidateAlreadyExists &&
+      !candidateIsBackdated &&
+      value.ledger.observationDayCountAfter === dates.length + 1 &&
+      value.dailyEvidence !== null &&
+      value.prospectiveReadiness !== null &&
+      value.prospectiveReadiness.uniqueObservationDayCount === dates.length + 1 &&
+      value.prospectiveReadiness.remainingObservationDayCount ===
+        Math.max(0, 30 - (dates.length + 1));
+    const duplicateValid =
+      value.disposition === "no-op-duplicate-date" &&
+      candidateAlreadyExists &&
+      value.ledger.observationDayCountAfter === dates.length &&
+      value.dailyEvidence === null &&
+      value.prospectiveReadiness === null;
+    const backdatedValid =
+      value.disposition === "blocked-backdated-date" &&
+      candidateIsBackdated &&
+      value.ledger.observationDayCountAfter === dates.length &&
+      value.dailyEvidence === null &&
+      value.prospectiveReadiness === null;
+
+    if (!ledgerValid || (!collectedValid && !duplicateValid && !backdatedValid)) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Daily observation collection disposition and ledger progress must reconcile.",
+        path: ["ledger"],
+      });
+    }
+  });
+export type DailyObservationCollectionReceipt = z.infer<
+  typeof DailyObservationCollectionReceiptSchema
+>;

@@ -41,3 +41,30 @@ builds on the same source date do not add independent observation days.
 
 The report therefore keeps `prospectiveValidationEligible` and `certificationEligible` false and
 must not be used for an investment-performance or V2-replacement claim.
+
+## Daily collection orchestration
+
+The collection command is:
+
+```text
+npm run prospective-observation:collect
+```
+
+It verifies the active dashboard receipt before trusting its source date and compares that date with
+the immutable daily ledger. The only allowed outcomes are:
+
+- `collected`: the source date is genuinely newer, one immutable daily record is published, and the
+  prospective-readiness report is regenerated;
+- `no-op-duplicate-date`: the date already exists, no evidence is rewritten, and the independent-day
+  count does not change;
+- `blocked-backdated-date`: the date is older than the latest ledger date and no evidence is written.
+
+Set `AKRIBEIA_COLLECTION_RECEIPT_PATH` to write the machine-readable attempt receipt. The receipt
+records the candidate lineage, all pre-existing observation dates, before/after counts, any generated
+paths, and the exact disposition reason.
+
+The `Prospective observation collection` GitHub workflow runs on demand and on a weekday schedule.
+Every run uploads its receipt as a retained workflow artifact. A no-op creates no repository branch.
+A genuinely new date must pass full CI, dependency audit, and whitespace checks before the workflow
+opens a feature-branch pull request. The workflow never pushes directly to `main` and never creates
+or backfills market observations.

@@ -1,0 +1,143 @@
+name: Prospective observation collection
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 3 * * 2-6"
+
+concurrency:
+  group: prospective-observation-collection
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    env:
+      RECEIPT_PATH: ${{ runner.temp }}/akribeia-prospective-observation-receipt.json
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Inspect and collect the active observation
+        id: collect
+        shell: bash
+        run: |
+          set +e
+          AKRIBEIA_COLLECTION_RECEIPT_PATH="$RECEIPT_PATH" npm run prospective-observation:collect
+          exit_code=$?
+          echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Upload the collection receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: prospective-observation-receipt-${{ github.run_id }}
+          path: ${{ env.RECEIPT_PATH }}
+          if-no-files-found: warn
+          retention-days: 90
+
+      - name: Summarize the collection attempt
+        if: always()
+        shell: bash
+        run: |
+          if [[ -f "$RECEIPT_PATH" ]]; then
+            node -e '
+              const fs = require("node:fs");
+              const receipt = JSON.parse(fs.readFileSync(process.env.RECEIPT_PATH, "utf8"));
+              const lines = [
+                "## Prospective observation collection",
+                "",
+                `- Disposition: **${receipt.disposition}**`,
+                `- Candidate date: **${receipt.candidate.asOfDate}**`,
+                `- Ledger before: **${receipt.ledger.observationDayCountBefore}**`,
+                `- Ledger after: **${receipt.ledger.observationDayCountAfter}**`,
+                `- Reason: ${receipt.reason}`,
+              ];
+              fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${lines.join("\n")}\n`);
+            '
+          else
+            echo "## Prospective observation collection" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "No collection receipt was produced." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Enforce fail-closed collection result
+        shell: bash
+        run: |
+          exit_code='${{ steps.collect.outputs.exit_code }}'
+          if [[ "$exit_code" != "0" ]]; then
+            echo "Collection command failed or blocked with exit code $exit_code."
+            exit 1
+          fi
+
+      - name: Detect generated evidence changes
+        id: changes
+        shell: bash
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Validate a newly collected observation
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          npm run ci
+          npm audit --audit-level=high
+          git diff --check
+
+      - name: Open a reviewable observation pull request
+        if: steps.changes.outputs.changed == 'true'
+        shell: bash
+        run: |
+          observation_date=$(node -p 'JSON.parse(require("node:fs").readFileSync(process.env.RECEIPT_PATH, "utf8")).candidate.asOfDate')
+          branch="automation/prospective-observation-${observation_date}-${GITHUB_RUN_ID}"
+
+          git config user.name "akribeia-observation-bot"
+          git config user.email "akribeia-observation-bot@users.noreply.github.com"
+          git switch -c "$branch"
+          git add --all
+          git diff --cached --check
+          git commit -m "Phase 4: collect prospective observation ${observation_date}"
+          git push --set-upstream origin "$branch"
+
+          pr_body="$RUNNER_TEMP/prospective-observation-pr-body.md"
+          cat > "$pr_body" <<'BODY'
+          ## Summary
+
+          - collects one genuinely new immutable prospective observation date
+          - regenerates the prospective-readiness gate from the receipted daily ledger
+          - preserves execution, cost, return, and benchmark fields as unavailable unless real inputs exist
+          - refuses duplicate dates and blocks backdated observations
+
+          ## Validation
+
+          - full repository CI passed
+          - dependency audit passed at high severity
+          - whitespace validation passed
+
+          ## Safety
+
+          This automated pull request does not deploy production, alter V2, fabricate market data, or claim investment performance.
+          BODY
+
+          gh pr create \
+            --base main \
+            --head "$branch" \
+            --title "Phase 4: collect prospective observation ${observation_date}" \
+            --body-file "$pr_body"

@@ -29,6 +29,7 @@
     "benchmark-readiness:generate": "npm run typecheck && node packages/evidence/dist/benchmark-readiness-cli.js",
     "walk-forward-readiness:generate": "npm run typecheck && node packages/evidence/dist/walk-forward-readiness-cli.js",
     "prospective-readiness:generate": "npm run typecheck && node packages/evidence/dist/prospective-readiness-cli.js",
+    "prospective-observation:collect": "npm run typecheck && node packages/evidence/dist/daily-observation-cli.js",
     "sec-identity:fetch": "npm run typecheck && node packages/evidence/dist/sec-identity-source-cli.js",
     "registrants:generate": "npm run typecheck && node packages/evidence/dist/sec-registrants-cli.js",
     "filing-sources:fetch": "npm run typecheck && node packages/evidence/dist/sec-submissions-source-cli.js",
