@@ -127,6 +127,9 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /Nine targets\. Zero invented fills or costs/);
   assert.match(html, /null, never silently zero/);
   assert.match(html, /No zero-cost shortcut/);
+  assert.match(html, /Eight candidates\. No benchmark return/);
+  assert.match(html, /SPLG and SPY remain unmatched/);
+  assert.match(html, /Price change is not return/);
   assert.match(html, /Two snapshots are not a backtest/);
   assert.match(html, /2<!-- --> snapshots inventoried/);
   assert.match(html, /timezone unspecified/);
@@ -274,6 +277,8 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
     sourceExitDisposition,
     packagedExecutionCosts,
     sourceExecutionCosts,
+    packagedBenchmarkReadiness,
+    sourceBenchmarkReadiness,
   ] = await Promise.all([
     readFile(new URL("../.openai/hosting.json", import.meta.url), "utf8"),
     readFile(new URL("../dist/.openai/hosting.json", import.meta.url), "utf8"),
@@ -374,6 +379,14 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
       new URL("../public/data/evidence/execution-cost-readiness/active.json", import.meta.url),
       "utf8",
     ),
+    readFile(
+      new URL("../dist/client/data/evidence/benchmark-readiness/active.json", import.meta.url),
+      "utf8",
+    ),
+    readFile(
+      new URL("../public/data/evidence/benchmark-readiness/active.json", import.meta.url),
+      "utf8",
+    ),
   ]);
   const pointer = JSON.parse(pointerPayload);
   const buildRoot = new URL(
@@ -398,6 +411,7 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(packagedCorporateActions, sourceCorporateActions);
   assert.equal(packagedExitDisposition, sourceExitDisposition);
   assert.equal(packagedExecutionCosts, sourceExecutionCosts);
+  assert.equal(packagedBenchmarkReadiness, sourceBenchmarkReadiness);
 
   for (const artifact of Object.values(manifest.files)) {
     const [packagedPayload, sourcePayload] = await Promise.all([
@@ -602,4 +616,18 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(executionCosts.portfolio.pricedExecutionCount, 0);
   assert.equal(executionCosts.portfolio.transactionCost, null);
   assert.equal(executionCosts.portfolio.netReturn, null);
+  const benchmarkReadiness = JSON.parse(packagedBenchmarkReadiness);
+  const versionedBenchmarkReadiness = await readFile(
+    new URL(
+      `../dist/client/data/evidence/benchmark-readiness/builds/${benchmarkReadiness.buildId}/benchmark-readiness.json`,
+      import.meta.url,
+    ),
+    "utf8",
+  );
+  assert.equal(versionedBenchmarkReadiness, packagedBenchmarkReadiness);
+  assert.equal(benchmarkReadiness.buildId, activeEvidence.build.buildId);
+  assert.equal(benchmarkReadiness.coverage.candidateCount, 8);
+  assert.equal(benchmarkReadiness.coverage.currentSecFundAssociationCount, 6);
+  assert.equal(benchmarkReadiness.coverage.totalReturnObservationCount, 0);
+  assert.equal(benchmarkReadiness.comparison.selectedBenchmarkId, null);
 });

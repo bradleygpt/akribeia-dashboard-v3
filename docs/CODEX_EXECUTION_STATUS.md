@@ -4,7 +4,7 @@ Last updated: 2026-07-30
 
 ## Whole-product completion
 
-Estimated completion: **88%**
+Estimated completion: **90%**
 
 This estimate reflects working, tested product behavior rather than roadmap line-item count. V3 now
 has the Phase 0 baseline, core publication trust primitives, a deployed visible preview, complete
@@ -17,8 +17,9 @@ maturity labels, an immutable audit of historical point-in-time readiness, and a
 current SEC registrant crosswalk with explicit unresolved coverage, a bounded filing-availability
 control that excludes post-cutoff filings, and a deterministic comparison of observed universe
 entrants and exits, receipted corporate-action and exit-disposition diagnostics, and explicit
-execution-cost readiness that never converts missing costs into zero. It is not ready to replace
-V2.
+execution-cost readiness that never converts missing costs into zero, plus a visible inventory of
+benchmark proxy candidates that never converts snapshot price changes into returns. It is not
+ready to replace V2.
 
 ## Completed milestones
 
@@ -54,25 +55,27 @@ V2.
 - Receipted observed-exit disposition diagnostics, 11 current SEC associations, two unresolved
   labels, and zero inferred historical dispositions, privately deployed and merged through PR
   #24.
+- Exact portfolio targets with explicit null execution, turnover, cost, and net-performance
+  fields, privately deployed and merged through PR #25.
 
 ## Current milestone
 
-**Execution and transaction-cost readiness**
+**Benchmark selection and return-series readiness**
 
-The current branch carries the active nine-position portfolio into a strict execution-readiness
-report:
+The current branch inventories broad U.S. equity proxy candidates without selecting or computing a
+benchmark:
 
-1. the active daily evidence record and portfolio artifact must pass schema, byte-size, SHA-256,
-   build, model, and total-weight lineage checks;
-2. all nine model targets retain their exact integer weight units and research snapshot prices;
-3. research prices are never reclassified as executable fills;
-4. capital base, prior holdings, execution calendar, executable prices, liquidity and slippage,
-   and fees and taxes remain explicit blocked controls;
-5. executions, trade quantities, turnover, gross return, transaction costs, and net return remain
-   `null`, never silently zero;
-6. forged zero-cost or net-return claims fail the contract;
-7. immutable retry and conflict behavior protects the report;
-8. the responsive dashboard exposes exact targets and the unavailable execution economics.
+1. the June and July `$10B` snapshots must pass their strict contracts and SHA-256 receipts;
+2. universe-membership, historical-readiness, and SEC-crosswalk evidence must share build and
+   model lineage;
+3. eight explicit broad U.S. equity proxy candidates must exist in both snapshots;
+4. six exact current SEC registered-fund series/class associations are exposed, while SPLG and SPY
+   remain unmatched;
+5. source prices and arithmetic price changes are visible but are explicitly not labeled returns;
+6. benchmark selection, adjusted prices, distributions, and total returns remain unavailable;
+7. forged benchmark selection, return claims, or non-reconciling price comparisons fail the
+   contract;
+8. immutable retry and conflict behavior protects the report.
 
 Implementation, complete local CI, contract/generator/rendering/packaging/browser tests,
 dependency audit, and functional owner-only deployment pass. Final repository commit,
@@ -101,6 +104,9 @@ exact-commit hosted deployment, and pull-request gates remain for this unit.
   benchmark, and execution evidence.
 - Realistic execution and net-performance evidence is blocked by missing capital-base, prior
   holdings, market-calendar, executable-price, liquidity, slippage, fee, and tax inputs.
+- Benchmark comparison is blocked by the absence of an approved benchmark mandate, point-in-time
+  fund identity, record-level availability timestamps, distributions, adjusted total-return
+  series, an evaluation interval, and portfolio-execution alignment.
 - The observed 14 entrants and 13 exits have no eligibility-effective intervals or verified event
   semantics; they cannot support a survivorship-controlled backtest.
 - Five extreme price observations have no authoritative corporate-action event or adjustment
@@ -115,10 +121,10 @@ exact-commit hosted deployment, and pull-request gates remain for this unit.
 
 ## Test counts
 
-- Vitest suite: 154 tests across 21 files pass.
+- Vitest suite: 161 tests across 22 files pass.
 - Rendered deployment and browser suite: 6 tests pass.
-- Total automated tests: 160 pass.
-- Current unit validation: Prettier, typecheck, lint, every workspace build, 154 Vitest tests,
+- Total automated tests: 167 pass.
+- Current unit validation: Prettier, typecheck, lint, every workspace build, 161 Vitest tests,
   five rendered accessibility/integrity/API/package tests, one isolated-profile real-Chrome
   hydration smoke test, `git diff --check`, and `npm audit --audit-level=high` pass.
 
@@ -127,10 +133,10 @@ exact-commit hosted deployment, and pull-request gates remain for this unit.
 - V2 production: unchanged.
 - V3 local preview: generated and safely retried as immutable build `preview-20260728-pipeline-v4-a34fc842220f`; an interactive dev server is not currently running.
 - V3 hosted preview: deployed privately at <https://akribeia-v3-evidence-preview.akribeiainsights.chatgpt.site>.
-- V3 hosted preview source: exact PR #24 head `437717745`, preserved in Sites source commit
-  `5968c024d` and deployed as version 36.
-- Current execution-cost readiness functional tree is preserved in Sites source commit
-  `7a1188c68` and deployed owner-only as version 37.
+- V3 hosted preview source: exact PR #25 head `37a735696`, preserved in Sites source commit
+  `5cb258226` and deployed as version 38.
+- Current benchmark-readiness functional tree is preserved in Sites source commit `6ef998063` and
+  deployed owner-only as version 39.
 - Hosted deployment status is successful. The current package passed an isolated-profile
   real-Chrome smoke test locally; a signed-in interactive browser was unavailable for a separate
   hosted-page smoke check.
@@ -182,6 +188,10 @@ exact-commit hosted deployment, and pull-request gates remain for this unit.
   executions remain zero, and share quantities, turnover, gross return, transaction costs, and net
   return remain explicitly unavailable. Immutable evidence and the visible dashboard projection
   are deployed privately.
+- Benchmark readiness: eight candidate proxies are present in both receipted snapshots; six have a
+  current exact SEC fund association and two remain unmatched. No benchmark is selected, total
+  return observations remain zero, and the immutable evidence and visible dashboard projection are
+  deployed privately.
 - Historical validation: blocked by the readiness report; no backtest or performance comparison
   is claimed.
 - Prospective validation: not started.
@@ -222,6 +232,9 @@ exact-commit hosted deployment, and pull-request gates remain for this unit.
 - Research snapshot prices are not executable prices. No capital base, prior holdings, execution
   rule, timestamped fill records, liquidity model, slippage model, or fee schedule exists, so the
   product must not infer trades, zero costs, or net performance.
+- Candidate ETF snapshot-price changes are not benchmark returns. Current SEC series/class
+  associations do not prove historical identity, and the repository has no distribution,
+  reinvestment, adjusted-price, or total-return series.
 - Both $0B fixtures fail the strict input contract: June has one null-price issue and July has five
   classification issues. They are inventoried as historical material but are not used by the
   active $10B product build.

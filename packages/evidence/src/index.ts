@@ -14,6 +14,7 @@ import {
 } from "@akribeia/contracts";
 
 export * from "./governance.js";
+export * from "./benchmark-readiness.js";
 export * from "./corporate-action-readiness.js";
 export * from "./exit-disposition-readiness.js";
 export * from "./execution-cost-readiness.js";

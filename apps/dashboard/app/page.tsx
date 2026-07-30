@@ -1,4 +1,5 @@
 import {
+  BenchmarkReadinessSchema,
   CorporateActionReadinessSchema,
   DailyEvidenceRecordSchema,
   DataQualityReportSchema,
@@ -16,6 +17,7 @@ import {
 } from "@akribeia/contracts";
 import { DataStatusBanner } from "./data-status-banner";
 import { EvidenceExplorer } from "./evidence-explorer";
+import activeBenchmarkReadiness from "./generated/active-benchmark-readiness.json";
 import activeDashboard from "./generated/active-dashboard.json";
 import activeCorporateActionReadiness from "./generated/active-corporate-action-readiness.json";
 import activeDailyEvidence from "./generated/active-daily-evidence.json";
@@ -31,6 +33,7 @@ import activeSecRegistrants from "./generated/active-sec-registrants.json";
 import activeSecurityMaster from "./generated/active-security-master.json";
 import activeUniverseMembership from "./generated/active-universe-membership.json";
 
+const benchmarkReadiness = BenchmarkReadinessSchema.parse(activeBenchmarkReadiness);
 const dashboard = VerticalSliceDashboardSchema.parse(activeDashboard);
 const corporateActionReadiness = CorporateActionReadinessSchema.parse(
   activeCorporateActionReadiness,
@@ -50,6 +53,8 @@ const universeMembership = UniverseMembershipReadinessSchema.parse(activeUnivers
 
 if (
   modelCard.modelVersion !== dashboard.modelVersion ||
+  benchmarkReadiness.buildId !== dashboard.buildId ||
+  benchmarkReadiness.modelVersion !== dashboard.modelVersion ||
   corporateActionReadiness.buildId !== dashboard.buildId ||
   corporateActionReadiness.modelVersion !== dashboard.modelVersion ||
   exitDisposition.buildId !== dashboard.buildId ||
@@ -152,6 +157,7 @@ export default function Home() {
           <a href="#corporate-actions">Actions</a>
           <a href="#exit-disposition">Exits</a>
           <a href="#execution-costs">Execution</a>
+          <a href="#benchmark-readiness">Benchmark</a>
           <a href="#filing-availability">Filings</a>
           <a href="#model-governance">Method</a>
           <a href="#data-quality">Quality</a>
@@ -635,6 +641,111 @@ export default function Home() {
           <aside className="exit-disposition-limitation" role="note">
             <strong>No zero-cost shortcut</strong>
             <p>{executionCostReadiness.limitations[2]}</p>
+          </aside>
+        </section>
+
+        <section
+          className="exit-disposition benchmark-readiness"
+          id="benchmark-readiness"
+          aria-labelledby="benchmark-readiness-heading"
+        >
+          <div className="exit-disposition-heading">
+            <div>
+              <p className="mono-label">BENCHMARK EVIDENCE / CANDIDATES ONLY</p>
+              <h2 id="benchmark-readiness-heading">Eight candidates. No benchmark return.</h2>
+              <p>
+                Both receipted snapshots contain eight broad U.S. equity proxy candidates. Their
+                observed prices are comparable as source facts, but no benchmark is selected and no
+                price or total return is inferred.
+              </p>
+            </div>
+            <a
+              href={`/data/evidence/benchmark-readiness/builds/${benchmarkReadiness.buildId}/benchmark-readiness.json`}
+            >
+              View immutable evidence
+            </a>
+          </div>
+          <div className="exit-disposition-summary" aria-label="Benchmark readiness">
+            <article>
+              <span>Proxy candidates</span>
+              <strong>{benchmarkReadiness.coverage.candidateCount}</strong>
+              <p>present in both receipted snapshots</p>
+            </article>
+            <article>
+              <span>Current SEC associations</span>
+              <strong>
+                {benchmarkReadiness.coverage.currentSecFundAssociationCount} /{" "}
+                {benchmarkReadiness.coverage.candidateCount}
+              </strong>
+              <p>SPLG and SPY remain unmatched</p>
+            </article>
+            <article data-status="blocked">
+              <span>Selected benchmark</span>
+              <strong>—</strong>
+              <p>no approved benchmark mandate</p>
+            </article>
+            <article data-status="blocked">
+              <span>Total-return observations</span>
+              <strong>{benchmarkReadiness.coverage.totalReturnObservationCount}</strong>
+              <p>price comparisons are not returns</p>
+            </article>
+          </div>
+          <div
+            className="table-scroll exit-disposition-table"
+            tabIndex={0}
+            role="region"
+            aria-label="Broad U.S. equity benchmark proxy candidates"
+          >
+            <table>
+              <caption className="sr-only">
+                Candidate benchmark proxies without selected or computed benchmark returns
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Candidate</th>
+                  <th scope="col">June price</th>
+                  <th scope="col">July price</th>
+                  <th scope="col">Observed price change</th>
+                  <th scope="col">Current SEC identity</th>
+                  <th scope="col">Total return</th>
+                </tr>
+              </thead>
+              <tbody>
+                {benchmarkReadiness.candidates.map((candidate) => (
+                  <tr key={candidate.ticker}>
+                    <td>
+                      <strong>{candidate.ticker}</strong>
+                      <small>{candidate.name}</small>
+                    </td>
+                    <td>${candidate.earlierPrice.toFixed(2)}</td>
+                    <td>${candidate.laterPrice.toFixed(2)}</td>
+                    <td>
+                      {percent(candidate.observedPriceChange, 2)}
+                      <small>not a return</small>
+                    </td>
+                    <td
+                      data-status={
+                        candidate.currentSecFundAssociation === null ? "unmatched" : "present"
+                      }
+                    >
+                      <strong>
+                        {candidate.currentSecFundAssociation === null ? "unmatched" : "present"}
+                      </strong>
+                      <small>
+                        {candidate.currentSecFundAssociation?.seriesId ?? "No exact current match"}
+                      </small>
+                    </td>
+                    <td>
+                      <strong className="unverified">unavailable</strong>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <aside className="exit-disposition-limitation" role="note">
+            <strong>Price change is not return</strong>
+            <p>{benchmarkReadiness.limitations[1]}</p>
           </aside>
         </section>
 
