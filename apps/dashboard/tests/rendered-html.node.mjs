@@ -85,6 +85,11 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /643(?:<!-- -->)? schema-valid score rows/);
   assert.match(html, /insufficient history/);
   assert.match(html, /Temporal drift/);
+  assert.match(html, /Identity evidence, without false permanence/);
+  assert.match(html, />643(?:<!-- -->)?<\/strong>/);
+  assert.match(html, /AKR-TICKER:MU/);
+  assert.match(html, /Ticker history unavailable/);
+  assert.match(html, /must not be treated as permanent across ticker changes or ticker reuse/);
   assert.match(html, /not investment advice/i);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Your site is taking shape/i);
 });
@@ -201,6 +206,8 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
     sourceDictionary,
     packagedQuality,
     sourceQuality,
+    packagedSecurityMaster,
+    sourceSecurityMaster,
   ] = await Promise.all([
     readFile(new URL("../.openai/hosting.json", import.meta.url), "utf8"),
     readFile(new URL("../dist/.openai/hosting.json", import.meta.url), "utf8"),
@@ -229,6 +236,14 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
     ),
     readFile(new URL("../dist/client/data/evidence/quality/active.json", import.meta.url), "utf8"),
     readFile(new URL("../public/data/evidence/quality/active.json", import.meta.url), "utf8"),
+    readFile(
+      new URL("../dist/client/data/evidence/security-master/active.json", import.meta.url),
+      "utf8",
+    ),
+    readFile(
+      new URL("../public/data/evidence/security-master/active.json", import.meta.url),
+      "utf8",
+    ),
   ]);
   const pointer = JSON.parse(pointerPayload);
   const buildRoot = new URL(
@@ -244,6 +259,7 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(packagedModelCard, sourceModelCard);
   assert.equal(packagedDictionary, sourceDictionary);
   assert.equal(packagedQuality, sourceQuality);
+  assert.equal(packagedSecurityMaster, sourceSecurityMaster);
 
   for (const artifact of Object.values(manifest.files)) {
     const [packagedPayload, sourcePayload] = await Promise.all([
@@ -305,4 +321,18 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(quality.quality.status, "pass");
   assert.equal(quality.drift.status, "insufficient-history");
   assert.deepEqual(quality.drift.comparisons, []);
+  const securityMaster = JSON.parse(packagedSecurityMaster);
+  const versionedSecurityMaster = await readFile(
+    new URL(
+      `../dist/client/data/evidence/security-master/builds/${securityMaster.buildId}/security-master.json`,
+      import.meta.url,
+    ),
+    "utf8",
+  );
+  assert.equal(versionedSecurityMaster, packagedSecurityMaster);
+  assert.equal(securityMaster.buildId, activeEvidence.build.buildId);
+  assert.equal(securityMaster.coverage.securityCount, activeEvidence.source.rowCount);
+  assert.equal(securityMaster.coverage.uniqueSecurityIdCount, 643);
+  assert.equal(securityMaster.coverage.permanentIdentifierCount, 0);
+  assert.equal(securityMaster.identityPolicy.tickerReuseProtection, "unavailable");
 });

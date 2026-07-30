@@ -178,6 +178,9 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
     assert.match(stdout, /Known methodology gap/);
     assert.match(stdout, /Measured now\. Compared when evidence exists/);
     assert.match(stdout, /insufficient history/);
+    assert.match(stdout, /Identity evidence, without false permanence/);
+    assert.match(stdout, /AKR-TICKER:MU/);
+    assert.match(stdout, /Ticker history unavailable/);
     assert.match(stdout, /Ask the published build/);
     assert.match(stdout, /Explain evidence/);
     assert.match(stdout, /Recheck status/);

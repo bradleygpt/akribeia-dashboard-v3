@@ -29,6 +29,7 @@ npm run preview:generate
 npm run evidence:generate
 npm run governance:generate
 npm run quality:generate
+npm run master:generate
 ```
 
 ## Migration strategy
@@ -40,6 +41,8 @@ npm run quality:generate
 5. Cut over only after software, data, quant, security, and operational gates pass.
 
 See `ROADMAP.md`, `MIGRATION.md`, and `docs/architecture/ADR-0001-separate-v3-repository.md`.
+Evidence-layer details include
+[`docs/evidence/SECURITY_MASTER.md`](docs/evidence/SECURITY_MASTER.md).
 Execution evidence and honest readiness status are maintained in `docs/CODEX_EXECUTION_STATUS.md`.
 Deployment health and recovery procedures are maintained in `docs/operations/DEPLOYMENT_AND_RECOVERY.md`.
 Daily record semantics and reproduction are documented in `docs/evidence/DAILY_EVIDENCE.md`.

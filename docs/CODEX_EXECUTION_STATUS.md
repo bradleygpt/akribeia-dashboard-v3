@@ -4,9 +4,9 @@ Last updated: 2026-07-30
 
 ## Whole-product completion
 
-Estimated completion: **64%**
+Estimated completion: **68%**
 
-This estimate reflects working, tested product behavior rather than roadmap line-item count. V3 now has the Phase 0 baseline, core publication trust primitives, a deployed visible preview, complete coverage-aware scoring evidence, exact integer-unit portfolio construction, a retry-safe end-to-end publication/activation/rollback pipeline, an accessible runtime data-status surface, protected server-side evidence capabilities, explicit deployment health and recovery operations, the first immutable daily evidence record, versioned model-governance evidence, and an active-build quality report with honest drift eligibility. It is not ready to replace V2.
+This estimate reflects working, tested product behavior rather than roadmap line-item count. V3 now has the Phase 0 baseline, core publication trust primitives, a deployed visible preview, complete coverage-aware scoring evidence, exact integer-unit portfolio construction, a retry-safe end-to-end publication/activation/rollback pipeline, an accessible runtime data-status surface, protected server-side evidence capabilities, explicit deployment health and recovery operations, the first immutable daily evidence record, versioned model-governance evidence, an active-build quality report with honest drift eligibility, and a provisional security master that exposes its identifier limits. It is not ready to replace V2.
 
 ## Completed milestones
 
@@ -25,24 +25,26 @@ This estimate reflects working, tested product behavior rather than roadmap line
 - Deep deployment health, packaged-evidence verification, and V3-only recovery procedures, privately deployed and merged through PR #13.
 - Immutable daily evidence, explicit benchmark/performance limits, reproducibility reporting, and a visible evidence ledger, privately deployed and merged through PR #14.
 - Versioned model card, 26-component metric dictionary, validation-gate ledger, and visible methodology limits, privately deployed and merged through PR #15.
+- Active-build data quality, honest insufficient-history drift status, and visible report evidence, privately deployed and merged through PR #16.
 
 ## Current milestone
 
-**Data quality and honest drift status**
+**Provisional security master**
 
-The current branch measures the active build and makes drift eligibility explicit:
+The current branch makes the active identity set explicit without claiming unavailable permanence:
 
-1. daily evidence, model-card, score receipt, build, model, and source lineage must reconcile;
-2. 643 rows and 643 unique tickers are recorded with zero duplicates;
-3. invalid price and market-cap counts are measured explicitly;
-4. eligibility, factor coverage, score range, mean, and median are deterministic;
-5. exact portfolio weight reconciliation travels with the report;
-6. immutable reports are retry-safe and conflict-closed;
-7. one observation produces `insufficient-history`, not a fabricated drift comparison;
-8. the dashboard exposes quality and drift status with downloadable JSON.
+1. daily evidence, quality approval, score receipt, build, model, and source lineage must reconcile;
+2. all 643 validated tickers map one-to-one to unique deterministic research IDs;
+3. every identity is explicitly `provisional-ticker-derived`;
+4. unavailable CIK, CUSIP, ISIN, and LEI values remain null;
+5. ticker history and ticker-reuse protection remain explicitly unavailable;
+6. immutable records are retry-safe and conflict-closed;
+7. the dashboard exposes identity coverage, example mappings, and limitations;
+8. point-in-time history and permanent identifiers remain required for historical validation.
 
-Implementation, complete local CI, quality/rendering/packaging/browser tests, dependency audit, and
-owner-only preview deployment pass. Pull-request gates remain for this unit.
+Implementation, complete local CI, contract/generator/rendering/packaging/browser tests, and
+dependency audit pass. Owner-only preview deployment also passes; pull-request gates remain for
+this unit.
 
 ## Remaining milestones
 
@@ -50,7 +52,6 @@ owner-only preview deployment pass. Pull-request gates remain for this unit.
 - Add the remaining primary V3 workflows and complete a formal accessibility audit.
 - Add an external generative model only after provider, secret lifecycle, cost, output, and evaluation gates are approved.
 - Complete final-production configuration and cutover rehearsal only after all release gates pass.
-- Add a security master.
 - Implement point-in-time historical controls, corporate actions, walk-forward evaluation, costs, and benchmarks.
 - Accumulate prospective daily validation evidence.
 - Complete release-gate certification, recovery testing, accessibility review, and operational documentation.
@@ -63,18 +64,19 @@ owner-only preview deployment pass. Pull-request gates remain for this unit.
 
 ## Test counts
 
-- Vitest suite: 101 tests across 12 files pass.
+- Vitest suite: 106 tests across 13 files pass.
 - Rendered deployment and browser suite: 6 tests pass.
-- Total automated tests: 107 pass.
-- Current unit validation: Prettier, typecheck, lint, every workspace build, 101 Vitest tests, five rendered accessibility/integrity/API/package tests, one isolated-profile real-Chrome hydration smoke test, `git diff --check`, and `npm audit --audit-level=high` pass.
+- Total automated tests: 112 pass.
+- Current unit validation: Prettier, typecheck, lint, every workspace build, 106 Vitest tests, five rendered accessibility/integrity/API/package tests, one isolated-profile real-Chrome hydration smoke test, `git diff --check`, and `npm audit --audit-level=high` pass.
 
 ## Deployment status
 
 - V2 production: unchanged.
 - V3 local preview: generated and safely retried as immutable build `preview-20260728-pipeline-v4-a34fc842220f`; an interactive dev server is not currently running.
 - V3 hosted preview: deployed privately at <https://akribeia-v3-evidence-preview.akribeiainsights.chatgpt.site>.
-- V3 hosted preview source: exact quality-and-drift tree from commit `187a0635d`, preserved in Sites
-  source commit `5c75e023e` and deployed as version 19.
+- V3 hosted preview source: exact PR #16 quality-and-drift tree from commit `252f0e35f`,
+  superseded by the security-master functional tree from commit `187fc9f6b`, preserved in Sites
+  source commit `481869f21` and deployed as version 21.
 - V3 production: not deployed.
 - Cutover: not authorized and not attempted.
 
@@ -92,6 +94,9 @@ owner-only preview deployment pass. Pull-request gates remain for this unit.
 - Data quality: active report passes row uniqueness, value validity, coverage, score distribution,
   and portfolio reconciliation checks; temporal drift is correctly blocked by insufficient history
   and the report is privately deployed.
+- Security master: 643 unique ticker-derived research identities are generated locally with no
+  collisions; all remain provisional because permanent identifiers and ticker history are absent.
+  The evidence and visible identity ledger are privately deployed.
 - Historical validation: not started.
 - Prospective validation: not started.
 
@@ -109,4 +114,6 @@ owner-only preview deployment pass. Pull-request gates remain for this unit.
 - External generative AI is intentionally disabled; no provider secret, paid request, or unverifiable generated claim is present.
 - The daily ledger currently contains one preserved-snapshot observation, not a prospective series. Benchmark and performance fields fail closed as unavailable/not-computed until point-in-time benchmark, interval, execution, and cost inputs exist.
 - The preserved V2 metadata supplies 26 component names and directionality, but not the raw transform, normalization, winsorization, or component missing-value formulas. Governance artifacts expose this as a known methodology gap.
+- The source has no permanent issuer/listing identifier or ticker history. Current security IDs are
+  deterministic research identifiers within a ticker-only scope, not permanent identities.
 - All displayed results are research evidence, not investment advice or performance guarantees.

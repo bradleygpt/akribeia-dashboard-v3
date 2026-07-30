@@ -15,6 +15,7 @@ import {
 
 export * from "./governance.js";
 export * from "./quality.js";
+export * from "./security-master.js";
 
 const REQUIRED_ARTIFACTS = ["dashboard", "portfolio", "scores"] as const;
 const BENCHMARK_REASON =
