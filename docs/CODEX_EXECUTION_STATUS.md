@@ -41,7 +41,7 @@ The current branch makes model maturity, definitions, and validation limits insp
 8. unavailable raw transform, normalization, winsorization, and component missing-value formulas are labeled rather than guessed;
 9. the dashboard exposes validation status, limitations, component definitions, and downloadable governance JSON.
 
-Implementation, complete local CI, governance/rendering/packaging/browser tests, and dependency audit pass. Private preview deployment and pull-request gates remain for this unit.
+Implementation, complete local CI, governance/rendering/packaging/browser tests, dependency audit, and private preview deployment pass. Pull-request gates remain for this unit.
 
 ## Remaining milestones
 
@@ -72,7 +72,7 @@ Implementation, complete local CI, governance/rendering/packaging/browser tests,
 - V2 production: unchanged.
 - V3 local preview: generated and safely retried as immutable build `preview-20260728-pipeline-v4-a34fc842220f`; an interactive dev server is not currently running.
 - V3 hosted preview: deployed privately at <https://akribeia-v3-evidence-preview.akribeiainsights.chatgpt.site>.
-- V3 hosted preview source: validated immutable-daily-evidence commit `ed88412d0`.
+- V3 hosted preview source: validated visible-model-governance commit `f1111987f`.
 - V3 production: not deployed.
 - Cutover: not authorized and not attempted.
 
@@ -86,7 +86,7 @@ Implementation, complete local CI, governance/rendering/packaging/browser tests,
 - V3 protected evidence API: server-verified lookup and deterministic explanation routes deployed privately from validated commit `14703cc0f`.
 - V3 deep deployment health: pointer, manifest, artifact integrity, schema, and lineage verification deployed privately from validated commit `25879907b`.
 - Published daily evidence history: one privately deployed immutable research-preview record for source date `2026-07-28`, with three artifact receipts, 643 score records, nine portfolio records, exact weights, explicit benchmark unavailability, and a verified SHA-256 reproduction report.
-- Model governance: versioned model card and metric dictionary generated locally for `3.0.0-preview.3`; private deployment is pending.
+- Model governance: versioned model card and 26-component metric dictionary for `3.0.0-preview.3` are privately deployed with independent validation-gate states and explicit methodology gaps.
 - Historical validation: not started.
 - Prospective validation: not started.
 
