@@ -1,0 +1,191 @@
+{
+  "maturitySchemaVersion": "1.0.0",
+  "buildId": "preview-20260728-pipeline-v4-a34fc842220f",
+  "modelVersion": "3.0.0-preview.3",
+  "assessedAt": "2026-07-30T04:36:30Z",
+  "currentLevel": "research-preview",
+  "releaseEligible": false,
+  "observations": {
+    "immutableDailyBuilds": 1,
+    "requiredDailyBuilds": 30,
+    "qualityStatus": "pass",
+    "driftStatus": "insufficient-history",
+    "securityMasterStatus": "provisional",
+    "permanentIdentifierCount": 0,
+    "modelValidationPasses": 4,
+    "modelValidationTotal": 8
+  },
+  "levels": [
+    {
+      "level": "development",
+      "status": "achieved",
+      "requirements": [
+        {
+          "key": "runtime-contracts",
+          "status": "pass",
+          "detail": "All maturity inputs pass their strict runtime contracts.",
+          "evidence": [
+            "packages/contracts/src/index.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "level": "research-preview",
+      "status": "current",
+      "requirements": [
+        {
+          "key": "immutable-reproduction",
+          "status": "pass",
+          "detail": "The active daily record has a verified immutable reproduction receipt.",
+          "evidence": [
+            "data/evidence/daily"
+          ]
+        },
+        {
+          "key": "active-lineage",
+          "status": "pass",
+          "detail": "Daily, model, quality, and identity evidence share one active build lineage.",
+          "evidence": [
+            "data/evidence"
+          ]
+        },
+        {
+          "key": "data-quality",
+          "status": "pass",
+          "detail": "The active data-quality report passes.",
+          "evidence": [
+            "data/evidence/quality"
+          ]
+        }
+      ]
+    },
+    {
+      "level": "validation-candidate",
+      "status": "blocked",
+      "requirements": [
+        {
+          "key": "portfolio-parity",
+          "status": "blocked",
+          "detail": "Portfolio parity is unresolved against the preserved V2 oracle.",
+          "evidence": [
+            "data/reference/v2-baseline/V2_VALIDATION_FINDINGS.md"
+          ]
+        },
+        {
+          "key": "benchmark",
+          "status": "blocked",
+          "detail": "No point-in-time benchmark observation or validated comparison is available.",
+          "evidence": [
+            "daily/2026-07-28/preview-20260728-pipeline-v4-a34fc842220f/evidence.json"
+          ]
+        },
+        {
+          "key": "point-in-time",
+          "status": "blocked",
+          "detail": "Filing availability, survivorship, corporate actions, and execution timing are not implemented.",
+          "evidence": [
+            "ROADMAP.md"
+          ]
+        },
+        {
+          "key": "permanent-identities",
+          "status": "blocked",
+          "detail": "The security master has no permanent identifiers or ticker-reuse protection.",
+          "evidence": [
+            "data/evidence/security-master"
+          ]
+        },
+        {
+          "key": "temporal-drift",
+          "status": "blocked",
+          "detail": "Only one comparable model observation exists, so temporal drift is not evaluated.",
+          "evidence": [
+            "data/evidence/quality"
+          ]
+        }
+      ]
+    },
+    {
+      "level": "release-candidate",
+      "status": "blocked",
+      "requirements": [
+        {
+          "key": "all-model-gates",
+          "status": "blocked",
+          "detail": "4 of 8 model validation gates pass.",
+          "evidence": [
+            "data/evidence/governance"
+          ]
+        },
+        {
+          "key": "prospective-history",
+          "status": "blocked",
+          "detail": "1 of 30 required immutable daily build is available.",
+          "evidence": [
+            "data/evidence/daily",
+            "MIGRATION.md"
+          ]
+        },
+        {
+          "key": "model-release-flag",
+          "status": "blocked",
+          "detail": "The versioned model card explicitly records releaseEligible: false.",
+          "evidence": [
+            "data/evidence/governance"
+          ]
+        },
+        {
+          "key": "security-certification",
+          "status": "blocked",
+          "detail": "A final security certification has not been recorded.",
+          "evidence": [
+            "docs/decisions/RELEASE-GATES.md"
+          ]
+        }
+      ]
+    },
+    {
+      "level": "production-approved",
+      "status": "blocked",
+      "requirements": [
+        {
+          "key": "recovery-certification",
+          "status": "blocked",
+          "detail": "Final recovery, accessibility, and clean-environment certification is incomplete.",
+          "evidence": [
+            "ROADMAP.md",
+            "docs/operations/DEPLOYMENT_AND_RECOVERY.md"
+          ]
+        },
+        {
+          "key": "cutover-authorization",
+          "status": "blocked",
+          "detail": "Final V3 production cutover is not authorized.",
+          "evidence": [
+            "docs/CODEX_EXECUTION_STATUS.md"
+          ]
+        }
+      ]
+    }
+  ],
+  "blockers": [
+    "Portfolio parity is unresolved against the preserved V2 oracle.",
+    "No point-in-time benchmark observation or validated comparison is available.",
+    "Filing availability, survivorship, corporate actions, and execution timing are not implemented.",
+    "The security master has no permanent identifiers or ticker-reuse protection.",
+    "Only one comparable model observation exists, so temporal drift is not evaluated.",
+    "4 of 8 model validation gates pass.",
+    "1 of 30 required immutable daily build is available.",
+    "The versioned model card explicitly records releaseEligible: false.",
+    "A final security certification has not been recorded.",
+    "Final recovery, accessibility, and clean-environment certification is incomplete.",
+    "Final V3 production cutover is not authorized."
+  ],
+  "cutover": {
+    "authorized": false,
+    "status": "not-authorized",
+    "reason": "Final V3 production cutover requires explicit authorization after every release gate passes."
+  },
+  "notice": "Research preview only. Scores and model weights are evidence artifacts, not investment advice or a promise of future performance."
+}

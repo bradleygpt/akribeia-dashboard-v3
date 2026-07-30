@@ -1,6 +1,7 @@
 import {
   DailyEvidenceRecordSchema,
   DataQualityReportSchema,
+  MaturityAssessmentSchema,
   MetricDictionarySchema,
   ModelCardSchema,
   SecurityMasterSchema,
@@ -11,6 +12,7 @@ import { EvidenceExplorer } from "./evidence-explorer";
 import activeDashboard from "./generated/active-dashboard.json";
 import activeDailyEvidence from "./generated/active-daily-evidence.json";
 import activeMetricDictionary from "./generated/active-metric-dictionary.json";
+import activeMaturity from "./generated/active-maturity.json";
 import activeModelCard from "./generated/active-model-card.json";
 import activeQualityReport from "./generated/active-quality-report.json";
 import activeSecurityMaster from "./generated/active-security-master.json";
@@ -18,6 +20,7 @@ import activeSecurityMaster from "./generated/active-security-master.json";
 const dashboard = VerticalSliceDashboardSchema.parse(activeDashboard);
 const dailyEvidence = DailyEvidenceRecordSchema.parse(activeDailyEvidence);
 const metricDictionary = MetricDictionarySchema.parse(activeMetricDictionary);
+const maturity = MaturityAssessmentSchema.parse(activeMaturity);
 const modelCard = ModelCardSchema.parse(activeModelCard);
 const qualityReport = DataQualityReportSchema.parse(activeQualityReport);
 const securityMaster = SecurityMasterSchema.parse(activeSecurityMaster);
@@ -26,6 +29,8 @@ if (
   modelCard.modelVersion !== dashboard.modelVersion ||
   metricDictionary.modelVersion !== dashboard.modelVersion ||
   qualityReport.buildId !== dashboard.buildId ||
+  maturity.buildId !== dashboard.buildId ||
+  maturity.modelVersion !== dashboard.modelVersion ||
   securityMaster.buildId !== dashboard.buildId ||
   securityMaster.source.contentSha256 !== dashboard.source.contentSha256
 ) {
@@ -105,6 +110,7 @@ export default function Home() {
           <a href="#model-governance">Method</a>
           <a href="#data-quality">Quality</a>
           <a href="#security-master">Master</a>
+          <a href="#maturity">Maturity</a>
           <a href="#explore">Explain</a>
           <a href="#lineage">Lineage</a>
         </nav>
@@ -471,6 +477,79 @@ export default function Home() {
               <p>{securityMaster.limitations[2]}</p>
             </aside>
           </div>
+        </section>
+
+        <section className="maturity-assessment" id="maturity" aria-labelledby="maturity-heading">
+          <div className="maturity-heading">
+            <div>
+              <p className="mono-label">EVIDENCE MATURITY / FAIL-CLOSED</p>
+              <h2 id="maturity-heading">Working product. Research-preview evidence.</h2>
+              <p>
+                Product capability and evidence maturity are separate. V3 works end to end, but its
+                label cannot advance until each later transition has the evidence shown here.
+              </p>
+            </div>
+            <aside aria-label="Current evidence maturity">
+              <span>Current level</span>
+              <strong>{maturity.currentLevel.replaceAll("-", " ")}</strong>
+              <p>{maturity.releaseEligible ? "Release eligible" : "Not release eligible"}</p>
+            </aside>
+          </div>
+          <ol className="maturity-ladder" aria-label="Evidence maturity levels">
+            {maturity.levels.map((level, index) => (
+              <li data-status={level.status} key={level.level}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <strong>{level.level.replaceAll("-", " ")}</strong>
+                <small>{level.status}</small>
+              </li>
+            ))}
+          </ol>
+          <div className="maturity-evidence">
+            <dl>
+              <div>
+                <dt>Immutable daily builds</dt>
+                <dd>
+                  {maturity.observations.immutableDailyBuilds} /{" "}
+                  {maturity.observations.requiredDailyBuilds}
+                </dd>
+              </div>
+              <div>
+                <dt>Model gates passing</dt>
+                <dd>
+                  {maturity.observations.modelValidationPasses} /{" "}
+                  {maturity.observations.modelValidationTotal}
+                </dd>
+              </div>
+              <div>
+                <dt>Permanent identifiers</dt>
+                <dd>{maturity.observations.permanentIdentifierCount}</dd>
+              </div>
+              <div>
+                <dt>Temporal drift</dt>
+                <dd>{maturity.observations.driftStatus.replaceAll("-", " ")}</dd>
+              </div>
+            </dl>
+            <div>
+              <div className="maturity-blocker-heading">
+                <strong>Next-level blockers</strong>
+                <a href={`/data/evidence/maturity/builds/${maturity.buildId}/maturity.json`}>
+                  View full assessment
+                </a>
+              </div>
+              <ul>
+                {maturity.levels
+                  .find(({ level }) => level === "validation-candidate")!
+                  .requirements.filter(({ status }) => status === "blocked")
+                  .map((requirement) => (
+                    <li key={requirement.key}>{requirement.detail}</li>
+                  ))}
+              </ul>
+            </div>
+          </div>
+          <aside className="cutover-lock" data-status={maturity.cutover.status}>
+            <strong>Production cutover: {maturity.cutover.status.replaceAll("-", " ")}</strong>
+            <p>{maturity.cutover.reason}</p>
+          </aside>
         </section>
 
         <section className="factor-audit" id="scores" aria-labelledby="factor-audit-heading">

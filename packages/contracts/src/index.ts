@@ -1505,3 +1505,134 @@ export const SecurityMasterSchema = z
     }
   });
 export type SecurityMaster = z.infer<typeof SecurityMasterSchema>;
+
+export const MATURITY_LEVELS = [
+  "development",
+  "research-preview",
+  "validation-candidate",
+  "release-candidate",
+  "production-approved",
+] as const;
+export const MaturityLevelSchema = z.enum(MATURITY_LEVELS);
+export type MaturityLevel = z.infer<typeof MaturityLevelSchema>;
+
+const MaturityRequirementSchema = z
+  .object({
+    key: z.string().min(1),
+    status: z.enum(["pass", "blocked"]),
+    detail: z.string().min(1),
+    evidence: z.array(z.string().min(1)).min(1),
+  })
+  .strict();
+
+export const MaturityAssessmentSchema = z
+  .object({
+    maturitySchemaVersion: z.literal("1.0.0"),
+    buildId: SafeBuildIdSchema,
+    modelVersion: z.string().min(1),
+    assessedAt: IsoDateTimeSchema,
+    currentLevel: MaturityLevelSchema,
+    releaseEligible: z.boolean(),
+    observations: z
+      .object({
+        immutableDailyBuilds: z.number().int().positive(),
+        requiredDailyBuilds: z.number().int().min(30),
+        qualityStatus: z.enum(["pass", "warn", "fail"]),
+        driftStatus: z.enum(["insufficient-history", "evaluated"]),
+        securityMasterStatus: z.literal("provisional"),
+        permanentIdentifierCount: z.literal(0),
+        modelValidationPasses: z.number().int().nonnegative(),
+        modelValidationTotal: z.number().int().positive(),
+      })
+      .strict(),
+    levels: z
+      .array(
+        z
+          .object({
+            level: MaturityLevelSchema,
+            status: z.enum(["achieved", "current", "blocked"]),
+            requirements: z.array(MaturityRequirementSchema).min(1),
+          })
+          .strict(),
+      )
+      .length(MATURITY_LEVELS.length),
+    blockers: z.array(z.string().min(1)),
+    cutover: z
+      .object({
+        authorized: z.boolean(),
+        status: z.enum(["not-authorized", "authorized"]),
+        reason: z.string().min(1),
+      })
+      .strict(),
+    notice: z.string().min(1),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    if (value.levels.some(({ level }, index) => level !== MATURITY_LEVELS[index])) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Maturity levels must appear exactly once in canonical order.",
+        path: ["levels"],
+      });
+    }
+
+    const currentIndexes = value.levels
+      .map(({ status }, index) => (status === "current" ? index : -1))
+      .filter((index) => index >= 0);
+    const currentIndex = MATURITY_LEVELS.indexOf(value.currentLevel);
+
+    if (
+      currentIndexes.length !== 1 ||
+      currentIndexes[0] !== currentIndex ||
+      value.levels.some(({ status }, index) =>
+        index < currentIndex
+          ? status !== "achieved"
+          : index > currentIndex
+            ? status !== "blocked"
+            : status !== "current",
+      )
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Maturity level statuses must reconcile with the current level.",
+        path: ["levels"],
+      });
+    }
+
+    const expectedReleaseEligible = currentIndex >= MATURITY_LEVELS.indexOf("release-candidate");
+    if (value.releaseEligible !== expectedReleaseEligible) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Release eligibility must follow the assessed maturity level.",
+        path: ["releaseEligible"],
+      });
+    }
+
+    if (
+      value.cutover.authorized !== (value.cutover.status === "authorized") ||
+      (value.currentLevel === "production-approved" && !value.cutover.authorized)
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Production approval requires explicit cutover authorization.",
+        path: ["cutover"],
+      });
+    }
+
+    const expectedBlockers = value.levels
+      .filter(({ status }) => status === "blocked")
+      .flatMap(({ requirements }) =>
+        requirements.filter(({ status }) => status === "blocked").map(({ detail }) => detail),
+      );
+    if (
+      value.blockers.length !== expectedBlockers.length ||
+      value.blockers.some((blocker, index) => blocker !== expectedBlockers[index])
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Top-level blockers must match blocked maturity requirements.",
+        path: ["blockers"],
+      });
+    }
+  });
+export type MaturityAssessment = z.infer<typeof MaturityAssessmentSchema>;
