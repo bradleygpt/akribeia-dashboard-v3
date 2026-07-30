@@ -4,7 +4,7 @@ Last updated: 2026-07-30
 
 ## Whole-product completion
 
-Estimated completion: **18%**
+Estimated completion: **20%**
 
 This estimate reflects working, tested product behavior rather than roadmap line-item count. V3 now has the Phase 0 baseline, core publication trust primitives, and a local end-to-end visible preview. It is not ready to replace V2.
 
@@ -31,7 +31,7 @@ The current branch connects a preserved real repository snapshot through:
 6. a responsive dashboard projection;
 7. zero-cost-compatible preview packaging.
 
-Local implementation and the complete CI gate pass. The private hosted preview is provisioned and awaiting publication.
+The implementation, complete CI gate, and private hosted preview are complete. This unit is awaiting pull-request review and merge.
 
 ## Remaining milestones
 
@@ -63,7 +63,7 @@ Local implementation and the complete CI gate pass. The private hosted preview i
 
 - V2 production: unchanged.
 - V3 local preview: running and HTTP-verified.
-- V3 hosted preview: private site provisioned; publication pending.
+- V3 hosted preview: deployed privately at <https://akribeia-v3-evidence-preview.akribeiainsights.chatgpt.site>.
 - V3 production: not deployed.
 - Cutover: not authorized and not attempted.
 
@@ -71,6 +71,7 @@ Local implementation and the complete CI gate pass. The private hosted preview i
 
 - V2 baseline fixtures and native parity reports: preserved.
 - V3 immutable preview build: generated locally with manifest, artifact hashes, provenance, model/schema versions, and active pointer.
+- V3 hosted vertical-slice evidence: deployed from validated commit `a943c7588`.
 - Published daily evidence history: not started.
 - Historical validation: not started.
 - Prospective validation: not started.

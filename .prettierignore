@@ -3,3 +3,10 @@
 data/reference/v2-baseline/fixtures/**
 data/reference/v2-baseline/june-oracle-fixtures/**
 data/reference/v2-baseline/validation-results/*.txt
+
+# Generated application and deployment workspaces.
+**/.next/**
+**/.vinext/**
+**/.wrangler/**
+.sites/**
+.dashboard-dev*.log

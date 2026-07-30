@@ -9,5 +9,6 @@ coverage/
 playwright-report/
 test-results/
 .dashboard-dev*.log
+.sites/
 powershell/
 v2-baseline-worktree/
