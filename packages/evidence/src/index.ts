@@ -14,6 +14,7 @@ import {
 } from "@akribeia/contracts";
 
 export * from "./governance.js";
+export * from "./quality.js";
 
 const REQUIRED_ARTIFACTS = ["dashboard", "portfolio", "scores"] as const;
 const BENCHMARK_REASON =

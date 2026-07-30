@@ -1,5 +1,6 @@
 import {
   DailyEvidenceRecordSchema,
+  DataQualityReportSchema,
   MetricDictionarySchema,
   ModelCardSchema,
   VerticalSliceDashboardSchema,
@@ -10,15 +11,18 @@ import activeDashboard from "./generated/active-dashboard.json";
 import activeDailyEvidence from "./generated/active-daily-evidence.json";
 import activeMetricDictionary from "./generated/active-metric-dictionary.json";
 import activeModelCard from "./generated/active-model-card.json";
+import activeQualityReport from "./generated/active-quality-report.json";
 
 const dashboard = VerticalSliceDashboardSchema.parse(activeDashboard);
 const dailyEvidence = DailyEvidenceRecordSchema.parse(activeDailyEvidence);
 const metricDictionary = MetricDictionarySchema.parse(activeMetricDictionary);
 const modelCard = ModelCardSchema.parse(activeModelCard);
+const qualityReport = DataQualityReportSchema.parse(activeQualityReport);
 
 if (
   modelCard.modelVersion !== dashboard.modelVersion ||
-  metricDictionary.modelVersion !== dashboard.modelVersion
+  metricDictionary.modelVersion !== dashboard.modelVersion ||
+  qualityReport.buildId !== dashboard.buildId
 ) {
   throw new Error("Active governance artifacts do not match the dashboard model version.");
 }
@@ -82,6 +86,7 @@ export default function Home() {
           <a href="#portfolio">Portfolio</a>
           <a href="#daily-evidence">Evidence</a>
           <a href="#model-governance">Method</a>
+          <a href="#data-quality">Quality</a>
           <a href="#explore">Explain</a>
           <a href="#lineage">Lineage</a>
         </nav>
@@ -315,6 +320,53 @@ export default function Home() {
             <strong>Known methodology gap</strong>
             <p>{metricDictionary.caveat}</p>
           </div>
+        </section>
+
+        <section className="data-quality" id="data-quality" aria-labelledby="data-quality-heading">
+          <div className="quality-heading">
+            <div>
+              <p className="mono-label">DATA QUALITY / ACTIVE BUILD</p>
+              <h2 id="data-quality-heading">Measured now. Compared when evidence exists.</h2>
+            </div>
+            <a href={`/data/evidence/quality/builds/${qualityReport.buildId}/quality-drift.json`}>
+              View quality report
+            </a>
+          </div>
+          <div className="quality-grid">
+            <article>
+              <span>Quality gate</span>
+              <strong>{qualityReport.quality.status}</strong>
+              <p>{qualityReport.quality.rowCount} schema-valid score rows</p>
+            </article>
+            <article>
+              <span>Unique tickers</span>
+              <strong>{qualityReport.quality.uniqueTickerCount}</strong>
+              <p>{qualityReport.quality.duplicateTickers.length} duplicates</p>
+            </article>
+            <article>
+              <span>Invalid values</span>
+              <strong>
+                {qualityReport.quality.invalidPriceCount +
+                  qualityReport.quality.invalidMarketCapCount}
+              </strong>
+              <p>price or market-cap violations</p>
+            </article>
+            <article>
+              <span>Score range</span>
+              <strong>
+                {score(qualityReport.quality.scoreDistribution.minimum)}–
+                {score(qualityReport.quality.scoreDistribution.maximum)}
+              </strong>
+              <p>median {score(qualityReport.quality.scoreDistribution.median)}</p>
+            </article>
+          </div>
+          <aside className="drift-state" data-status={qualityReport.drift.status}>
+            <div>
+              <span>Temporal drift</span>
+              <strong>{qualityReport.drift.status.replaceAll("-", " ")}</strong>
+            </div>
+            <p>{qualityReport.drift.reason}</p>
+          </aside>
         </section>
 
         <section className="factor-audit" id="scores" aria-labelledby="factor-audit-heading">

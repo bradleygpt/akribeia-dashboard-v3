@@ -28,6 +28,7 @@ npm run build
 npm run preview:generate
 npm run evidence:generate
 npm run governance:generate
+npm run quality:generate
 ```
 
 ## Migration strategy
@@ -43,3 +44,4 @@ Execution evidence and honest readiness status are maintained in `docs/CODEX_EXE
 Deployment health and recovery procedures are maintained in `docs/operations/DEPLOYMENT_AND_RECOVERY.md`.
 Daily record semantics and reproduction are documented in `docs/evidence/DAILY_EVIDENCE.md`.
 Model maturity, validation gates, and metric definitions are documented in `docs/evidence/MODEL_GOVERNANCE.md`.
+Quality measurements and drift eligibility are documented in `docs/evidence/DATA_QUALITY_AND_DRIFT.md`.

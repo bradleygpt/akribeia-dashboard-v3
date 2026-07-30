@@ -81,6 +81,10 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /Forward P\/E/);
   assert.match(html, /Known methodology gap/);
   assert.match(html, /does not contain the raw transformations/);
+  assert.match(html, /Measured now\. Compared when evidence exists/);
+  assert.match(html, /643(?:<!-- -->)? schema-valid score rows/);
+  assert.match(html, /insufficient history/);
+  assert.match(html, /Temporal drift/);
   assert.match(html, /not investment advice/i);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Your site is taking shape/i);
 });
@@ -195,6 +199,8 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
     sourceModelCard,
     packagedDictionary,
     sourceDictionary,
+    packagedQuality,
+    sourceQuality,
   ] = await Promise.all([
     readFile(new URL("../.openai/hosting.json", import.meta.url), "utf8"),
     readFile(new URL("../dist/.openai/hosting.json", import.meta.url), "utf8"),
@@ -221,6 +227,8 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
       new URL("../public/data/evidence/governance/active-metric-dictionary.json", import.meta.url),
       "utf8",
     ),
+    readFile(new URL("../dist/client/data/evidence/quality/active.json", import.meta.url), "utf8"),
+    readFile(new URL("../public/data/evidence/quality/active.json", import.meta.url), "utf8"),
   ]);
   const pointer = JSON.parse(pointerPayload);
   const buildRoot = new URL(
@@ -235,6 +243,7 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(activeEvidencePayload, sourceEvidencePayload);
   assert.equal(packagedModelCard, sourceModelCard);
   assert.equal(packagedDictionary, sourceDictionary);
+  assert.equal(packagedQuality, sourceQuality);
 
   for (const artifact of Object.values(manifest.files)) {
     const [packagedPayload, sourcePayload] = await Promise.all([
@@ -291,4 +300,9 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
     dictionary.pillars.reduce((count, pillar) => count + pillar.components.length, 0),
     26,
   );
+  const quality = JSON.parse(packagedQuality);
+  assert.equal(quality.buildId, activeEvidence.build.buildId);
+  assert.equal(quality.quality.status, "pass");
+  assert.equal(quality.drift.status, "insufficient-history");
+  assert.deepEqual(quality.drift.comparisons, []);
 });
