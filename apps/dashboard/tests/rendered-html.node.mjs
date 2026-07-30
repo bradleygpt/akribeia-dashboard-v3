@@ -33,6 +33,12 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   const html = await response.text();
 
   assert.match(html, /<title>Akribeia V3 — Evidence Preview<\/title>/i);
+  assert.match(html, /class="skip-link" href="#main-content"/);
+  assert.match(html, /<nav class="primary-nav" aria-label="Primary navigation">/);
+  assert.match(html, /<main id="main-content" tabindex="-1">/);
+  assert.match(html, /data-state="loading"/);
+  assert.match(html, /aria-live="polite" role="status"/);
+  assert.match(html, /Verifying the active evidence build/);
   assert.match(html, /From source to signal/);
   assert.match(html, /every gate visible/);
   assert.match(html, /preview-20260728-pipeline-v4-a34fc842220f/);
@@ -52,6 +58,11 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /MU/);
   assert.match(html, /NVDA/);
   assert.match(html, /Sector exposure/);
+  assert.match(html, /Composite score ranking table/);
+  assert.match(html, /Highest composite scores with sector, factor coverage, score/);
+  assert.match(html, /The interface says what it knows/);
+  assert.match(html, /Verified history remains visible with a freshness warning/);
+  assert.match(html, /Missing or failed evidence is withheld/);
   assert.match(html, /No silent renormalization/);
   assert.match(html, /not investment advice/i);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Your site is taking shape/i);
@@ -83,4 +94,26 @@ test("ships an integrity-valid immutable active build", async () => {
 
   assert.equal(projectedDashboard, publishedDashboard);
   assert.equal(JSON.parse(projectedDashboard).buildId, pointer.activeBuildId);
+});
+
+test("preserves the dashboard accessibility contract", async () => {
+  const response = await render();
+  const html = await response.text();
+  const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
+  const labelledBy = [...html.matchAll(/\saria-labelledby="([^"]+)"/g)].flatMap((match) =>
+    match[1].split(/\s+/),
+  );
+  const fragmentLinks = [...html.matchAll(/\shref="#([^"]+)"/g)].map((match) => match[1]);
+
+  assert.equal(new Set(ids).size, ids.length, "Rendered IDs must be unique.");
+  assert.equal((html.match(/<h1\b/g) ?? []).length, 1, "The page must have exactly one h1.");
+  assert.match(html, /<html lang="en">/);
+  assert.match(html, /<main id="main-content" tabindex="-1">/);
+  assert.match(html, /class="table-scroll" tabindex="0" role="region"/);
+  assert.match(html, /<caption class="sr-only">/);
+  assert.match(html, /role="img" aria-label="[^"]+"/);
+
+  for (const referencedId of [...labelledBy, ...fragmentLinks]) {
+    assert.ok(ids.includes(referencedId), `Missing referenced landmark ID "${referencedId}".`);
+  }
 });

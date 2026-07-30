@@ -1,4 +1,5 @@
 import { VerticalSliceDashboardSchema } from "@akribeia/contracts";
+import { DataStatusBanner } from "./data-status-banner";
 import activeDashboard from "./generated/active-dashboard.json";
 
 const dashboard = VerticalSliceDashboardSchema.parse(activeDashboard);
@@ -43,7 +44,10 @@ export default function Home() {
   );
 
   return (
-    <main>
+    <>
+      <a className="skip-link" href="#main-content">
+        Skip to main content
+      </a>
       <header className="site-header">
         <a className="brand" href="#top" aria-label="Akribeia V3 evidence preview home">
           <span className="brand-mark" aria-hidden="true">
@@ -54,314 +58,364 @@ export default function Home() {
             <small>V3 evidence preview</small>
           </span>
         </a>
-        <div className="header-status" aria-label="Publication status">
+        <nav className="primary-nav" aria-label="Primary navigation">
+          <a href="#scores">Scores</a>
+          <a href="#portfolio">Portfolio</a>
+          <a href="#lineage">Lineage</a>
+        </nav>
+        <div className="header-status" aria-label="Publication integrity">
           <span className="status-dot" aria-hidden="true" />
-          Active build verified
+          Build published
         </div>
       </header>
 
-      <section className="hero" id="top">
-        <div className="eyebrow">
-          <span>Build {dashboard.buildId}</span>
-          <span>{dashboard.schemaVersion}</span>
-        </div>
-        <div className="hero-grid">
-          <div>
-            <h1>
-              From source to signal,
-              <span> every gate visible.</span>
-            </h1>
-            <p className="hero-copy">
-              A working V3 slice built from the preserved V2 baseline. Every score is coverage
-              checked, every weight obeys explicit caps, and every output resolves through one
-              immutable active build.
-            </p>
+      <main id="main-content" tabIndex={-1}>
+        <DataStatusBanner />
+
+        <section className="hero" id="top">
+          <div className="eyebrow">
+            <span>Build {dashboard.buildId}</span>
+            <span>{dashboard.schemaVersion}</span>
           </div>
-          <aside className="hero-evidence" aria-label="Active build evidence">
-            <p className="mono-label">ACTIVE / HEALTHY</p>
-            <strong>{dashboard.source.rowCount}</strong>
-            <span>validated securities</span>
-            <dl>
-              <div>
-                <dt>Observed</dt>
-                <dd>{observedDate(dashboard.source.observedAt)} UTC</dd>
-              </div>
-              <div>
-                <dt>Coverage policy</dt>
-                <dd>100% required</dd>
-              </div>
-            </dl>
-          </aside>
-        </div>
-      </section>
-
-      <section className="pipeline" aria-labelledby="pipeline-heading">
-        <div className="section-heading">
-          <p className="mono-label">PUBLICATION CHAIN</p>
-          <h2 id="pipeline-heading">One build, end to end</h2>
-        </div>
-        <ol>
-          {pipelineStages.map(([number, label, detail]) => (
-            <li key={number}>
-              <span>{number}</span>
-              <strong>{label}</strong>
-              <small>{detail}</small>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section className="metrics" aria-label="Build summary">
-        <article>
-          <p>Source universe</p>
-          <strong>{dashboard.source.rowCount}</strong>
-          <span>$10B+ baseline rows</span>
-        </article>
-        <article>
-          <p>Eligible scores</p>
-          <strong>{dashboard.scoring.eligibleSecurities}</strong>
-          <span>{dashboard.scoring.excludedSecurities} excluded by coverage</span>
-        </article>
-        <article>
-          <p>Average coverage</p>
-          <strong>{percent(dashboard.scoring.averageCoverage)}</strong>
-          <span>No silent renormalization</span>
-        </article>
-        <article>
-          <p>Portfolio</p>
-          <strong>{dashboard.portfolio.positions.length}</strong>
-          <span>
-            {percent(dashboard.portfolio.constraints.maxPositionWeight)} position /{" "}
-            {percent(dashboard.portfolio.constraints.maxSectorWeight)} sector
-          </span>
-        </article>
-      </section>
-
-      <section className="factor-audit" aria-labelledby="factor-audit-heading">
-        <div className="section-heading">
-          <p className="mono-label">FACTOR COVERAGE</p>
-          <h2 id="factor-audit-heading">Missing inputs stay visible</h2>
-        </div>
-        <p className="factor-intro">
-          Each pillar is measured against the full source universe before scoring. Incomplete
-          securities are excluded with a recorded reason; their remaining factors are never silently
-          reweighted.
-        </p>
-        <div className="factor-grid">
-          {dashboard.scoring.factorCoverage.map((factor) => (
-            <article key={factor.pillar}>
-              <div>
-                <strong>{factor.pillar}</strong>
-                <span>{percent(factor.coverage, 1)}</span>
-              </div>
-              <div
-                className="factor-track"
-                role="img"
-                aria-label={`${factor.pillar} coverage is ${percent(factor.coverage, 1)}`}
-              >
-                <span style={{ width: percent(factor.coverage) }} />
-              </div>
+          <div className="hero-grid">
+            <div>
+              <h1>
+                From source to signal,
+                <span> every gate visible.</span>
+              </h1>
+              <p className="hero-copy">
+                A working V3 slice built from the preserved V2 baseline. Every score is coverage
+                checked, every weight obeys explicit caps, and every output resolves through one
+                immutable active build.
+              </p>
+            </div>
+            <aside className="hero-evidence" aria-label="Active build evidence">
+              <p className="mono-label">PUBLISHED / VERIFIED</p>
+              <strong>{dashboard.source.rowCount}</strong>
+              <span>validated securities</span>
               <dl>
                 <div>
-                  <dt>Available</dt>
-                  <dd>{factor.availableSecurities}</dd>
+                  <dt>Observed</dt>
+                  <dd>{observedDate(dashboard.source.observedAt)} UTC</dd>
                 </div>
                 <div>
-                  <dt>Missing</dt>
-                  <dd>{factor.missingSecurities}</dd>
+                  <dt>Coverage policy</dt>
+                  <dd>100% required</dd>
                 </div>
               </dl>
-              <code>{factor.sourceField}</code>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <div className="content-grid">
-        <section className="panel rankings" aria-labelledby="rankings-heading">
-          <div className="panel-heading">
-            <div>
-              <p className="mono-label">MODEL OUTPUT</p>
-              <h2 id="rankings-heading">Highest composite scores</h2>
-            </div>
-            <span className="panel-note">Equal five-pillar weighting</span>
-          </div>
-          <div className="table-scroll">
-            <table>
-              <thead>
-                <tr>
-                  <th scope="col">Rank / security</th>
-                  <th scope="col">Sector</th>
-                  <th scope="col">Coverage</th>
-                  <th scope="col">Score</th>
-                  <th scope="col">Portfolio</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dashboard.topScores.map((security, index) => {
-                  const position = portfolioByTicker.get(security.ticker);
-
-                  return (
-                    <tr key={security.ticker}>
-                      <td>
-                        <span className="rank">{String(index + 1).padStart(2, "0")}</span>
-                        <span className="security">
-                          <strong>{security.ticker}</strong>
-                          <small>{security.name}</small>
-                        </span>
-                      </td>
-                      <td>{security.sector}</td>
-                      <td>
-                        <span className="coverage">
-                          <span style={{ width: percent(security.coverage) }} />
-                        </span>
-                        {percent(security.coverage)}
-                      </td>
-                      <td className="score">{score(security.score)}</td>
-                      <td>
-                        {position ? (
-                          <span className="weight-chip">{percent(position.weight)}</span>
-                        ) : (
-                          <span className="muted">—</span>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            </aside>
           </div>
         </section>
 
-        <aside className="panel portfolio-panel" aria-labelledby="portfolio-heading">
-          <div className="panel-heading">
-            <div>
-              <p className="mono-label">CONSTRAINED BOOK</p>
-              <h2 id="portfolio-heading">Sector exposure</h2>
-            </div>
-            <span className="verified-badge">Verified</span>
+        <section className="pipeline" aria-labelledby="pipeline-heading">
+          <div className="section-heading">
+            <p className="mono-label">PUBLICATION CHAIN</p>
+            <h2 id="pipeline-heading">One build, end to end</h2>
           </div>
-          <div className="sector-list">
-            {sortedSectors.map(([sector, weight]) => (
-              <div className="sector-row" key={sector}>
+          <ol>
+            {pipelineStages.map(([number, label, detail]) => (
+              <li key={number}>
+                <span>{number}</span>
+                <strong>{label}</strong>
+                <small>{detail}</small>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section className="metrics" aria-label="Build summary">
+          <article>
+            <p>Source universe</p>
+            <strong>{dashboard.source.rowCount}</strong>
+            <span>$10B+ baseline rows</span>
+          </article>
+          <article>
+            <p>Eligible scores</p>
+            <strong>{dashboard.scoring.eligibleSecurities}</strong>
+            <span>{dashboard.scoring.excludedSecurities} excluded by coverage</span>
+          </article>
+          <article>
+            <p>Average coverage</p>
+            <strong>{percent(dashboard.scoring.averageCoverage)}</strong>
+            <span>No silent renormalization</span>
+          </article>
+          <article>
+            <p>Portfolio</p>
+            <strong>{dashboard.portfolio.positions.length}</strong>
+            <span>
+              {percent(dashboard.portfolio.constraints.maxPositionWeight)} position /{" "}
+              {percent(dashboard.portfolio.constraints.maxSectorWeight)} sector
+            </span>
+          </article>
+        </section>
+
+        <section className="factor-audit" id="scores" aria-labelledby="factor-audit-heading">
+          <div className="section-heading">
+            <p className="mono-label">FACTOR COVERAGE</p>
+            <h2 id="factor-audit-heading">Missing inputs stay visible</h2>
+          </div>
+          <p className="factor-intro">
+            Each pillar is measured against the full source universe before scoring. Incomplete
+            securities are excluded with a recorded reason; their remaining factors are never
+            silently reweighted.
+          </p>
+          <div className="factor-grid">
+            {dashboard.scoring.factorCoverage.map((factor) => (
+              <article key={factor.pillar}>
                 <div>
-                  <span>{sector}</span>
-                  <strong>{percent(weight)}</strong>
+                  <strong>{factor.pillar}</strong>
+                  <span>{percent(factor.coverage, 1)}</span>
                 </div>
                 <div
-                  className="sector-track"
+                  className="factor-track"
                   role="img"
-                  aria-label={`${sector} is ${percent(weight)} of the portfolio`}
+                  aria-label={`${factor.pillar} coverage is ${percent(factor.coverage, 1)}`}
                 >
-                  <span
-                    style={{
-                      width: percent(weight / dashboard.portfolio.constraints.maxSectorWeight),
-                    }}
-                  />
+                  <span style={{ width: percent(factor.coverage) }} />
                 </div>
-              </div>
+                <dl>
+                  <div>
+                    <dt>Available</dt>
+                    <dd>{factor.availableSecurities}</dd>
+                  </div>
+                  <div>
+                    <dt>Missing</dt>
+                    <dd>{factor.missingSecurities}</dd>
+                  </div>
+                </dl>
+                <code>{factor.sourceField}</code>
+              </article>
             ))}
           </div>
-          <div className="constraint-grid">
-            <div>
-              <span>Largest position</span>
-              <strong>
-                {percent(
-                  Math.max(...dashboard.portfolio.positions.map((position) => position.weight)),
-                )}
-              </strong>
+        </section>
+
+        <div className="content-grid">
+          <section className="panel rankings" aria-labelledby="rankings-heading">
+            <div className="panel-heading">
+              <div>
+                <p className="mono-label">MODEL OUTPUT</p>
+                <h2 id="rankings-heading">Highest composite scores</h2>
+              </div>
+              <span className="panel-note">Equal five-pillar weighting</span>
             </div>
-            <div>
-              <span>Largest sector</span>
-              <strong>
-                {percent(Math.max(...Object.values(dashboard.portfolio.sectorWeights)))}
-              </strong>
+            <div
+              className="table-scroll"
+              tabIndex={0}
+              role="region"
+              aria-label="Composite score ranking table"
+            >
+              <table>
+                <caption className="sr-only">
+                  Highest composite scores with sector, factor coverage, score, and portfolio weight
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Rank / security</th>
+                    <th scope="col">Sector</th>
+                    <th scope="col">Coverage</th>
+                    <th scope="col">Score</th>
+                    <th scope="col">Portfolio</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dashboard.topScores.map((security, index) => {
+                    const position = portfolioByTicker.get(security.ticker);
+
+                    return (
+                      <tr key={security.ticker}>
+                        <td>
+                          <span className="rank">{String(index + 1).padStart(2, "0")}</span>
+                          <span className="security">
+                            <strong>{security.ticker}</strong>
+                            <small>{security.name}</small>
+                          </span>
+                        </td>
+                        <td>{security.sector}</td>
+                        <td>
+                          <span className="coverage">
+                            <span style={{ width: percent(security.coverage) }} />
+                          </span>
+                          {percent(security.coverage)}
+                        </td>
+                        <td className="score">{score(security.score)}</td>
+                        <td>
+                          {position ? (
+                            <span className="weight-chip">{percent(position.weight)}</span>
+                          ) : (
+                            <span className="muted">—</span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
-            <div>
-              <span>Invested</span>
-              <strong>{percent(dashboard.portfolio.totalWeight)}</strong>
+          </section>
+
+          <aside
+            className="panel portfolio-panel"
+            id="portfolio"
+            aria-labelledby="portfolio-heading"
+          >
+            <div className="panel-heading">
+              <div>
+                <p className="mono-label">CONSTRAINED BOOK</p>
+                <h2 id="portfolio-heading">Sector exposure</h2>
+              </div>
+              <span className="verified-badge">Verified</span>
             </div>
+            <div className="sector-list">
+              {sortedSectors.map(([sector, weight]) => (
+                <div className="sector-row" key={sector}>
+                  <div>
+                    <span>{sector}</span>
+                    <strong>{percent(weight)}</strong>
+                  </div>
+                  <div
+                    className="sector-track"
+                    role="img"
+                    aria-label={`${sector} is ${percent(weight)} of the portfolio`}
+                  >
+                    <span
+                      style={{
+                        width: percent(weight / dashboard.portfolio.constraints.maxSectorWeight),
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="constraint-grid">
+              <div>
+                <span>Largest position</span>
+                <strong>
+                  {percent(
+                    Math.max(...dashboard.portfolio.positions.map((position) => position.weight)),
+                  )}
+                </strong>
+              </div>
+              <div>
+                <span>Largest sector</span>
+                <strong>
+                  {percent(Math.max(...Object.values(dashboard.portfolio.sectorWeights)))}
+                </strong>
+              </div>
+              <div>
+                <span>Invested</span>
+                <strong>{percent(dashboard.portfolio.totalWeight)}</strong>
+              </div>
+            </div>
+            <div className="allocation-evidence">
+              <p className="mono-label">EXACT CONSTRAINT LEDGER</p>
+              <dl>
+                <div>
+                  <dt>Method</dt>
+                  <dd>{dashboard.portfolio.construction.method}</dd>
+                </div>
+                <div>
+                  <dt>Weight units</dt>
+                  <dd>
+                    {dashboard.portfolio.totalWeightUnits.toLocaleString("en-US")} /{" "}
+                    {dashboard.portfolio.construction.weightScale.toLocaleString("en-US")}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Capped capacity</dt>
+                  <dd>{percent(dashboard.portfolio.construction.maximumFeasibleWeight)}</dd>
+                </div>
+                <div>
+                  <dt>Binding sectors</dt>
+                  <dd>{dashboard.portfolio.construction.bindingSectors.join(", ") || "None"}</dd>
+                </div>
+              </dl>
+            </div>
+          </aside>
+        </div>
+
+        <section className="status-guide" aria-labelledby="status-guide-heading">
+          <div>
+            <p className="mono-label">AVAILABILITY CONTRACT</p>
+            <h2 id="status-guide-heading">The interface says what it knows</h2>
           </div>
-          <div className="allocation-evidence">
-            <p className="mono-label">EXACT CONSTRAINT LEDGER</p>
+          <ul>
+            <li>
+              <strong>Current</strong>
+              <span>Integrity and freshness pass.</span>
+            </li>
+            <li>
+              <strong>Stale</strong>
+              <span>Verified history remains visible with a freshness warning.</span>
+            </li>
+            <li>
+              <strong>Degraded</strong>
+              <span>Explicit fallback or delayed inputs use last-known-good evidence.</span>
+            </li>
+            <li>
+              <strong>Unavailable</strong>
+              <span>Missing or failed evidence is withheld.</span>
+            </li>
+            <li>
+              <strong>Error</strong>
+              <span>Schema, lineage, size, or hash verification failed.</span>
+            </li>
+          </ul>
+        </section>
+
+        <section className="lineage" id="lineage" aria-labelledby="lineage-heading">
+          <div className="section-heading">
+            <p className="mono-label">LINEAGE</p>
+            <h2 id="lineage-heading">The receipt travels with the result</h2>
+          </div>
+          <div className="lineage-grid">
             <dl>
               <div>
-                <dt>Method</dt>
-                <dd>{dashboard.portfolio.construction.method}</dd>
+                <dt>Repository source</dt>
+                <dd>{dashboard.source.repositoryPath}</dd>
               </div>
               <div>
-                <dt>Weight units</dt>
-                <dd>
-                  {dashboard.portfolio.totalWeightUnits.toLocaleString("en-US")} /{" "}
-                  {dashboard.portfolio.construction.weightScale.toLocaleString("en-US")}
-                </dd>
+                <dt>Source commit</dt>
+                <dd>{dashboard.source.sourceCommit}</dd>
               </div>
               <div>
-                <dt>Capped capacity</dt>
-                <dd>{percent(dashboard.portfolio.construction.maximumFeasibleWeight)}</dd>
+                <dt>Content SHA-256</dt>
+                <dd>{dashboard.source.contentSha256}</dd>
+              </div>
+            </dl>
+            <dl>
+              <div>
+                <dt>Model version</dt>
+                <dd>{dashboard.modelVersion}</dd>
               </div>
               <div>
-                <dt>Binding sectors</dt>
-                <dd>{dashboard.portfolio.construction.bindingSectors.join(", ") || "None"}</dd>
+                <dt>Schema version</dt>
+                <dd>{dashboard.schemaVersion}</dd>
+              </div>
+              <div>
+                <dt>Missing-data policy</dt>
+                <dd>{dashboard.scoring.missingDataPolicy}</dd>
+              </div>
+              <div>
+                <dt>Eligible normalization</dt>
+                <dd>{dashboard.scoring.eligibleNormalization}</dd>
+              </div>
+              <div>
+                <dt>Retry mode</dt>
+                <dd>{dashboard.pipeline.retryMode}</dd>
+              </div>
+              <div>
+                <dt>Rollback mode</dt>
+                <dd>{dashboard.pipeline.rollbackMode}</dd>
               </div>
             </dl>
           </div>
-        </aside>
-      </div>
+        </section>
 
-      <section className="lineage" aria-labelledby="lineage-heading">
-        <div className="section-heading">
-          <p className="mono-label">LINEAGE</p>
-          <h2 id="lineage-heading">The receipt travels with the result</h2>
-        </div>
-        <div className="lineage-grid">
-          <dl>
-            <div>
-              <dt>Repository source</dt>
-              <dd>{dashboard.source.repositoryPath}</dd>
-            </div>
-            <div>
-              <dt>Source commit</dt>
-              <dd>{dashboard.source.sourceCommit}</dd>
-            </div>
-            <div>
-              <dt>Content SHA-256</dt>
-              <dd>{dashboard.source.contentSha256}</dd>
-            </div>
-          </dl>
-          <dl>
-            <div>
-              <dt>Model version</dt>
-              <dd>{dashboard.modelVersion}</dd>
-            </div>
-            <div>
-              <dt>Schema version</dt>
-              <dd>{dashboard.schemaVersion}</dd>
-            </div>
-            <div>
-              <dt>Missing-data policy</dt>
-              <dd>{dashboard.scoring.missingDataPolicy}</dd>
-            </div>
-            <div>
-              <dt>Eligible normalization</dt>
-              <dd>{dashboard.scoring.eligibleNormalization}</dd>
-            </div>
-            <div>
-              <dt>Retry mode</dt>
-              <dd>{dashboard.pipeline.retryMode}</dd>
-            </div>
-            <div>
-              <dt>Rollback mode</dt>
-              <dd>{dashboard.pipeline.rollbackMode}</dd>
-            </div>
-          </dl>
-        </div>
-      </section>
-
-      <footer>
-        <span>Akribeia V3 · immutable evidence preview</span>
-        <p>{dashboard.notice}</p>
-      </footer>
-    </main>
+        <footer>
+          <span>Akribeia V3 · immutable evidence preview</span>
+          <p>{dashboard.notice}</p>
+        </footer>
+      </main>
+    </>
   );
 }
