@@ -1,0 +1,222 @@
+{
+  "historicalReadinessSchemaVersion": "1.0.0",
+  "buildId": "preview-20260728-pipeline-v4-a34fc842220f",
+  "modelVersion": "3.0.0-preview.3",
+  "assessedAt": "2026-07-30T04:36:30Z",
+  "status": "blocked",
+  "historicalValidationEligible": false,
+  "inventory": {
+    "snapshotCount": 2,
+    "crossSectionOnly": true,
+    "earliestDeclaredGeneratedAt": "2026-06-03T14:12:05",
+    "latestDeclaredGeneratedAt": "2026-07-28T17:06:46"
+  },
+  "snapshots": [
+    {
+      "snapshotId": "june-oracle",
+      "label": "June 2026 matching oracle vintage",
+      "metadataPath": "data/reference/v2-baseline/june-oracle-fixtures/meta.json",
+      "metadataSha256": "09313c97afddeeb536a73ef695af664eb0fba1c863d59bd8fc73ce4e97ac8200",
+      "declaredGeneratedAt": "2026-06-03T14:12:05",
+      "timestampStatus": "timezone-unspecified",
+      "sourceCommit": "94b5d9b",
+      "observationKind": "cross-sectional-research-snapshot",
+      "pointInTimeEligible": false,
+      "artifacts": [
+        {
+          "floorBillions": 0,
+          "path": "data/reference/v2-baseline/june-oracle-fixtures/universe_floor0.json",
+          "sha256": "4eb301c415904f438ce5cd923d6e5d34c7584727d56046544adbadd7dd4ec65d",
+          "rowCount": 1360,
+          "strictInputContractStatus": "fail",
+          "strictInputIssueCount": 1,
+          "strictInputIssues": [
+            {
+              "path": "rows.664.price",
+              "message": "Expected number, received null"
+            }
+          ]
+        },
+        {
+          "floorBillions": 10,
+          "path": "data/reference/v2-baseline/june-oracle-fixtures/universe_floor10.json",
+          "sha256": "02ea218d9f204d0e4af81b97df67e47582ce4e4790d439020e0befd0b8e516c9",
+          "rowCount": 642,
+          "strictInputContractStatus": "pass",
+          "strictInputIssueCount": 0,
+          "strictInputIssues": []
+        }
+      ],
+      "limitation": "This file is a research capture with no per-record availability time, permanent identity history, or corporate-action semantics."
+    },
+    {
+      "snapshotId": "july-baseline",
+      "label": "July 2026 V2 baseline vintage",
+      "metadataPath": "data/reference/v2-baseline/fixtures/meta.json",
+      "metadataSha256": "68c594f533a13424e1e21d6b0cd70980d91c62f019ae8173d6e75e3bb00bdadc",
+      "declaredGeneratedAt": "2026-07-28T17:06:46",
+      "timestampStatus": "timezone-unspecified",
+      "sourceCommit": "0de8cd6",
+      "observationKind": "cross-sectional-research-snapshot",
+      "pointInTimeEligible": false,
+      "artifacts": [
+        {
+          "floorBillions": 0,
+          "path": "data/reference/v2-baseline/fixtures/universe_floor0.json",
+          "sha256": "10624afb7f413c2a1c3490c29b99e37a9fa5c0776a0a58f53de6d7af73b337e4",
+          "rowCount": 1361,
+          "strictInputContractStatus": "fail",
+          "strictInputIssueCount": 5,
+          "strictInputIssues": [
+            {
+              "path": "meta.sectors.0",
+              "message": "String must contain at least 1 character(s)"
+            },
+            {
+              "path": "rows.453.sector",
+              "message": "String must contain at least 1 character(s)"
+            },
+            {
+              "path": "rows.453.industry",
+              "message": "String must contain at least 1 character(s)"
+            },
+            {
+              "path": "rows.775.sector",
+              "message": "String must contain at least 1 character(s)"
+            },
+            {
+              "path": "rows.775.industry",
+              "message": "String must contain at least 1 character(s)"
+            }
+          ]
+        },
+        {
+          "floorBillions": 10,
+          "path": "data/reference/v2-baseline/fixtures/universe_floor10.json",
+          "sha256": "a34fc842220f0552460939bf5a4a138988ae2537e068d38a6f0216188063984e",
+          "rowCount": 643,
+          "strictInputContractStatus": "pass",
+          "strictInputIssueCount": 0,
+          "strictInputIssues": []
+        }
+      ],
+      "limitation": "This file is a research capture with no per-record availability time, permanent identity history, or corporate-action semantics."
+    }
+  ],
+  "controls": [
+    {
+      "key": "snapshot-inventory",
+      "status": "pass",
+      "detail": "2 preserved research snapshots are digested and inventoried.",
+      "evidence": [
+        "data/reference/v2-baseline/june-oracle-fixtures/universe_floor0.json",
+        "data/reference/v2-baseline/june-oracle-fixtures/universe_floor10.json",
+        "data/reference/v2-baseline/fixtures/universe_floor0.json",
+        "data/reference/v2-baseline/fixtures/universe_floor10.json"
+      ]
+    },
+    {
+      "key": "snapshot-input-validity",
+      "status": "blocked",
+      "detail": "2 of 4 inventoried fixture files fail the strict V3 input contract.",
+      "evidence": [
+        "data/reference/v2-baseline/june-oracle-fixtures/universe_floor0.json",
+        "data/reference/v2-baseline/fixtures/universe_floor0.json"
+      ]
+    },
+    {
+      "key": "availability-timestamps",
+      "status": "blocked",
+      "detail": "Declared snapshot generation times omit timezone semantics and no record-level retrieval or availability timestamps exist.",
+      "evidence": [
+        "data/reference/v2-baseline/june-oracle-fixtures/meta.json",
+        "data/reference/v2-baseline/fixtures/meta.json"
+      ]
+    },
+    {
+      "key": "point-in-time-fundamentals",
+      "status": "blocked",
+      "detail": "Fundamental and estimate values do not record filing, announcement, vendor-availability, or revision timestamps.",
+      "evidence": [
+        "data/reference/v2-baseline/june-oracle-fixtures/universe_floor0.json",
+        "data/reference/v2-baseline/june-oracle-fixtures/universe_floor10.json",
+        "data/reference/v2-baseline/fixtures/universe_floor0.json",
+        "data/reference/v2-baseline/fixtures/universe_floor10.json"
+      ]
+    },
+    {
+      "key": "survivorship-universe",
+      "status": "blocked",
+      "detail": "The preserved universes are cross-sectional captures and do not prove historical constituent eligibility without survivorship bias.",
+      "evidence": [
+        "data/reference/v2-baseline/june-oracle-fixtures/universe_floor0.json",
+        "data/reference/v2-baseline/june-oracle-fixtures/universe_floor10.json",
+        "data/reference/v2-baseline/fixtures/universe_floor0.json",
+        "data/reference/v2-baseline/fixtures/universe_floor10.json"
+      ]
+    },
+    {
+      "key": "permanent-identity-history",
+      "status": "blocked",
+      "detail": "The active security master contains zero permanent identifiers and cannot link issuers or listings across time.",
+      "evidence": [
+        "data/evidence/security-master"
+      ]
+    },
+    {
+      "key": "delistings-ticker-history",
+      "status": "blocked",
+      "detail": "Listing dates, delistings, ticker changes, aliases, mergers, and ticker reuse are unavailable.",
+      "evidence": [
+        "data/evidence/security-master"
+      ]
+    },
+    {
+      "key": "corporate-actions",
+      "status": "blocked",
+      "detail": "Split, dividend, merger, spin-off, and price-adjustment records are absent.",
+      "evidence": [
+        "ROADMAP.md"
+      ]
+    },
+    {
+      "key": "benchmark-series",
+      "status": "blocked",
+      "detail": "No point-in-time benchmark membership, prices, returns, or immutable comparison series is present.",
+      "evidence": [
+        "data/evidence/daily"
+      ]
+    },
+    {
+      "key": "execution-costs",
+      "status": "blocked",
+      "detail": "No execution calendar, next-trade timing, spread, slippage, commission, liquidity, or transaction-cost inputs exist.",
+      "evidence": [
+        "ROADMAP.md"
+      ]
+    },
+    {
+      "key": "walk-forward-design",
+      "status": "blocked",
+      "detail": "Two cross-sectional snapshots do not constitute a walk-forward, out-of-sample evaluation series.",
+      "evidence": [
+        "data/reference/v2-baseline/june-oracle-fixtures/meta.json",
+        "data/reference/v2-baseline/fixtures/meta.json"
+      ]
+    }
+  ],
+  "blockers": [
+    "2 of 4 inventoried fixture files fail the strict V3 input contract.",
+    "Declared snapshot generation times omit timezone semantics and no record-level retrieval or availability timestamps exist.",
+    "Fundamental and estimate values do not record filing, announcement, vendor-availability, or revision timestamps.",
+    "The preserved universes are cross-sectional captures and do not prove historical constituent eligibility without survivorship bias.",
+    "The active security master contains zero permanent identifiers and cannot link issuers or listings across time.",
+    "Listing dates, delistings, ticker changes, aliases, mergers, and ticker reuse are unavailable.",
+    "Split, dividend, merger, spin-off, and price-adjustment records are absent.",
+    "No point-in-time benchmark membership, prices, returns, or immutable comparison series is present.",
+    "No execution calendar, next-trade timing, spread, slippage, commission, liquidity, or transaction-cost inputs exist.",
+    "Two cross-sectional snapshots do not constitute a walk-forward, out-of-sample evaluation series."
+  ],
+  "conclusion": "The repository can reproduce two research cross-sections, but it cannot yet support a point-in-time backtest, benchmark comparison, or investment-performance claim.",
+  "notice": "Research preview only. Scores and model weights are evidence artifacts, not investment advice or a promise of future performance."
+}

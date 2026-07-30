@@ -181,6 +181,9 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
     assert.match(stdout, /Identity evidence, without false permanence/);
     assert.match(stdout, /AKR-TICKER:MU/);
     assert.match(stdout, /Ticker history unavailable/);
+    assert.match(stdout, /Two snapshots are not a backtest/);
+    assert.match(stdout, /10<!-- --> controls unresolved/);
+    assert.match(stdout, /No performance claim/);
     assert.match(stdout, /Working product\. Research-preview evidence/);
     assert.match(stdout, /1<!-- --> \/<!-- --> <!-- -->30/);
     assert.match(stdout, /Production cutover: (?:<!-- -->)?not authorized/);

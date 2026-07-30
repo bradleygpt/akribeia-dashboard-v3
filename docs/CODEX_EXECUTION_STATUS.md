@@ -4,9 +4,17 @@ Last updated: 2026-07-30
 
 ## Whole-product completion
 
-Estimated completion: **71%**
+Estimated completion: **74%**
 
-This estimate reflects working, tested product behavior rather than roadmap line-item count. V3 now has the Phase 0 baseline, core publication trust primitives, a deployed visible preview, complete coverage-aware scoring evidence, exact integer-unit portfolio construction, a retry-safe end-to-end publication/activation/rollback pipeline, an accessible runtime data-status surface, protected server-side evidence capabilities, explicit deployment health and recovery operations, the first immutable daily evidence record, versioned model-governance evidence, an active-build quality report with honest drift eligibility, a provisional security master, and fail-closed evidence maturity labels. It is not ready to replace V2.
+This estimate reflects working, tested product behavior rather than roadmap line-item count. V3 now
+has the Phase 0 baseline, core publication trust primitives, a deployed visible preview, complete
+coverage-aware scoring evidence, exact integer-unit portfolio construction, a retry-safe
+end-to-end publication/activation/rollback pipeline, an accessible runtime data-status surface,
+protected server-side evidence capabilities, explicit deployment health and recovery operations,
+the first immutable daily evidence record, versioned model-governance evidence, an active-build
+quality report with honest drift eligibility, a provisional security master, fail-closed evidence
+maturity labels, and an immutable audit of historical point-in-time readiness. It is not ready to
+replace V2.
 
 ## Completed milestones
 
@@ -27,25 +35,28 @@ This estimate reflects working, tested product behavior rather than roadmap line
 - Versioned model card, 26-component metric dictionary, validation-gate ledger, and visible methodology limits, privately deployed and merged through PR #15.
 - Active-build data quality, honest insufficient-history drift status, and visible report evidence, privately deployed and merged through PR #16.
 - Provisional ticker-only security master, immutable identity evidence, and visible permanent-identifier limits, privately deployed and merged through PR #17.
+- Fail-closed evidence maturity labels, explicit release transitions, and non-overridable cutover
+  blocking, privately deployed and merged through PR #18.
 
 ## Current milestone
 
-**Fail-closed evidence maturity labels**
+**Historical point-in-time readiness**
 
-The current branch replaces scattered maturity wording with one generated assessment:
+The current branch turns the repository's actual historical-data limitations into visible,
+immutable evidence:
 
-1. immutable daily, reproduction, model, quality, and identity lineage must reconcile;
-2. levels appear in strict order from development through production approved;
-3. the active build is `research-preview` and not release eligible;
-4. only one of 30 required immutable daily builds exists;
-5. four of eight model validation gates pass;
-6. validation, release, and production blockers remain visible;
-7. no caller-supplied certification or cutover override exists;
-8. production approval always requires explicit final cutover authorization.
+1. the June and July cross-sectional fixtures are independently hashed and inventoried;
+2. declared generation timestamps are preserved without inventing timezone semantics;
+3. all four $0B/$10B files have explicit row counts and strict-contract status;
+4. the June $0B fixture's null price and the July $0B fixture's five classification issues are
+   visible;
+5. availability time, survivorship, identity history, delistings, corporate actions, benchmark,
+   execution-cost, and walk-forward controls fail closed;
+6. schema version `1.0.0` cannot express historical eligibility;
+7. the dashboard states plainly that two snapshots are not a backtest.
 
 Implementation, complete local CI, contract/generator/rendering/packaging/browser tests, and
-dependency audit pass. Owner-only preview deployment also passes; pull-request gates remain for
-this unit.
+dependency audit pass. Owner-only preview deployment and pull-request gates remain for this unit.
 
 ## Remaining milestones
 
@@ -53,30 +64,37 @@ this unit.
 - Add the remaining primary V3 workflows and complete a formal accessibility audit.
 - Add an external generative model only after provider, secret lifecycle, cost, output, and evaluation gates are approved.
 - Complete final-production configuration and cutover rehearsal only after all release gates pass.
-- Implement point-in-time historical controls, corporate actions, walk-forward evaluation, costs, and benchmarks.
+- Acquire or build point-in-time fundamentals, survivorship-aware membership, corporate actions,
+  benchmarks, execution inputs, and a sufficiently long evaluation calendar.
+- Implement walk-forward/out-of-sample evaluation only after those inputs satisfy the readiness
+  contract.
 - Accumulate prospective daily validation evidence.
 - Complete release-gate certification, recovery testing, accessibility review, and operational documentation.
 - Perform final V3 production cutover only with explicit authorization after all gates pass.
 
 ## Blockers
 
-- No product blocker is active.
+- No implementation blocker is active for the current repository unit.
+- Historical validation is blocked by missing point-in-time source, identity, corporate-action,
+  benchmark, and execution evidence.
 - Final V3 production cutover remains explicitly out of scope without user authorization.
 
 ## Test counts
 
-- Vitest suite: 111 tests across 14 files pass.
+- Vitest suite: 116 tests across 15 files pass.
 - Rendered deployment and browser suite: 6 tests pass.
-- Total automated tests: 117 pass.
-- Current unit validation: Prettier, typecheck, lint, every workspace build, 111 Vitest tests, five rendered accessibility/integrity/API/package tests, one isolated-profile real-Chrome hydration smoke test, `git diff --check`, and `npm audit --audit-level=high` pass.
+- Total automated tests: 122 pass.
+- Current unit validation: Prettier, typecheck, lint, every workspace build, 116 Vitest tests, five
+  rendered accessibility/integrity/API/package tests, one isolated-profile real-Chrome hydration
+  smoke test, `git diff --check`, and `npm audit --audit-level=high` pass.
 
 ## Deployment status
 
 - V2 production: unchanged.
 - V3 local preview: generated and safely retried as immutable build `preview-20260728-pipeline-v4-a34fc842220f`; an interactive dev server is not currently running.
 - V3 hosted preview: deployed privately at <https://akribeia-v3-evidence-preview.akribeiainsights.chatgpt.site>.
-- V3 hosted preview source: maturity-label functional tree from commit `31b4fc185`, preserved in
-  Sites source commit `d24522bd7` and deployed as version 23.
+- V3 hosted preview source: merged maturity-label tree `4b1806b3d`, preserved in Sites source
+  commit `6bc646211` and deployed as version 24.
 - V3 production: not deployed.
 - Cutover: not authorized and not attempted.
 
@@ -97,10 +115,14 @@ this unit.
 - Security master: 643 unique ticker-derived research identities are generated locally with no
   collisions; all remain provisional because permanent identifiers and ticker history are absent.
   The evidence and visible identity ledger are privately deployed.
-- Evidence maturity: local assessment labels the active build `research-preview`, not release
+- Evidence maturity: the active assessment labels the build `research-preview`, not release
   eligible, with one of 30 daily builds and 11 explicit blockers. The assessment and visible
   maturity ladder are privately deployed.
-- Historical validation: not started.
+- Historical readiness: two research cross-sections and four fixture files are locally
+  inventoried with deterministic SHA-256 evidence. Ten controls remain blocked; the report cannot
+  claim historical eligibility. Deployment remains for the current unit.
+- Historical validation: blocked by the readiness report; no backtest or performance comparison
+  is claimed.
 - Prospective validation: not started.
 
 ## Risks and assumptions
@@ -119,4 +141,9 @@ this unit.
 - The preserved V2 metadata supplies 26 component names and directionality, but not the raw transform, normalization, winsorization, or component missing-value formulas. Governance artifacts expose this as a known methodology gap.
 - The source has no permanent issuer/listing identifier or ticker history. Current security IDs are
   deterministic research identifiers within a ticker-only scope, not permanent identities.
+- The preserved June and July captures have timezone-unspecified generation metadata and no
+  record-level availability times. They are reproducibility fixtures, not a point-in-time series.
+- Both $0B fixtures fail the strict input contract: June has one null-price issue and July has five
+  classification issues. They are inventoried as historical material but are not used by the
+  active $10B product build.
 - All displayed results are research evidence, not investment advice or performance guarantees.

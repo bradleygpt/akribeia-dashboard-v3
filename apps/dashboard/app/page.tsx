@@ -1,6 +1,7 @@
 import {
   DailyEvidenceRecordSchema,
   DataQualityReportSchema,
+  HistoricalReadinessReportSchema,
   MaturityAssessmentSchema,
   MetricDictionarySchema,
   ModelCardSchema,
@@ -11,6 +12,7 @@ import { DataStatusBanner } from "./data-status-banner";
 import { EvidenceExplorer } from "./evidence-explorer";
 import activeDashboard from "./generated/active-dashboard.json";
 import activeDailyEvidence from "./generated/active-daily-evidence.json";
+import activeHistoricalReadiness from "./generated/active-historical-readiness.json";
 import activeMetricDictionary from "./generated/active-metric-dictionary.json";
 import activeMaturity from "./generated/active-maturity.json";
 import activeModelCard from "./generated/active-model-card.json";
@@ -19,6 +21,7 @@ import activeSecurityMaster from "./generated/active-security-master.json";
 
 const dashboard = VerticalSliceDashboardSchema.parse(activeDashboard);
 const dailyEvidence = DailyEvidenceRecordSchema.parse(activeDailyEvidence);
+const historicalReadiness = HistoricalReadinessReportSchema.parse(activeHistoricalReadiness);
 const metricDictionary = MetricDictionarySchema.parse(activeMetricDictionary);
 const maturity = MaturityAssessmentSchema.parse(activeMaturity);
 const modelCard = ModelCardSchema.parse(activeModelCard);
@@ -28,6 +31,8 @@ const securityMaster = SecurityMasterSchema.parse(activeSecurityMaster);
 if (
   modelCard.modelVersion !== dashboard.modelVersion ||
   metricDictionary.modelVersion !== dashboard.modelVersion ||
+  historicalReadiness.buildId !== dashboard.buildId ||
+  historicalReadiness.modelVersion !== dashboard.modelVersion ||
   qualityReport.buildId !== dashboard.buildId ||
   maturity.buildId !== dashboard.buildId ||
   maturity.modelVersion !== dashboard.modelVersion ||
@@ -110,6 +115,7 @@ export default function Home() {
           <a href="#model-governance">Method</a>
           <a href="#data-quality">Quality</a>
           <a href="#security-master">Master</a>
+          <a href="#historical-readiness">History</a>
           <a href="#maturity">Maturity</a>
           <a href="#explore">Explain</a>
           <a href="#lineage">Lineage</a>
@@ -477,6 +483,104 @@ export default function Home() {
               <p>{securityMaster.limitations[2]}</p>
             </aside>
           </div>
+        </section>
+
+        <section
+          className="historical-readiness"
+          id="historical-readiness"
+          aria-labelledby="historical-readiness-heading"
+        >
+          <div className="historical-readiness-heading">
+            <div>
+              <p className="mono-label">POINT-IN-TIME READINESS / FAIL-CLOSED</p>
+              <h2 id="historical-readiness-heading">Two snapshots are not a backtest.</h2>
+              <p>
+                June and July research cross-sections are preserved, hashed, and reproducible. They
+                do not contain the availability-time, identity-history, universe, corporate-action,
+                benchmark, or execution evidence required for historical validation.
+              </p>
+            </div>
+            <aside data-status={historicalReadiness.status} aria-label="Historical readiness">
+              <span>Historical validation</span>
+              <strong>{historicalReadiness.status}</strong>
+              <p>
+                {historicalReadiness.inventory.snapshotCount} snapshots inventoried /{" "}
+                {historicalReadiness.blockers.length} controls unresolved
+              </p>
+            </aside>
+          </div>
+          <div className="historical-readiness-grid">
+            <div
+              className="table-scroll"
+              tabIndex={0}
+              role="region"
+              aria-label="Preserved historical snapshot inventory"
+            >
+              <table>
+                <caption className="sr-only">
+                  Preserved cross-sectional research snapshots and row counts
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Research snapshot</th>
+                    <th scope="col">Declared generation</th>
+                    <th scope="col">$0B rows</th>
+                    <th scope="col">$10B rows</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {historicalReadiness.snapshots.map((snapshot) => (
+                    <tr key={snapshot.snapshotId}>
+                      <td>
+                        <strong>{snapshot.label}</strong>
+                        <small>{snapshot.observationKind.replaceAll("-", " ")}</small>
+                      </td>
+                      <td>
+                        <code>{snapshot.declaredGeneratedAt}</code>
+                        <small>{snapshot.timestampStatus.replaceAll("-", " ")}</small>
+                      </td>
+                      <td>
+                        {snapshot.artifacts[0]!.rowCount}
+                        <small>
+                          {snapshot.artifacts[0]!.strictInputContractStatus} /{" "}
+                          {snapshot.artifacts[0]!.strictInputIssueCount} issues
+                        </small>
+                      </td>
+                      <td>
+                        {snapshot.artifacts[1]!.rowCount}
+                        <small>
+                          {snapshot.artifacts[1]!.strictInputContractStatus} /{" "}
+                          {snapshot.artifacts[1]!.strictInputIssueCount} issues
+                        </small>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="historical-control-ledger">
+              <div>
+                <strong>Readiness controls</strong>
+                <a
+                  href={`/data/evidence/historical-readiness/builds/${historicalReadiness.buildId}/historical-readiness.json`}
+                >
+                  View full report
+                </a>
+              </div>
+              <ul>
+                {historicalReadiness.controls.map((control) => (
+                  <li data-status={control.status} key={control.key}>
+                    <span>{control.key.replaceAll("-", " ")}</span>
+                    <strong>{control.status}</strong>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <aside className="historical-conclusion" role="note">
+            <strong>No performance claim</strong>
+            <p>{historicalReadiness.conclusion}</p>
+          </aside>
         </section>
 
         <section className="maturity-assessment" id="maturity" aria-labelledby="maturity-heading">
