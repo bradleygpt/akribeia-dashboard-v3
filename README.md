@@ -38,3 +38,4 @@ npm run preview:generate
 
 See `ROADMAP.md`, `MIGRATION.md`, and `docs/architecture/ADR-0001-separate-v3-repository.md`.
 Execution evidence and honest readiness status are maintained in `docs/CODEX_EXECUTION_STATUS.md`.
+Deployment health and recovery procedures are maintained in `docs/operations/DEPLOYMENT_AND_RECOVERY.md`.

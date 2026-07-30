@@ -73,7 +73,7 @@ describe("protected evidence API", () => {
     expect(response).toBeNull();
   });
 
-  it("reports a no-secret deterministic health mode", async () => {
+  it("reports deep active-evidence health without a secret or external model", async () => {
     const response = await handleEvidenceApi(
       new Request("https://akribeia.example/api/v3/health"),
       env(),
@@ -82,9 +82,36 @@ describe("protected evidence API", () => {
 
     expect(response?.status).toBe(200);
     await expect(response?.json()).resolves.toMatchObject({
-      status: "ok",
+      status: "healthy",
+      buildId: "preview-20260728-pipeline-v4-a34fc842220f",
+      checks: {
+        activePointer: "pass",
+        scoreArtifact: "sha256-and-byte-size-pass",
+        portfolioArtifact: "sha256-and-byte-size-pass",
+        lineage: "pass",
+      },
       aiMode: "deterministic-evidence",
       externalModelConfigured: false,
+    });
+  });
+
+  it("fails the health check when active evidence is tampered", async () => {
+    const response = await handleEvidenceApi(
+      new Request("https://akribeia.example/api/v3/health"),
+      env(
+        assetFetcher((path, payload) =>
+          path.endsWith("/portfolio.json")
+            ? new TextEncoder().encode('{"tampered":true}')
+            : payload,
+        ),
+      ),
+      limiter(),
+    );
+
+    expect(response?.status).toBe(503);
+    await expect(response?.json()).resolves.toMatchObject({
+      status: "unavailable",
+      error: { code: "evidence_unavailable" },
     });
   });
 

@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
-import { access, readFile } from "node:fs/promises";
+import { access, mkdtemp, readFile, rm } from "node:fs/promises";
 import { createServer } from "node:http";
-import { extname, isAbsolute, relative, resolve } from "node:path";
+import { tmpdir } from "node:os";
+import { extname, isAbsolute, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import test from "node:test";
@@ -130,6 +131,7 @@ async function startDashboardServer() {
 test("hydrates the responsive dashboard and verifies its active evidence in Chrome", async () => {
   const browser = await findBrowser();
   const server = await startDashboardServer();
+  const profileDirectory = await mkdtemp(join(tmpdir(), "akribeia-browser-smoke-"));
 
   try {
     const address = server.address();
@@ -149,6 +151,7 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
         "--disable-sync",
         "--metrics-recording-only",
         "--no-first-run",
+        `--user-data-dir=${profileDirectory}`,
         "--force-device-scale-factor=1",
         "--window-size=390,844",
         "--virtual-time-budget=5000",
@@ -175,5 +178,6 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
     await new Promise((resolveClose, rejectClose) => {
       server.close((error) => (error ? rejectClose(error) : resolveClose()));
     });
+    await rm(profileDirectory, { force: true, recursive: true });
   }
 });
