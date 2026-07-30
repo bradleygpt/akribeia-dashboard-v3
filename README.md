@@ -4,9 +4,9 @@ A zero-cost, auditable quantitative research platform designed around reproducib
 
 ## Repository status
 
-**Phase 1: Visible trust-foundation preview**
+**Phase 2: Visible evidence preview**
 
-V2 remains the production system. V3 now includes a working repository-data-to-dashboard preview with strict contracts, coverage-aware scoring, exact portfolio caps, immutable publication, active-build selection, runtime freshness and integrity states, and a protected server-verified evidence explorer. V3 is developed and validated independently until all cutover gates pass.
+V2 remains the production system. V3 now includes a working repository-data-to-dashboard preview with strict contracts, coverage-aware scoring, exact portfolio caps, immutable publication, active-build selection, runtime freshness and integrity states, a protected server-verified evidence explorer, and the first reproducible daily evidence record. V3 is developed and validated independently until all cutover gates pass.
 
 ## Core principles
 
@@ -26,6 +26,7 @@ npm run typecheck
 npm run test
 npm run build
 npm run preview:generate
+npm run evidence:generate
 ```
 
 ## Migration strategy
@@ -39,3 +40,4 @@ npm run preview:generate
 See `ROADMAP.md`, `MIGRATION.md`, and `docs/architecture/ADR-0001-separate-v3-repository.md`.
 Execution evidence and honest readiness status are maintained in `docs/CODEX_EXECUTION_STATUS.md`.
 Deployment health and recovery procedures are maintained in `docs/operations/DEPLOYMENT_AND_RECOVERY.md`.
+Daily record semantics and reproduction are documented in `docs/evidence/DAILY_EVIDENCE.md`.

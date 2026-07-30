@@ -1,9 +1,11 @@
-import { VerticalSliceDashboardSchema } from "@akribeia/contracts";
+import { DailyEvidenceRecordSchema, VerticalSliceDashboardSchema } from "@akribeia/contracts";
 import { DataStatusBanner } from "./data-status-banner";
 import { EvidenceExplorer } from "./evidence-explorer";
 import activeDashboard from "./generated/active-dashboard.json";
+import activeDailyEvidence from "./generated/active-daily-evidence.json";
 
 const dashboard = VerticalSliceDashboardSchema.parse(activeDashboard);
+const dailyEvidence = DailyEvidenceRecordSchema.parse(activeDailyEvidence);
 
 function percent(value: number, digits = 0): string {
   return `${(value * 100).toFixed(digits)}%`;
@@ -62,6 +64,7 @@ export default function Home() {
         <nav className="primary-nav" aria-label="Primary navigation">
           <a href="#scores">Scores</a>
           <a href="#portfolio">Portfolio</a>
+          <a href="#daily-evidence">Evidence</a>
           <a href="#explore">Explain</a>
           <a href="#lineage">Lineage</a>
         </nav>
@@ -149,6 +152,69 @@ export default function Home() {
               {percent(dashboard.portfolio.constraints.maxSectorWeight)} sector
             </span>
           </article>
+        </section>
+
+        <section
+          className="daily-evidence"
+          id="daily-evidence"
+          aria-labelledby="daily-evidence-heading"
+        >
+          <div className="daily-evidence-intro">
+            <p className="mono-label">IMMUTABLE DAILY RECORD</p>
+            <h2 id="daily-evidence-heading">A dated receipt, with limits intact</h2>
+            <p>
+              The active build is preserved as a schema-validated daily record. Artifact digests,
+              model lineage, scoring coverage, and all portfolio positions travel together; absent
+              comparison data stays absent.
+            </p>
+            <div className="evidence-links">
+              <a
+                href={`/data/evidence/daily/${dailyEvidence.asOfDate}/${dailyEvidence.build.buildId}/evidence.json`}
+              >
+                View daily JSON
+              </a>
+              <a
+                href={`/data/evidence/daily/${dailyEvidence.asOfDate}/${dailyEvidence.build.buildId}/reproducibility.json`}
+              >
+                View reproduction report
+              </a>
+            </div>
+          </div>
+          <div className="evidence-ledger">
+            <dl>
+              <div>
+                <dt>Evidence date</dt>
+                <dd>{dailyEvidence.asOfDate}</dd>
+              </div>
+              <div>
+                <dt>Maturity</dt>
+                <dd>{dailyEvidence.maturity}</dd>
+              </div>
+              <div>
+                <dt>Receipted artifacts</dt>
+                <dd>{dailyEvidence.artifacts.length} / verified</dd>
+              </div>
+              <div>
+                <dt>Portfolio records</dt>
+                <dd>{dailyEvidence.portfolio.positions.length}</dd>
+              </div>
+              <div>
+                <dt>Benchmark</dt>
+                <dd data-status={dailyEvidence.benchmark.status}>
+                  {dailyEvidence.benchmark.status}
+                </dd>
+              </div>
+              <div>
+                <dt>Performance</dt>
+                <dd>{dailyEvidence.performance.status}</dd>
+              </div>
+            </dl>
+            <aside aria-label="Evidence limitation">
+              <strong>No synthetic comparison</strong>
+              <p>{dailyEvidence.benchmark.reason}</p>
+              <p>{dailyEvidence.performance.reason}</p>
+            </aside>
+          </div>
         </section>
 
         <section className="factor-audit" id="scores" aria-labelledby="factor-audit-heading">

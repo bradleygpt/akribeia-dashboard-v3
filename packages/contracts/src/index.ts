@@ -945,3 +945,146 @@ export const VerticalSliceDashboardSchema = z
     }
   });
 export type VerticalSliceDashboard = z.infer<typeof VerticalSliceDashboardSchema>;
+
+export const EvidenceArtifactReceiptSchema = z
+  .object({
+    name: z.enum(["dashboard", "portfolio", "scores"]),
+    path: z.string().min(1),
+    sha256: Sha256Schema,
+    byteSize: z.number().int().positive(),
+    rowCount: z.number().int().nonnegative(),
+  })
+  .strict();
+export type EvidenceArtifactReceipt = z.infer<typeof EvidenceArtifactReceiptSchema>;
+
+export const BenchmarkEvidenceSchema = z.discriminatedUnion("status", [
+  z
+    .object({
+      status: z.literal("unavailable"),
+      benchmarkId: z.null(),
+      observedAt: z.null(),
+      return: z.null(),
+      reason: z.string().min(1),
+    })
+    .strict(),
+  z
+    .object({
+      status: z.literal("available"),
+      benchmarkId: z.string().min(1),
+      observedAt: IsoDateTimeSchema,
+      return: z.number().finite(),
+      reason: z.null(),
+    })
+    .strict(),
+]);
+export type BenchmarkEvidence = z.infer<typeof BenchmarkEvidenceSchema>;
+
+export const DailyEvidenceRecordSchema = z
+  .object({
+    evidenceSchemaVersion: z.literal("1.0.0"),
+    asOfDate: z.string().date(),
+    recordedAt: IsoDateTimeSchema,
+    build: z
+      .object({
+        buildId: SafeBuildIdSchema,
+        schemaVersion: z.string().min(1),
+        modelVersion: z.string().min(1),
+        generatedAt: IsoDateTimeSchema,
+        publishedAt: IsoDateTimeSchema,
+        status: z.literal("healthy"),
+        publicationDecision: z.literal("publish"),
+      })
+      .strict(),
+    source: DashboardSourceSchema,
+    artifacts: z.array(EvidenceArtifactReceiptSchema).length(3),
+    scoring: ScoringSummarySchema,
+    portfolio: DashboardPortfolioSchema,
+    benchmark: BenchmarkEvidenceSchema,
+    performance: z
+      .object({
+        status: z.literal("not-computed"),
+        reason: z.string().min(1),
+      })
+      .strict(),
+    maturity: z.literal("research-preview"),
+    notice: z.string().min(1),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    if (value.asOfDate !== value.source.observedAt.slice(0, 10)) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Evidence date must match the source observation date.",
+        path: ["asOfDate"],
+      });
+    }
+
+    const artifactNames = value.artifacts.map(({ name }) => name);
+
+    if (
+      new Set(artifactNames).size !== 3 ||
+      !(["dashboard", "portfolio", "scores"] as const).every((name) => artifactNames.includes(name))
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Daily evidence must receipt dashboard, portfolio, and score artifacts.",
+        path: ["artifacts"],
+      });
+    }
+
+    const receipts = new Map(value.artifacts.map((artifact) => [artifact.name, artifact]));
+    const expectedRows = {
+      dashboard: 1,
+      portfolio: value.portfolio.positions.length,
+      scores: value.source.rowCount,
+    } as const;
+
+    for (const [name, expectedRowCount] of Object.entries(expectedRows)) {
+      if (receipts.get(name as keyof typeof expectedRows)?.rowCount !== expectedRowCount) {
+        context.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Artifact receipt "${name}" row count does not reconcile.`,
+          path: ["artifacts"],
+        });
+      }
+    }
+
+    if (
+      value.scoring.eligibleSecurities + value.scoring.excludedSecurities !==
+        value.source.rowCount ||
+      value.portfolio.construction.candidateCount !== value.scoring.eligibleSecurities
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Daily score, source, and portfolio counts do not reconcile.",
+        path: ["scoring"],
+      });
+    }
+  });
+export type DailyEvidenceRecord = z.infer<typeof DailyEvidenceRecordSchema>;
+
+export const EvidenceReproducibilityReportSchema = z
+  .object({
+    reportSchemaVersion: z.literal("1.0.0"),
+    buildId: SafeBuildIdSchema,
+    asOfDate: z.string().date(),
+    verifiedAt: IsoDateTimeSchema,
+    evidenceRecordPath: z.string().min(1),
+    evidenceRecordSha256: Sha256Schema,
+    reproductionCommand: z.literal("npm run evidence:generate"),
+    checks: z
+      .object({
+        activePointer: z.literal(true),
+        manifestSchema: z.literal(true),
+        publicationHealthy: z.literal(true),
+        artifactDigests: z.literal(true),
+        artifactSchemas: z.literal(true),
+        lineage: z.literal(true),
+        exactPortfolioWeights: z.literal(true),
+        evidenceSchema: z.literal(true),
+      })
+      .strict(),
+    result: z.literal("verified"),
+  })
+  .strict();
+export type EvidenceReproducibilityReport = z.infer<typeof EvidenceReproducibilityReportSchema>;

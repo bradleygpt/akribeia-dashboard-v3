@@ -1,0 +1,383 @@
+{
+  "evidenceSchemaVersion": "1.0.0",
+  "asOfDate": "2026-07-28",
+  "recordedAt": "2026-07-30T04:36:30Z",
+  "build": {
+    "buildId": "preview-20260728-pipeline-v4-a34fc842220f",
+    "schemaVersion": "3.0.0-preview.4",
+    "modelVersion": "3.0.0-preview.3",
+    "generatedAt": "2026-07-30T04:36:30Z",
+    "publishedAt": "2026-07-30T04:36:30Z",
+    "status": "healthy",
+    "publicationDecision": "publish"
+  },
+  "source": {
+    "dataset": "V2 production baseline — $10B+ universe",
+    "repositoryPath": "data/reference/v2-baseline/fixtures/universe_floor10.json",
+    "sourceCommit": "0de8cd6",
+    "contentSha256": "a34fc842220f0552460939bf5a4a138988ae2537e068d38a6f0216188063984e",
+    "observedAt": "2026-07-28T17:06:46Z",
+    "rowCount": 643,
+    "freshnessStatus": "current",
+    "ageSeconds": 127784,
+    "maxAgeSeconds": 604800
+  },
+  "artifacts": [
+    {
+      "name": "dashboard",
+      "path": "dashboard.json",
+      "sha256": "3ae51af2ad03fb5ccea020215ed93ff11728c86afc774093ea8afa5985d098c4",
+      "byteSize": 13498,
+      "rowCount": 1
+    },
+    {
+      "name": "portfolio",
+      "path": "portfolio.json",
+      "sha256": "d352ab3588981010d0ccc1be6d4896ae6ec7de5e82488c9788e160f73121e30a",
+      "byteSize": 9530,
+      "rowCount": 9
+    },
+    {
+      "name": "scores",
+      "path": "scores.json",
+      "sha256": "581f5fd00d6016db5b8988a9388308b1d3c8cdca77913a914d0ea9eb35e131dd",
+      "byteSize": 875899,
+      "rowCount": 643
+    }
+  ],
+  "scoring": {
+    "method": "weighted-five-pillar",
+    "weights": {
+      "valuation": 0.2,
+      "growth": 0.2,
+      "profitability": 0.2,
+      "momentum": 0.2,
+      "revisions": 0.2
+    },
+    "missingDataPolicy": "require-complete",
+    "minimumCoverage": 1,
+    "eligibleNormalization": "total-weight",
+    "eligibleSecurities": 643,
+    "excludedSecurities": 0,
+    "averageCoverage": 1,
+    "factorCoverage": [
+      {
+        "pillar": "valuation",
+        "sourceField": "pillars.Valuation",
+        "weight": 0.2,
+        "availableSecurities": 643,
+        "missingSecurities": 0,
+        "coverage": 1
+      },
+      {
+        "pillar": "growth",
+        "sourceField": "pillars.Growth",
+        "weight": 0.2,
+        "availableSecurities": 643,
+        "missingSecurities": 0,
+        "coverage": 1
+      },
+      {
+        "pillar": "profitability",
+        "sourceField": "pillars.Profitability",
+        "weight": 0.2,
+        "availableSecurities": 643,
+        "missingSecurities": 0,
+        "coverage": 1
+      },
+      {
+        "pillar": "momentum",
+        "sourceField": "pillars.Momentum",
+        "weight": 0.2,
+        "availableSecurities": 643,
+        "missingSecurities": 0,
+        "coverage": 1
+      },
+      {
+        "pillar": "revisions",
+        "sourceField": "pillars.EPS Revisions",
+        "weight": 0.2,
+        "availableSecurities": 643,
+        "missingSecurities": 0,
+        "coverage": 1
+      }
+    ]
+  },
+  "portfolio": {
+    "constraints": {
+      "maxPositionWeight": 0.12,
+      "maxSectorWeight": 0.3
+    },
+    "totalWeight": 1,
+    "totalWeightUnits": 1000000000,
+    "positions": [
+      {
+        "ticker": "MU",
+        "name": "Micron Technology, Inc.",
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "score": 9.801904761904762,
+        "coverage": 1,
+        "missingPillars": [],
+        "price": 939.15,
+        "marketCapB": 1118.3,
+        "weight": 0.12,
+        "weightUnits": 120000000,
+        "maxWeight": 0.12,
+        "maxWeightUnits": 120000000
+      },
+      {
+        "ticker": "NVDA",
+        "name": "NVIDIA Corporation",
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "score": 8.877619047619048,
+        "coverage": 1,
+        "missingPillars": [],
+        "price": 209.75,
+        "marketCapB": 5072.8,
+        "weight": 0.12,
+        "weightUnits": 120000000,
+        "maxWeight": 0.12,
+        "maxWeightUnits": 120000000
+      },
+      {
+        "ticker": "OVV",
+        "name": "Ovintiv Inc. (DE)",
+        "sector": "Energy",
+        "industry": "Oil & Gas E&P",
+        "score": 8.860000000000001,
+        "coverage": 1,
+        "missingPillars": [],
+        "price": 63.25,
+        "marketCapB": 17.6,
+        "weight": 0.12,
+        "weightUnits": 120000000,
+        "maxWeight": 0.12,
+        "maxWeightUnits": 120000000
+      },
+      {
+        "ticker": "BKNG",
+        "name": "Booking Holdings Inc. Common St",
+        "sector": "Consumer Cyclical",
+        "industry": "Travel Services",
+        "score": 8.803809523809525,
+        "coverage": 1,
+        "missingPillars": [],
+        "price": 179.15,
+        "marketCapB": 139.3,
+        "weight": 0.12,
+        "weightUnits": 120000000,
+        "maxWeight": 0.12,
+        "maxWeightUnits": 120000000
+      },
+      {
+        "ticker": "PCG",
+        "name": "Pacific Gas & Electric Co.",
+        "sector": "Utilities",
+        "industry": "Utilities - Regulated Electric",
+        "score": 8.758095238095239,
+        "coverage": 1,
+        "missingPillars": [],
+        "price": 17.88,
+        "marketCapB": 47.9,
+        "weight": 0.12,
+        "weightUnits": 120000000,
+        "maxWeight": 0.12,
+        "maxWeightUnits": 120000000
+      },
+      {
+        "ticker": "NBIX",
+        "name": "Neurocrine Biosciences, Inc.",
+        "sector": "Healthcare",
+        "industry": "Drug Manufacturers - Specialty & Generic",
+        "score": 8.754761904761905,
+        "coverage": 1,
+        "missingPillars": [],
+        "price": 175.76,
+        "marketCapB": 17.8,
+        "weight": 0.12,
+        "weightUnits": 120000000,
+        "maxWeight": 0.12,
+        "maxWeightUnits": 120000000
+      },
+      {
+        "ticker": "VST",
+        "name": "Vistra Corp.",
+        "sector": "Utilities",
+        "industry": "Utilities - Independent Power Producers",
+        "score": 8.70904761904762,
+        "coverage": 1,
+        "missingPillars": [],
+        "price": 168.44,
+        "marketCapB": 57.1,
+        "weight": 0.12,
+        "weightUnits": 120000000,
+        "maxWeight": 0.12,
+        "maxWeightUnits": 120000000
+      },
+      {
+        "ticker": "CTRA",
+        "name": "Coterra Energy Inc.",
+        "sector": "Energy",
+        "industry": "Oil & Gas E&P",
+        "score": 8.528571428571428,
+        "coverage": 1,
+        "missingPillars": [],
+        "price": 32.56,
+        "marketCapB": 24.7,
+        "weight": 0.12,
+        "weightUnits": 120000000,
+        "maxWeight": 0.12,
+        "maxWeightUnits": 120000000
+      },
+      {
+        "ticker": "SNDK",
+        "name": "Sandisk Corporation",
+        "sector": "Technology",
+        "industry": "Computer Hardware",
+        "score": 8.507142857142858,
+        "coverage": 1,
+        "missingPillars": [],
+        "price": 1503,
+        "marketCapB": 224.1,
+        "weight": 0.04,
+        "weightUnits": 40000000,
+        "maxWeight": 0.12,
+        "maxWeightUnits": 120000000
+      }
+    ],
+    "sectorWeights": {
+      "Consumer Cyclical": 0.12,
+      "Energy": 0.24,
+      "Healthcare": 0.12,
+      "Technology": 0.28,
+      "Utilities": 0.24
+    },
+    "sectorWeightUnits": {
+      "Consumer Cyclical": 120000000,
+      "Energy": 240000000,
+      "Healthcare": 120000000,
+      "Technology": 280000000,
+      "Utilities": 240000000
+    },
+    "construction": {
+      "method": "ranked-greedy-integer-units-v1",
+      "weightScale": 1000000000,
+      "candidateCount": 643,
+      "sectorCount": 12,
+      "maximumFeasibleWeight": 3.6,
+      "maximumFeasibleWeightUnits": 3600000000,
+      "sectorCapacities": [
+        {
+          "sector": "Basic Materials",
+          "candidateCapacity": 2.28,
+          "candidateCapacityUnits": 2280000000,
+          "cappedCapacity": 0.3,
+          "cappedCapacityUnits": 300000000
+        },
+        {
+          "sector": "Communication Services",
+          "candidateCapacity": 3.12,
+          "candidateCapacityUnits": 3120000000,
+          "cappedCapacity": 0.3,
+          "cappedCapacityUnits": 300000000
+        },
+        {
+          "sector": "Consumer Cyclical",
+          "candidateCapacity": 7.92,
+          "candidateCapacityUnits": 7920000000,
+          "cappedCapacity": 0.3,
+          "cappedCapacityUnits": 300000000
+        },
+        {
+          "sector": "Consumer Defensive",
+          "candidateCapacity": 4.2,
+          "candidateCapacityUnits": 4200000000,
+          "cappedCapacity": 0.3,
+          "cappedCapacityUnits": 300000000
+        },
+        {
+          "sector": "ETF",
+          "candidateCapacity": 6.6,
+          "candidateCapacityUnits": 6600000000,
+          "cappedCapacity": 0.3,
+          "cappedCapacityUnits": 300000000
+        },
+        {
+          "sector": "Energy",
+          "candidateCapacity": 3.24,
+          "candidateCapacityUnits": 3240000000,
+          "cappedCapacity": 0.3,
+          "cappedCapacityUnits": 300000000
+        },
+        {
+          "sector": "Financial Services",
+          "candidateCapacity": 10.92,
+          "candidateCapacityUnits": 10920000000,
+          "cappedCapacity": 0.3,
+          "cappedCapacityUnits": 300000000
+        },
+        {
+          "sector": "Healthcare",
+          "candidateCapacity": 8.16,
+          "candidateCapacityUnits": 8160000000,
+          "cappedCapacity": 0.3,
+          "cappedCapacityUnits": 300000000
+        },
+        {
+          "sector": "Industrials",
+          "candidateCapacity": 9.84,
+          "candidateCapacityUnits": 9840000000,
+          "cappedCapacity": 0.3,
+          "cappedCapacityUnits": 300000000
+        },
+        {
+          "sector": "Real Estate",
+          "candidateCapacity": 3.96,
+          "candidateCapacityUnits": 3960000000,
+          "cappedCapacity": 0.3,
+          "cappedCapacityUnits": 300000000
+        },
+        {
+          "sector": "Technology",
+          "candidateCapacity": 13.2,
+          "candidateCapacityUnits": 13200000000,
+          "cappedCapacity": 0.3,
+          "cappedCapacityUnits": 300000000
+        },
+        {
+          "sector": "Utilities",
+          "candidateCapacity": 3.72,
+          "candidateCapacityUnits": 3720000000,
+          "cappedCapacity": 0.3,
+          "cappedCapacityUnits": 300000000
+        }
+      ],
+      "bindingPositionIds": [
+        "MU",
+        "NVDA",
+        "OVV",
+        "BKNG",
+        "PCG",
+        "NBIX",
+        "VST",
+        "CTRA"
+      ],
+      "bindingSectors": []
+    }
+  },
+  "benchmark": {
+    "status": "unavailable",
+    "benchmarkId": null,
+    "observedAt": null,
+    "return": null,
+    "reason": "No point-in-time benchmark input is present in the repository; no benchmark return was computed."
+  },
+  "performance": {
+    "status": "not-computed",
+    "reason": "A single model snapshot cannot establish investment performance; returns and comparisons remain uncomputed."
+  },
+  "maturity": "research-preview",
+  "notice": "Research preview only. Scores and model weights are evidence artifacts, not investment advice or a promise of future performance."
+}
