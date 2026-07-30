@@ -4,7 +4,7 @@ Last updated: 2026-07-30
 
 ## Whole-product completion
 
-Estimated completion: **86%**
+Estimated completion: **88%**
 
 This estimate reflects working, tested product behavior rather than roadmap line-item count. V3 now
 has the Phase 0 baseline, core publication trust primitives, a deployed visible preview, complete
@@ -16,7 +16,9 @@ quality report with honest drift eligibility, a provisional security master, fai
 maturity labels, an immutable audit of historical point-in-time readiness, and a checksum-pinned
 current SEC registrant crosswalk with explicit unresolved coverage, a bounded filing-availability
 control that excludes post-cutoff filings, and a deterministic comparison of observed universe
-entrants and exits. It is not ready to replace V2.
+entrants and exits, receipted corporate-action and exit-disposition diagnostics, and explicit
+execution-cost readiness that never converts missing costs into zero. It is not ready to replace
+V2.
 
 ## Completed milestones
 
@@ -49,24 +51,28 @@ entrants and exits. It is not ready to replace V2.
   explicit survivorship blockers, privately deployed and merged through PR #22.
 - Receipted corporate-action comparability diagnostics, five visible discontinuities, and zero
   synthetic adjustments, privately deployed and merged through PR #23.
+- Receipted observed-exit disposition diagnostics, 11 current SEC associations, two unresolved
+  labels, and zero inferred historical dispositions, privately deployed and merged through PR
+  #24.
 
 ## Current milestone
 
-**Observed-exit disposition readiness**
+**Execution and transaction-cost readiness**
 
-The current branch checks the 13 June-only ticker labels against the checksum-pinned current SEC
-association source:
+The current branch carries the active nine-position portfolio into a strict execution-readiness
+report:
 
-1. the SEC company-ticker source must pass its byte-size, SHA-256, record-count, and schema receipt;
-2. all 13 observed exits reconcile to immutable universe-membership evidence;
-3. 11 retain an exact current SEC association;
-4. BLD and HOLX are unmatched in the current association source;
-5. every historical disposition remains unverified;
-6. current association cannot prove continuous listing, and current absence cannot prove
-   delisting;
-7. permanent listing identity, ticker intervals, delisting events, and merger/successor terms
-   remain blocked;
-8. the responsive dashboard exposes all results and limitations.
+1. the active daily evidence record and portfolio artifact must pass schema, byte-size, SHA-256,
+   build, model, and total-weight lineage checks;
+2. all nine model targets retain their exact integer weight units and research snapshot prices;
+3. research prices are never reclassified as executable fills;
+4. capital base, prior holdings, execution calendar, executable prices, liquidity and slippage,
+   and fees and taxes remain explicit blocked controls;
+5. executions, trade quantities, turnover, gross return, transaction costs, and net return remain
+   `null`, never silently zero;
+6. forged zero-cost or net-return claims fail the contract;
+7. immutable retry and conflict behavior protects the report;
+8. the responsive dashboard exposes exact targets and the unavailable execution economics.
 
 Implementation, complete local CI, contract/generator/rendering/packaging/browser tests,
 dependency audit, and functional owner-only deployment pass. Final repository commit,
@@ -93,6 +99,8 @@ exact-commit hosted deployment, and pull-request gates remain for this unit.
 - No implementation blocker is active for the current repository unit.
 - Historical validation is blocked by missing point-in-time source, identity, corporate-action,
   benchmark, and execution evidence.
+- Realistic execution and net-performance evidence is blocked by missing capital-base, prior
+  holdings, market-calendar, executable-price, liquidity, slippage, fee, and tax inputs.
 - The observed 14 entrants and 13 exits have no eligibility-effective intervals or verified event
   semantics; they cannot support a survivorship-controlled backtest.
 - Five extreme price observations have no authoritative corporate-action event or adjustment
@@ -107,10 +115,10 @@ exact-commit hosted deployment, and pull-request gates remain for this unit.
 
 ## Test counts
 
-- Vitest suite: 148 tests across 20 files pass.
+- Vitest suite: 154 tests across 21 files pass.
 - Rendered deployment and browser suite: 6 tests pass.
-- Total automated tests: 154 pass.
-- Current unit validation: Prettier, typecheck, lint, every workspace build, 148 Vitest tests,
+- Total automated tests: 160 pass.
+- Current unit validation: Prettier, typecheck, lint, every workspace build, 154 Vitest tests,
   five rendered accessibility/integrity/API/package tests, one isolated-profile real-Chrome
   hydration smoke test, `git diff --check`, and `npm audit --audit-level=high` pass.
 
@@ -119,10 +127,10 @@ exact-commit hosted deployment, and pull-request gates remain for this unit.
 - V2 production: unchanged.
 - V3 local preview: generated and safely retried as immutable build `preview-20260728-pipeline-v4-a34fc842220f`; an interactive dev server is not currently running.
 - V3 hosted preview: deployed privately at <https://akribeia-v3-evidence-preview.akribeiainsights.chatgpt.site>.
-- V3 hosted preview source: exact PR #23 head `ee2295eeb`, preserved in Sites source commit
-  `2a145c3cf` and deployed as version 34.
-- Current exit-disposition functional tree `fd178510b` is preserved in Sites source commit
-  `e17c61cec` and deployed owner-only as version 35.
+- V3 hosted preview source: exact PR #24 head `437717745`, preserved in Sites source commit
+  `5968c024d` and deployed as version 36.
+- Current execution-cost readiness functional tree is preserved in Sites source commit
+  `7a1188c68` and deployed owner-only as version 37.
 - Hosted deployment status is successful. The current package passed an isolated-profile
   real-Chrome smoke test locally; a signed-in interactive browser was unavailable for a separate
   hosted-page smoke check.
@@ -170,6 +178,10 @@ exact-commit hosted deployment, and pull-request gates remain for this unit.
   adjusted-series counts remain zero. Visible evidence is privately deployed.
 - Exit disposition: 11 of 13 observed exits have a current exact SEC association; BLD and HOLX do
   not. All 13 historical dispositions remain unverified. Visible evidence is privately deployed.
+- Execution-cost readiness: nine exact targets reconcile to 1,000,000,000 weight units. Priced
+  executions remain zero, and share quantities, turnover, gross return, transaction costs, and net
+  return remain explicitly unavailable. Immutable evidence and the visible dashboard projection
+  are deployed privately.
 - Historical validation: blocked by the readiness report; no backtest or performance comparison
   is claimed.
 - Prospective validation: not started.
@@ -207,6 +219,9 @@ exact-commit hosted deployment, and pull-request gates remain for this unit.
   shares outstanding. They diagnose comparability risk and must not become synthetic adjustments.
 - Current SEC association presence or absence cannot establish historical listing, ticker,
   delisting, merger, or terminal-value events.
+- Research snapshot prices are not executable prices. No capital base, prior holdings, execution
+  rule, timestamped fill records, liquidity model, slippage model, or fee schedule exists, so the
+  product must not infer trades, zero costs, or net performance.
 - Both $0B fixtures fail the strict input contract: June has one null-price issue and July has five
   classification issues. They are inventoried as historical material but are not used by the
   active $10B product build.

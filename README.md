@@ -35,6 +35,7 @@ npm run historical-readiness:generate
 npm run universe-membership:generate
 npm run corporate-actions:generate
 npm run exit-disposition:generate
+npm run execution-costs:generate
 npm run sec-identity:fetch
 npm run registrants:generate
 npm run filing-sources:fetch
@@ -57,6 +58,7 @@ Evidence-layer details include
 [`docs/evidence/UNIVERSE_MEMBERSHIP_READINESS.md`](docs/evidence/UNIVERSE_MEMBERSHIP_READINESS.md),
 [`docs/evidence/CORPORATE_ACTION_READINESS.md`](docs/evidence/CORPORATE_ACTION_READINESS.md),
 [`docs/evidence/EXIT_DISPOSITION_READINESS.md`](docs/evidence/EXIT_DISPOSITION_READINESS.md),
+[`docs/evidence/EXECUTION_COST_READINESS.md`](docs/evidence/EXECUTION_COST_READINESS.md),
 [`docs/evidence/MATURITY_LABELS.md`](docs/evidence/MATURITY_LABELS.md), and
 [`docs/evidence/HISTORICAL_READINESS.md`](docs/evidence/HISTORICAL_READINESS.md).
 Execution evidence and honest readiness status are maintained in `docs/CODEX_EXECUTION_STATUS.md`.

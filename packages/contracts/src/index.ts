@@ -2645,3 +2645,99 @@ export const ExitDispositionReadinessSchema = z
     }
   });
 export type ExitDispositionReadiness = z.infer<typeof ExitDispositionReadinessSchema>;
+
+const EXECUTION_COST_CONTROL_KEYS = [
+  "exact-target-weights",
+  "capital-base",
+  "prior-holdings",
+  "execution-calendar",
+  "executable-prices",
+  "liquidity-slippage",
+  "fees-taxes",
+] as const;
+
+export const ExecutionCostReadinessSchema = z
+  .object({
+    reportSchemaVersion: z.literal("1.0.0"),
+    buildId: SafeBuildIdSchema,
+    modelVersion: z.string().min(1),
+    generatedAt: IsoDateTimeSchema,
+    decisionObservedAt: IsoDateTimeSchema,
+    status: z.literal("blocked-no-execution-economics"),
+    executionRecorded: z.literal(false),
+    netPerformanceEligible: z.literal(false),
+    portfolio: z
+      .object({
+        positionCount: z.number().int().positive(),
+        totalTargetWeightUnits: z.number().int().positive(),
+        weightScale: z.number().int().positive(),
+        capitalBase: z.literal(null),
+        priorHoldingsAvailable: z.literal(false),
+        assumedExecutionAt: z.literal(null),
+        observedExecutionAt: z.literal(null),
+        pricedExecutionCount: z.literal(0),
+        turnover: z.literal(null),
+        grossReturn: z.literal(null),
+        transactionCost: z.literal(null),
+        netReturn: z.literal(null),
+      })
+      .strict(),
+    targets: z
+      .array(
+        z
+          .object({
+            rank: z.number().int().positive(),
+            ticker: SecurityMasterTickerSchema,
+            sector: z.string().trim().min(1),
+            targetWeight: z.number().positive(),
+            targetWeightUnits: z.number().int().positive(),
+            researchSnapshotPrice: z.number().positive(),
+            executionPrice: z.literal(null),
+            tradeQuantity: z.literal(null),
+            estimatedCost: z.literal(null),
+          })
+          .strict(),
+      )
+      .min(1),
+    controls: z
+      .array(
+        z
+          .object({
+            key: z.enum([...EXECUTION_COST_CONTROL_KEYS]),
+            status: z.enum(["pass", "blocked"]),
+            detail: z.string().min(1),
+          })
+          .strict(),
+      )
+      .length(EXECUTION_COST_CONTROL_KEYS.length),
+    limitations: z.array(z.string().min(1)).min(4),
+    notice: z.string().min(1),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    const units = value.targets.reduce((sum, target) => sum + target.targetWeightUnits, 0);
+    const tickers = value.targets.map(({ ticker }) => ticker);
+    const targetsValid = value.targets.every(
+      ({ rank, targetWeight, targetWeightUnits }, index) =>
+        rank === index + 1 && targetWeight === targetWeightUnits / value.portfolio.weightScale,
+    );
+    const controlsValid =
+      value.controls.every(({ key }, index) => key === EXECUTION_COST_CONTROL_KEYS[index]) &&
+      value.controls[0]?.status === "pass" &&
+      value.controls.slice(1).every(({ status }) => status === "blocked");
+
+    if (
+      value.portfolio.positionCount !== value.targets.length ||
+      value.portfolio.totalTargetWeightUnits !== units ||
+      new Set(tickers).size !== tickers.length ||
+      !targetsValid ||
+      !controlsValid
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Execution targets, null economics, and fail-closed controls must reconcile.",
+        path: ["portfolio"],
+      });
+    }
+  });
+export type ExecutionCostReadiness = z.infer<typeof ExecutionCostReadinessSchema>;

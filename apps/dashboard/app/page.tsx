@@ -3,6 +3,7 @@ import {
   DailyEvidenceRecordSchema,
   DataQualityReportSchema,
   ExitDispositionReadinessSchema,
+  ExecutionCostReadinessSchema,
   FilingAvailabilityReportSchema,
   HistoricalReadinessReportSchema,
   MaturityAssessmentSchema,
@@ -19,6 +20,7 @@ import activeDashboard from "./generated/active-dashboard.json";
 import activeCorporateActionReadiness from "./generated/active-corporate-action-readiness.json";
 import activeDailyEvidence from "./generated/active-daily-evidence.json";
 import activeExitDispositionReadiness from "./generated/active-exit-disposition-readiness.json";
+import activeExecutionCostReadiness from "./generated/active-execution-cost-readiness.json";
 import activeFilingAvailability from "./generated/active-filing-availability.json";
 import activeHistoricalReadiness from "./generated/active-historical-readiness.json";
 import activeMetricDictionary from "./generated/active-metric-dictionary.json";
@@ -35,6 +37,7 @@ const corporateActionReadiness = CorporateActionReadinessSchema.parse(
 );
 const dailyEvidence = DailyEvidenceRecordSchema.parse(activeDailyEvidence);
 const exitDisposition = ExitDispositionReadinessSchema.parse(activeExitDispositionReadiness);
+const executionCostReadiness = ExecutionCostReadinessSchema.parse(activeExecutionCostReadiness);
 const filingAvailability = FilingAvailabilityReportSchema.parse(activeFilingAvailability);
 const historicalReadiness = HistoricalReadinessReportSchema.parse(activeHistoricalReadiness);
 const metricDictionary = MetricDictionarySchema.parse(activeMetricDictionary);
@@ -51,6 +54,8 @@ if (
   corporateActionReadiness.modelVersion !== dashboard.modelVersion ||
   exitDisposition.buildId !== dashboard.buildId ||
   exitDisposition.modelVersion !== dashboard.modelVersion ||
+  executionCostReadiness.buildId !== dashboard.buildId ||
+  executionCostReadiness.modelVersion !== dashboard.modelVersion ||
   metricDictionary.modelVersion !== dashboard.modelVersion ||
   filingAvailability.buildId !== dashboard.buildId ||
   filingAvailability.modelVersion !== dashboard.modelVersion ||
@@ -146,6 +151,7 @@ export default function Home() {
           <a href="#universe-membership">Membership</a>
           <a href="#corporate-actions">Actions</a>
           <a href="#exit-disposition">Exits</a>
+          <a href="#execution-costs">Execution</a>
           <a href="#filing-availability">Filings</a>
           <a href="#model-governance">Method</a>
           <a href="#data-quality">Quality</a>
@@ -534,6 +540,101 @@ export default function Home() {
           <aside className="exit-disposition-limitation" role="note">
             <strong>Current is not historical</strong>
             <p>{exitDisposition.limitations[1]}</p>
+          </aside>
+        </section>
+
+        <section
+          className="exit-disposition execution-readiness"
+          id="execution-costs"
+          aria-labelledby="execution-costs-heading"
+        >
+          <div className="exit-disposition-heading">
+            <div>
+              <p className="mono-label">EXECUTION ECONOMICS / FAIL-CLOSED</p>
+              <h2 id="execution-costs-heading">Nine targets. Zero invented fills or costs.</h2>
+              <p>
+                Exact model weights and research prices are preserved. With no capital base, prior
+                holdings, execution time, trade prices, liquidity model, or fee schedule, trades,
+                turnover, costs, and net return stay unavailable.
+              </p>
+            </div>
+            <a
+              href={`/data/evidence/execution-cost-readiness/builds/${executionCostReadiness.buildId}/execution-cost-readiness.json`}
+            >
+              View immutable evidence
+            </a>
+          </div>
+          <div className="exit-disposition-summary" aria-label="Execution-cost readiness">
+            <article>
+              <span>Exact targets</span>
+              <strong>{executionCostReadiness.portfolio.positionCount}</strong>
+              <p>
+                {executionCostReadiness.portfolio.totalTargetWeightUnits.toLocaleString()} units
+              </p>
+            </article>
+            <article>
+              <span>Priced executions</span>
+              <strong>{executionCostReadiness.portfolio.pricedExecutionCount}</strong>
+              <p>research prices are not fills</p>
+            </article>
+            <article data-status="blocked">
+              <span>Transaction cost</span>
+              <strong>—</strong>
+              <p>null, never silently zero</p>
+            </article>
+            <article data-status="blocked">
+              <span>Net return</span>
+              <strong>—</strong>
+              <p>not performance eligible</p>
+            </article>
+          </div>
+          <div
+            className="table-scroll exit-disposition-table"
+            tabIndex={0}
+            role="region"
+            aria-label="Exact portfolio targets without execution assumptions"
+          >
+            <table>
+              <caption className="sr-only">
+                Model targets and unavailable execution economics
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Rank</th>
+                  <th scope="col">Ticker</th>
+                  <th scope="col">Target</th>
+                  <th scope="col">Research price</th>
+                  <th scope="col">Execution price</th>
+                  <th scope="col">Estimated cost</th>
+                </tr>
+              </thead>
+              <tbody>
+                {executionCostReadiness.targets.map((target) => (
+                  <tr key={target.ticker}>
+                    <td>{target.rank}</td>
+                    <td>
+                      <strong>{target.ticker}</strong>
+                      <small>{target.sector}</small>
+                    </td>
+                    <td>
+                      {percent(target.targetWeight)}
+                      <small>{target.targetWeightUnits.toLocaleString()} units</small>
+                    </td>
+                    <td>${target.researchSnapshotPrice.toFixed(2)}</td>
+                    <td>
+                      <strong className="unverified">unavailable</strong>
+                    </td>
+                    <td>
+                      <strong className="unverified">unavailable</strong>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <aside className="exit-disposition-limitation" role="note">
+            <strong>No zero-cost shortcut</strong>
+            <p>{executionCostReadiness.limitations[2]}</p>
           </aside>
         </section>
 

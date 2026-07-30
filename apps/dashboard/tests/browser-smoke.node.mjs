@@ -201,6 +201,8 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
     assert.match(stdout, /Leaving the file is not a delisting/);
     assert.match(stdout, /BLD and HOLX remain unresolved/);
     assert.match(stdout, /Current is not historical/);
+    assert.match(stdout, /Nine targets\. Zero invented fills or costs/);
+    assert.match(stdout, /No zero-cost shortcut/);
     assert.match(stdout, /Two snapshots are not a backtest/);
     assert.match(stdout, /10<!-- --> controls unresolved/);
     assert.match(stdout, /No performance claim/);

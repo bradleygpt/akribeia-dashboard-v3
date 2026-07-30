@@ -1,0 +1,170 @@
+{
+  "reportSchemaVersion": "1.0.0",
+  "buildId": "preview-20260728-pipeline-v4-a34fc842220f",
+  "modelVersion": "3.0.0-preview.3",
+  "generatedAt": "2026-07-30T04:36:30Z",
+  "decisionObservedAt": "2026-07-28T17:06:46Z",
+  "status": "blocked-no-execution-economics",
+  "executionRecorded": false,
+  "netPerformanceEligible": false,
+  "portfolio": {
+    "positionCount": 9,
+    "totalTargetWeightUnits": 1000000000,
+    "weightScale": 1000000000,
+    "capitalBase": null,
+    "priorHoldingsAvailable": false,
+    "assumedExecutionAt": null,
+    "observedExecutionAt": null,
+    "pricedExecutionCount": 0,
+    "turnover": null,
+    "grossReturn": null,
+    "transactionCost": null,
+    "netReturn": null
+  },
+  "targets": [
+    {
+      "rank": 1,
+      "ticker": "MU",
+      "sector": "Technology",
+      "targetWeight": 0.12,
+      "targetWeightUnits": 120000000,
+      "researchSnapshotPrice": 939.15,
+      "executionPrice": null,
+      "tradeQuantity": null,
+      "estimatedCost": null
+    },
+    {
+      "rank": 2,
+      "ticker": "NVDA",
+      "sector": "Technology",
+      "targetWeight": 0.12,
+      "targetWeightUnits": 120000000,
+      "researchSnapshotPrice": 209.75,
+      "executionPrice": null,
+      "tradeQuantity": null,
+      "estimatedCost": null
+    },
+    {
+      "rank": 3,
+      "ticker": "OVV",
+      "sector": "Energy",
+      "targetWeight": 0.12,
+      "targetWeightUnits": 120000000,
+      "researchSnapshotPrice": 63.25,
+      "executionPrice": null,
+      "tradeQuantity": null,
+      "estimatedCost": null
+    },
+    {
+      "rank": 4,
+      "ticker": "BKNG",
+      "sector": "Consumer Cyclical",
+      "targetWeight": 0.12,
+      "targetWeightUnits": 120000000,
+      "researchSnapshotPrice": 179.15,
+      "executionPrice": null,
+      "tradeQuantity": null,
+      "estimatedCost": null
+    },
+    {
+      "rank": 5,
+      "ticker": "PCG",
+      "sector": "Utilities",
+      "targetWeight": 0.12,
+      "targetWeightUnits": 120000000,
+      "researchSnapshotPrice": 17.88,
+      "executionPrice": null,
+      "tradeQuantity": null,
+      "estimatedCost": null
+    },
+    {
+      "rank": 6,
+      "ticker": "NBIX",
+      "sector": "Healthcare",
+      "targetWeight": 0.12,
+      "targetWeightUnits": 120000000,
+      "researchSnapshotPrice": 175.76,
+      "executionPrice": null,
+      "tradeQuantity": null,
+      "estimatedCost": null
+    },
+    {
+      "rank": 7,
+      "ticker": "VST",
+      "sector": "Utilities",
+      "targetWeight": 0.12,
+      "targetWeightUnits": 120000000,
+      "researchSnapshotPrice": 168.44,
+      "executionPrice": null,
+      "tradeQuantity": null,
+      "estimatedCost": null
+    },
+    {
+      "rank": 8,
+      "ticker": "CTRA",
+      "sector": "Energy",
+      "targetWeight": 0.12,
+      "targetWeightUnits": 120000000,
+      "researchSnapshotPrice": 32.56,
+      "executionPrice": null,
+      "tradeQuantity": null,
+      "estimatedCost": null
+    },
+    {
+      "rank": 9,
+      "ticker": "SNDK",
+      "sector": "Technology",
+      "targetWeight": 0.04,
+      "targetWeightUnits": 40000000,
+      "researchSnapshotPrice": 1503,
+      "executionPrice": null,
+      "tradeQuantity": null,
+      "estimatedCost": null
+    }
+  ],
+  "controls": [
+    {
+      "key": "exact-target-weights",
+      "status": "pass",
+      "detail": "9 targets reconcile to 1000000000 exact weight units."
+    },
+    {
+      "key": "capital-base",
+      "status": "blocked",
+      "detail": "No portfolio notional or account capital base exists for share sizing."
+    },
+    {
+      "key": "prior-holdings",
+      "status": "blocked",
+      "detail": "No prior holdings exist, so trades and turnover cannot be derived."
+    },
+    {
+      "key": "execution-calendar",
+      "status": "blocked",
+      "detail": "No market calendar, next-session rule, or assumed execution timestamp exists."
+    },
+    {
+      "key": "executable-prices",
+      "status": "blocked",
+      "detail": "Research snapshot prices are not executable bid, ask, open, close, or VWAP records."
+    },
+    {
+      "key": "liquidity-slippage",
+      "status": "blocked",
+      "detail": "No spread, volume, participation, market-impact, or slippage model exists."
+    },
+    {
+      "key": "fees-taxes",
+      "status": "blocked",
+      "detail": "No commission, regulatory fee, borrow, financing, or tax schedule exists."
+    }
+  ],
+  "limitations": [
+    "Target weights are model instructions, not executed trades or holdings.",
+    "Research snapshot prices cannot be used as assumed fills.",
+    "Missing costs remain null and must never be silently treated as zero.",
+    "Gross return, transaction cost, and net return are unavailable without an evaluation interval.",
+    "This report is not a performance record or investment-performance claim."
+  ],
+  "notice": "Research preview only. Scores and model weights are evidence artifacts, not investment advice or a promise of future performance."
+}
