@@ -1,17 +1,22 @@
 import { createHash, randomUUID } from "node:crypto";
-import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
+import type { Dirent } from "node:fs";
+import { mkdir, readFile, readdir, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, join, relative, resolve } from "node:path";
 import {
   ActiveBuildPointerSchema,
   BuildManifestSchema,
   DailyEvidenceRecordSchema,
+  DailyObservationCollectionReceiptSchema,
   EvidenceReproducibilityReportSchema,
   PublishedPortfolioArtifactSchema,
   PublishedScoresArtifactSchema,
   VerticalSliceDashboardSchema,
   type DailyEvidenceRecord,
+  type DailyObservationCollectionReceipt,
   type EvidenceReproducibilityReport,
 } from "@akribeia/contracts";
+
+import { generateProspectiveReadiness } from "./prospective-readiness.js";
 
 export * from "./governance.js";
 export * from "./benchmark-readiness.js";
@@ -52,6 +57,29 @@ export interface GenerateDailyEvidenceResult {
   record: DailyEvidenceRecord;
   report: EvidenceReproducibilityReport;
 }
+
+export interface CollectDailyObservationOptions extends GenerateDailyEvidenceOptions {
+  prospectiveReportRoot: string;
+  prospectiveDashboardProjectionPath: string;
+  prospectivePublicReportRoot: string;
+  receiptPath?: string;
+  attemptedAt?: string;
+}
+
+export interface CollectDailyObservationResult {
+  receipt: DailyObservationCollectionReceipt;
+  receiptPath: string | null;
+}
+
+interface ActiveObservationCandidate {
+  asOfDate: string;
+  observedAt: string;
+  buildId: string;
+  modelVersion: string;
+}
+
+export type DailyObservationDateDecision =
+  "collect" | "no-op-duplicate-date" | "blocked-backdated-date";
 
 function sha256(payload: Uint8Array): string {
   return createHash("sha256").update(payload).digest("hex");
@@ -126,6 +154,158 @@ function assertSameLineage(
   ) {
     throw new Error(`${name} lineage does not match the active manifest.`);
   }
+}
+
+async function loadActiveObservationCandidate(
+  publishedDataRootInput: string,
+): Promise<ActiveObservationCandidate> {
+  const publishedDataRoot = resolve(publishedDataRootInput);
+  const pointerPath = join(publishedDataRoot, "active-build.json");
+  const pointer = ActiveBuildPointerSchema.parse(
+    parseJson(pointerPath, await readFile(pointerPath)),
+  );
+  const buildRoot = join(publishedDataRoot, "builds", pointer.activeBuildId);
+  const manifestPath = join(buildRoot, "manifest.json");
+  const manifest = BuildManifestSchema.parse(parseJson(manifestPath, await readFile(manifestPath)));
+
+  if (
+    manifest.buildId !== pointer.activeBuildId ||
+    manifest.status !== "healthy" ||
+    manifest.publication.decision !== "publish" ||
+    manifest.publishedAt === undefined
+  ) {
+    throw new Error("Active build is not a healthy published manifest.");
+  }
+
+  const receipt = manifest.files.dashboard;
+  if (receipt === undefined) {
+    throw new Error('Active manifest is missing required artifact "dashboard".');
+  }
+
+  const payload = await readFile(join(buildRoot, receipt.path));
+  if (payload.byteLength !== receipt.byteSize || sha256(payload) !== receipt.sha256) {
+    throw new Error('Active artifact "dashboard" failed byte-size or SHA-256 verification.');
+  }
+
+  const dashboard = VerticalSliceDashboardSchema.parse(parseJson("dashboard.json", payload));
+  assertSameLineage(
+    manifest.buildId,
+    manifest.schemaVersion,
+    manifest.modelVersion,
+    dashboard,
+    "dashboard",
+  );
+
+  return {
+    asOfDate: dashboard.source.observedAt.slice(0, 10),
+    observedAt: dashboard.source.observedAt,
+    buildId: manifest.buildId,
+    modelVersion: manifest.modelVersion,
+  };
+}
+
+async function listObservationDates(evidenceRootInput: string): Promise<string[]> {
+  const evidenceRoot = resolve(evidenceRootInput);
+  const dailyRoot = join(evidenceRoot, "daily");
+  let dateEntries: Dirent[];
+
+  try {
+    dateEntries = await readdir(dailyRoot, { withFileTypes: true });
+  } catch (error) {
+    if (hasErrorCode(error, "ENOENT")) {
+      return [];
+    }
+    throw error;
+  }
+
+  const dates = dateEntries
+    .filter((entry) => entry.isDirectory() && /^\d{4}-\d{2}-\d{2}$/.test(entry.name))
+    .sort((left, right) => left.name.localeCompare(right.name));
+
+  for (const dateEntry of dates) {
+    const dateRoot = join(dailyRoot, dateEntry.name);
+    const buildEntries = (await readdir(dateRoot, { withFileTypes: true }))
+      .filter((entry) => entry.isDirectory())
+      .sort((left, right) => left.name.localeCompare(right.name));
+
+    if (buildEntries.length === 0) {
+      throw new Error(`Daily evidence date directory "${dateEntry.name}" has no build records.`);
+    }
+
+    for (const buildEntry of buildEntries) {
+      const evidencePath = join(dateRoot, buildEntry.name, "evidence.json");
+      const reproducibilityPath = join(dateRoot, buildEntry.name, "reproducibility.json");
+      let evidencePayload: Uint8Array;
+      let reproducibilityPayload: Uint8Array;
+
+      try {
+        [evidencePayload, reproducibilityPayload] = await Promise.all([
+          readFile(evidencePath),
+          readFile(reproducibilityPath),
+        ]);
+      } catch (error) {
+        if (hasErrorCode(error, "ENOENT")) {
+          throw new Error(
+            `Daily evidence directory "${join(dateEntry.name, buildEntry.name)}" is incomplete.`,
+            { cause: error },
+          );
+        }
+        throw error;
+      }
+
+      const record = DailyEvidenceRecordSchema.parse(parseJson(evidencePath, evidencePayload));
+      const reproducibility = EvidenceReproducibilityReportSchema.parse(
+        parseJson(reproducibilityPath, reproducibilityPayload),
+      );
+      const relativeEvidencePath = relative(evidenceRoot, evidencePath).replaceAll("\\", "/");
+
+      if (
+        record.asOfDate !== dateEntry.name ||
+        record.build.buildId !== buildEntry.name ||
+        reproducibility.buildId !== record.build.buildId ||
+        reproducibility.asOfDate !== record.asOfDate ||
+        reproducibility.evidenceRecordPath !== relativeEvidencePath ||
+        reproducibility.evidenceRecordSha256 !== sha256(evidencePayload) ||
+        reproducibility.result !== "verified"
+      ) {
+        throw new Error(`Daily evidence ledger receipt does not reconcile at "${evidencePath}".`);
+      }
+    }
+  }
+
+  return dates.map(({ name }) => name);
+}
+
+export function classifyDailyObservationDate(
+  candidateDate: string,
+  observationDates: readonly string[],
+): DailyObservationDateDecision {
+  if (observationDates.includes(candidateDate)) {
+    return "no-op-duplicate-date";
+  }
+
+  const latestObservationDate = [...observationDates]
+    .sort((left, right) => left.localeCompare(right))
+    .at(-1);
+
+  if (latestObservationDate !== undefined && candidateDate < latestObservationDate) {
+    return "blocked-backdated-date";
+  }
+
+  return "collect";
+}
+
+async function maybeWriteCollectionReceipt(
+  path: string | undefined,
+  receipt: DailyObservationCollectionReceipt,
+): Promise<string | null> {
+  if (path === undefined) {
+    return null;
+  }
+
+  const resolvedPath = resolve(path);
+  await writeProjection(resolvedPath, deterministicJson(receipt));
+  return resolvedPath;
 }
 
 export async function generateDailyEvidence(
@@ -306,5 +486,103 @@ export async function generateDailyEvidence(
       : "published",
     record,
     report,
+  };
+}
+
+export async function collectDailyObservation(
+  options: CollectDailyObservationOptions,
+): Promise<CollectDailyObservationResult> {
+  const candidate = await loadActiveObservationCandidate(options.publishedDataRoot);
+  const [observationDates, publicObservationDates] = await Promise.all([
+    listObservationDates(options.evidenceRoot),
+    listObservationDates(options.publicEvidenceRoot),
+  ]);
+  if (observationDates.join(",") !== publicObservationDates.join(",")) {
+    throw new Error("Local and public daily evidence ledgers do not reconcile.");
+  }
+  const decision = classifyDailyObservationDate(candidate.asOfDate, observationDates);
+  const latestObservationDate = observationDates.at(-1) ?? null;
+  const attemptedAt = options.attemptedAt ?? new Date().toISOString();
+
+  if (decision !== "collect") {
+    const receipt = DailyObservationCollectionReceiptSchema.parse({
+      receiptSchemaVersion: "1.0.0",
+      attemptedAt,
+      disposition: decision,
+      candidate,
+      ledger: {
+        observationDates,
+        latestObservationDate,
+        observationDayCountBefore: observationDates.length,
+        observationDayCountAfter: observationDates.length,
+      },
+      dailyEvidence: null,
+      prospectiveReadiness: null,
+      reason:
+        decision === "no-op-duplicate-date"
+          ? `Observation date ${candidate.asOfDate} already exists in the immutable daily ledger; repeated builds do not add an independent day.`
+          : `Observation date ${candidate.asOfDate} is earlier than the latest immutable ledger date ${latestObservationDate}; backfilled observations are blocked.`,
+    });
+
+    return {
+      receipt,
+      receiptPath: await maybeWriteCollectionReceipt(options.receiptPath, receipt),
+    };
+  }
+
+  const daily = await generateDailyEvidence(options);
+  if (daily.asOfDate !== candidate.asOfDate || daily.buildId !== candidate.buildId) {
+    throw new Error("Collected daily evidence does not match the inspected active observation.");
+  }
+
+  const prospective = await generateProspectiveReadiness({
+    evidenceRoot: options.publicEvidenceRoot,
+    reportRoot: options.prospectiveReportRoot,
+    dashboardProjectionPath: options.prospectiveDashboardProjectionPath,
+    publicReportRoot: options.prospectivePublicReportRoot,
+  });
+  const [updatedDates, updatedPublicDates] = await Promise.all([
+    listObservationDates(options.evidenceRoot),
+    listObservationDates(options.publicEvidenceRoot),
+  ]);
+
+  if (
+    updatedDates.join(",") !== updatedPublicDates.join(",") ||
+    updatedDates.length !== observationDates.length + 1 ||
+    !updatedDates.includes(candidate.asOfDate)
+  ) {
+    throw new Error(
+      "Daily observation collection did not advance the immutable ledger by one date.",
+    );
+  }
+
+  const receipt = DailyObservationCollectionReceiptSchema.parse({
+    receiptSchemaVersion: "1.0.0",
+    attemptedAt,
+    disposition: "collected",
+    candidate,
+    ledger: {
+      observationDates,
+      latestObservationDate,
+      observationDayCountBefore: observationDates.length,
+      observationDayCountAfter: updatedDates.length,
+    },
+    dailyEvidence: {
+      disposition: daily.disposition,
+      evidencePath: daily.evidencePath,
+      reproducibilityReportPath: daily.reportPath,
+    },
+    prospectiveReadiness: {
+      disposition: prospective.disposition,
+      reportPath: prospective.reportPath,
+      uniqueObservationDayCount: prospective.report.progress.uniqueObservationDayCount,
+      remainingObservationDayCount: prospective.report.progress.remainingObservationDayCount,
+    },
+    reason: `Collected immutable observation date ${candidate.asOfDate} and regenerated the prospective-readiness gate.`,
+  });
+
+  return {
+    receipt,
+    receiptPath: await maybeWriteCollectionReceipt(options.receiptPath, receipt),
   };
 }

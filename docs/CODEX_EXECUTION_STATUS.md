@@ -4,7 +4,7 @@ Last updated: 2026-07-30
 
 ## Whole-product completion
 
-Estimated completion: **94%**
+Estimated completion: **95%**
 
 This estimate reflects working, tested product behavior rather than roadmap line-item count. V3 now
 has the Phase 0 baseline, core publication trust primitives, a deployed visible preview, complete
@@ -20,7 +20,7 @@ entrants and exits, receipted corporate-action and exit-disposition diagnostics,
 execution-cost readiness that never converts missing costs into zero, plus a visible inventory of
 benchmark proxy candidates that never converts snapshot price changes into returns. It is not
 ready to replace V2. A consolidated fold gate now prevents partial Phase 3 evidence from becoming
-a walk-forward or out-of-sample claim. A prospective-readiness gate now makes the live evidence clock explicit without treating one preserved receipt as a validation series.
+a walk-forward or out-of-sample claim. A prospective-readiness gate now makes the live evidence clock explicit without treating one preserved receipt as a validation series. The current unit adds a duplicate-safe, backfill-blocking collection command and a scheduled GitHub workflow that opens reviewable evidence pull requests only when the active source date genuinely advances.
 
 ## Completed milestones
 
@@ -62,25 +62,25 @@ a walk-forward or out-of-sample claim. A prospective-readiness gate now makes th
   deployed and merged through PR #26.
 - Consolidated walk-forward readiness with zero eligible folds or performance comparisons, privately
   deployed and merged through PR #27.
+- Prospective validation readiness with one of 30 immutable observation dates, zero invented execution or performance records, and explicit certification blockers, merged through PR #28.
 
 ## Current milestone
 
-**Prospective validation readiness**
+**Daily prospective observation collection**
 
-The current branch adds one immutable, fail-closed prospective certification gate:
+The current branch adds a fail-closed observation collector and zero-cost GitHub orchestration:
 
-1. every immutable daily evidence record is discovered from the published ledger and schema validated;
-2. the active daily projection must match its immutable ledger bytes exactly;
-3. active daily, execution, benchmark, and walk-forward reports must share build and model lineage;
-4. independent observation dates are counted separately from repeated builds on one date;
-5. the current ledger reports one of 30 required observation days and 29 remaining;
-6. executable portfolio, costed-return, approved-benchmark-comparison, and monthly-report counts remain zero;
-7. the exact protocol, drift, escalation, suspension, and retirement policies required for certification remain explicit blockers;
-8. forged progress, source eligibility, or certification claims fail the contract.
+1. the active dashboard artifact is checksum verified before its source observation date is trusted;
+2. an existing date produces an auditable no-op receipt and cannot inflate the independent-day count;
+3. a previously unseen date older than the latest ledger date is blocked before any evidence write;
+4. a genuinely newer date publishes the immutable daily record and regenerates prospective readiness;
+5. every collection attempt can emit a machine-readable receipt with before/after ledger counts;
+6. a scheduled/manual GitHub workflow uploads the receipt for every run;
+7. only a genuinely new observation creates a validated feature branch and reviewable pull request;
+8. no workflow pushes directly to main, fabricates source data, modifies V2, deploys production, or claims performance.
 
-The contract, generator, CLI, immutable/public projections, dashboard surface, packaging checks, and
-seven deterministic unit tests are implemented in the handoff patch. Full repository validation,
-commit, hosted preview, pull request, and merge remain pending in the source repository.
+The current preserved source date remains `2026-07-28`, so the first scheduled run is expected to be
+an honest no-op until a new point-in-time source build is published.
 
 ## Remaining milestones
 
@@ -119,15 +119,15 @@ commit, hosted preview, pull request, and merge remain pending in the source rep
   metadata rather than acquisition-time pipeline telemetry.
 - Eleven active tickers do not have an exact association in the captured SEC ticker files.
 - Permanent exchange-listing identity remains unavailable for all operating companies.
-- Prospective certification is blocked at one of 30 observation days, with zero executable portfolio records, zero costed returns, zero approved benchmark comparisons, and zero monthly validation reports.
+- Prospective certification is blocked at one of 30 observation days, with zero executable portfolio records, zero costed returns, zero approved benchmark comparisons, and zero monthly validation reports. Automated collection now refuses duplicates and backfills, but it cannot advance until the active source date genuinely changes.
 - Final V3 production cutover remains explicitly out of scope without user authorization.
 
 ## Test counts
 
-- Main-branch baseline: 167 Vitest tests across 23 files pass.
-- Current prospective unit adds 7 deterministic Vitest tests in one new file.
-- Expected post-patch suite: 174 Vitest tests across 24 files plus 6 rendered/browser tests, 180 total.
-- Full current-unit validation remains pending after the handoff patch is applied in the source repository.
+- Main-branch baseline after PR #28: 174 Vitest tests across 24 files plus 6 rendered/browser tests, 180 total.
+- Current daily-collection unit adds 7 deterministic Vitest tests in one new file.
+- Expected post-patch suite: 181 Vitest tests across 25 files plus 6 rendered/browser tests, 187 total.
+- Full current-unit validation remains pending in the source repository.
 
 ## Deployment status
 
