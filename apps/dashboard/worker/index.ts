@@ -9,6 +9,7 @@ import { handleEvidenceApi } from "./evidence-api";
 import { handleMarketHealthApi } from "./market-health-api";
 import { handleQuoteApi } from "./quote-api";
 import { handleResearchReferenceApi } from "./research-reference-api";
+import { handleSecurityReferenceApi } from "./security-reference-api";
 
 interface Env {
   ASSETS: Fetcher;
@@ -51,6 +52,10 @@ const worker = {
 
     if (referenceResponse !== null) {
       return referenceResponse;
+    }
+    const securityReferenceResponse = await handleSecurityReferenceApi(request);
+    if (securityReferenceResponse !== null) {
+      return securityReferenceResponse;
     }
 
     const apiResponse = await handleEvidenceApi(request, env);

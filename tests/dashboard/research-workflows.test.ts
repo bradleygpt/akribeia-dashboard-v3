@@ -17,6 +17,7 @@ import {
 } from "../../apps/dashboard/app/research-comparison.js";
 import { handleQuoteApi } from "../../apps/dashboard/worker/quote-api.js";
 import { handleResearchReferenceApi } from "../../apps/dashboard/worker/research-reference-api.js";
+import { handleSecurityReferenceApi } from "../../apps/dashboard/worker/security-reference-api.js";
 
 const baseFilters: ResearchFilters = {
   query: "",
@@ -247,6 +248,30 @@ describe("Wave 2 bounded API adapters", () => {
     expect(body.ticker).toBe("AAPL");
     expect(body.price).toBe(139);
     expect(body.history.close).toHaveLength(40);
+  });
+
+  it("validates and proxies immutable per-security V2 shards", async () => {
+    const invalid = await handleSecurityReferenceApi(
+      new Request("https://akribeia.test/api/v3/security-reference?ticker=%2Fetc%2Fpasswd"),
+    );
+    expect(invalid?.status).toBe(400);
+
+    const response = await handleSecurityReferenceApi(
+      new Request("https://akribeia.test/api/v3/security-reference?ticker=aapl&kind=detail"),
+      {
+        fetcher: async (input) => {
+          expect(String(input)).toContain(
+            "akribeia-data@9f2d2322fc52847e435dbb6a83137712788f5b52/data/detail/floor0/AAPL.json",
+          );
+          return new Response(JSON.stringify({ pillar_detail: {} }), { status: 200 });
+        },
+        now: new Date("2026-07-30T12:00:00Z"),
+      },
+    );
+    expect(response?.status).toBe(200);
+    const body = (await response?.json()) as { ok: boolean; source: { bulkDataCommit: string } };
+    expect(body.ok).toBe(true);
+    expect(body.source.bulkDataCommit).toBe("9f2d2322fc52847e435dbb6a83137712788f5b52");
   });
 
   it("rejects invalid tickers before reaching an upstream source", async () => {

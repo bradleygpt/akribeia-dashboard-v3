@@ -4,6 +4,7 @@ import { getResearchSecurity, loadResearchUniverse, type ResearchRow } from "../
 import { formatMarketCap, formatMoney, formatPercent, formatRatio } from "../../research-format";
 import { SecurityLivePanel } from "./security-live-panel";
 import { SecurityRadar } from "./security-radar";
+import { SecurityDeepReference } from "./security-deep-reference";
 
 interface PageProps {
   params: Promise<{ ticker: string }>;
@@ -201,6 +202,7 @@ export default async function SecurityDetailPage({ params }: PageProps) {
         <SecurityRadar pillars={security.pillars} grades={security.grades} />
 
         <SecurityLivePanel ticker={security.ticker} snapshotPrice={security.price} />
+        <SecurityDeepReference ticker={security.ticker} />
 
         <section className="security-factors" aria-labelledby="factor-heading">
           <div className="security-section-heading">

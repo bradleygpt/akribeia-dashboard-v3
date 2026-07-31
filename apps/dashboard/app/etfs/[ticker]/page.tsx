@@ -3,6 +3,7 @@ import { getResearchSecurity } from "../../research-data";
 import { formatMarketCap, formatMoney } from "../../research-format";
 import { ResearchHeader } from "../../research-header";
 import { SecurityLivePanel } from "../../research/[ticker]/security-live-panel";
+import { SecurityDeepReference } from "../../research/[ticker]/security-deep-reference";
 import { SecurityRadar } from "../../research/[ticker]/security-radar";
 import { EtfDetailReference } from "./etf-detail-reference";
 
@@ -81,6 +82,7 @@ export default async function EtfDetailPage({ params }: PageProps) {
         </section>
         <SecurityRadar pillars={fund.pillars} grades={fund.grades} />
         <SecurityLivePanel ticker={fund.ticker} snapshotPrice={fund.price} />
+        <SecurityDeepReference ticker={fund.ticker} />
         <EtfDetailReference ticker={fund.ticker} />
         <footer className="research-route-footer">
           <span>ETF stock-model and holdings look-through scores remain explicitly distinct</span>

@@ -2520,6 +2520,82 @@
   }
 }
 
+.security-deep-reference {
+  padding: 54px 4vw;
+  border-bottom: 1px solid var(--line);
+}
+
+.security-deep-reference[role="status"] {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 8rem;
+}
+
+.security-method-pillars {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.security-method-pillars details {
+  border: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.security-method-pillars summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  cursor: pointer;
+  padding: 0.8rem 1rem;
+}
+
+.security-method-pillars table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.security-method-pillars th,
+.security-method-pillars td {
+  padding: 0.55rem;
+  border-top: 1px solid var(--line);
+  text-align: left;
+}
+
+.security-method-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.security-method-columns article {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  padding: 1rem;
+}
+
+.security-method-columns dl div {
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.security-method-columns dd {
+  margin: 0.25rem 0 0;
+}
+
+.security-method-columns small {
+  color: var(--muted);
+}
+
+@media (max-width: 760px) {
+  .security-deep-reference[role="status"],
+  .security-method-columns {
+    align-items: flex-start;
+    grid-template-columns: 1fr;
+  }
+}
+
 .etf-directory-controls {
   display: grid;
   grid-template-columns: 1.4fr 1fr auto;

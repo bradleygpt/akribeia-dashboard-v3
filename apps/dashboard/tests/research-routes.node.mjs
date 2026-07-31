@@ -43,6 +43,7 @@ test("server-renders dedicated security detail with preserved factors", async ()
   assert.match(html, /Five-pillar profile/i);
   assert.match(html, /Five-pillar balance/);
   assert.match(html, /Accessible radar values/);
+  assert.match(html, /Loading preserved V2 methodology detail/);
   assert.match(html, /Higher is better/);
   assert.match(html, /Price history and risk/);
   assert.match(html, /Forward P\/E/);
