@@ -4,7 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import type { ResearchRow } from "../research-data";
 import { formatMarketCap, formatMoney, formatPercent } from "../research-format";
 
-type Section = "universe" | "compare" | "builder" | "lookthrough" | "reverse" | "maps";
+type Section =
+  "universe" | "find" | "index" | "compare" | "builder" | "lookthrough" | "reverse" | "maps";
 
 interface Allocation {
   category: string;
@@ -95,6 +96,28 @@ interface ReverseReference {
   stocks: Record<string, { n: number; etfs: Array<{ etf: string; w: number }> }>;
 }
 
+interface DescriptionReference {
+  generated_at?: string;
+  descriptions: Record<string, string>;
+}
+
+interface IndexCandidate {
+  ticker: string;
+  name: string;
+  sector: string;
+  mktcap_b: number;
+  passive_buy_usd_b: number;
+  adv_days: number;
+  quant_rating: string;
+}
+
+interface IndexReference {
+  generated_at?: string;
+  method?: string;
+  sp500_candidates: IndexCandidate[];
+  ndx_candidates: IndexCandidate[];
+}
+
 interface ReferenceEnvelope<T> {
   ok: boolean;
   payload?: T;
@@ -111,7 +134,7 @@ function ratingClass(rating: string): string {
 
 function EtfLink({ ticker, available }: { ticker: string; available: ReadonlySet<string> }) {
   return available.has(ticker) ? (
-    <a href={`/research/${encodeURIComponent(ticker)}`}>{ticker}</a>
+    <a href={`/etfs/${encodeURIComponent(ticker)}`}>{ticker}</a>
   ) : (
     <strong title="Expanded ETF reference coverage; no preserved security-detail record">
       {ticker}
@@ -122,10 +145,12 @@ function EtfLink({ ticker, available }: { ticker: string; available: ReadonlySet
 function ReferenceState({
   loading,
   error,
+  onRetry,
   children,
 }: {
   loading: boolean;
   error: string | null;
+  onRetry?: () => void;
   children: React.ReactNode;
 }) {
   if (loading) {
@@ -141,6 +166,11 @@ function ReferenceState({
       <div className="etf-reference-state etf-reference-error" role="status">
         <strong>ETF reference data is unavailable.</strong>
         <span>{error} No holdings, look-through score, or allocation has been invented.</span>
+        {onRetry ? (
+          <button type="button" onClick={onRetry}>
+            Retry pinned source
+          </button>
+        ) : null}
       </div>
     );
   }
@@ -153,16 +183,31 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
   const [lookthrough, setLookthrough] = useState<LookthroughReference | null>(null);
   const [holdings, setHoldings] = useState<HoldingsReference | null>(null);
   const [reverse, setReverse] = useState<ReverseReference | null>(null);
+  const [descriptions, setDescriptions] = useState<DescriptionReference | null>(null);
+  const [indexReference, setIndexReference] = useState<IndexReference | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<string[]>(rows.slice(0, 3).map(({ ticker }) => ticker));
   const [template, setTemplate] = useState("");
   const [capital, setCapital] = useState(100_000);
   const [reverseTicker, setReverseTicker] = useState("NVDA");
+  const [directoryQuery, setDirectoryQuery] = useState("");
+  const [assetClass, setAssetClass] = useState("all");
+  const [basket, setBasket] = useState("AAPL, MSFT, NVDA");
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
-    const datasets = ["etf", "etf-lookthrough", "etf-holdings", "etf-reverse"] as const;
+    setLoading(true);
+    setError(null);
+    const datasets = [
+      "etf",
+      "etf-lookthrough",
+      "etf-holdings",
+      "etf-reverse",
+      "etf-descriptions",
+      "index-add-candidates",
+    ] as const;
     Promise.all(
       datasets.map((dataset) =>
         fetch(`/api/v3/research-reference?dataset=${dataset}`, {
@@ -177,12 +222,14 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
         }),
       ),
     )
-      .then(([etfData, lookthroughData, holdingsData, reverseData]) => {
+      .then(([etfData, lookthroughData, holdingsData, reverseData, descriptionData, indexData]) => {
         const parsedReference = etfData as EtfReference;
         setReference(parsedReference);
         setLookthrough(lookthroughData as LookthroughReference);
         setHoldings(holdingsData as HoldingsReference);
         setReverse(reverseData as ReverseReference);
+        setDescriptions(descriptionData as DescriptionReference);
+        setIndexReference(indexData as IndexReference);
         setTemplate(Object.keys(parsedReference.templates)[0] ?? "");
         setLoading(false);
       })
@@ -194,7 +241,7 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
         setLoading(false);
       });
     return () => controller.abort();
-  }, []);
+  }, [attempt]);
 
   const available = useMemo(() => new Set(rows.map(({ ticker }) => ticker)), [rows]);
   const byTicker = useMemo(() => new Map(rows.map((row) => [row.ticker, row])), [rows]);
@@ -207,8 +254,63 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
       ),
     [rows],
   );
+  const directoryRows = useMemo(() => {
+    const needle = directoryQuery.trim().toLowerCase();
+    return orderedRows.filter((row) => {
+      const referenceClass = lookthrough?.etfs[row.ticker]?.asset_class ?? "unclassified";
+      return (
+        (assetClass === "all" || referenceClass === assetClass) &&
+        (!needle ||
+          row.ticker.toLowerCase().includes(needle) ||
+          row.name.toLowerCase().includes(needle) ||
+          (descriptions?.descriptions[row.ticker] ?? "").toLowerCase().includes(needle))
+      );
+    });
+  }, [assetClass, descriptions, directoryQuery, lookthrough, orderedRows]);
+  const assetClasses = useMemo(
+    () =>
+      [
+        ...new Set(
+          rows.map(({ ticker }) => lookthrough?.etfs[ticker]?.asset_class ?? "unclassified"),
+        ),
+      ].sort(),
+    [lookthrough, rows],
+  );
   const activeTemplate = reference?.templates[template];
   const reverseMatch = reverse?.stocks[reverseTicker.trim().toUpperCase()];
+  const basketTickers = [
+    ...new Set(
+      basket
+        .split(/[\s,;]+/)
+        .map((ticker) => ticker.trim().toUpperCase())
+        .filter(Boolean),
+    ),
+  ];
+  const basketMatches = useMemo(
+    () =>
+      holdings
+        ? Object.entries(holdings.etfs)
+            .map(([ticker, datum]) => {
+              const matched = (datum.holdings ?? []).filter(({ t }) => basketTickers.includes(t));
+              return {
+                ticker,
+                name: datum.name ?? ticker,
+                matched,
+                matchedWeight: matched.reduce((sum, { w }) => sum + w, 0),
+                coverage: datum.coverage ?? 0,
+                asOf: datum.as_of,
+              };
+            })
+            .filter(({ matched }) => matched.length > 0)
+            .toSorted(
+              (left, right) =>
+                right.matched.length - left.matched.length ||
+                right.matchedWeight - left.matchedWeight ||
+                left.ticker.localeCompare(right.ticker),
+            )
+        : [],
+    [basketTickers, holdings],
+  );
 
   function toggleSelected(ticker: string) {
     setSelected((current) =>
@@ -226,6 +328,8 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
         {(
           [
             ["universe", "Scored universe"],
+            ["find", "Find your ETF"],
+            ["index", "Index Watch"],
             ["compare", "Comparison"],
             ["builder", "Portfolio builder"],
             ["lookthrough", "Holdings + look-through"],
@@ -257,6 +361,27 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
             </span>
           </div>
           <div className="research-table-scroll">
+            <div className="etf-directory-controls">
+              <label>
+                <span>Search funds</span>
+                <input
+                  type="search"
+                  value={directoryQuery}
+                  onChange={(event) => setDirectoryQuery(event.target.value)}
+                  placeholder="Ticker, fund name or description"
+                />
+              </label>
+              <label>
+                <span>Asset class</span>
+                <select value={assetClass} onChange={(event) => setAssetClass(event.target.value)}>
+                  <option value="all">All classes</option>
+                  {assetClasses.map((value) => (
+                    <option key={value}>{value}</option>
+                  ))}
+                </select>
+              </label>
+              <strong>{directoryRows.length} of 70 funds</strong>
+            </div>
             <table className="research-table etf-universe-table">
               <thead>
                 <tr>
@@ -272,11 +397,12 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
                 </tr>
               </thead>
               <tbody>
-                {orderedRows.map((row) => (
+                {directoryRows.map((row) => (
                   <tr key={row.ticker}>
                     <td className="research-security-cell">
-                      <a href={`/research/${encodeURIComponent(row.ticker)}`}>{row.ticker}</a>
+                      <a href={`/etfs/${encodeURIComponent(row.ticker)}`}>{row.ticker}</a>
                       <span>{row.name}</span>
+                      <small>{descriptions?.descriptions[row.ticker] ?? ""}</small>
                     </td>
                     <td className="research-number">{row.composite?.toFixed(2) ?? "—"}</td>
                     <td>
@@ -314,6 +440,126 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
         </section>
       ) : null}
 
+      {section === "find" ? (
+        <section className="etf-tool" aria-labelledby="etf-find-heading">
+          <div className="research-subheading">
+            <div>
+              <p className="mono-label">BASKET → REFERENCE FUNDS</p>
+              <h2 id="etf-find-heading">Find your ETF</h2>
+            </div>
+            <span>Ranked by matched holdings, then captured basket weight.</span>
+          </div>
+          <ReferenceState
+            loading={loading}
+            error={error}
+            onRetry={() => setAttempt((current) => current + 1)}
+          >
+            <label className="etf-reverse-search">
+              <span>Stock basket (comma, semicolon or space separated)</span>
+              <input
+                type="search"
+                value={basket}
+                onChange={(event) => setBasket(event.target.value.toUpperCase())}
+                placeholder="AAPL, MSFT, NVDA"
+              />
+            </label>
+            {basketTickers.length === 0 || basketMatches.length === 0 ? (
+              <div className="etf-reference-state" role="status">
+                <strong>No captured top-holdings match.</strong>
+                <span>Partial source coverage is not evidence that no ETF owns the basket.</span>
+              </div>
+            ) : (
+              <div className="etf-find-results">
+                {basketMatches.slice(0, 25).map((match) => (
+                  <article key={match.ticker}>
+                    <header>
+                      <a href={`/etfs/${encodeURIComponent(match.ticker)}`}>{match.ticker}</a>
+                      <strong>
+                        {match.matched.length}/{basketTickers.length} matched
+                      </strong>
+                    </header>
+                    <p>{match.name}</p>
+                    <span>
+                      {(match.matchedWeight * 100).toFixed(1)}% captured basket weight · source
+                      coverage {(match.coverage * 100).toFixed(0)}%
+                    </span>
+                    <small>
+                      {match.matched.map(({ t, w }) => `${t} ${(w * 100).toFixed(1)}%`).join(" · ")}{" "}
+                      · as of {match.asOf ?? "unavailable"}
+                    </small>
+                  </article>
+                ))}
+              </div>
+            )}
+          </ReferenceState>
+        </section>
+      ) : null}
+
+      {section === "index" ? (
+        <section className="etf-tool" aria-labelledby="etf-index-heading">
+          <div className="research-subheading">
+            <div>
+              <p className="mono-label">RULES-GATED PASSIVE FLOW WATCH</p>
+              <h2 id="etf-index-heading">Index-add candidates</h2>
+            </div>
+            <span>Committee discretion is not modeled; these are candidates, not predictions.</span>
+          </div>
+          <ReferenceState
+            loading={loading}
+            error={error}
+            onRetry={() => setAttempt((current) => current + 1)}
+          >
+            {indexReference ? (
+              <>
+                <p className="etf-disclaimer">
+                  Generated {indexReference.generated_at ?? "unavailable"} ·{" "}
+                  {indexReference.method ?? "rules-gated eligibility"}
+                </p>
+                <div className="etf-index-columns">
+                  {[
+                    ["S&P 500 candidates", indexReference.sp500_candidates],
+                    ["Nasdaq-100 candidates", indexReference.ndx_candidates],
+                  ].map(([title, candidates]) => (
+                    <article key={title as string}>
+                      <h3>{title as string}</h3>
+                      <div className="research-table-scroll">
+                        <table>
+                          <thead>
+                            <tr>
+                              <th scope="col">Security</th>
+                              <th scope="col">Mkt cap</th>
+                              <th scope="col">Passive buy</th>
+                              <th scope="col">ADV days</th>
+                              <th scope="col">Rating</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {(candidates as IndexCandidate[]).map((candidate) => (
+                              <tr key={candidate.ticker}>
+                                <td>
+                                  <a href={`/research/${encodeURIComponent(candidate.ticker)}`}>
+                                    {candidate.ticker}
+                                  </a>
+                                  <span>{candidate.name}</span>
+                                </td>
+                                <td>${candidate.mktcap_b.toFixed(1)}B</td>
+                                <td>${candidate.passive_buy_usd_b.toFixed(2)}B</td>
+                                <td>{candidate.adv_days.toFixed(1)}</td>
+                                <td>{candidate.quant_rating}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </>
+            ) : null}
+          </ReferenceState>
+        </section>
+      ) : null}
+
       {section === "compare" ? (
         <section className="etf-tool" aria-labelledby="etf-compare-heading">
           <div className="research-subheading">
@@ -337,6 +583,9 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
             ))}
           </div>
           <div className="research-comparison-scroll">
+            <button type="button" onClick={() => setSelected([])}>
+              Clear comparison
+            </button>
             <table className="etf-comparison-table">
               <thead>
                 <tr>
@@ -435,7 +684,11 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
             </div>
             <span>Allocation arithmetic only; expected ranges are dated V2 reference labels.</span>
           </div>
-          <ReferenceState loading={loading} error={error}>
+          <ReferenceState
+            loading={loading}
+            error={error}
+            onRetry={() => setAttempt((current) => current + 1)}
+          >
             {reference !== null && activeTemplate !== undefined ? (
               <>
                 <div className="etf-builder-controls">
@@ -524,7 +777,11 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
             </div>
             <span>Ratings are suppressed below the preserved 50% mapped-weight policy.</span>
           </div>
-          <ReferenceState loading={loading} error={error}>
+          <ReferenceState
+            loading={loading}
+            error={error}
+            onRetry={() => setAttempt((current) => current + 1)}
+          >
             {lookthrough !== null && holdings !== null ? (
               <>
                 <div className="etf-reference-summary">
@@ -605,7 +862,11 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
             </div>
             <span>Find the pinned reference ETFs whose reported top holdings contain a stock.</span>
           </div>
-          <ReferenceState loading={loading} error={error}>
+          <ReferenceState
+            loading={loading}
+            error={error}
+            onRetry={() => setAttempt((current) => current + 1)}
+          >
             {reverse !== null ? (
               <>
                 <label className="etf-reverse-search">
@@ -657,7 +918,11 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
               Preserved V2 mapping labels; use cases are informational, not recommendations.
             </span>
           </div>
-          <ReferenceState loading={loading} error={error}>
+          <ReferenceState
+            loading={loading}
+            error={error}
+            onRetry={() => setAttempt((current) => current + 1)}
+          >
             {reference !== null ? (
               <div className="etf-map-columns">
                 {[

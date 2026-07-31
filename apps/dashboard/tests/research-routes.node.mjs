@@ -72,9 +72,21 @@ test("server-renders the ETF Center", async () => {
   assert.match(html, /Then see through it/);
   assert.match(html, /Scored universe/);
   assert.match(html, /Portfolio builder/);
+  assert.match(html, /Find your ETF/);
+  assert.match(html, /Index Watch/);
   assert.match(html, /Holdings \+ look-through/);
   assert.match(html, /Reverse lookup/);
   assert.match(html, />70</);
+});
+
+test("server-renders a dedicated ETF detail route", async () => {
+  const response = await render("/etfs/SPY");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  assert.match(html, /SPY ETF Research — Akribeia/);
+  assert.match(html, /ETF-SPECIFIC REFERENCE/);
+  assert.match(html, /Five-pillar balance/);
+  assert.match(html, /Loading pinned ETF holdings and classification/);
 });
 
 test("server-renders the source-attributed Risk Radar shell", async () => {

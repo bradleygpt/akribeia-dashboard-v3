@@ -6,10 +6,12 @@ const USER_AGENT = "Mozilla/5.0 (compatible; Akribeia/3.0; +https://akribeia.com
 const DATASETS = {
   "risk-radar": "risk_radar.json",
   etf: "etf.json",
+  "etf-descriptions": "etf_descriptions.json",
   "etf-holdings": "etf_holdings.json",
   "etf-lookthrough": "etf_lookthrough.json",
   "etf-reverse": "etf_reverse.json",
   "sector-narratives": "sector_narratives.json",
+  "index-add-candidates": "index_add_candidates.json",
   "macro-forecasts": "macro_forecasts.json",
   "macro-rotation": "macro_rotation.json",
 } as const;

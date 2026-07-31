@@ -2520,6 +2520,138 @@
   }
 }
 
+.etf-directory-controls {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr auto;
+  gap: 0.75rem;
+  align-items: end;
+  margin-bottom: 1rem;
+}
+
+.etf-directory-controls label {
+  display: grid;
+  gap: 0.3rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.etf-directory-controls input,
+.etf-directory-controls select {
+  width: 100%;
+}
+
+.etf-universe-table .research-security-cell small {
+  display: block;
+  max-width: 360px;
+  color: var(--muted);
+  font-weight: 400;
+  white-space: normal;
+}
+
+.etf-find-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.75rem;
+}
+
+.etf-find-results article {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  padding: 1rem;
+}
+
+.etf-find-results header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.etf-find-results article > span,
+.etf-find-results small {
+  display: block;
+  margin-top: 0.45rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.etf-index-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.etf-index-columns article {
+  min-width: 0;
+}
+
+.etf-index-columns table,
+.etf-detail-reference table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.etf-index-columns th,
+.etf-index-columns td,
+.etf-detail-reference th,
+.etf-detail-reference td {
+  padding: 0.6rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+.etf-index-columns td span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+.etf-detail-reference {
+  padding: 54px 4vw;
+  border-bottom: 1px solid var(--line);
+}
+
+.etf-detail-reference[role="status"] {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 8rem;
+}
+
+.etf-detail-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.etf-detail-summary div {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  padding: 0.8rem;
+}
+
+.etf-detail-summary dt {
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+.etf-detail-summary dd {
+  margin: 0.3rem 0 0;
+  font-weight: 800;
+}
+
+@media (max-width: 760px) {
+  .etf-directory-controls,
+  .etf-index-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .etf-detail-summary {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 .sector-explorer {
   padding: 54px 4vw;
   border-bottom: 1px solid var(--line);

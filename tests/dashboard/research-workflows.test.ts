@@ -277,5 +277,16 @@ describe("Wave 2 bounded API adapters", () => {
     };
     expect(body.ok).toBe(true);
     expect(body.source.v2AppCommit).toBe("b477349a8691fdc5000641a6ae2893dbbfae2de6");
+
+    const indexCandidates = await handleResearchReferenceApi(
+      new Request("https://akribeia.test/api/v3/research-reference?dataset=index-add-candidates"),
+      {
+        fetcher: async () =>
+          new Response(JSON.stringify({ sp500_candidates: [], ndx_candidates: [] }), {
+            status: 200,
+          }),
+      },
+    );
+    expect(indexCandidates?.status).toBe(200);
   });
 });
