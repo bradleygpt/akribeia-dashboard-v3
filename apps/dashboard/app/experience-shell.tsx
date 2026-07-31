@@ -1,7 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import type { ReactNode } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import LoadingOverlay from "./loading-overlay";
 
@@ -20,11 +19,13 @@ function describeDestination(url: URL): string {
   return "Resolving Akribeia research";
 }
 
-export function ExperienceShell({ children }: { children: ReactNode }) {
+export function ExperienceShell() {
+  const pathname = usePathname();
   const router = useRouter();
   const [introState, setIntroState] = useState<IntroState>("checking");
   const [routeBusy, setRouteBusy] = useState(false);
   const [routeLabel, setRouteLabel] = useState("Resolving Akribeia research");
+  const targetPath = useRef<string | null>(null);
   const completionTimer = useRef<number | null>(null);
   const fallbackTimer = useRef<number | null>(null);
 
@@ -63,6 +64,32 @@ export function ExperienceShell({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    document.body.classList.toggle("akribeia-experience-ready", introState === "ready");
+    document.documentElement.classList.toggle(
+      "akribeia-overlay-active",
+      introState !== "ready" || routeBusy,
+    );
+
+    return () => {
+      document.body.classList.remove("akribeia-experience-ready");
+      document.documentElement.classList.remove("akribeia-overlay-active");
+    };
+  }, [introState, routeBusy]);
+
+  useEffect(() => {
+    if (!routeBusy || targetPath.current === null || pathname !== targetPath.current) return;
+
+    if (completionTimer.current !== null) {
+      window.clearTimeout(completionTimer.current);
+    }
+
+    completionTimer.current = window.setTimeout(() => {
+      setRouteBusy(false);
+      targetPath.current = null;
+    }, 260);
+  }, [pathname, routeBusy]);
+
+  useEffect(() => {
     function handleClick(event: MouseEvent) {
       if (
         event.defaultPrevented ||
@@ -93,6 +120,7 @@ export function ExperienceShell({ children }: { children: ReactNode }) {
 
       event.preventDefault();
       clearTimers();
+      targetPath.current = destination.pathname;
       setRouteLabel(describeDestination(destination));
       setRouteBusy(true);
 
@@ -105,24 +133,25 @@ export function ExperienceShell({ children }: { children: ReactNode }) {
         } catch {
           window.location.assign(destination.href);
         }
-      }, 180);
-
-      completionTimer.current = window.setTimeout(() => {
-        setRouteBusy(false);
-      }, 1400);
+      }, 120);
 
       fallbackTimer.current = window.setTimeout(() => {
         if (window.location.href === startingLocation) {
           window.location.assign(destination.href);
         }
-      }, 5000);
+      }, 8000);
     }
 
     function handleHistoryNavigation() {
       clearTimers();
+      targetPath.current = window.location.pathname;
       setRouteLabel("Restoring the previous research view");
       setRouteBusy(true);
-      completionTimer.current = window.setTimeout(() => setRouteBusy(false), 900);
+
+      fallbackTimer.current = window.setTimeout(() => {
+        setRouteBusy(false);
+        targetPath.current = null;
+      }, 8000);
     }
 
     document.addEventListener("click", handleClick, true);
@@ -141,12 +170,15 @@ export function ExperienceShell({ children }: { children: ReactNode }) {
     } catch {
       // The intro still completes when storage is unavailable.
     }
+
     setIntroState("ready");
   }, []);
 
   return (
     <>
-      <div className={`experience-content experience-content--${introState}`}>{children}</div>
+      {introState === "checking" ? (
+        <div className="akribeia-intro-veil" aria-hidden="true" />
+      ) : null}
 
       {introState === "playing" ? <LoadingOverlay onDone={finishIntro} /> : null}
 

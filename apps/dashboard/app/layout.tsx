@@ -51,7 +51,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ExperienceShell>{children}</ExperienceShell>
+        <ExperienceShell />
+        {children}
       </body>
     </html>
   );
