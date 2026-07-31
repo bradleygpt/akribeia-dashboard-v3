@@ -58,6 +58,8 @@ test("server-renders sector analytics", async () => {
   assert.match(html, /Sector research landscape/);
   assert.match(html, /Scale and aggregate valuation/);
   assert.match(html, /Full sector ledger/);
+  assert.match(html, /Inspect the companies behind the aggregate/);
+  assert.match(html, /Loading pinned V2 sector narrative/);
   assert.match(html, /Technology/);
   assert.match(html, /1,291 stocks/);
 });

@@ -1,6 +1,7 @@
-import { buildSectorResearch } from "../research-data";
+import { buildSectorResearch, loadResearchUniverse } from "../research-data";
 import { ResearchHeader } from "../research-header";
 import { formatMarketCap, formatRatio } from "../research-format";
+import { SectorExplorer } from "./sector-explorer";
 
 export const metadata = {
   title: "Sector Analytics — Akribeia",
@@ -12,6 +13,7 @@ const RATING_COLUMNS = ["Strong Buy+", "Strong Buy", "Buy", "Hold", "Sell", "Str
 
 export default function SectorAnalyticsPage() {
   const sectors = buildSectorResearch();
+  const universe = loadResearchUniverse();
   const largestMarketCap = Math.max(...sectors.map(({ totalMarketCapB }) => totalMarketCapB));
 
   return (
@@ -30,6 +32,11 @@ export default function SectorAnalyticsPage() {
             same preserved stock population used by the screener.
           </p>
         </section>
+
+        <SectorExplorer
+          rows={universe.rows.filter(({ isEtf }) => !isEtf)}
+          sectors={sectors.map(({ sector }) => sector)}
+        />
 
         <section className="sector-landscape" aria-labelledby="sector-landscape-heading">
           <div className="research-subheading">
