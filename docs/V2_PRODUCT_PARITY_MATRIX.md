@@ -77,16 +77,16 @@ tabs.
 
 The Wave 2 core-research unit restores the six workflows named in the handoff without claiming
 that all adjacent Wave 2/3 rows are complete. Detailed scope, evidence and remaining gaps are in
-`docs/WAVE2_IMPLEMENTATION_PLAN.md`.
+`docs/WAVE2_CORE_RESEARCH_PLAN.md`.
 
 | Capability                                       | V3 implementation                                                                                                                 | Status after Wave 2 core unit |
 | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
-| Full screener                                    | `/research`; complete 1,361-row no-floor universe, four preserved scoring models, six named quick screens and advanced controls   | present                       |
-| Search, sorting, filtering, comparison           | ticker/company/industry search; asset/sector/rating/FV/score/cap filters; six sorts; four-name comparison; device-local watchlist | present                       |
-| Security detail                                  | `/research/:ticker`; snapshot valuation, buy point, pillars, factors, live quote/history, V2-compatible price risk and peers      | present                       |
-| Risk / radar                                     | `/risk`; pinned source-attributed Risk Radar; security-detail price/risk visualization                                            | present                       |
-| Sector analytics                                 | `/sectors`; all 1,291 stocks reconcile into aggregates, valuation, quality, dispersion, ratings and pillars                       | present                       |
-| ETF Center                                       | `/etfs`; 70 scored ETFs, comparison, preserved templates, holdings/look-through, rating suppression, reverse lookup and maps      | present                       |
+| Full screener                                    | `/research`; complete 1,361-row no-floor universe, four preserved scoring models, six named quick screens and basic controls      | partial: V2 metadata ranges, nine presets and multi-select filters remain |
+| Search, sorting, filtering, comparison           | ticker/company/industry search; basic filters; six sorts; four-name comparison; device-local watchlist                            | partial: URL restore, model-correct compare and V2 filter semantics remain |
+| Security detail                                  | `/research/:ticker`; snapshot valuation, buy point, pillars, factors, live quote/history, V2-compatible price risk and peers      | partial: ticker transition, radar geometry/rank and deep state remain |
+| Risk / radar                                     | `/risk`; pinned source-attributed Risk Radar; security-detail price/risk visualization                                            | partial: deterministic radar geometry and sparse-axis evidence remain |
+| Sector analytics                                 | `/sectors`; all 1,291 stocks reconcile into aggregates, valuation, quality, dispersion, ratings and pillars                       | partial: constituent drill-down, filters and narratives remain |
+| ETF Center                                       | `/etfs`; 70 scored ETFs, comparison, templates, holdings/look-through, rating suppression, reverse lookup and maps                | partial: Find Your ETF, Index Watch, directory filters and ETF detail remain |
 | Quote API                                        | `/api/v3/quote` and `/api/v3/quotes`; bounded keyless Yahoo adapters                                                              | present                       |
 | Pinned reference API                             | allowlisted Risk Radar and ETF datasets from the preserved V2 application commit                                                  | present                       |
 | User portfolio / Monte Carlo                     | V3 published portfolio is not the V2 user workflow                                                                                | open                          |
