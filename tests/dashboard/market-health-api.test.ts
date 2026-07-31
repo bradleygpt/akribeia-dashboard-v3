@@ -40,6 +40,24 @@ const pgiBakedPayload = {
   money_market_t: 7.95,
   as_of: "2026-07-01",
 };
+const expectedMarketStaticPath =
+  "/bradleygpt/quant-dashboard-pro-v2/b477349a8691fdc5000641a6ae2893dbbfae2de6/public/data/market_static.json";
+
+function isExpectedMarketStaticUrl(input: string | URL | Request): boolean {
+  try {
+    const url = new URL(input instanceof Request ? input.url : input.toString());
+    return (
+      url.protocol === "https:" &&
+      url.hostname === "raw.githubusercontent.com" &&
+      url.port === "" &&
+      url.pathname === expectedMarketStaticPath &&
+      url.search === "" &&
+      url.hash === ""
+    );
+  } catch {
+    return false;
+  }
+}
 
 function healthyFetcher(input: string | URL | Request): Promise<Response> {
   const url = String(input);
@@ -137,7 +155,7 @@ describe("V3 Market Health server adapter", () => {
   it("returns valid baked data with an explicit partial state when live sources fail", async () => {
     const fetcher = (input: string | URL | Request) =>
       Promise.resolve(
-        String(input).includes("raw.githubusercontent.com")
+        isExpectedMarketStaticUrl(input)
           ? Response.json(staticPayload)
           : new Response("Unavailable", { status: 503 }),
       );
@@ -151,6 +169,22 @@ describe("V3 Market Health server adapter", () => {
     expect(snapshot.staticData?.earnings_forecast?.sp500_earnings_growth).toBe(8.1);
     expect(snapshot.live.vix.ok).toBe(false);
     expect(snapshot.unavailable).toContain("major indices");
+  });
+
+  it("matches the baked static source by exact URL components", () => {
+    expect(
+      isExpectedMarketStaticUrl(`https://raw.githubusercontent.com${expectedMarketStaticPath}`),
+    ).toBe(true);
+    expect(
+      isExpectedMarketStaticUrl(
+        `https://raw.githubusercontent.com.example.invalid${expectedMarketStaticPath}`,
+      ),
+    ).toBe(false);
+    expect(
+      isExpectedMarketStaticUrl(
+        `https://example.invalid/raw.githubusercontent.com${expectedMarketStaticPath}`,
+      ),
+    ).toBe(false);
   });
 
   it("fails closed when both baked and live sources are unavailable", async () => {
