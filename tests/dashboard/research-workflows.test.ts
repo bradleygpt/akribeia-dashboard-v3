@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildSectorResearch,
   loadResearchUniverse,
+  V2_SCREENER_CONFIG,
 } from "../../apps/dashboard/app/research-data.js";
 import {
   filterResearchRows,
@@ -15,9 +16,11 @@ import { handleResearchReferenceApi } from "../../apps/dashboard/worker/research
 const baseFilters: ResearchFilters = {
   query: "",
   assetType: "all",
-  sector: "all",
-  rating: "all",
-  fairValue: "all",
+  sectors: [],
+  ratings: [],
+  fairValueVerdicts: [],
+  underBuyPoint: false,
+  metricRanges: {},
   minimumScore: 0,
   minimumMarketCapB: 0,
   preset: "all",
@@ -58,6 +61,54 @@ describe("Wave 2 research universe", () => {
       const matching = universe.rows.filter((row) => matchesResearchPreset(row, preset));
       expect(matching.length, `${preset} should return a non-empty cohort`).toBeGreaterThan(0);
       expect(matching.every((row) => !row.isEtf)).toBe(true);
+    }
+  });
+
+  it("reproduces every V2 metadata-defined preset with simultaneous filters", () => {
+    const universe = loadResearchUniverse();
+    expect(Object.keys(V2_SCREENER_CONFIG.preset_screens)).toHaveLength(9);
+    for (const [name, preset] of Object.entries(V2_SCREENER_CONFIG.preset_screens)) {
+      const matching = filterResearchRows(
+        universe.rows.filter(({ isEtf }) => !isEtf),
+        {
+          ...baseFilters,
+          ratings: preset.rating_filter,
+          fairValueVerdicts: preset.fair_value_filter,
+          metricRanges: preset.metric_filters,
+        },
+        new Set(),
+      );
+      expect(matching.length, `${name} should return a non-empty cohort`).toBeGreaterThan(0);
+    }
+  });
+
+  it("preserves V2 range-filter null behavior and deterministic null-last sorting", () => {
+    const universe = loadResearchUniverse();
+    const filtered = filterResearchRows(
+      universe.rows,
+      {
+        ...baseFilters,
+        ratings: ["Strong Buy", "Buy"],
+        metricRanges: { trailingPE: [1, 15], profitMargins: [5, 100] },
+        sort: "valuation-asc",
+      },
+      new Set(),
+    );
+    expect(filtered.length).toBeGreaterThan(0);
+    expect(
+      filtered.every(
+        (row) =>
+          (["Strong Buy", "Buy"].includes(row.rating) &&
+            (row.raw.trailingPE === null ||
+              (row.raw.trailingPE >= 1 && row.raw.trailingPE <= 15))) ??
+          false,
+      ),
+    ).toBe(true);
+    const firstNull = filtered.findIndex(({ fairValuePremium }) => fairValuePremium === null);
+    if (firstNull >= 0) {
+      expect(
+        filtered.slice(firstNull).every(({ fairValuePremium }) => fairValuePremium === null),
+      ).toBe(true);
     }
   });
 

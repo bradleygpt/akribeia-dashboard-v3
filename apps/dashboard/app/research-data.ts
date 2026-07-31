@@ -1,4 +1,5 @@
 import preservedUniverse from "../../../data/reference/v2-baseline/fixtures/universe_floor0.json";
+import preservedMeta from "../../../data/reference/v2-baseline/fixtures/meta.json";
 import { V2_UNIVERSE_EXPECTED, validateV2UniversePayload } from "./v2-universe";
 
 export const RESEARCH_PRESETS = {
@@ -30,6 +31,33 @@ export const RESEARCH_PRESETS = {
 
 export type ResearchPreset = keyof typeof RESEARCH_PRESETS;
 export type ResearchAssetType = "all" | "stock" | "etf";
+
+export interface ScreenerMetric {
+  key: string;
+  name: string;
+  type: "range" | "pct_range";
+  default_min: number;
+  default_max: number;
+  step: number;
+}
+
+export interface ScreenerPreset {
+  description: string;
+  rating_filter: string[];
+  fair_value_filter: string[];
+  metric_filters: Record<string, [number, number]>;
+  sort_by: string;
+}
+
+interface PreservedScreenerConfig {
+  filterable_metrics: Record<string, ScreenerMetric[]>;
+  preset_screens: Record<string, ScreenerPreset>;
+}
+
+export const V2_SCREENER_CONFIG = preservedMeta.screener as PreservedScreenerConfig;
+export const V2_SCREENER_METRICS = Object.entries(V2_SCREENER_CONFIG.filterable_metrics).flatMap(
+  ([category, metrics]) => metrics.map((metric) => ({ category, metric })),
+);
 
 export interface ResearchPresetScore {
   composite: number | null;

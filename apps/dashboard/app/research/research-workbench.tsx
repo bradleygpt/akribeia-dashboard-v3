@@ -1,7 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { RESEARCH_PRESETS, type ResearchPreset, type ResearchRow } from "../research-data";
+import {
+  RESEARCH_PRESETS,
+  V2_SCREENER_CONFIG,
+  V2_SCREENER_METRICS,
+  type ResearchPreset,
+  type ResearchRow,
+} from "../research-data";
 import {
   filterResearchRows,
   scoreForModel,
@@ -23,9 +29,11 @@ const MODELS = [
 const initialFilters: ResearchFilters = {
   query: "",
   assetType: "all",
-  sector: "all",
-  rating: "all",
-  fairValue: "all",
+  sectors: [],
+  ratings: [],
+  fairValueVerdicts: [],
+  underBuyPoint: false,
+  metricRanges: {},
   minimumScore: 0,
   minimumMarketCapB: 0,
   preset: "all",
@@ -42,15 +50,20 @@ function ratingClass(rating: string): string {
 
 function ResearchComparison({
   rows,
+  model,
   onRemove,
+  onReset,
 }: {
   rows: ResearchRow[];
+  model: string;
   onRemove: (ticker: string) => void;
+  onReset: () => void;
 }) {
   if (rows.length === 0) return null;
   const metrics: Array<[string, (row: ResearchRow) => string]> = [
-    ["Composite", (row) => row.composite?.toFixed(2) ?? "Unavailable"],
-    ["Rating", (row) => row.rating],
+    ["Composite", (row) => scoreForModel(row, model).composite?.toFixed(2) ?? "Unavailable"],
+    ["Rating", (row) => scoreForModel(row, model).rating],
+    ["Asset / sector", (row) => (row.isEtf ? "ETF" : row.sector)],
     ["Price", (row) => formatMoney(row.price)],
     ["Fair value", (row) => formatMoney(row.fairValue)],
     ["Prem. / discount", (row) => formatPercent(row.fairValuePremium, 1, true)],
@@ -70,7 +83,12 @@ function ResearchComparison({
           <p className="mono-label">SIDE-BY-SIDE / {rows.length} OF 4</p>
           <h2 id="comparison-heading">Security comparison</h2>
         </div>
-        <span>Preserved snapshot metrics; missing values remain unavailable.</span>
+        <span>
+          Preserved same-vintage metrics · {model} model · missing values remain unavailable.
+        </span>
+        <button type="button" onClick={onReset}>
+          Clear comparison
+        </button>
       </div>
       <div className="research-comparison-scroll">
         <table>
@@ -108,6 +126,7 @@ export function ResearchWorkbench({ rows, sectors }: { rows: ResearchRow[]; sect
   const [visible, setVisible] = useState(PAGE_SIZE);
   const [watchlist, setWatchlist] = useState<Set<string>>(new Set());
   const [comparison, setComparison] = useState<string[]>([]);
+  const [v2Preset, setV2Preset] = useState("Custom");
 
   useEffect(() => {
     try {
@@ -119,6 +138,31 @@ export function ResearchWorkbench({ rows, sectors }: { rows: ResearchRow[]; sect
       setWatchlist(new Set());
     }
   }, []);
+
+  useEffect(() => {
+    const parameters = new URLSearchParams(window.location.search);
+    const tickers = (parameters.get("compare") ?? "")
+      .split(",")
+      .map((ticker) => ticker.trim().toUpperCase())
+      .filter((ticker, index, values) => ticker && values.indexOf(ticker) === index)
+      .filter((ticker) => rows.some((row) => row.ticker === ticker))
+      .slice(0, 4);
+    const model = parameters.get("model");
+    if (tickers.length > 0) setComparison(tickers);
+    if (model && MODELS.some(([value]) => value === model)) {
+      setFilters((current) => ({ ...current, model }));
+    }
+  }, [rows]);
+
+  useEffect(() => {
+    const parameters = new URLSearchParams(window.location.search);
+    if (comparison.length > 0) parameters.set("compare", comparison.join(","));
+    else parameters.delete("compare");
+    if (filters.model !== "equal") parameters.set("model", filters.model);
+    else parameters.delete("model");
+    const query = parameters.toString();
+    window.history.replaceState(null, "", `${window.location.pathname}${query ? `?${query}` : ""}`);
+  }, [comparison, filters.model]);
 
   const filtered = useMemo(
     () => filterResearchRows(rows, filters, watchlist),
@@ -139,8 +183,49 @@ export function ResearchWorkbench({ rows, sectors }: { rows: ResearchRow[]; sect
 
   function resetFilters() {
     setFilters(initialFilters);
+    setV2Preset("Custom");
     setVisible(PAGE_SIZE);
   }
+
+  function applyV2Preset(name: string) {
+    if (name === "Custom") {
+      setV2Preset(name);
+      updateFilters({
+        ratings: [],
+        fairValueVerdicts: [],
+        metricRanges: {},
+        sectors: [],
+        underBuyPoint: false,
+      });
+      return;
+    }
+    const preset = V2_SCREENER_CONFIG.preset_screens[name];
+    if (!preset) return;
+    setV2Preset(name);
+    updateFilters({
+      preset: "all",
+      ratings: [...preset.rating_filter],
+      fairValueVerdicts: [...preset.fair_value_filter],
+      metricRanges: { ...preset.metric_filters },
+      sectors: [],
+      underBuyPoint: false,
+      sort: "score-desc",
+    });
+  }
+
+  const activeFilters = [
+    ...filters.ratings.map((value) => ({ key: `rating:${value}`, label: `Rating: ${value}` })),
+    ...filters.sectors.map((value) => ({ key: `sector:${value}`, label: `Sector: ${value}` })),
+    ...filters.fairValueVerdicts.map((value) => ({
+      key: `fairValue:${value}`,
+      label: `Fair value: ${value}`,
+    })),
+    ...Object.entries(filters.metricRanges).map(([key, [minimum, maximum]]) => ({
+      key: `metric:${key}`,
+      label: `${V2_SCREENER_METRICS.find(({ metric }) => metric.key === key)?.metric.name ?? key}: ${minimum}–${maximum}`,
+    })),
+    ...(filters.underBuyPoint ? [{ key: "buyPoint", label: "At / below buy point" }] : []),
+  ];
 
   function toggleWatchlist(ticker: string) {
     setWatchlist((current) => {
@@ -196,6 +281,32 @@ export function ResearchWorkbench({ rows, sectors }: { rows: ResearchRow[]; sect
             </button>
           ))}
         </div>
+        <div className="research-v2-screens" aria-label="V2 screener presets">
+          <span>V2 screens</span>
+          <button
+            type="button"
+            aria-pressed={v2Preset === "Custom"}
+            onClick={() => applyV2Preset("Custom")}
+          >
+            Custom
+          </button>
+          {Object.entries(V2_SCREENER_CONFIG.preset_screens).map(([name, preset]) => (
+            <button
+              type="button"
+              key={name}
+              title={preset.description}
+              aria-pressed={v2Preset === name}
+              onClick={() => applyV2Preset(name)}
+            >
+              {name}
+            </button>
+          ))}
+        </div>
+        {v2Preset !== "Custom" ? (
+          <p className="research-screen-description">
+            {V2_SCREENER_CONFIG.preset_screens[v2Preset]?.description}
+          </p>
+        ) : null}
 
         <form
           className="research-filter-grid"
@@ -231,7 +342,7 @@ export function ResearchWorkbench({ rows, sectors }: { rows: ResearchRow[]; sect
               onChange={(event) =>
                 updateFilters({
                   assetType: event.target.value as ResearchFilters["assetType"],
-                  sector: "all",
+                  sectors: [],
                 })
               }
             >
@@ -241,12 +352,17 @@ export function ResearchWorkbench({ rows, sectors }: { rows: ResearchRow[]; sect
             </select>
           </label>
           <label>
-            <span>Sector</span>
+            <span>Sectors (multiple)</span>
             <select
-              value={filters.sector}
-              onChange={(event) => updateFilters({ sector: event.target.value })}
+              multiple
+              size={4}
+              value={filters.sectors}
+              onChange={(event) =>
+                updateFilters({
+                  sectors: [...event.target.selectedOptions].map(({ value }) => value),
+                })
+              }
             >
-              <option value="all">All sectors</option>
               {sectors.map((sector) => (
                 <option value={sector} key={sector}>
                   {sector}
@@ -255,12 +371,17 @@ export function ResearchWorkbench({ rows, sectors }: { rows: ResearchRow[]; sect
             </select>
           </label>
           <label>
-            <span>Rating</span>
+            <span>Ratings (multiple)</span>
             <select
-              value={filters.rating}
-              onChange={(event) => updateFilters({ rating: event.target.value })}
+              multiple
+              size={4}
+              value={filters.ratings}
+              onChange={(event) =>
+                updateFilters({
+                  ratings: [...event.target.selectedOptions].map(({ value }) => value),
+                })
+              }
             >
-              <option value="all">All ratings</option>
               {RATINGS.map((rating) => (
                 <option value={rating} key={rating}>
                   {rating}
@@ -269,13 +390,17 @@ export function ResearchWorkbench({ rows, sectors }: { rows: ResearchRow[]; sect
             </select>
           </label>
           <label>
-            <span>Fair value</span>
+            <span>Fair-value verdicts (multiple)</span>
             <select
-              value={filters.fairValue}
-              onChange={(event) => updateFilters({ fairValue: event.target.value })}
+              multiple
+              size={4}
+              value={filters.fairValueVerdicts}
+              onChange={(event) =>
+                updateFilters({
+                  fairValueVerdicts: [...event.target.selectedOptions].map(({ value }) => value),
+                })
+              }
             >
-              <option value="all">All valuation states</option>
-              <option value="discount">At a discount</option>
               <option value="Deeply Undervalued">Deeply undervalued</option>
               <option value="Undervalued">Undervalued</option>
               <option value="Fairly Valued">Fairly valued</option>
@@ -332,12 +457,115 @@ export function ResearchWorkbench({ rows, sectors }: { rows: ResearchRow[]; sect
             />
             <span>Watchlist only ({watchlist.size})</span>
           </label>
+          <label className="research-check">
+            <input
+              type="checkbox"
+              checked={filters.underBuyPoint}
+              onChange={(event) => updateFilters({ underBuyPoint: event.target.checked })}
+            />
+            <span>At / below quant buy point</span>
+          </label>
+          <label className="research-filter-wide">
+            <span>Add V2 metric range</span>
+            <select
+              value=""
+              onChange={(event) => {
+                const selected = V2_SCREENER_METRICS.find(
+                  ({ metric }) => metric.key === event.target.value,
+                )?.metric;
+                if (selected) {
+                  updateFilters({
+                    metricRanges: {
+                      ...filters.metricRanges,
+                      [selected.key]: [selected.default_min, selected.default_max],
+                    },
+                  });
+                }
+              }}
+            >
+              <option value="">Choose a metric…</option>
+              {V2_SCREENER_METRICS.filter(
+                ({ metric }) => !(metric.key in filters.metricRanges),
+              ).map(({ category, metric }) => (
+                <option value={metric.key} key={metric.key}>
+                  {category}: {metric.name}
+                </option>
+              ))}
+            </select>
+          </label>
         </form>
+        {Object.entries(filters.metricRanges).length > 0 ? (
+          <div className="research-metric-ranges">
+            {Object.entries(filters.metricRanges).map(([key, [minimum, maximum]]) => {
+              const definition = V2_SCREENER_METRICS.find(
+                ({ metric }) => metric.key === key,
+              )?.metric;
+              return (
+                <fieldset key={key}>
+                  <legend>
+                    {definition?.name ?? key}
+                    {definition?.type === "pct_range" ? " (%)" : ""}
+                  </legend>
+                  <label>
+                    Minimum
+                    <input
+                      type="number"
+                      value={minimum}
+                      step={definition?.step ?? 1}
+                      onChange={(event) =>
+                        updateFilters({
+                          metricRanges: {
+                            ...filters.metricRanges,
+                            [key]: [Number(event.target.value), maximum],
+                          },
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    Maximum
+                    <input
+                      type="number"
+                      value={maximum}
+                      step={definition?.step ?? 1}
+                      onChange={(event) =>
+                        updateFilters({
+                          metricRanges: {
+                            ...filters.metricRanges,
+                            [key]: [minimum, Number(event.target.value)],
+                          },
+                        })
+                      }
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const next = { ...filters.metricRanges };
+                      delete next[key];
+                      updateFilters({ metricRanges: next });
+                    }}
+                  >
+                    Remove
+                  </button>
+                </fieldset>
+              );
+            })}
+          </div>
+        ) : null}
+        <div className="research-active-filters" aria-live="polite">
+          <strong>Active V2 filters: {activeFilters.length}</strong>
+          {activeFilters.map(({ key, label }) => (
+            <span key={key}>{label}</span>
+          ))}
+        </div>
       </section>
 
       <ResearchComparison
         rows={comparisonRows}
+        model={filters.model}
         onRemove={(ticker) => setComparison((current) => current.filter((item) => item !== ticker))}
+        onReset={() => setComparison([])}
       />
 
       <section className="research-results" aria-labelledby="research-results-heading">
