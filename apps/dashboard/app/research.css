@@ -2555,6 +2555,25 @@
   border-collapse: collapse;
 }
 
+.security-quarterly {
+  margin-top: 1rem;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  padding: 1rem;
+}
+
+.security-quarterly table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.security-quarterly th,
+.security-quarterly td {
+  padding: 0.55rem;
+  border-top: 1px solid var(--line);
+  text-align: left;
+}
+
 .security-method-pillars th,
 .security-method-pillars td {
   padding: 0.55rem;

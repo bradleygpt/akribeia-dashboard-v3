@@ -272,6 +272,25 @@ describe("Wave 2 bounded API adapters", () => {
     const body = (await response?.json()) as { ok: boolean; source: { bulkDataCommit: string } };
     expect(body.ok).toBe(true);
     expect(body.source.bulkDataCommit).toBe("9f2d2322fc52847e435dbb6a83137712788f5b52");
+
+    const quarterly = await handleSecurityReferenceApi(
+      new Request("https://akribeia.test/api/v3/security-reference?ticker=AAPL&kind=quarterly"),
+      {
+        fetcher: async () =>
+          new Response(
+            JSON.stringify({
+              deep_generated_at: "2026-07-30",
+              AAPL: [{ date: "2026-06-30", revenueGrowth: 0.1 }],
+              MSFT: [{ date: "2026-06-30", revenueGrowth: 0.2 }],
+            }),
+          ),
+      },
+    );
+    const quarterlyBody = (await quarterly?.json()) as {
+      payload: { quarters: unknown[]; deepGeneratedAt: string };
+    };
+    expect(quarterlyBody.payload.quarters).toHaveLength(1);
+    expect(quarterlyBody.payload.deepGeneratedAt).toBe("2026-07-30");
   });
 
   it("rejects invalid tickers before reaching an upstream source", async () => {

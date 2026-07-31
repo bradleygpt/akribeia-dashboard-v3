@@ -34,32 +34,68 @@ interface Envelope {
   error?: { code?: string; message?: string };
 }
 
+interface Quarter {
+  date?: string;
+  revenueGrowth?: number | null;
+  earningsGrowth?: number | null;
+  grossMargins?: number | null;
+  operatingMargins?: number | null;
+  netMargins?: number | null;
+}
+
 export function SecurityDeepReference({ ticker }: { ticker: string }) {
   const [state, setState] = useState<
     | { status: "loading" }
     | { status: "missing" }
     | { status: "error"; message: string }
-    | { status: "ready"; payload: DetailPayload; source: NonNullable<Envelope["source"]> }
+    | {
+        status: "ready";
+        payload: DetailPayload;
+        source: NonNullable<Envelope["source"]>;
+        quarters: Quarter[];
+        deepGeneratedAt: string | null;
+      }
   >({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
     setState({ status: "loading" });
-    fetch(`/api/v3/security-reference?ticker=${encodeURIComponent(ticker)}&kind=detail`, {
-      signal: controller.signal,
-      headers: { accept: "application/json" },
-    })
-      .then(async (response) => {
-        const body = (await response.json()) as Envelope;
-        if (response.status === 404) {
+    Promise.all(
+      ["detail", "quarterly"].map((kind) =>
+        fetch(`/api/v3/security-reference?ticker=${encodeURIComponent(ticker)}&kind=${kind}`, {
+          signal: controller.signal,
+          headers: { accept: "application/json" },
+        }).then(async (response) => ({ response, body: (await response.json()) as Envelope })),
+      ),
+    )
+      .then(([detailResult, quarterlyResult]) => {
+        if (detailResult.response.status === 404) {
           setState({ status: "missing" });
           return;
         }
-        if (!response.ok || !body.ok || !body.payload || !body.source) {
-          throw new Error(body.error?.message ?? "Pinned security shard unavailable.");
+        if (
+          !detailResult.response.ok ||
+          !detailResult.body.ok ||
+          !detailResult.body.payload ||
+          !detailResult.body.source
+        ) {
+          throw new Error(detailResult.body.error?.message ?? "Pinned security shard unavailable.");
         }
-        setState({ status: "ready", payload: body.payload, source: body.source });
+        const quarterlyPayload =
+          quarterlyResult.response.ok && quarterlyResult.body.ok
+            ? (quarterlyResult.body.payload as unknown as {
+                quarters?: Quarter[];
+                deepGeneratedAt?: string | null;
+              })
+            : null;
+        setState({
+          status: "ready",
+          payload: detailResult.body.payload,
+          source: detailResult.body.source,
+          quarters: quarterlyPayload?.quarters ?? [],
+          deepGeneratedAt: quarterlyPayload?.deepGeneratedAt ?? null,
+        });
       })
       .catch((reason: unknown) => {
         if (controller.signal.aborted) return;
@@ -196,6 +232,50 @@ export function SecurityDeepReference({ ticker }: { ticker: string }) {
             ))}
           </dl>
         </article>
+      </div>
+      <div className="security-quarterly">
+        <h3>Quarterly earnings and margin history</h3>
+        <p>
+          {state.quarters.length === 0
+            ? "No preserved quarterly rows are available for this security."
+            : `Preserved deep history${
+                state.deepGeneratedAt ? ` generated ${state.deepGeneratedAt.slice(0, 10)}` : ""
+              }.`}
+        </p>
+        {state.quarters.length > 0 ? (
+          <div className="research-table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Quarter</th>
+                  <th scope="col">Revenue growth</th>
+                  <th scope="col">Earnings growth</th>
+                  <th scope="col">Gross margin</th>
+                  <th scope="col">Operating margin</th>
+                  <th scope="col">Net margin</th>
+                </tr>
+              </thead>
+              <tbody>
+                {state.quarters.slice(0, 12).map((quarter, index) => {
+                  const percent = (value: number | null | undefined) =>
+                    value === null || value === undefined
+                      ? "Unavailable"
+                      : `${(value * 100).toFixed(1)}%`;
+                  return (
+                    <tr key={`${quarter.date}-${index}`}>
+                      <th scope="row">{quarter.date?.slice(0, 10) ?? "Unavailable"}</th>
+                      <td>{percent(quarter.revenueGrowth)}</td>
+                      <td>{percent(quarter.earningsGrowth)}</td>
+                      <td>{percent(quarter.grossMargins)}</td>
+                      <td>{percent(quarter.operatingMargins)}</td>
+                      <td>{percent(quarter.netMargins)}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : null}
       </div>
     </section>
   );

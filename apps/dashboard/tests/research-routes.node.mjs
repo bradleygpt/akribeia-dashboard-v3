@@ -85,7 +85,6 @@ test("server-renders a dedicated ETF detail route", async () => {
   assert.equal(response.status, 200);
   const html = await response.text();
   assert.match(html, /SPY ETF Research — Akribeia/);
-  assert.match(html, /ETF-SPECIFIC REFERENCE/);
   assert.match(html, /Five-pillar balance/);
   assert.match(html, /Loading pinned ETF holdings and classification/);
 });

@@ -7,6 +7,7 @@ const KINDS = {
   detail: (ticker: string) => `detail/floor0/${ticker}.json`,
   prices: (ticker: string) => `prices/${ticker}.json`,
   timeseries: (ticker: string) => `detail_timeseries/${ticker}.json`,
+  quarterly: () => "quarterly.json",
 } as const;
 
 type Kind = keyof typeof KINDS;
@@ -84,7 +85,8 @@ export async function handleSecurityReferenceApi(
       );
     }
     const text = await response.text();
-    if (text.length > 2_000_000) {
+    const sourceLimit = kind === "quarterly" ? 6_000_000 : 2_000_000;
+    if (text.length > sourceLimit) {
       return json(
         {
           ok: false,
@@ -95,13 +97,22 @@ export async function handleSecurityReferenceApi(
         502,
       );
     }
+    const parsed = JSON.parse(text) as unknown;
+    const payload =
+      kind === "quarterly" && typeof parsed === "object" && parsed !== null
+        ? {
+            quarters: ((parsed as Record<string, unknown>)[ticker] as unknown[] | undefined) ?? [],
+            deepGeneratedAt:
+              ((parsed as Record<string, unknown>).deep_generated_at as string | undefined) ?? null,
+          }
+        : parsed;
     return json({
       ok: true,
       ticker,
       kind,
       fetchedAt: (dependencies.now ?? new Date()).toISOString(),
       source: { bulkDataCommit: BULK_DATA_COMMIT, url: sourceUrl, asOf: "2026-07-30" },
-      payload: JSON.parse(text) as unknown,
+      payload,
     });
   } catch {
     return json(
