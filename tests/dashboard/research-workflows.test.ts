@@ -9,7 +9,7 @@ import {
   matchesResearchPreset,
   type ResearchFilters,
 } from "../../apps/dashboard/app/research-filtering.js";
-import { computeRiskMetrics } from "../../apps/dashboard/app/research-risk.js";
+import { computeRiskMetrics, normalizeRadarAxes } from "../../apps/dashboard/app/research-risk.js";
 import {
   comparisonQuery,
   normalizeComparisonTickers,
@@ -128,6 +128,21 @@ describe("Wave 2 research universe", () => {
 describe("V2-compatible security risk metrics", () => {
   it("fails closed when there are fewer than 30 valid closes", () => {
     expect(computeRiskMetrics(Array.from({ length: 29 }, (_, index) => 100 + index))).toBeNull();
+  });
+
+  it("normalizes the five authoritative axes to 0–1 with higher-is-better direction", () => {
+    const axes = normalizeRadarAxes(
+      ["Valuation", "Growth", "Profitability", "Momentum", "EPS Revisions"],
+      {
+        Valuation: 12,
+        Growth: 6,
+        Profitability: 0,
+        Momentum: 15,
+        "EPS Revisions": null,
+      },
+    );
+    expect(axes.map(({ normalized }) => normalized)).toEqual([1, 0.5, 0, 1, null]);
+    expect(axes.every(({ direction }) => direction === "higher-is-better")).toBe(true);
   });
 
   it("returns finite price-only metrics and an observed drawdown", () => {

@@ -10,6 +10,30 @@ export interface RiskMetrics {
 
 const RISK_FREE_RATE = 0.04;
 const TRADING_DAYS = 252;
+export const RADAR_MAXIMUM = 12;
+
+export interface RadarAxis {
+  name: string;
+  value: number | null;
+  normalized: number | null;
+  direction: "higher-is-better";
+}
+
+export function normalizeRadarAxes(
+  pillars: readonly string[],
+  values: Readonly<Record<string, number | null>>,
+): RadarAxis[] {
+  return pillars.map((name) => {
+    const value = values[name];
+    const finite = value !== null && value !== undefined && Number.isFinite(value);
+    return {
+      name,
+      value: finite ? value : null,
+      normalized: finite ? Math.max(0, Math.min(1, value / RADAR_MAXIMUM)) : null,
+      direction: "higher-is-better",
+    };
+  });
+}
 
 function mean(values: number[]): number {
   return values.reduce((sum, value) => sum + value, 0) / values.length;

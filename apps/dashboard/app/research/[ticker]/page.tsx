@@ -3,6 +3,7 @@ import { ResearchHeader } from "../../research-header";
 import { getResearchSecurity, loadResearchUniverse, type ResearchRow } from "../../research-data";
 import { formatMarketCap, formatMoney, formatPercent, formatRatio } from "../../research-format";
 import { SecurityLivePanel } from "./security-live-panel";
+import { SecurityRadar } from "./security-radar";
 
 interface PageProps {
   params: Promise<{ ticker: string }>;
@@ -62,6 +63,26 @@ export default async function SecurityDetailPage({ params }: PageProps) {
         Math.abs((right.composite ?? 0) - (security.composite ?? 0)),
     )
     .slice(0, 5);
+  const universe = loadResearchUniverse();
+  const ranked = universe.rows
+    .filter(({ composite }) => composite !== null)
+    .toSorted(
+      (left, right) =>
+        (right.composite ?? Number.NEGATIVE_INFINITY) -
+          (left.composite ?? Number.NEGATIVE_INFINITY) || left.ticker.localeCompare(right.ticker),
+    );
+  const rankIndex = ranked.findIndex(({ ticker: value }) => value === security.ticker);
+  const rank = rankIndex < 0 ? null : rankIndex + 1;
+  const percentile =
+    rank === null || ranked.length < 2
+      ? null
+      : ((ranked.length - rank) / (ranked.length - 1)) * 100;
+  const alphabetical = universe.rows.toSorted((left, right) =>
+    left.ticker.localeCompare(right.ticker),
+  );
+  const tickerIndex = alphabetical.findIndex(({ ticker: value }) => value === security.ticker);
+  const previous = tickerIndex > 0 ? alphabetical[tickerIndex - 1] : null;
+  const next = tickerIndex >= 0 ? (alphabetical[tickerIndex + 1] ?? null) : null;
 
   return (
     <>
@@ -85,6 +106,13 @@ export default async function SecurityDetailPage({ params }: PageProps) {
             <div className="security-badges">
               <strong>{security.rating}</strong>
               <span>Equal-weight composite {security.composite?.toFixed(2) ?? "unavailable"}</span>
+              <span>
+                {rank === null
+                  ? "Rank unavailable"
+                  : `Rank ${rank.toLocaleString("en-US")} of ${ranked.length.toLocaleString(
+                      "en-US",
+                    )} · ${percentile?.toFixed(1)}th percentile`}
+              </span>
               <span>{formatMarketCap(security.marketCapB)}</span>
             </div>
             <a
@@ -119,6 +147,24 @@ export default async function SecurityDetailPage({ params }: PageProps) {
           </dl>
         </section>
 
+        <nav className="security-transition" aria-label="Move between securities">
+          {previous ? (
+            <a href={`/research/${encodeURIComponent(previous.ticker)}`}>
+              ← {previous.ticker} <span>{previous.name}</span>
+            </a>
+          ) : (
+            <span />
+          )}
+          <a href="/research">Return to screener</a>
+          {next ? (
+            <a href={`/research/${encodeURIComponent(next.ticker)}`}>
+              {next.ticker} <span>{next.name}</span> →
+            </a>
+          ) : (
+            <span />
+          )}
+        </nav>
+
         <section className="security-pillar-section" aria-labelledby="pillar-heading">
           <div className="security-section-heading">
             <div>
@@ -151,6 +197,8 @@ export default async function SecurityDetailPage({ params }: PageProps) {
             })}
           </div>
         </section>
+
+        <SecurityRadar pillars={security.pillars} grades={security.grades} />
 
         <SecurityLivePanel ticker={security.ticker} snapshotPrice={security.price} />
 
@@ -240,7 +288,10 @@ export default async function SecurityDetailPage({ params }: PageProps) {
         </section>
 
         <footer className="research-route-footer">
-          <span>Preserved research record · live market data clearly separated</span>
+          <span>
+            Preserved research record as of {universe.source.publishedAt.slice(0, 10)} · live market
+            data clearly separated
+          </span>
           <span>Research only · not investment advice</span>
         </footer>
       </main>
