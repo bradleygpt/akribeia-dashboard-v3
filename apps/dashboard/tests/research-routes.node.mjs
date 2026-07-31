@@ -41,6 +41,9 @@ test("server-renders dedicated security detail with preserved factors", async ()
   assert.match(html, /AAPL Research — Akribeia/);
   assert.match(html, /Apple Inc\./);
   assert.match(html, /Five-pillar profile/i);
+  assert.match(html, /Five-pillar balance/);
+  assert.match(html, /Accessible radar values/);
+  assert.match(html, /Higher is better/);
   assert.match(html, /Price history and risk/);
   assert.match(html, /Forward P\/E/);
   assert.match(html, /Nearest research peers/);

@@ -38,6 +38,7 @@ const DIRECTIONS = {
 } as const;
 
 export function RiskRadar() {
+  const [attempt, setAttempt] = useState(0);
   const [state, setState] = useState<
     | { status: "loading" }
     | { status: "error"; message: string }
@@ -68,7 +69,7 @@ export function RiskRadar() {
         });
       });
     return () => controller.abort();
-  }, []);
+  }, [attempt]);
 
   const risks = state.status === "ready" ? (state.data.risks ?? []) : [];
   const categories = useMemo(
@@ -101,6 +102,15 @@ export function RiskRadar() {
       <div className="risk-radar-state risk-radar-error" role="status">
         <strong>Risk Radar unavailable.</strong>
         <span>{state.message} No fallback narrative has been generated.</span>
+        <button
+          type="button"
+          onClick={() => {
+            setState({ status: "loading" });
+            setAttempt((current) => current + 1);
+          }}
+        >
+          Retry pinned source
+        </button>
       </div>
     );
   }
