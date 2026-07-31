@@ -87,6 +87,12 @@ export default async function SecurityDetailPage({ params }: PageProps) {
               <span>Equal-weight composite {security.composite?.toFixed(2) ?? "unavailable"}</span>
               <span>{formatMarketCap(security.marketCapB)}</span>
             </div>
+            <a
+              className="security-compare-link"
+              href={`/research?compare=${encodeURIComponent(security.ticker)}`}
+            >
+              Start a comparison with {security.ticker}
+            </a>
           </div>
           <dl className="security-valuation-ledger">
             <div>

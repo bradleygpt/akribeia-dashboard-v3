@@ -10,6 +10,11 @@ import {
   type ResearchFilters,
 } from "../../apps/dashboard/app/research-filtering.js";
 import { computeRiskMetrics } from "../../apps/dashboard/app/research-risk.js";
+import {
+  comparisonQuery,
+  normalizeComparisonTickers,
+  toggleComparisonTicker,
+} from "../../apps/dashboard/app/research-comparison.js";
 import { handleQuoteApi } from "../../apps/dashboard/worker/quote-api.js";
 import { handleResearchReferenceApi } from "../../apps/dashboard/worker/research-reference-api.js";
 
@@ -135,6 +140,30 @@ describe("V2-compatible security risk metrics", () => {
     expect(metrics?.volatilityPercent).toBeGreaterThan(0);
     expect(metrics?.maxDrawdownPercent).toBeGreaterThan(0);
     expect(Number.isFinite(metrics?.sharpe ?? Number.NaN)).toBe(true);
+  });
+});
+
+describe("security comparison state", () => {
+  it("preserves insertion order, prevents duplicates and enforces the four-name maximum", () => {
+    const rows = loadResearchUniverse().rows;
+    expect(
+      normalizeComparisonTickers(
+        [" aapl ", "MSFT", "AAPL", "NO_SUCH", "NVDA", "AMZN", "META"],
+        rows,
+      ),
+    ).toEqual(["AAPL", "MSFT", "NVDA", "AMZN"]);
+    expect(toggleComparisonTicker(["AAPL", "MSFT", "NVDA", "AMZN"], "META")).toEqual([
+      "AAPL",
+      "MSFT",
+      "NVDA",
+      "AMZN",
+    ]);
+    expect(toggleComparisonTicker(["AAPL", "MSFT"], "AAPL")).toEqual(["MSFT"]);
+  });
+
+  it("produces deterministic restorable comparison state", () => {
+    expect(comparisonQuery(["MSFT", "AAPL"], "v_heavy")).toBe("compare=MSFT%2CAAPL&model=v_heavy");
+    expect(comparisonQuery([], "equal")).toBe("");
   });
 });
 

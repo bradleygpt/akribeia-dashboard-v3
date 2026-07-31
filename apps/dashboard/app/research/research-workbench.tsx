@@ -15,6 +15,12 @@ import {
   type ResearchSort,
 } from "../research-filtering";
 import { formatMarketCap, formatMoney, formatPercent } from "../research-format";
+import {
+  comparisonQuery,
+  MAX_SECURITY_COMPARISON,
+  normalizeComparisonTickers,
+  toggleComparisonTicker,
+} from "../research-comparison";
 
 const PAGE_SIZE = 50;
 const WATCHLIST_KEY = "akribeia:v3:research-watchlist";
@@ -141,12 +147,7 @@ export function ResearchWorkbench({ rows, sectors }: { rows: ResearchRow[]; sect
 
   useEffect(() => {
     const parameters = new URLSearchParams(window.location.search);
-    const tickers = (parameters.get("compare") ?? "")
-      .split(",")
-      .map((ticker) => ticker.trim().toUpperCase())
-      .filter((ticker, index, values) => ticker && values.indexOf(ticker) === index)
-      .filter((ticker) => rows.some((row) => row.ticker === ticker))
-      .slice(0, 4);
+    const tickers = normalizeComparisonTickers((parameters.get("compare") ?? "").split(","), rows);
     const model = parameters.get("model");
     if (tickers.length > 0) setComparison(tickers);
     if (model && MODELS.some(([value]) => value === model)) {
@@ -155,12 +156,7 @@ export function ResearchWorkbench({ rows, sectors }: { rows: ResearchRow[]; sect
   }, [rows]);
 
   useEffect(() => {
-    const parameters = new URLSearchParams(window.location.search);
-    if (comparison.length > 0) parameters.set("compare", comparison.join(","));
-    else parameters.delete("compare");
-    if (filters.model !== "equal") parameters.set("model", filters.model);
-    else parameters.delete("model");
-    const query = parameters.toString();
+    const query = comparisonQuery(comparison, filters.model);
     window.history.replaceState(null, "", `${window.location.pathname}${query ? `?${query}` : ""}`);
   }, [comparison, filters.model]);
 
@@ -242,13 +238,7 @@ export function ResearchWorkbench({ rows, sectors }: { rows: ResearchRow[]; sect
   }
 
   function toggleComparison(ticker: string) {
-    setComparison((current) =>
-      current.includes(ticker)
-        ? current.filter((item) => item !== ticker)
-        : current.length < 4
-          ? [...current, ticker]
-          : current,
-    );
+    setComparison((current) => toggleComparisonTicker(current, ticker));
   }
 
   return (
@@ -636,7 +626,7 @@ export function ResearchWorkbench({ rows, sectors }: { rows: ResearchRow[]; sect
                             type="checkbox"
                             aria-label={`Compare ${row.ticker}`}
                             checked={selected}
-                            disabled={!selected && comparison.length >= 4}
+                            disabled={!selected && comparison.length >= MAX_SECURITY_COMPARISON}
                             onChange={() => toggleComparison(row.ticker)}
                           />
                         </td>
