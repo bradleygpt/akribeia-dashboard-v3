@@ -3,7 +3,7 @@ import "./globals.css";
 
 const title = "Akribeia — Quantitative Market Research";
 const description =
-  "Market Health, a complete quantitative security universe, and research signals backed by visible provenance and immutable publication evidence.";
+  "Market Health and a complete core-research system for screening, comparison, security risk, sector analytics and ETF look-through—backed by visible provenance.";
 
 export async function generateMetadata() {
   const requestHeaders = await headers();
@@ -14,7 +14,7 @@ export async function generateMetadata() {
   const forwardedProtocol = requestHeaders.get("x-forwarded-proto")?.split(",")[0]?.trim();
   const protocol = forwardedProtocol === "http" ? "http" : "https";
   const origin = new URL(`${protocol}://${host}`);
-  const socialImage = new URL("/og-wave1.png", origin);
+  const socialImage = new URL("/og-wave2.png", origin);
 
   return {
     metadataBase: origin,
@@ -27,9 +27,9 @@ export async function generateMetadata() {
       images: [
         {
           url: socialImage,
-          width: 1731,
-          height: 908,
-          alt: "Akribeia — see the market whole and test every signal",
+          width: 1536,
+          height: 1024,
+          alt: "Akribeia Core Research — 1,361 securities, risk, sectors and ETF look-through",
         },
       ],
     },

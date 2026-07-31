@@ -168,8 +168,10 @@ export default function Home() {
         <nav className="primary-nav" aria-label="Primary navigation">
           <a href="#top">Home</a>
           <a href="#market-health">Market Health</a>
-          <a href="#universe">Universe</a>
-          <a href="#scores">Research</a>
+          <a href="/research">Research</a>
+          <a href="/risk">Risk Radar</a>
+          <a href="/sectors">Sectors</a>
+          <a href="/etfs">ETF Center</a>
           <a href="#daily-evidence">Evidence</a>
         </nav>
         <div className="header-status" aria-label="Publication integrity">
@@ -207,7 +209,7 @@ export default function Home() {
               </p>
               <div className="hero-actions" aria-label="Start exploring Akribeia">
                 <a href="#market-health">Open Market Health</a>
-                <a href="#universe">Search all 1,361 securities</a>
+                <a href="/research">Research all 1,361 securities</a>
               </div>
             </div>
             <aside className="hero-evidence" aria-label="Akribeia coverage and trust">
@@ -246,8 +248,28 @@ export default function Home() {
               <strong>Research Preview</strong>
               <small>Scores, constraints and a published model portfolio</small>
             </a>
-            <a href="#daily-evidence">
+            <a href="/research">
               <span>04</span>
+              <strong>Core Research</strong>
+              <small>Advanced screens, comparison, watchlists and security detail</small>
+            </a>
+            <a href="/risk">
+              <span>05</span>
+              <strong>Risk Radar</strong>
+              <small>Source-attributed risks, severity, horizon and watch signals</small>
+            </a>
+            <a href="/sectors">
+              <span>06</span>
+              <strong>Sector Analytics</strong>
+              <small>Valuation, score quality, dispersion and pillar profiles</small>
+            </a>
+            <a href="/etfs">
+              <span>07</span>
+              <strong>ETF Center</strong>
+              <small>Comparison, model templates, holdings and look-through</small>
+            </a>
+            <a href="#daily-evidence">
+              <span>08</span>
               <strong>Evidence</strong>
               <small>Receipts, lineage, quality and readiness gates</small>
             </a>

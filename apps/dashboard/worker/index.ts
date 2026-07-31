@@ -7,6 +7,8 @@ import {
 import handler from "vinext/server/app-router-entry";
 import { handleEvidenceApi } from "./evidence-api";
 import { handleMarketHealthApi } from "./market-health-api";
+import { handleQuoteApi } from "./quote-api";
+import { handleResearchReferenceApi } from "./research-reference-api";
 
 interface Env {
   ASSETS: Fetcher;
@@ -37,6 +39,18 @@ const worker = {
 
     if (marketHealthResponse !== null) {
       return marketHealthResponse;
+    }
+
+    const quoteResponse = await handleQuoteApi(request);
+
+    if (quoteResponse !== null) {
+      return quoteResponse;
+    }
+
+    const referenceResponse = await handleResearchReferenceApi(request);
+
+    if (referenceResponse !== null) {
+      return referenceResponse;
     }
 
     const apiResponse = await handleEvidenceApi(request, env);

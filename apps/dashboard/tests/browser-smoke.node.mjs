@@ -182,7 +182,7 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
     assert.match(stdout, /See the market whole/);
     assert.match(stdout, /Test every signal/);
     assert.match(stdout, /Open Market Health/);
-    assert.match(stdout, /Search all 1,361 securities/);
+    assert.match(stdout, /Research all 1,361 securities/);
     assert.match(stdout, /Research integrity/);
     assert.match(
       stdout,
