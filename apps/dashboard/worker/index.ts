@@ -6,6 +6,7 @@ import {
 } from "vinext/server/image-optimization";
 import handler from "vinext/server/app-router-entry";
 import { handleEvidenceApi } from "./evidence-api";
+import { handleMarketHealthApi } from "./market-health-api";
 
 interface Env {
   ASSETS: Fetcher;
@@ -32,6 +33,12 @@ interface ExecutionContext {
 const worker = {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
+    const marketHealthResponse = await handleMarketHealthApi(request);
+
+    if (marketHealthResponse !== null) {
+      return marketHealthResponse;
+    }
+
     const apiResponse = await handleEvidenceApi(request, env);
 
     if (apiResponse !== null) {

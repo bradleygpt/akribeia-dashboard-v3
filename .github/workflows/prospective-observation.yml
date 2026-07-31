@@ -17,9 +17,12 @@ jobs:
   collect:
     runs-on: ubuntu-latest
     env:
-      RECEIPT_PATH: ${{ runner.temp }}/akribeia-prospective-observation-receipt.json
       GH_TOKEN: ${{ github.token }}
     steps:
+      - name: Initialize receipt path
+        shell: bash
+        run: echo "RECEIPT_PATH=$RUNNER_TEMP/akribeia-prospective-observation-receipt.json" >> "$GITHUB_ENV"
+
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -46,7 +49,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: prospective-observation-receipt-${{ github.run_id }}
-          path: ${{ env.RECEIPT_PATH }}
+          path: ${{ runner.temp }}/akribeia-prospective-observation-receipt.json
           if-no-files-found: warn
           retention-days: 90
 

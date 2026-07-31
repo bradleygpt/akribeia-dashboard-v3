@@ -1,9 +1,9 @@
 import { headers } from "next/headers";
 import "./globals.css";
 
-const title = "Akribeia V3 — Evidence Preview";
+const title = "Akribeia — Quantitative Market Research";
 const description =
-  "An auditable V3 research preview connecting validated repository data to scores, a constrained portfolio, and immutable publication evidence.";
+  "Market Health, a complete quantitative security universe, and research signals backed by visible provenance and immutable publication evidence.";
 
 export async function generateMetadata() {
   const requestHeaders = await headers();
@@ -14,7 +14,7 @@ export async function generateMetadata() {
   const forwardedProtocol = requestHeaders.get("x-forwarded-proto")?.split(",")[0]?.trim();
   const protocol = forwardedProtocol === "http" ? "http" : "https";
   const origin = new URL(`${protocol}://${host}`);
-  const socialImage = new URL("/og.png", origin);
+  const socialImage = new URL("/og-wave1.png", origin);
 
   return {
     metadataBase: origin,
@@ -27,9 +27,9 @@ export async function generateMetadata() {
       images: [
         {
           url: socialImage,
-          width: 1733,
-          height: 909,
-          alt: "Akribeia V3 Evidence Preview",
+          width: 1731,
+          height: 908,
+          alt: "Akribeia — see the market whole and test every signal",
         },
       ],
     },

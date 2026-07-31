@@ -32,15 +32,35 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
 
   const html = await response.text();
 
-  assert.match(html, /<title>Akribeia V3 — Evidence Preview<\/title>/i);
+  assert.match(html, /<title>Akribeia — Quantitative Market Research<\/title>/i);
+  assert.match(html, /og-wave1\.png/);
+  assert.match(html, /1731/);
+  assert.match(html, /908/);
   assert.match(html, /class="skip-link" href="#main-content"/);
   assert.match(html, /<nav class="primary-nav" aria-label="Primary navigation">/);
+  assert.match(html, /aria-label="Research integrity navigation"/);
   assert.match(html, /<main id="main-content" tabindex="-1">/);
   assert.match(html, /data-state="loading"/);
   assert.match(html, /aria-live="polite" role="status"/);
   assert.match(html, /Verifying the active evidence build/);
-  assert.match(html, /From source to signal/);
-  assert.match(html, /every gate visible/);
+  assert.match(html, /See the market whole/);
+  assert.match(html, /Test every signal/);
+  assert.match(html, /Open Market Health/);
+  assert.match(html, /Search all 1,361 securities/);
+  assert.match(html, /aria-label="Akribeia product areas"/);
+  assert.match(html, /Regime, macro, earnings, breadth and risk/);
+  assert.match(html, /data-market-health-state="loading"/);
+  assert.match(html, /Loading real V2 Market Health sources/);
+  assert.match(html, /Overall Market Health/);
+  assert.match(html, /Market regime/);
+  assert.match(html, /Macro health/);
+  assert.match(html, /Earnings health/);
+  assert.match(html, /Market breadth/);
+  assert.match(html, /Risk state/);
+  assert.match(html, /Computed across all 1,361 securities/);
+  assert.match(html, /no market-cap floor/i);
+  assert.match(html, /Trust policy/);
+  assert.match(html, /Fail closed/);
   assert.match(html, /preview-20260728-pipeline-v4-a34fc842220f/);
   assert.match(html, /3\.0\.0-preview\.4/);
   assert.match(html, />643</);
@@ -54,6 +74,14 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /3 SHA-256 artifacts/);
   assert.match(html, /verify-and-reuse/);
   assert.match(html, /validated-pointer-and-projection/);
+  assert.match(html, /Every validated name\. No hidden cap floor\./);
+  assert.match(html, /Search all securities/);
+  assert.match(html, /authoritative no-floor universe/);
+  assert.match(html, />1,361</);
+  assert.match(html, />1,291</);
+  assert.match(html, />70</);
+  assert.match(html, /SHA-256/);
+  assert.match(html, /10624afb7f413c2a1c3490c29b99e37a9fa5c0776a0a58f53de6d7af73b337e4/);
   assert.match(html, /Highest composite scores/);
   assert.match(html, /MU/);
   assert.match(html, /NVDA/);
@@ -690,4 +718,13 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(prospectiveReadiness.progress.approvedBenchmarkComparisonCount, 0);
   assert.equal(prospectiveReadiness.progress.monthlyValidationReportCount, 0);
   assert.equal(prospectiveReadiness.certificationEligible, false);
+});
+test("binds deployed static assets to the worker runtime", async () => {
+  const wranglerConfig = JSON.parse(
+    await readFile(new URL("../dist/server/wrangler.json", import.meta.url), "utf8"),
+  );
+
+  assert.equal(wranglerConfig.assets?.binding, "ASSETS");
+  assert.equal(wranglerConfig.assets?.directory, "../client");
+  assert.equal(wranglerConfig.preview_urls, false);
 });

@@ -1,0 +1,46 @@
+Continue the same Akribeia V3 Codex thread after the Wave 1 audit has been reviewed.
+
+Read AKRIBEIA_CODEX_WAVE1_HANDOFF.md, docs/V2_PRODUCT_PARITY_MATRIX.md, and docs/WAVE1_IMPLEMENTATION_PLAN.md again.
+
+Proceed with Wave 1 in the required checkpoint order:
+
+1. Restore the full authoritative V2 security universe with reconciliation, evidence, and regression tests.
+2. Restore the Akribeia landing-page introduction and primary navigation.
+3. Restore complete Market Health using the existing real V2 APIs or V3-compatible server-side adapters:
+   - overall health
+   - market regime
+   - macro health
+   - earnings health
+   - breadth
+   - risk state
+   - as-of/freshness behavior
+   - loading, partial, stale, empty, and error states
+4. Preserve every V3 trust-core health, manifest, schema, lineage, receipt, publication, rollback, and prospective-readiness control.
+5. Add unit, integration, browser, responsive, and regression tests.
+6. Keep checkpoint commits separate.
+7. Run the complete test/build/audit/health suite after integration.
+8. Deploy only to the restricted akribeia-v3-uat Worker when all checks pass.
+9. Verify Cloudflare Access still requires authentication and preview URLs remain disabled.
+10. Push the feature branch and open a PR with full acceptance evidence.
+
+Do not deploy to production.
+Do not merge to main.
+Do not expose or move secrets into the client.
+Do not fabricate data.
+Do not silently exclude securities.
+Do not replace a V2 calculation or capability without stopping for owner approval.
+Do not broaden the task into unrelated framework upgrades or refactors.
+
+Stop at any mandatory stop condition in the handoff and provide the smallest exact owner action required.
+
+At the end of every checkpoint, use the required checkpoint report format. At final handoff, provide:
+- branch and source SHA
+- commits
+- files changed
+- exact test commands and counts
+- reconciled universe count and exclusions
+- UAT URL and Cloudflare version
+- health response summary
+- screenshots/browser artifacts
+- remaining parity gaps for Waves 2–4
+- PR URL

@@ -1,0 +1,28 @@
+You are taking over Akribeia V3 Wave 1 product-parity restoration.
+
+Repository:
+C:\Users\bmhar\OneDrive\Desktop\Akribeia\Akribeia Dashboard\akribeia-platform-v3
+
+Read AKRIBEIA_CODEX_WAVE1_HANDOFF.md in full. Treat it as the controlling task specification.
+
+For this first checkpoint, do PREFLIGHT + AUDIT only:
+
+1. Verify Git status, branches, recent commits, remotes, open/merged PRs, and whether commit 8fa2028cd24aea7495024ce32d39ba2d5b75900c is in main.
+2. Discover and run the existing baseline lint, typecheck, test, browser-test, build, audit, and health-verification commands.
+3. Inventory the actual V2 and V3 routes, components, APIs, datasets, calculations, interactions, jobs, environment variables, and responsive states.
+4. Locate the authoritative full V2 security universe and the authoritative Market Health data/calculation sources.
+5. Create docs/V2_PRODUCT_PARITY_MATRIX.md and docs/WAVE1_IMPLEMENTATION_PLAN.md.
+6. Identify anything missing from the selected project scope, including a separate V2 repository or ignored local configuration.
+7. Commit only the audit/plan documentation in a dedicated commit after tests pass.
+
+Do not implement the landing page, full universe, or Market Health yet.
+Do not deploy.
+Do not merge to main.
+Do not expose secrets.
+Do not change Cloudflare Access.
+Do not add paid services.
+Do not redefine any V2 calculation.
+
+Use one primary agent. A read-only subagent is allowed only for a clearly independent inventory task.
+
+Finish with the exact checkpoint report format required by the handoff and a go/no-go recommendation for implementation.
