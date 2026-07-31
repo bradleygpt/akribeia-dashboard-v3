@@ -1,4 +1,5 @@
 import { headers } from "next/headers";
+import { ExperienceShell } from "./experience-shell";
 import "./globals.css";
 
 const title = "Akribeia — Quantitative Market Research";
@@ -49,7 +50,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <ExperienceShell>{children}</ExperienceShell>
+      </body>
     </html>
   );
 }

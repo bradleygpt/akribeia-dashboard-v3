@@ -4703,3 +4703,411 @@ footer p {
     flex-direction: column;
   }
 }
+
+/* AKRIBEIA_DYNAMIC_PARITY_START */
+html {
+  background: #04060c;
+}
+
+.experience-content {
+  min-height: 100vh;
+  opacity: 1;
+}
+
+.experience-content--checking {
+  opacity: 0;
+}
+
+.experience-content--ready {
+  animation: akribeia-content-arrive 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.akribeia-route-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 46%, rgb(105 255 35 / 12%), transparent 26rem),
+    linear-gradient(135deg, #020806 0%, #07170f 55%, #102716 100%);
+  color: #f1f4e9;
+  animation: akribeia-transition-in 180ms ease-out both;
+}
+
+.akribeia-route-transition__field {
+  position: absolute;
+  inset: -20%;
+  opacity: 0.42;
+  transform: rotate(-12deg);
+}
+
+.akribeia-route-transition__field span {
+  position: absolute;
+  inset-inline: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(166 255 67 / 65%), transparent);
+  animation: akribeia-scan 1.35s linear infinite;
+}
+
+.akribeia-route-transition__field span:nth-child(1) {
+  top: 25%;
+}
+
+.akribeia-route-transition__field span:nth-child(2) {
+  top: 50%;
+  animation-delay: -450ms;
+}
+
+.akribeia-route-transition__field span:nth-child(3) {
+  top: 75%;
+  animation-delay: -900ms;
+}
+
+.akribeia-route-transition__content {
+  position: relative;
+  width: min(34rem, calc(100vw - 3rem));
+  text-align: center;
+}
+
+.akribeia-route-transition__mark,
+.akribeia-route-loading__mark {
+  display: inline-grid;
+  width: 3.4rem;
+  height: 3.4rem;
+  place-items: center;
+  border: 1px solid rgb(166 255 67 / 45%);
+  border-radius: 999px;
+  color: #a6ff43;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 2rem;
+  font-style: italic;
+  box-shadow: 0 0 3rem rgb(166 255 67 / 16%);
+}
+
+.akribeia-route-transition__content p {
+  margin: 1.25rem 0 1rem;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.76rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.akribeia-route-transition__track,
+.akribeia-route-loading__progress {
+  height: 2px;
+  overflow: hidden;
+  background: rgb(255 255 255 / 9%);
+}
+
+.akribeia-route-transition__track i,
+.akribeia-route-loading__progress i {
+  display: block;
+  width: 34%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, #a6ff43, transparent);
+  animation: akribeia-progress 1.05s ease-in-out infinite;
+}
+
+.akribeia-route-loading {
+  min-height: 100vh;
+  padding: clamp(1.2rem, 3vw, 3rem);
+  color: #edf2e7;
+  background:
+    radial-gradient(circle at 78% 18%, rgb(166 255 67 / 10%), transparent 28rem),
+    linear-gradient(145deg, #020806, #08170f 58%, #122b18);
+}
+
+.akribeia-route-loading__header {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding-bottom: 1.4rem;
+  border-bottom: 1px solid rgb(255 255 255 / 12%);
+}
+
+.akribeia-route-loading__header div {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.akribeia-route-loading__header strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.35rem;
+}
+
+.akribeia-route-loading__header small,
+.akribeia-route-loading__hero p {
+  color: #a6ff43;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.akribeia-route-loading__hero {
+  max-width: 58rem;
+  padding: clamp(4rem, 10vh, 8rem) 0 2.5rem;
+}
+
+.akribeia-route-loading__hero h1,
+.akribeia-route-loading__title {
+  max-width: 13ch;
+  margin: 0.75rem 0 1rem;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.8rem, 7vw, 6.5rem);
+  font-weight: 400;
+  line-height: 0.92;
+}
+
+.akribeia-route-loading__hero > span {
+  display: block;
+  max-width: 48rem;
+  color: rgb(237 242 231 / 72%);
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+  line-height: 1.65;
+}
+
+.akribeia-route-loading__progress {
+  max-width: 42rem;
+  margin-bottom: 2rem;
+}
+
+.akribeia-route-loading__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.akribeia-route-loading__grid article {
+  min-height: 10rem;
+  padding: 1.15rem;
+  border: 1px solid rgb(255 255 255 / 10%);
+  background: rgb(255 255 255 / 3%);
+  animation: akribeia-card-arrive 620ms ease both;
+}
+
+.akribeia-route-loading__grid article:nth-child(2) {
+  animation-delay: 60ms;
+}
+
+.akribeia-route-loading__grid article:nth-child(3) {
+  animation-delay: 120ms;
+}
+
+.akribeia-route-loading__grid article:nth-child(4) {
+  animation-delay: 180ms;
+}
+
+.akribeia-route-loading__grid article:nth-child(5) {
+  animation-delay: 240ms;
+}
+
+.akribeia-route-loading__grid article:nth-child(6) {
+  animation-delay: 300ms;
+}
+
+.akribeia-route-loading__grid span,
+.akribeia-route-loading__grid strong,
+.akribeia-route-loading__grid i {
+  display: block;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgb(255 255 255 / 6%),
+    rgb(166 255 67 / 18%),
+    rgb(255 255 255 / 6%)
+  );
+  background-size: 240% 100%;
+  animation: akribeia-shimmer 1.45s linear infinite;
+}
+
+.akribeia-route-loading__grid span {
+  width: 28%;
+  height: 0.55rem;
+}
+
+.akribeia-route-loading__grid strong {
+  width: 72%;
+  height: 1.4rem;
+  margin-top: 1.25rem;
+}
+
+.akribeia-route-loading__grid i {
+  width: 100%;
+  height: 0.65rem;
+  margin-top: 1rem;
+}
+
+.akribeia-route-loading__grid i:last-child {
+  width: 64%;
+}
+
+.experience-content--ready main > section,
+.experience-content--ready main > div,
+.experience-content--ready .research-page > *,
+.experience-content--ready .risk-card-grid > article,
+.experience-content--ready .product-doors > a,
+.experience-content--ready .metrics > article {
+  animation: akribeia-card-arrive 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.experience-content--ready main > :nth-child(2),
+.experience-content--ready .risk-card-grid > article:nth-child(2),
+.experience-content--ready .product-doors > a:nth-child(2) {
+  animation-delay: 70ms;
+}
+
+.experience-content--ready main > :nth-child(3),
+.experience-content--ready .risk-card-grid > article:nth-child(3),
+.experience-content--ready .product-doors > a:nth-child(3) {
+  animation-delay: 140ms;
+}
+
+.experience-content--ready main > :nth-child(4),
+.experience-content--ready .risk-card-grid > article:nth-child(4),
+.experience-content--ready .product-doors > a:nth-child(4) {
+  animation-delay: 210ms;
+}
+
+.risk-distribution button > div > span {
+  transform-origin: left center;
+  animation: akribeia-grow-x 780ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.research-table tbody tr,
+.risk-card-grid article,
+.product-doors a,
+.metrics article,
+.sector-explorer-controls,
+.etf-section-nav button {
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.research-table tbody tr:hover,
+.risk-card-grid article:hover,
+.product-doors a:hover,
+.metrics article:hover {
+  transform: translateY(-2px);
+}
+
+@keyframes akribeia-content-arrive {
+  from {
+    opacity: 0;
+    filter: saturate(0.72);
+  }
+  to {
+    opacity: 1;
+    filter: saturate(1);
+  }
+}
+
+@keyframes akribeia-transition-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes akribeia-scan {
+  from {
+    transform: translateX(-18%);
+    opacity: 0;
+  }
+  20%,
+  80% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(18%);
+    opacity: 0;
+  }
+}
+
+@keyframes akribeia-progress {
+  0% {
+    transform: translateX(-110%);
+  }
+  55%,
+  100% {
+    transform: translateX(310%);
+  }
+}
+
+@keyframes akribeia-card-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes akribeia-shimmer {
+  from {
+    background-position: 120% 0;
+  }
+  to {
+    background-position: -120% 0;
+  }
+}
+
+@keyframes akribeia-grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (max-width: 760px) {
+  .akribeia-route-loading__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .akribeia-route-loading__grid article:nth-child(n + 4) {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .akl-root {
+    display: none !important;
+  }
+
+  .experience-content,
+  .experience-content--checking,
+  .experience-content--ready {
+    opacity: 1 !important;
+    animation: none !important;
+  }
+
+  .akribeia-route-transition {
+    animation: none !important;
+  }
+
+  .akribeia-route-transition__field,
+  .akribeia-route-transition__track i,
+  .akribeia-route-loading__progress i,
+  .akribeia-route-loading__grid *,
+  .experience-content--ready main > *,
+  .experience-content--ready .research-page > *,
+  .experience-content--ready .risk-card-grid > article,
+  .experience-content--ready .product-doors > a,
+  .experience-content--ready .metrics > article,
+  .risk-distribution button > div > span {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+/* AKRIBEIA_DYNAMIC_PARITY_END */
