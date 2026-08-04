@@ -5,3 +5,6 @@
 data/reference/v2-baseline/fixtures/** -text
 data/reference/v2-baseline/june-oracle-fixtures/** -text
 data/reference/v2-baseline/validation-results/*.txt -text
+
+# Preserve the validated Prolepsis handoff artifact byte-for-byte.
+apps/dashboard/public/data/mlpred.json binary

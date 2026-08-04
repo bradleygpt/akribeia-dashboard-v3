@@ -1,4 +1,8 @@
-export function ResearchHeader({ active }: { active: "research" | "risk" | "sectors" | "etfs" }) {
+export function ResearchHeader({
+  active,
+}: {
+  active: "research" | "prolepsis" | "risk" | "sectors" | "etfs";
+}) {
   return (
     <>
       <a className="skip-link" href="#main-content">
@@ -19,6 +23,9 @@ export function ResearchHeader({ active }: { active: "research" | "risk" | "sect
           <a href="/#market-health">Market Health</a>
           <a href="/research" aria-current={active === "research" ? "page" : undefined}>
             Screener
+          </a>
+          <a href="/prolepsis" aria-current={active === "prolepsis" ? "page" : undefined}>
+            Prolepsis
           </a>
           <a href="/risk" aria-current={active === "risk" ? "page" : undefined}>
             Risk Radar
