@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 interface DetailMetric {
   metric?: string;
@@ -30,7 +30,12 @@ interface DetailPayload {
 interface Envelope {
   ok: boolean;
   payload?: DetailPayload;
-  source?: { bulkDataCommit: string; asOf: string };
+  source?: {
+    bulkDataCommit: string;
+    asOf: string;
+    url?: string;
+    nonFiniteTokensMappedToNull?: number;
+  };
   error?: { code?: string; message?: string };
 }
 
@@ -41,6 +46,14 @@ interface Quarter {
   grossMargins?: number | null;
   operatingMargins?: number | null;
   netMargins?: number | null;
+}
+
+type QuarterSortKey =
+  "date" | "revenueGrowth" | "earningsGrowth" | "grossMargins" | "operatingMargins" | "netMargins";
+
+interface QuarterSort {
+  key: QuarterSortKey;
+  direction: "ascending" | "descending";
 }
 
 export function SecurityDeepReference({ ticker }: { ticker: string }) {
@@ -54,9 +67,14 @@ export function SecurityDeepReference({ ticker }: { ticker: string }) {
         source: NonNullable<Envelope["source"]>;
         quarters: Quarter[];
         deepGeneratedAt: string | null;
+        quarterlySource: NonNullable<Envelope["source"]> | null;
       }
   >({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
+  const [quarterSort, setQuarterSort] = useState<QuarterSort>({
+    key: "date",
+    direction: "descending",
+  });
 
   useEffect(() => {
     const controller = new AbortController();
@@ -95,6 +113,10 @@ export function SecurityDeepReference({ ticker }: { ticker: string }) {
           source: detailResult.body.source,
           quarters: quarterlyPayload?.quarters ?? [],
           deepGeneratedAt: quarterlyPayload?.deepGeneratedAt ?? null,
+          quarterlySource:
+            quarterlyResult.response.ok && quarterlyResult.body.ok
+              ? (quarterlyResult.body.source ?? null)
+              : null,
         });
       })
       .catch((reason: unknown) => {
@@ -106,6 +128,41 @@ export function SecurityDeepReference({ ticker }: { ticker: string }) {
       });
     return () => controller.abort();
   }, [attempt, ticker]);
+
+  const sortedQuarters = useMemo(() => {
+    if (state.status !== "ready") return [];
+    return state.quarters
+      .map((quarter, index) => ({ quarter, index }))
+      .toSorted((left, right) => {
+        const rawLeft = left.quarter[quarterSort.key];
+        const rawRight = right.quarter[quarterSort.key];
+        const leftValue =
+          quarterSort.key === "date"
+            ? typeof rawLeft === "string"
+              ? Date.parse(rawLeft)
+              : null
+            : typeof rawLeft === "number" && Number.isFinite(rawLeft)
+              ? rawLeft
+              : null;
+        const rightValue =
+          quarterSort.key === "date"
+            ? typeof rawRight === "string"
+              ? Date.parse(rawRight)
+              : null
+            : typeof rawRight === "number" && Number.isFinite(rawRight)
+              ? rawRight
+              : null;
+        if (leftValue === null && rightValue === null) return left.index - right.index;
+        if (leftValue === null) return 1;
+        if (rightValue === null) return -1;
+        return (
+          (quarterSort.direction === "ascending"
+            ? leftValue - rightValue
+            : rightValue - leftValue) || left.index - right.index
+        );
+      })
+      .map(({ quarter }) => quarter);
+  }, [quarterSort, state]);
 
   if (state.status === "loading") {
     return (
@@ -240,23 +297,52 @@ export function SecurityDeepReference({ ticker }: { ticker: string }) {
             ? "No preserved quarterly rows are available for this security."
             : `Preserved deep history${
                 state.deepGeneratedAt ? ` generated ${state.deepGeneratedAt.slice(0, 10)}` : ""
-              }.`}
+              }${state.quarterlySource ? ` · pinned data ${state.quarterlySource.bulkDataCommit.slice(0, 9)} · source as of ${state.quarterlySource.asOf}${state.quarterlySource.nonFiniteTokensMappedToNull ? ` · ${state.quarterlySource.nonFiniteTokensMappedToNull} non-finite source tokens shown unavailable` : ""}` : ""}.`}
         </p>
         {state.quarters.length > 0 ? (
           <div className="research-table-scroll">
             <table>
               <thead>
                 <tr>
-                  <th scope="col">Quarter</th>
-                  <th scope="col">Revenue growth</th>
-                  <th scope="col">Earnings growth</th>
-                  <th scope="col">Gross margin</th>
-                  <th scope="col">Operating margin</th>
-                  <th scope="col">Net margin</th>
+                  {(
+                    [
+                      ["date", "Quarter"],
+                      ["revenueGrowth", "Revenue growth"],
+                      ["earningsGrowth", "Earnings growth"],
+                      ["grossMargins", "Gross margin"],
+                      ["operatingMargins", "Operating margin"],
+                      ["netMargins", "Net margin"],
+                    ] as Array<[QuarterSortKey, string]>
+                  ).map(([key, label]) => {
+                    const active = quarterSort.key === key;
+                    const direction = active ? quarterSort.direction : "none";
+                    return (
+                      <th scope="col" aria-sort={direction} key={key}>
+                        <button
+                          type="button"
+                          className={
+                            active ? "research-sort-header is-active" : "research-sort-header"
+                          }
+                          onClick={() =>
+                            setQuarterSort({
+                              key,
+                              direction:
+                                active && quarterSort.direction === "ascending"
+                                  ? "descending"
+                                  : "ascending",
+                            })
+                          }
+                        >
+                          {label}
+                          <span aria-hidden="true">{direction === "descending" ? "↓" : "↑"}</span>
+                        </button>
+                      </th>
+                    );
+                  })}
                 </tr>
               </thead>
               <tbody>
-                {state.quarters.slice(0, 12).map((quarter, index) => {
+                {sortedQuarters.slice(0, 12).map((quarter, index) => {
                   const percent = (value: number | null | undefined) =>
                     value === null || value === undefined
                       ? "Unavailable"

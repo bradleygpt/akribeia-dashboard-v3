@@ -14,6 +14,8 @@ const DATASETS = {
   "index-add-candidates": "index_add_candidates.json",
   "macro-forecasts": "macro_forecasts.json",
   "macro-rotation": "macro_rotation.json",
+  "strategies-holdings-performance": "strategies_holdings_perf.json",
+  "strategy-rationale": "strategy_rationale.json",
 } as const;
 
 type Dataset = keyof typeof DATASETS;

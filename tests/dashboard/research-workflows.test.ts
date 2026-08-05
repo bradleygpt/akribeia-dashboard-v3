@@ -7,8 +7,10 @@ import {
 import {
   filterResearchRows,
   matchesResearchPreset,
+  scoreForModel,
   type ResearchFilters,
 } from "../../apps/dashboard/app/research-filtering.js";
+import { hasCompleteStockModelEvidence } from "../../apps/dashboard/app/etfs/stock-model-evidence.js";
 import { computeRiskMetrics, normalizeRadarAxes } from "../../apps/dashboard/app/research-risk.js";
 import {
   comparisonQuery,
@@ -18,6 +20,8 @@ import {
 import { handleQuoteApi } from "../../apps/dashboard/worker/quote-api.js";
 import { handleResearchReferenceApi } from "../../apps/dashboard/worker/research-reference-api.js";
 import { handleSecurityReferenceApi } from "../../apps/dashboard/worker/security-reference-api.js";
+import { parseSectorSort } from "../../apps/dashboard/app/sectors/sector-explorer.js";
+import { resolveMetadataProtocol } from "../../apps/dashboard/app/metadata-origin.js";
 
 const baseFilters: ResearchFilters = {
   query: "",
@@ -36,12 +40,84 @@ const baseFilters: ResearchFilters = {
 };
 
 describe("Wave 2 research universe", () => {
+  it("uses HTTP for loopback metadata assets without weakening forwarded HTTPS", () => {
+    expect(resolveMetadataProtocol("127.0.0.1:8797", null)).toBe("http");
+    expect(resolveMetadataProtocol("localhost:8797", null)).toBe("http");
+    expect(resolveMetadataProtocol("akribeia.example", null)).toBe("https");
+    expect(resolveMetadataProtocol("127.0.0.1:8797", "https")).toBe("https");
+  });
+
+  it("preserves hyphenated sector sort keys and their direction", () => {
+    expect(parseSectorSort("market-cap-ascending")).toEqual(["market-cap", "ascending"]);
+    expect(parseSectorSort("market-cap-descending")).toEqual(["market-cap", "descending"]);
+    expect(parseSectorSort("score-descending")).toEqual(["score", "descending"]);
+  });
+
   it("retains the complete no-floor stock and ETF population", () => {
     const universe = loadResearchUniverse();
     expect(universe.total).toBe(1361);
     expect(universe.stocks).toBe(1291);
     expect(universe.etfs).toBe(70);
     expect(new Set(universe.rows.map(({ ticker }) => ticker)).size).toBe(1361);
+  });
+
+  it("fails closed for SPY stock-model grades while preserving an evidenced equity", () => {
+    const universe = loadResearchUniverse();
+    const spy = universe.rows.find(({ ticker }) => ticker === "SPY");
+    const aapl = universe.rows.find(({ ticker }) => ticker === "AAPL");
+
+    expect(spy).toBeDefined();
+    expect(spy?.raw.forwardPE).toBeNull();
+    expect(spy?.raw.revenueGrowth).toBeNull();
+    expect(spy?.raw.grossMargins).toBeNull();
+    expect(spy?.raw.momentum_1m).toBe(0.0135);
+    expect(spy?.raw.analyst_mean_target_upside).toBeNull();
+    expect(spy?.grades.Valuation).toBe("B-");
+    expect(hasCompleteStockModelEvidence(spy!)).toBe(false);
+    expect(scoreForModel(spy!, "equal")).toEqual({
+      composite: null,
+      rating: "Not applicable (ETF)",
+    });
+
+    expect(aapl).toBeDefined();
+    expect(aapl?.raw.forwardPE).toBeCloseTo(34.41359, 5);
+    expect(aapl?.raw.revenueGrowth).toBe(0.166);
+    expect(aapl?.raw.grossMargins).toBeCloseTo(0.47862, 5);
+    expect(aapl?.raw.momentum_1m).toBe(0.1221);
+    expect(aapl?.raw.analyst_mean_target_upside).toBe(-0.0408);
+    expect(hasCompleteStockModelEvidence(aapl!)).toBe(true);
+    expect(scoreForModel(aapl!, "equal")).toEqual({ composite: 7.33, rating: "Hold" });
+  });
+
+  it("sorts numeric values numerically, keeps nulls last, and stabilizes ties by ticker", () => {
+    const universe = loadResearchUniverse();
+    const byPrice = filterResearchRows(
+      universe.rows,
+      { ...baseFilters, sort: "price-asc" },
+      new Set(),
+    );
+    const numericPrices = byPrice
+      .map(({ price }) => price)
+      .filter((price): price is number => price !== null);
+
+    expect(numericPrices).toEqual(numericPrices.toSorted((left, right) => left - right));
+    const firstNullPrice = byPrice.findIndex(({ price }) => price === null);
+    expect(firstNullPrice === -1 ? byPrice.length : firstNullPrice).toBeGreaterThanOrEqual(
+      numericPrices.length,
+    );
+
+    const aapl = universe.rows.find(({ ticker }) => ticker === "AAPL")!;
+    const msft = universe.rows.find(({ ticker }) => ticker === "MSFT")!;
+    const ties = filterResearchRows(
+      [
+        { ...aapl, ticker: "ZZZ", price: 100 },
+        { ...msft, ticker: "AAA", price: 100 },
+      ],
+      { ...baseFilters, sort: "price-desc" },
+      new Set(),
+    );
+
+    expect(ties.map(({ ticker }) => ticker)).toEqual(["AAA", "ZZZ"]);
   });
 
   it("applies advanced filters without mutating or narrowing the source", () => {
@@ -203,6 +279,7 @@ describe("Wave 2 bounded API adapters", () => {
             },
             meta: {
               regularMarketPrice: 139,
+              regularMarketTime: 1_700_000_000,
               chartPreviousClose: 138,
               regularMarketDayHigh: 140,
               regularMarketDayLow: 137,
@@ -242,12 +319,81 @@ describe("Wave 2 bounded API adapters", () => {
       ok: boolean;
       ticker: string;
       price: number;
+      priceSource: string;
+      priceAsOf: string;
       history: { close: number[] };
     };
     expect(body.ok).toBe(true);
     expect(body.ticker).toBe("AAPL");
     expect(body.price).toBe(139);
+    expect(body.priceSource).toBe("live");
+    expect(body.priceAsOf).toBe("2023-11-14T22:13:20.000Z");
     expect(body.history.close).toHaveLength(40);
+  });
+
+  it("labels a daily-close quote fallback as as_of rather than live", async () => {
+    const timestamp = 1_700_000_000;
+    const daily = {
+      chart: {
+        result: [
+          {
+            timestamp: [timestamp],
+            indicators: { quote: [{ close: [125], high: [126], low: [124], volume: [1000] }] },
+            meta: {},
+          },
+        ],
+      },
+    };
+    const response = await handleQuoteApi(
+      new Request("https://akribeia.test/api/v3/quote?ticker=AAPL&range=1y"),
+      {
+        fetcher: async (input) =>
+          new Response(
+            JSON.stringify(
+              String(input).includes("interval=1m") ? { chart: { result: [] } } : daily,
+            ),
+          ),
+        now: new Date("2026-08-04T12:00:00Z"),
+      },
+    );
+    const body = (await response?.json()) as {
+      price: number;
+      priceSource: string;
+      priceAsOf: string;
+    };
+    expect(body.price).toBe(125);
+    expect(body.priceSource).toBe("as_of");
+    expect(body.priceAsOf).toBe("2023-11-14");
+  });
+
+  it("does not publish a daily close through the batched live-price overlay", async () => {
+    const response = await handleQuoteApi(
+      new Request("https://akribeia.test/api/v3/quotes?tickers=AAPL"),
+      {
+        fetcher: async () =>
+          new Response(
+            JSON.stringify({
+              chart: {
+                result: [
+                  {
+                    timestamp: [1_700_000_000],
+                    indicators: { quote: [{ close: [125] }] },
+                    meta: {},
+                  },
+                ],
+              },
+            }),
+          ),
+      },
+    );
+    const body = (await response?.json()) as {
+      ok: boolean;
+      requested: number;
+      available: number;
+      prices: Record<string, number>;
+    };
+    expect(response?.status).toBe(503);
+    expect(body).toMatchObject({ ok: false, requested: 1, available: 0, prices: {} });
   });
 
   it("validates and proxies immutable per-security V2 shards", async () => {
@@ -276,14 +422,18 @@ describe("Wave 2 bounded API adapters", () => {
     const quarterly = await handleSecurityReferenceApi(
       new Request("https://akribeia.test/api/v3/security-reference?ticker=AAPL&kind=quarterly"),
       {
-        fetcher: async () =>
-          new Response(
+        fetcher: async (input) => {
+          expect(String(input)).toContain(
+            "raw.githubusercontent.com/bradleygpt/akribeia-data/9f2d2322fc52847e435dbb6a83137712788f5b52/data/quarterly.json",
+          );
+          return new Response(
             JSON.stringify({
               deep_generated_at: "2026-07-30",
               AAPL: [{ date: "2026-06-30", revenueGrowth: 0.1 }],
               MSFT: [{ date: "2026-06-30", revenueGrowth: 0.2 }],
             }),
-          ),
+          );
+        },
       },
     );
     const quarterlyBody = (await quarterly?.json()) as {
@@ -291,6 +441,25 @@ describe("Wave 2 bounded API adapters", () => {
     };
     expect(quarterlyBody.payload.quarters).toHaveLength(1);
     expect(quarterlyBody.payload.deepGeneratedAt).toBe("2026-07-30");
+
+    const nonFiniteQuarterly = await handleSecurityReferenceApi(
+      new Request("https://akribeia.test/api/v3/security-reference?ticker=AAPL&kind=quarterly"),
+      {
+        fetcher: async () =>
+          new Response(
+            '{"deep_generated_at":"2026-07-30","AAPL":[{"date":"2026-06-30","mcapB":NaN,"note":"NaN remains text"}]}',
+          ),
+      },
+    );
+    const nonFiniteBody = (await nonFiniteQuarterly?.json()) as {
+      payload: { quarters: Array<{ mcapB: number | null; note: string }> };
+      source: { nonFiniteTokensMappedToNull: number };
+    };
+    expect(nonFiniteBody.payload.quarters[0]).toMatchObject({
+      mcapB: null,
+      note: "NaN remains text",
+    });
+    expect(nonFiniteBody.source.nonFiniteTokensMappedToNull).toBe(1);
   });
 
   it("rejects invalid tickers before reaching an upstream source", async () => {
@@ -332,5 +501,25 @@ describe("Wave 2 bounded API adapters", () => {
       },
     );
     expect(indexCandidates?.status).toBe(200);
+
+    for (const [dataset, filename] of [
+      ["macro-forecasts", "macro_forecasts.json"],
+      ["macro-rotation", "macro_rotation.json"],
+      ["strategies-holdings-performance", "strategies_holdings_perf.json"],
+      ["strategy-rationale", "strategy_rationale.json"],
+    ] as const) {
+      const response = await handleResearchReferenceApi(
+        new Request(`https://akribeia.test/api/v3/research-reference?dataset=${dataset}`),
+        {
+          fetcher: async (input) => {
+            expect(String(input)).toContain(
+              `b477349a8691fdc5000641a6ae2893dbbfae2de6/public/data/${filename}`,
+            );
+            return new Response(JSON.stringify({ generated_at: "2026-07-28" }));
+          },
+        },
+      );
+      expect(response?.status).toBe(200);
+    }
   });
 });

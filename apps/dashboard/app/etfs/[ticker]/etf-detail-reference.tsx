@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { formatMoney } from "../../research-format";
+import { formatEtfPercent, formatUsdMagnitude } from "../etf-directory";
 
 interface Holding {
   t: string;
@@ -12,6 +14,29 @@ interface Envelope {
   payload?: unknown;
   error?: { message?: string };
 }
+
+interface EtfMetrics {
+  shortName?: string;
+  industry?: string;
+  expenseRatio?: number | null;
+  totalAssets?: number | null;
+  navPrice?: number | null;
+  currentPrice?: number | null;
+  ytdReturn?: number | null;
+  threeYearReturn?: number | null;
+  fiveYearReturn?: number | null;
+  beta3Year?: number | null;
+  yield?: number | null;
+  momentum_1m?: number | null;
+  momentum_3m?: number | null;
+  momentum_6m?: number | null;
+  momentum_12m?: number | null;
+}
+
+type HoldingSort = {
+  key: "security" | "weight";
+  direction: "ascending" | "descending";
+};
 
 export function EtfDetailReference({ ticker }: { ticker: string }) {
   const [state, setState] = useState<
@@ -27,15 +52,20 @@ export function EtfDetailReference({ ticker }: { ticker: string }) {
         lookthroughScore: number | null;
         ratingEligible: boolean;
         assetClass: string | null;
+        metrics: EtfMetrics | null;
       }
   >({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
+  const [holdingSort, setHoldingSort] = useState<HoldingSort>({
+    key: "weight",
+    direction: "descending",
+  });
 
   useEffect(() => {
     const controller = new AbortController();
     setState({ status: "loading" });
     Promise.all(
-      ["etf-descriptions", "etf-holdings", "etf-lookthrough"].map((dataset) =>
+      ["etf", "etf-descriptions", "etf-holdings", "etf-lookthrough"].map((dataset) =>
         fetch(`/api/v3/research-reference?dataset=${dataset}`, {
           signal: controller.signal,
           headers: { accept: "application/json" },
@@ -48,7 +78,7 @@ export function EtfDetailReference({ ticker }: { ticker: string }) {
         }),
       ),
     )
-      .then(([descriptions, holdings, lookthrough]) => {
+      .then(([etf, descriptions, holdings, lookthrough]) => {
         const holdingMap = holdings.etfs as
           | Record<
               string,
@@ -86,6 +116,7 @@ export function EtfDetailReference({ ticker }: { ticker: string }) {
           lookthroughScore: look?.lt_score ?? null,
           ratingEligible: look?.rating_ok === true,
           assetClass: look?.asset_class ?? null,
+          metrics: (etf.etfs as Record<string, EtfMetrics> | undefined)?.[ticker] ?? null,
         });
       })
       .catch((reason: unknown) => {
@@ -97,6 +128,18 @@ export function EtfDetailReference({ ticker }: { ticker: string }) {
       });
     return () => controller.abort();
   }, [attempt, ticker]);
+
+  const sortedHoldings = useMemo(() => {
+    if (state.status !== "ready") return [];
+    return state.holdings.toSorted((left, right) => {
+      const comparison =
+        holdingSort.key === "security" ? left.t.localeCompare(right.t) : left.w - right.w;
+      return (
+        (holdingSort.direction === "ascending" ? comparison : -comparison) ||
+        left.t.localeCompare(right.t)
+      );
+    });
+  }, [holdingSort, state]);
 
   if (state.status === "loading") {
     return (
@@ -130,6 +173,53 @@ export function EtfDetailReference({ ticker }: { ticker: string }) {
         </p>
       </div>
       <p>{state.description ?? "No preserved description is available for this fund."}</p>
+      <h3>Approved ETF source metrics</h3>
+      <p className="etf-disclaimer">
+        AUM is source-denominated US dollars. Momentum, yield, and multi-year return fields are
+        ratios; YTD is supplied as percentage points. Missing values remain unavailable.
+      </p>
+      <dl className="etf-detail-summary" aria-label="Approved ETF source metrics">
+        <div>
+          <dt>Reference price</dt>
+          <dd>{formatMoney(state.metrics?.currentPrice ?? null)}</dd>
+        </div>
+        <div>
+          <dt>NAV</dt>
+          <dd>{formatMoney(state.metrics?.navPrice ?? null)}</dd>
+        </div>
+        <div>
+          <dt>AUM</dt>
+          <dd>{formatUsdMagnitude(state.metrics?.totalAssets ?? null)}</dd>
+        </div>
+        <div>
+          <dt>Expense ratio</dt>
+          <dd>{formatEtfPercent(state.metrics?.expenseRatio ?? null, "ratio", 2)}</dd>
+        </div>
+        <div>
+          <dt>Yield</dt>
+          <dd>{formatEtfPercent(state.metrics?.yield ?? null, "ratio")}</dd>
+        </div>
+        <div>
+          <dt>1M return</dt>
+          <dd>{formatEtfPercent(state.metrics?.momentum_1m ?? null, "ratio")}</dd>
+        </div>
+        <div>
+          <dt>3M return</dt>
+          <dd>{formatEtfPercent(state.metrics?.momentum_3m ?? null, "ratio")}</dd>
+        </div>
+        <div>
+          <dt>12M return</dt>
+          <dd>{formatEtfPercent(state.metrics?.momentum_12m ?? null, "ratio")}</dd>
+        </div>
+        <div>
+          <dt>YTD return</dt>
+          <dd>{formatEtfPercent(state.metrics?.ytdReturn ?? null, "percentage-points")}</dd>
+        </div>
+        <div>
+          <dt>3Y annualized</dt>
+          <dd>{formatEtfPercent(state.metrics?.threeYearReturn ?? null, "ratio")}</dd>
+        </div>
+      </dl>
       <dl className="etf-detail-summary">
         <div>
           <dt>Asset class</dt>
@@ -163,12 +253,41 @@ export function EtfDetailReference({ ticker }: { ticker: string }) {
             <caption>Captured top holdings</caption>
             <thead>
               <tr>
-                <th scope="col">Security</th>
-                <th scope="col">Captured weight</th>
+                {(
+                  [
+                    ["security", "Security"],
+                    ["weight", "Captured weight"],
+                  ] as const
+                ).map(([key, label]) => {
+                  const active = holdingSort.key === key;
+                  const direction = active ? holdingSort.direction : "none";
+                  return (
+                    <th scope="col" aria-sort={direction} key={key}>
+                      <button
+                        type="button"
+                        className={
+                          active ? "research-sort-header is-active" : "research-sort-header"
+                        }
+                        onClick={() =>
+                          setHoldingSort({
+                            key,
+                            direction:
+                              active && holdingSort.direction === "ascending"
+                                ? "descending"
+                                : "ascending",
+                          })
+                        }
+                      >
+                        {label}
+                        <span aria-hidden="true">{direction === "descending" ? "↓" : "↑"}</span>
+                      </button>
+                    </th>
+                  );
+                })}
               </tr>
             </thead>
             <tbody>
-              {state.holdings.map(({ t, w }) => (
+              {sortedHoldings.map(({ t, w }) => (
                 <tr key={t}>
                   <td>
                     <a href={`/research/${encodeURIComponent(t)}`}>{t}</a>

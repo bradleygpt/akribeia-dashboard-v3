@@ -1,6 +1,7 @@
 const SECURITY_REFERENCE_PATH = "/api/v3/security-reference";
 const BULK_DATA_COMMIT = "9f2d2322fc52847e435dbb6a83137712788f5b52";
 const DATA_BASE = `https://cdn.jsdelivr.net/gh/bradleygpt/akribeia-data@${BULK_DATA_COMMIT}/data`;
+const RAW_DATA_BASE = `https://raw.githubusercontent.com/bradleygpt/akribeia-data/${BULK_DATA_COMMIT}/data`;
 const TICKER_PATTERN = /^[A-Z0-9][A-Z0-9.-]{0,14}$/;
 
 const KINDS = {
@@ -30,6 +31,42 @@ function json(body: unknown, status = 200): Response {
   });
 }
 
+function normalizeBareNaN(text: string): { text: string; count: number } {
+  let normalized = "";
+  let count = 0;
+  let inString = false;
+  let escaped = false;
+
+  for (let index = 0; index < text.length; index += 1) {
+    const character = text[index];
+    if (inString) {
+      normalized += character;
+      if (escaped) escaped = false;
+      else if (character === "\\") escaped = true;
+      else if (character === '"') inString = false;
+      continue;
+    }
+    if (character === '"') {
+      inString = true;
+      normalized += character;
+      continue;
+    }
+    if (text.startsWith("NaN", index)) {
+      const previous = text[index - 1] ?? " ";
+      const next = text[index + 3] ?? " ";
+      if (/[\s[:,]/.test(previous) && /[\s,}\]]/.test(next)) {
+        normalized += "null";
+        count += 1;
+        index += 2;
+        continue;
+      }
+    }
+    normalized += character;
+  }
+
+  return { text: normalized, count };
+}
+
 export async function handleSecurityReferenceApi(
   request: Request,
   dependencies: Dependencies = {},
@@ -54,7 +91,10 @@ export async function handleSecurityReferenceApi(
     );
   }
   const kind = requestedKind as Kind;
-  const sourceUrl = `${DATA_BASE}/${KINDS[kind](ticker)}`;
+  // The 4 MB quarterly map is intermittently rejected by the local Worker runtime when
+  // streamed through jsDelivr. Raw GitHub serves the byte-identical file at the same immutable
+  // commit; smaller per-security shards retain the accepted CDN path.
+  const sourceUrl = `${kind === "quarterly" ? RAW_DATA_BASE : DATA_BASE}/${KINDS[kind](ticker)}`;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), dependencies.timeoutMs ?? 7_000);
   try {
@@ -97,7 +137,8 @@ export async function handleSecurityReferenceApi(
         502,
       );
     }
-    const parsed = JSON.parse(text) as unknown;
+    const normalized = kind === "quarterly" ? normalizeBareNaN(text) : { text, count: 0 };
+    const parsed = JSON.parse(normalized.text) as unknown;
     const payload =
       kind === "quarterly" && typeof parsed === "object" && parsed !== null
         ? {
@@ -111,10 +152,20 @@ export async function handleSecurityReferenceApi(
       ticker,
       kind,
       fetchedAt: (dependencies.now ?? new Date()).toISOString(),
-      source: { bulkDataCommit: BULK_DATA_COMMIT, url: sourceUrl, asOf: "2026-07-30" },
+      source: {
+        bulkDataCommit: BULK_DATA_COMMIT,
+        url: sourceUrl,
+        asOf: "2026-07-30",
+        nonFiniteTokensMappedToNull: normalized.count,
+      },
       payload,
     });
-  } catch {
+  } catch (error) {
+    console.error(
+      `[security-reference] ${kind}:${ticker} failed: ${
+        error instanceof Error ? error.message : "unknown upstream error"
+      }`,
+    );
     return json(
       {
         ok: false,

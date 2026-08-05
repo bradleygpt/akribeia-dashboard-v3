@@ -3,6 +3,13 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ResearchRow } from "../research-data";
 import { formatMarketCap, formatMoney, formatPercent } from "../research-format";
+import { hasCompleteStockModelEvidence } from "./stock-model-evidence";
+import {
+  buildEtfDirectory,
+  formatEtfPercent,
+  formatUsdMagnitude,
+  type EtfDirectoryRow,
+} from "./etf-directory";
 
 type Section =
   "universe" | "find" | "index" | "compare" | "builder" | "lookthrough" | "reverse" | "maps";
@@ -118,10 +125,44 @@ interface IndexReference {
   ndx_candidates: IndexCandidate[];
 }
 
+type IndexSortKey = "security" | "marketCap" | "passiveBuy" | "advDays" | "rating";
+
+interface IndexSort {
+  key: IndexSortKey;
+  direction: "ascending" | "descending";
+}
+
 interface ReferenceEnvelope<T> {
   ok: boolean;
   payload?: T;
   error?: { message?: string };
+}
+
+const ETF_DATASETS = [
+  "etf-lookthrough",
+  "etf",
+  "etf-holdings",
+  "etf-reverse",
+  "etf-descriptions",
+  "index-add-candidates",
+] as const;
+
+type EtfDataset = (typeof ETF_DATASETS)[number];
+
+type DirectorySortKey =
+  | "ticker"
+  | "score"
+  | "rating"
+  | "price"
+  | "fairValue"
+  | "momentum1m"
+  | "momentum3m"
+  | "momentum12m"
+  | "size";
+
+interface DirectorySort {
+  key: DirectorySortKey;
+  direction: "ascending" | "descending";
 }
 
 function ratingClass(rating: string): string {
@@ -130,6 +171,136 @@ function ratingClass(rating: string): string {
     : rating.includes("Sell")
       ? "research-rating research-rating-negative"
       : "research-rating";
+}
+
+function directoryValue(row: EtfDirectoryRow, key: DirectorySortKey): number | string | null {
+  const local = row.local;
+  const reference = row.reference;
+  if (key === "ticker") return row.ticker;
+  if (key === "score") {
+    return local !== null && hasCompleteStockModelEvidence(local) ? local.composite : null;
+  }
+  if (key === "rating") {
+    return local !== null && hasCompleteStockModelEvidence(local) ? local.rating : null;
+  }
+  if (key === "price") {
+    return local?.price ?? row.lookthrough?.price ?? reference?.currentPrice ?? null;
+  }
+  if (key === "fairValue") return local?.fairValue ?? null;
+  if (key === "momentum1m") return local?.raw.momentum_1m ?? reference?.momentum_1m ?? null;
+  if (key === "momentum3m") return local?.raw.momentum_3m ?? reference?.momentum_3m ?? null;
+  if (key === "momentum12m") return local?.raw.momentum_12m ?? reference?.momentum_12m ?? null;
+  return local?.marketCapB !== null && local?.marketCapB !== undefined
+    ? local.marketCapB * 1_000_000_000
+    : (reference?.totalAssets ?? row.lookthrough?.aum ?? null);
+}
+
+function compareDirectoryRows(
+  left: EtfDirectoryRow,
+  right: EtfDirectoryRow,
+  sort: DirectorySort,
+): number {
+  const leftValue = directoryValue(left, sort.key);
+  const rightValue = directoryValue(right, sort.key);
+  if (leftValue === null && rightValue === null) return left.ticker.localeCompare(right.ticker);
+  if (leftValue === null) return 1;
+  if (rightValue === null) return -1;
+  const comparison =
+    typeof leftValue === "number" && typeof rightValue === "number"
+      ? leftValue - rightValue
+      : String(leftValue).localeCompare(String(rightValue), "en-US", { sensitivity: "base" });
+  return (
+    (sort.direction === "ascending" ? comparison : -comparison) ||
+    left.ticker.localeCompare(right.ticker)
+  );
+}
+
+function EtfSortHeader({
+  column,
+  label,
+  sort,
+  onSort,
+}: {
+  column: DirectorySortKey;
+  label: string;
+  sort: DirectorySort;
+  onSort: (sort: DirectorySort) => void;
+}) {
+  const active = sort.key === column;
+  const direction = active ? sort.direction : "none";
+  return (
+    <th scope="col" aria-sort={direction}>
+      <button
+        type="button"
+        className={active ? "research-sort-header is-active" : "research-sort-header"}
+        onClick={() =>
+          onSort({
+            key: column,
+            direction: active && sort.direction === "ascending" ? "descending" : "ascending",
+          })
+        }
+      >
+        {label}
+        <span aria-hidden="true">{direction === "descending" ? "↓" : "↑"}</span>
+      </button>
+    </th>
+  );
+}
+
+function IndexSortHeader({
+  column,
+  label,
+  sort,
+  onSort,
+}: {
+  column: IndexSortKey;
+  label: string;
+  sort: IndexSort;
+  onSort: (sort: IndexSort) => void;
+}) {
+  const active = sort.key === column;
+  const direction = active ? sort.direction : "none";
+  return (
+    <th scope="col" aria-sort={direction}>
+      <button
+        type="button"
+        className={active ? "research-sort-header is-active" : "research-sort-header"}
+        onClick={() =>
+          onSort({
+            key: column,
+            direction: active && sort.direction === "ascending" ? "descending" : "ascending",
+          })
+        }
+      >
+        {label}
+        <span aria-hidden="true">{direction === "descending" ? "↓" : "↑"}</span>
+      </button>
+    </th>
+  );
+}
+
+function compareIndexCandidates(
+  left: IndexCandidate,
+  right: IndexCandidate,
+  sort: IndexSort,
+): number {
+  const value = (candidate: IndexCandidate): number | string => {
+    if (sort.key === "security") return candidate.ticker;
+    if (sort.key === "marketCap") return candidate.mktcap_b;
+    if (sort.key === "passiveBuy") return candidate.passive_buy_usd_b;
+    if (sort.key === "advDays") return candidate.adv_days;
+    return candidate.quant_rating;
+  };
+  const leftValue = value(left);
+  const rightValue = value(right);
+  const comparison =
+    typeof leftValue === "number" && typeof rightValue === "number"
+      ? leftValue - rightValue
+      : String(leftValue).localeCompare(String(rightValue), "en-US", { sensitivity: "base" });
+  return (
+    (sort.direction === "ascending" ? comparison : -comparison) ||
+    left.ticker.localeCompare(right.ticker)
+  );
 }
 
 function EtfLink({ ticker, available }: { ticker: string; available: ReadonlySet<string> }) {
@@ -165,7 +336,7 @@ function ReferenceState({
     return (
       <div className="etf-reference-state etf-reference-error" role="status">
         <strong>ETF reference data is unavailable.</strong>
-        <span>{error} No holdings, look-through score, or allocation has been invented.</span>
+        <span>{error} No missing reference value has been invented.</span>
         {onRetry ? (
           <button type="button" onClick={onRetry}>
             Retry pinned source
@@ -185,7 +356,7 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
   const [reverse, setReverse] = useState<ReverseReference | null>(null);
   const [descriptions, setDescriptions] = useState<DescriptionReference | null>(null);
   const [indexReference, setIndexReference] = useState<IndexReference | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [datasetErrors, setDatasetErrors] = useState<Partial<Record<EtfDataset, string>>>({});
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<string[]>(rows.slice(0, 3).map(({ ticker }) => ticker));
   const [template, setTemplate] = useState("");
@@ -193,88 +364,104 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
   const [reverseTicker, setReverseTicker] = useState("NVDA");
   const [directoryQuery, setDirectoryQuery] = useState("");
   const [assetClass, setAssetClass] = useState("all");
+  const [directorySort, setDirectorySort] = useState<DirectorySort>({
+    key: "ticker",
+    direction: "ascending",
+  });
+  const [indexSort, setIndexSort] = useState<IndexSort>({
+    key: "marketCap",
+    direction: "descending",
+  });
   const [basket, setBasket] = useState("AAPL, MSFT, NVDA");
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
-    setError(null);
-    const datasets = [
-      "etf",
-      "etf-lookthrough",
-      "etf-holdings",
-      "etf-reverse",
-      "etf-descriptions",
-      "index-add-candidates",
-    ] as const;
-    Promise.all(
-      datasets.map((dataset) =>
-        fetch(`/api/v3/research-reference?dataset=${dataset}`, {
-          signal: controller.signal,
-          headers: { accept: "application/json" },
-        }).then(async (response) => {
+    setDatasetErrors({});
+    const load = async () => {
+      const failures: Partial<Record<EtfDataset, string>> = {};
+      // Load sequentially, with the directory-expanding look-through shard first.
+      // Each pinned shard is independent: a failure must not discard already loaded
+      // directory rows or prevent other approved reference surfaces from rendering.
+      for (const dataset of ETF_DATASETS) {
+        try {
+          const response = await fetch(`/api/v3/research-reference?dataset=${dataset}`, {
+            signal: controller.signal,
+            headers: { accept: "application/json" },
+          });
           const body = (await response.json()) as ReferenceEnvelope<unknown>;
           if (!response.ok || !body.ok || body.payload === undefined) {
             throw new Error(body.error?.message ?? `${dataset} is unavailable.`);
           }
-          return body.payload;
-        }),
-      ),
-    )
-      .then(([etfData, lookthroughData, holdingsData, reverseData, descriptionData, indexData]) => {
-        const parsedReference = etfData as EtfReference;
-        setReference(parsedReference);
-        setLookthrough(lookthroughData as LookthroughReference);
-        setHoldings(holdingsData as HoldingsReference);
-        setReverse(reverseData as ReverseReference);
-        setDescriptions(descriptionData as DescriptionReference);
-        setIndexReference(indexData as IndexReference);
-        setTemplate(Object.keys(parsedReference.templates)[0] ?? "");
-        setLoading(false);
-      })
-      .catch((reason: unknown) => {
-        if (controller.signal.aborted) return;
-        setError(
-          reason instanceof Error ? reason.message : "The pinned ETF source is unavailable.",
-        );
-        setLoading(false);
-      });
+          if (controller.signal.aborted) return;
+          if (dataset === "etf-lookthrough") setLookthrough(body.payload as LookthroughReference);
+          if (dataset === "etf-holdings") setHoldings(body.payload as HoldingsReference);
+          if (dataset === "etf-reverse") setReverse(body.payload as ReverseReference);
+          if (dataset === "etf-descriptions") {
+            setDescriptions(body.payload as DescriptionReference);
+          }
+          if (dataset === "index-add-candidates") {
+            setIndexReference(body.payload as IndexReference);
+          }
+          if (dataset === "etf") {
+            const parsedReference = body.payload as EtfReference;
+            setReference(parsedReference);
+            setTemplate((current) => current || Object.keys(parsedReference.templates)[0] || "");
+          }
+        } catch (reason: unknown) {
+          if (controller.signal.aborted) return;
+          failures[dataset] =
+            reason instanceof Error ? reason.message : `${dataset} is unavailable.`;
+        }
+      }
+      if (controller.signal.aborted) return;
+      setDatasetErrors(failures);
+      setLoading(false);
+    };
+    void load();
     return () => controller.abort();
   }, [attempt]);
 
+  const referenceError = (...datasets: EtfDataset[]): string | null => {
+    const messages = datasets.flatMap((dataset) =>
+      datasetErrors[dataset] ? [`${dataset}: ${datasetErrors[dataset]}`] : [],
+    );
+    return messages.length > 0 ? messages.join(" ") : null;
+  };
+
   const available = useMemo(() => new Set(rows.map(({ ticker }) => ticker)), [rows]);
   const byTicker = useMemo(() => new Map(rows.map((row) => [row.ticker, row])), [rows]);
-  const orderedRows = useMemo(
-    () =>
-      rows.toSorted(
-        (left, right) =>
-          (right.composite ?? Number.NEGATIVE_INFINITY) -
-          (left.composite ?? Number.NEGATIVE_INFINITY),
-      ),
-    [rows],
+  const directoryUniverse = useMemo(
+    () => buildEtfDirectory(rows, reference?.etfs, lookthrough?.etfs, descriptions?.descriptions),
+    [descriptions, lookthrough, reference, rows],
   );
   const directoryRows = useMemo(() => {
     const needle = directoryQuery.trim().toLowerCase();
-    return orderedRows.filter((row) => {
-      const referenceClass = lookthrough?.etfs[row.ticker]?.asset_class ?? "unclassified";
-      return (
-        (assetClass === "all" || referenceClass === assetClass) &&
-        (!needle ||
-          row.ticker.toLowerCase().includes(needle) ||
-          row.name.toLowerCase().includes(needle) ||
-          (descriptions?.descriptions[row.ticker] ?? "").toLowerCase().includes(needle))
-      );
-    });
-  }, [assetClass, descriptions, directoryQuery, lookthrough, orderedRows]);
+    return directoryUniverse
+      .filter((row) => {
+        const referenceClass = row.lookthrough?.asset_class ?? "unclassified";
+        return (
+          (assetClass === "all" || referenceClass === assetClass) &&
+          (!needle ||
+            row.ticker.toLowerCase().includes(needle) ||
+            row.name.toLowerCase().includes(needle) ||
+            row.description.toLowerCase().includes(needle))
+        );
+      })
+      .toSorted((left, right) => compareDirectoryRows(left, right, directorySort));
+  }, [assetClass, directoryQuery, directorySort, directoryUniverse]);
   const assetClasses = useMemo(
     () =>
       [
-        ...new Set(
-          rows.map(({ ticker }) => lookthrough?.etfs[ticker]?.asset_class ?? "unclassified"),
-        ),
+        ...new Set([
+          "unclassified",
+          ...Object.values(lookthrough?.etfs ?? {}).map(
+            ({ asset_class }) => asset_class ?? "unclassified",
+          ),
+        ]),
       ].sort(),
-    [lookthrough, rows],
+    [lookthrough],
   );
   const activeTemplate = reference?.templates[template];
   const reverseMatch = reverse?.stocks[reverseTicker.trim().toUpperCase()];
@@ -352,14 +539,26 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
         <section className="etf-tool" aria-labelledby="etf-universe-heading">
           <div className="research-subheading">
             <div>
-              <p className="mono-label">70 FUNDS / EQUITY MODEL VIEW</p>
-              <h2 id="etf-universe-heading">Scored ETF universe</h2>
+              <p className="mono-label">{directoryUniverse.length} FUNDS / PINNED ETF REFERENCE</p>
+              <h2 id="etf-universe-heading">ETF reference universe</h2>
             </div>
             <span>
-              These are the ETFs present in the no-floor scoring universe; broader reference
-              coverage appears in the look-through tool.
+              Stock-model outputs appear only when every required factor family has evidence.
+              Holdings and look-through coverage remain separate.
             </span>
           </div>
+          {!loading && referenceError("etf-lookthrough", "etf", "etf-descriptions") ? (
+            <div className="etf-reference-state etf-reference-error" role="status">
+              <strong>Some pinned ETF reference fields are unavailable.</strong>
+              <span>
+                {referenceError("etf-lookthrough", "etf", "etf-descriptions")} Available approved
+                rows remain displayed; no missing value has been invented.
+              </span>
+              <button type="button" onClick={() => setAttempt((current) => current + 1)}>
+                Retry pinned source
+              </button>
+            </div>
+          ) : null}
           <div className="research-table-scroll">
             <div className="etf-directory-controls">
               <label>
@@ -380,60 +579,116 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
                   ))}
                 </select>
               </label>
-              <strong>{directoryRows.length} of 70 funds</strong>
+              <strong>
+                {directoryRows.length} of {directoryUniverse.length} funds
+              </strong>
             </div>
             <table className="research-table etf-universe-table">
               <thead>
                 <tr>
-                  <th scope="col">ETF</th>
-                  <th scope="col">Score</th>
-                  <th scope="col">Rating</th>
-                  <th scope="col">Price</th>
-                  <th scope="col">Fair value</th>
-                  <th scope="col">1M</th>
-                  <th scope="col">3M</th>
-                  <th scope="col">12M</th>
-                  <th scope="col">Reported size</th>
+                  {(
+                    [
+                      ["ticker", "ETF"],
+                      ["score", "Score"],
+                      ["rating", "Rating"],
+                      ["price", "Price"],
+                      ["fairValue", "Fair value"],
+                      ["momentum1m", "1M"],
+                      ["momentum3m", "3M"],
+                      ["momentum12m", "12M"],
+                      ["size", "Market cap / AUM"],
+                    ] as Array<[DirectorySortKey, string]>
+                  ).map(([column, label]) => (
+                    <EtfSortHeader
+                      column={column}
+                      key={column}
+                      label={label}
+                      sort={directorySort}
+                      onSort={setDirectorySort}
+                    />
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                {directoryRows.map((row) => (
-                  <tr key={row.ticker}>
-                    <td className="research-security-cell">
-                      <a href={`/etfs/${encodeURIComponent(row.ticker)}`}>{row.ticker}</a>
-                      <span>{row.name}</span>
-                      <small>{descriptions?.descriptions[row.ticker] ?? ""}</small>
-                    </td>
-                    <td className="research-number">{row.composite?.toFixed(2) ?? "—"}</td>
-                    <td>
-                      <span className={ratingClass(row.rating)}>{row.rating}</span>
-                    </td>
-                    <td className="research-number">{formatMoney(row.price)}</td>
-                    <td className="research-number">{formatMoney(row.fairValue)}</td>
-                    <td className="research-number">
-                      {formatPercent(
-                        row.raw.momentum_1m === null ? null : row.raw.momentum_1m * 100,
-                        1,
-                        true,
-                      )}
-                    </td>
-                    <td className="research-number">
-                      {formatPercent(
-                        row.raw.momentum_3m === null ? null : row.raw.momentum_3m * 100,
-                        1,
-                        true,
-                      )}
-                    </td>
-                    <td className="research-number">
-                      {formatPercent(
-                        row.raw.momentum_12m === null ? null : row.raw.momentum_12m * 100,
-                        1,
-                        true,
-                      )}
-                    </td>
-                    <td className="research-number">{formatMarketCap(row.marketCapB)}</td>
-                  </tr>
-                ))}
+                {directoryRows.map((directoryRow) => {
+                  const row = directoryRow.local;
+                  const momentum = directoryRow.reference;
+                  const price =
+                    row?.price ??
+                    directoryRow.lookthrough?.price ??
+                    directoryRow.reference?.currentPrice ??
+                    null;
+                  const assetsUsd =
+                    directoryRow.reference?.totalAssets ?? directoryRow.lookthrough?.aum ?? null;
+
+                  return (
+                    <tr key={directoryRow.ticker}>
+                      <td className="research-security-cell">
+                        <EtfLink ticker={directoryRow.ticker} available={available} />
+                        <span>{directoryRow.name}</span>
+                        <small>
+                          {directoryRow.description ||
+                            (row === null ? "Pinned reference-only record" : "")}
+                        </small>
+                      </td>
+                      <td className="research-number">
+                        {row !== null && hasCompleteStockModelEvidence(row)
+                          ? (row.composite?.toFixed(2) ?? "—")
+                          : "—"}
+                      </td>
+                      <td>
+                        <span
+                          className={ratingClass(
+                            row !== null && hasCompleteStockModelEvidence(row)
+                              ? row.rating
+                              : "Unavailable",
+                          )}
+                        >
+                          {row !== null && hasCompleteStockModelEvidence(row)
+                            ? row.rating
+                            : "Unavailable"}
+                        </span>
+                      </td>
+                      <td className="research-number">{formatMoney(price)}</td>
+                      <td className="research-number">{formatMoney(row?.fairValue ?? null)}</td>
+                      <td className="research-number">
+                        {formatPercent(
+                          (row?.raw.momentum_1m ?? momentum?.momentum_1m) === null ||
+                            (row?.raw.momentum_1m ?? momentum?.momentum_1m) === undefined
+                            ? null
+                            : (row?.raw.momentum_1m ?? momentum?.momentum_1m ?? 0) * 100,
+                          1,
+                          true,
+                        )}
+                      </td>
+                      <td className="research-number">
+                        {formatPercent(
+                          (row?.raw.momentum_3m ?? momentum?.momentum_3m) === null ||
+                            (row?.raw.momentum_3m ?? momentum?.momentum_3m) === undefined
+                            ? null
+                            : (row?.raw.momentum_3m ?? momentum?.momentum_3m ?? 0) * 100,
+                          1,
+                          true,
+                        )}
+                      </td>
+                      <td className="research-number">
+                        {formatPercent(
+                          (row?.raw.momentum_12m ?? momentum?.momentum_12m) === null ||
+                            (row?.raw.momentum_12m ?? momentum?.momentum_12m) === undefined
+                            ? null
+                            : (row?.raw.momentum_12m ?? momentum?.momentum_12m ?? 0) * 100,
+                          1,
+                          true,
+                        )}
+                      </td>
+                      <td className="research-number">
+                        {row?.marketCapB !== null && row?.marketCapB !== undefined
+                          ? formatMarketCap(row.marketCapB)
+                          : formatUsdMagnitude(assetsUsd)}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -451,7 +706,7 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
           </div>
           <ReferenceState
             loading={loading}
-            error={error}
+            error={referenceError("etf-holdings")}
             onRetry={() => setAttempt((current) => current + 1)}
           >
             <label className="etf-reverse-search">
@@ -506,7 +761,7 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
           </div>
           <ReferenceState
             loading={loading}
-            error={error}
+            error={referenceError("index-add-candidates")}
             onRetry={() => setAttempt((current) => current + 1)}
           >
             {indexReference ? (
@@ -526,28 +781,44 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
                         <table>
                           <thead>
                             <tr>
-                              <th scope="col">Security</th>
-                              <th scope="col">Mkt cap</th>
-                              <th scope="col">Passive buy</th>
-                              <th scope="col">ADV days</th>
-                              <th scope="col">Rating</th>
+                              {(
+                                [
+                                  ["security", "Security"],
+                                  ["marketCap", "Mkt cap"],
+                                  ["passiveBuy", "Passive buy"],
+                                  ["advDays", "ADV days"],
+                                  ["rating", "Rating"],
+                                ] as Array<[IndexSortKey, string]>
+                              ).map(([column, label]) => (
+                                <IndexSortHeader
+                                  column={column}
+                                  key={column}
+                                  label={label}
+                                  sort={indexSort}
+                                  onSort={setIndexSort}
+                                />
+                              ))}
                             </tr>
                           </thead>
                           <tbody>
-                            {(candidates as IndexCandidate[]).map((candidate) => (
-                              <tr key={candidate.ticker}>
-                                <td>
-                                  <a href={`/research/${encodeURIComponent(candidate.ticker)}`}>
-                                    {candidate.ticker}
-                                  </a>
-                                  <span>{candidate.name}</span>
-                                </td>
-                                <td>${candidate.mktcap_b.toFixed(1)}B</td>
-                                <td>${candidate.passive_buy_usd_b.toFixed(2)}B</td>
-                                <td>{candidate.adv_days.toFixed(1)}</td>
-                                <td>{candidate.quant_rating}</td>
-                              </tr>
-                            ))}
+                            {(candidates as IndexCandidate[])
+                              .toSorted((left, right) =>
+                                compareIndexCandidates(left, right, indexSort),
+                              )
+                              .map((candidate) => (
+                                <tr key={candidate.ticker}>
+                                  <td>
+                                    <a href={`/research/${encodeURIComponent(candidate.ticker)}`}>
+                                      {candidate.ticker}
+                                    </a>
+                                    <span>{candidate.name}</span>
+                                  </td>
+                                  <td>${candidate.mktcap_b.toFixed(1)}B</td>
+                                  <td>${candidate.passive_buy_usd_b.toFixed(2)}B</td>
+                                  <td>{candidate.adv_days.toFixed(1)}</td>
+                                  <td>{candidate.quant_rating}</td>
+                                </tr>
+                              ))}
                           </tbody>
                         </table>
                       </div>
@@ -592,7 +863,7 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
                   <th scope="col">Measure</th>
                   {selected.map((ticker) => (
                     <th scope="col" key={ticker}>
-                      <a href={`/research/${encodeURIComponent(ticker)}`}>{ticker}</a>
+                      <a href={`/etfs/${encodeURIComponent(ticker)}`}>{ticker}</a>
                     </th>
                   ))}
                 </tr>
@@ -602,10 +873,20 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
                   ["Name", (ticker: string) => byTicker.get(ticker)?.name ?? "Unavailable"],
                   [
                     "Stock-model score",
-                    (ticker: string) =>
-                      byTicker.get(ticker)?.composite?.toFixed(2) ?? "Unavailable",
+                    (ticker: string) => {
+                      const row = byTicker.get(ticker);
+                      return row && hasCompleteStockModelEvidence(row)
+                        ? (row.composite?.toFixed(2) ?? "Unavailable")
+                        : "Unavailable";
+                    },
                   ],
-                  ["Rating", (ticker: string) => byTicker.get(ticker)?.rating ?? "Unavailable"],
+                  [
+                    "Rating",
+                    (ticker: string) => {
+                      const row = byTicker.get(ticker);
+                      return row && hasCompleteStockModelEvidence(row) ? row.rating : "Unavailable";
+                    },
+                  ],
                   [
                     "Expense ratio",
                     (ticker: string) => {
@@ -654,10 +935,9 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
                     "YTD return",
                     (ticker: string) => {
                       const value = reference?.etfs[ticker]?.ytdReturn;
-                      return formatPercent(
-                        value === null || value === undefined ? null : value * 100,
-                        1,
-                        true,
+                      return formatEtfPercent(
+                        value === null || value === undefined ? null : value,
+                        "percentage-points",
                       );
                     },
                   ],
@@ -686,7 +966,7 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
           </div>
           <ReferenceState
             loading={loading}
-            error={error}
+            error={referenceError("etf")}
             onRetry={() => setAttempt((current) => current + 1)}
           >
             {reference !== null && activeTemplate !== undefined ? (
@@ -779,7 +1059,7 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
           </div>
           <ReferenceState
             loading={loading}
-            error={error}
+            error={referenceError("etf-lookthrough", "etf-holdings")}
             onRetry={() => setAttempt((current) => current + 1)}
           >
             {lookthrough !== null && holdings !== null ? (
@@ -864,7 +1144,7 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
           </div>
           <ReferenceState
             loading={loading}
-            error={error}
+            error={referenceError("etf-reverse")}
             onRetry={() => setAttempt((current) => current + 1)}
           >
             {reverse !== null ? (
@@ -920,7 +1200,7 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
           </div>
           <ReferenceState
             loading={loading}
-            error={error}
+            error={referenceError("etf")}
             onRetry={() => setAttempt((current) => current + 1)}
           >
             {reference !== null ? (
