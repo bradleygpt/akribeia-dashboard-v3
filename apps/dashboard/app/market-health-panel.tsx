@@ -19,6 +19,21 @@ type RequestState =
   | { kind: "ready"; response: MarketHealthApiResponse; message: string }
   | { kind: "error"; response: null; message: string };
 
+type IndexSortKey =
+  | "name"
+  | "price"
+  | "change1dPct"
+  | "change5dPct"
+  | "change1mPct"
+  | "change3mPct"
+  | "ytdPct"
+  | "distanceFromAthPct";
+
+interface IndexSort {
+  key: IndexSortKey;
+  direction: "ascending" | "descending";
+}
+
 function numeric(record: Record<string, unknown> | undefined, key: string): number | null {
   const value = record?.[key];
   return typeof value === "number" && Number.isFinite(value) ? value : null;
@@ -27,6 +42,38 @@ function numeric(record: Record<string, unknown> | undefined, key: string): numb
 function text(record: Record<string, unknown> | undefined, key: string): string | null {
   const value = record?.[key];
   return typeof value === "string" && value.length > 0 ? value : null;
+}
+
+function IndexSortHeader({
+  column,
+  label,
+  sort,
+  onSort,
+}: {
+  column: IndexSortKey;
+  label: string;
+  sort: IndexSort;
+  onSort: (sort: IndexSort) => void;
+}) {
+  const active = sort.key === column;
+  const direction = active ? sort.direction : "none";
+  return (
+    <th scope="col" aria-sort={direction}>
+      <button
+        type="button"
+        className={active ? "health-sort-header is-active" : "health-sort-header"}
+        onClick={() =>
+          onSort({
+            key: column,
+            direction: active && sort.direction === "ascending" ? "descending" : "ascending",
+          })
+        }
+      >
+        {label}
+        <span aria-hidden="true">{direction === "descending" ? "↓" : "↑"}</span>
+      </button>
+    </th>
+  );
 }
 
 function percentage(value: number | null | undefined, digits = 1, signed = false): string {
@@ -417,6 +464,10 @@ function LiveGauges({
   hyOas: number | null;
   realCurve: number | null;
 }) {
+  const [indexSort, setIndexSort] = useState<IndexSort>({
+    key: "name",
+    direction: "ascending",
+  });
   const live = response?.live;
   const sp = live ? indexByName(live.indices, "S&P 500") : null;
   const gauges = [
@@ -478,6 +529,29 @@ function LiveGauges({
         : "Potential Growth Indicator unavailable",
     },
   ];
+  const sortedIndices = useMemo(
+    () =>
+      (live?.indices ?? [])
+        .filter(({ ok }) => ok)
+        .toSorted((left, right) => {
+          const leftValue = left[indexSort.key] ?? null;
+          const rightValue = right[indexSort.key] ?? null;
+          if (leftValue === null && rightValue === null) return left.name.localeCompare(right.name);
+          if (leftValue === null) return 1;
+          if (rightValue === null) return -1;
+          const comparison =
+            typeof leftValue === "number" && typeof rightValue === "number"
+              ? leftValue - rightValue
+              : String(leftValue).localeCompare(String(rightValue), "en-US", {
+                  sensitivity: "base",
+                });
+          return (
+            (indexSort.direction === "ascending" ? comparison : -comparison) ||
+            left.name.localeCompare(right.name)
+          );
+        }),
+    [indexSort, live?.indices],
+  );
 
   return (
     <div className="live-gauges">
@@ -501,31 +575,41 @@ function LiveGauges({
             <caption>Major indices</caption>
             <thead>
               <tr>
-                <th scope="col">Index</th>
-                <th scope="col">Price</th>
-                <th scope="col">1 day</th>
-                <th scope="col">5 days</th>
-                <th scope="col">1 month</th>
-                <th scope="col">3 months</th>
-                <th scope="col">YTD</th>
-                <th scope="col">vs ATH</th>
+                {(
+                  [
+                    ["name", "Index"],
+                    ["price", "Price"],
+                    ["change1dPct", "1 day"],
+                    ["change5dPct", "5 days"],
+                    ["change1mPct", "1 month"],
+                    ["change3mPct", "3 months"],
+                    ["ytdPct", "YTD"],
+                    ["distanceFromAthPct", "vs ATH"],
+                  ] as Array<[IndexSortKey, string]>
+                ).map(([column, label]) => (
+                  <IndexSortHeader
+                    column={column}
+                    key={column}
+                    label={label}
+                    sort={indexSort}
+                    onSort={setIndexSort}
+                  />
+                ))}
               </tr>
             </thead>
             <tbody>
-              {live.indices
-                .filter(({ ok }) => ok)
-                .map((index) => (
-                  <tr key={index.name}>
-                    <th scope="row">{index.name}</th>
-                    <td>{number(index.price, 0)}</td>
-                    <td>{percentage(index.change1dPct, 1, true)}</td>
-                    <td>{percentage(index.change5dPct, 1, true)}</td>
-                    <td>{percentage(index.change1mPct, 1, true)}</td>
-                    <td>{percentage(index.change3mPct, 1, true)}</td>
-                    <td>{percentage(index.ytdPct, 1, true)}</td>
-                    <td>{percentage(index.distanceFromAthPct, 1, true)}</td>
-                  </tr>
-                ))}
+              {sortedIndices.map((index) => (
+                <tr key={index.name}>
+                  <th scope="row">{index.name}</th>
+                  <td>{number(index.price, 0)}</td>
+                  <td>{percentage(index.change1dPct, 1, true)}</td>
+                  <td>{percentage(index.change5dPct, 1, true)}</td>
+                  <td>{percentage(index.change1mPct, 1, true)}</td>
+                  <td>{percentage(index.change3mPct, 1, true)}</td>
+                  <td>{percentage(index.ytdPct, 1, true)}</td>
+                  <td>{percentage(index.distanceFromAthPct, 1, true)}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -548,16 +632,9 @@ function SupportingMarketHealth({
   const staticData = response?.staticData;
   const sectorForecasts = staticData?.earnings_forecast?.sector_forecasts;
   const forward = staticData?.forward_earnings?.path ?? [];
-  const fed = staticData?.fed_outlook;
-  const calendar = staticData?.economic_calendar ?? [];
+  const macroContract = staticData?.macro_contract;
 
-  if (
-    signals.length === 0 &&
-    !sectorForecasts &&
-    forward.length === 0 &&
-    !fed &&
-    calendar.length === 0
-  ) {
+  if (signals.length === 0 && !sectorForecasts && forward.length === 0 && !macroContract) {
     return null;
   }
 
@@ -633,46 +710,44 @@ function SupportingMarketHealth({
         </article>
       ) : null}
 
-      {fed ? (
+      {macroContract ? (
         <article className="health-card">
           <div className="health-card-heading">
             <div>
-              <p className="mono-label">POLICY CONTEXT</p>
-              <h3>Fed outlook</h3>
+              <p className="mono-label">CONTRACT PENDING</p>
+              <h3>Market-implied FOMC probabilities</h3>
             </div>
           </div>
           <dl className="health-metrics">
-            {[
-              ["Bias", text(fed, "bias")],
-              ["Cut", percentage(numeric(fed, "cut_probability"), 0)],
-              ["Hold", percentage(numeric(fed, "hold_probability"), 0)],
-              ["Hike", percentage(numeric(fed, "hike_probability"), 0)],
-            ].map(([label, value]) => (
-              <div key={label}>
-                <dt>{label}</dt>
-                <dd>{value ?? "Unavailable"}</dd>
-              </div>
-            ))}
+            <div>
+              <dt>Status</dt>
+              <dd>Unavailable</dd>
+            </div>
+            <div>
+              <dt>Provenance</dt>
+              <dd>No permitted free official source configured</dd>
+            </div>
+            <div>
+              <dt>Fallback</dt>
+              <dd>None</dd>
+            </div>
           </dl>
+          <p className="health-source">{macroContract.message}</p>
         </article>
       ) : null}
 
-      {calendar.length > 0 ? (
+      {macroContract ? (
         <article className="health-card">
           <div className="health-card-heading">
             <div>
-              <p className="mono-label">V2 RELEASE MAP</p>
-              <h3>Economic calendar</h3>
+              <p className="mono-label">AUTHORITATIVE SOURCE REQUIRED</p>
+              <h3>Macro event schedule</h3>
             </div>
           </div>
-          <ul className="economic-calendar">
-            {calendar.slice(0, 10).map((item, index) => (
-              <li key={`${text(item, "event") ?? text(item, "name") ?? "event"}-${index}`}>
-                <strong>{text(item, "event") ?? text(item, "name") ?? "Scheduled release"}</strong>
-                <span>{text(item, "date") ?? "Schedule unavailable"}</span>
-              </li>
-            ))}
-          </ul>
+          <p className="parity-unavailable">
+            Exact event instances unavailable pending an approved authoritative contract. No date,
+            time, timezone or recurrence is inferred.
+          </p>
         </article>
       ) : null}
     </div>

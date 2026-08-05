@@ -134,8 +134,19 @@ async function buildQuote(ticker: string, range: string, dependencies: QuoteDepe
     intradayLow = low === null ? intradayLow : Math.min(intradayLow ?? low, low);
   }
 
-  const price =
-    finite(meta.regularMarketPrice) ?? (history === null ? null : (history.close.at(-1) ?? null));
+  const livePrice = finite(meta.regularMarketPrice);
+  const asOfPrice = history === null ? null : (history.close.at(-1) ?? null);
+  const price = livePrice ?? asOfPrice;
+  const priceSource = livePrice !== null ? "live" : asOfPrice !== null ? "as_of" : "unavailable";
+  const regularMarketTime = finite(meta.regularMarketTime);
+  const priceAsOf =
+    priceSource === "live"
+      ? regularMarketTime === null
+        ? (dependencies.now ?? new Date()).toISOString()
+        : new Date(regularMarketTime * 1000).toISOString()
+      : priceSource === "as_of"
+        ? (history?.dates.at(-1) ?? null)
+        : null;
   const previousClose = finite(meta.chartPreviousClose) ?? finite(meta.previousClose);
   const dayHigh = finite(meta.regularMarketDayHigh) ?? intradayHigh;
   const dayLow = finite(meta.regularMarketDayLow) ?? intradayLow;
@@ -150,6 +161,8 @@ async function buildQuote(ticker: string, range: string, dependencies: QuoteDepe
     ticker,
     generatedAt: (dependencies.now ?? new Date()).toISOString(),
     price,
+    priceSource,
+    priceAsOf,
     previousClose,
     change,
     changePercent,
@@ -177,7 +190,9 @@ async function buildLatestPrice(
     dependencies.timeoutMs ?? 7_000,
   );
   const series = yahooResult(payload);
-  return finite(series?.meta?.regularMarketPrice) ?? parseHistory(series)?.close.at(-1) ?? null;
+  // The batch endpoint is consumed as a live overlay. A daily-close fallback
+  // must stay out of `prices` so callers retain and label their own as-of value.
+  return finite(series?.meta?.regularMarketPrice);
 }
 
 function parseTicker(raw: string | null): string | null {

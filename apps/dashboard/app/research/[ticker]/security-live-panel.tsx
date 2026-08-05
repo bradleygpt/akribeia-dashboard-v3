@@ -1,5 +1,14 @@
 "use client";
 
+import {
+  computeObservedPeriodMetrics,
+  isShortPricePeriod,
+  labelPricePeriod,
+  queryPriceRange,
+  selectPricePeriod,
+  summarizePricePeriod,
+} from "./price-period";
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import { computeRiskMetrics } from "../../research-risk";
 import { formatMoney, formatPercent } from "../../research-format";
@@ -17,6 +26,8 @@ interface QuoteResponse {
   ticker: string;
   generatedAt: string;
   price: number | null;
+  priceSource: "live" | "as_of" | "unavailable";
+  priceAsOf: string | null;
   previousClose: number | null;
   change: number | null;
   changePercent: number | null;
@@ -29,6 +40,11 @@ interface QuoteResponse {
 }
 
 const PERIODS = [
+  ["1d", "1D"],
+  ["wtd", "WTD"],
+  ["1w", "1W"],
+  ["mtd", "MTD"],
+  ["1mo", "1M"],
   ["6mo", "6M"],
   ["1y", "1Y"],
   ["2y", "2Y"],
@@ -143,9 +159,11 @@ function metric(value: number | null, suffix = "", digits = 2): string {
 export function SecurityLivePanel({
   ticker,
   snapshotPrice,
+  snapshotAsOf,
 }: {
   ticker: string;
   snapshotPrice: number | null;
+  snapshotAsOf: string;
 }) {
   const [period, setPeriod] = useState("1y");
   const [state, setState] = useState<
@@ -158,7 +176,7 @@ export function SecurityLivePanel({
     const controller = new AbortController();
     setState({ status: "loading" });
     fetch(
-      `/api/v3/quote?ticker=${encodeURIComponent(ticker)}&range=${encodeURIComponent(period)}`,
+      `/api/v3/quote?ticker=${encodeURIComponent(ticker)}&range=${encodeURIComponent(queryPriceRange(period))}`,
       { signal: controller.signal, headers: { accept: "application/json" } },
     )
       .then(async (response) => {
@@ -180,14 +198,41 @@ export function SecurityLivePanel({
     return () => controller.abort();
   }, [period, ticker]);
 
-  const risk = useMemo(
+  const selectedHistory = useMemo(
     () =>
       state.status === "ready" && state.quote.history !== null
-        ? computeRiskMetrics(state.quote.history.close)
+        ? selectPricePeriod(period, state.quote.history.dates, state.quote.history.close)
         : null,
-    [state],
+    [period, state],
   );
 
+  const shortPeriod = isShortPricePeriod(period);
+
+  const observedMetrics = useMemo(
+    () => (selectedHistory === null ? null : computeObservedPeriodMetrics(selectedHistory.close)),
+    [selectedHistory],
+  );
+
+  const risk = useMemo(
+    () =>
+      !shortPeriod && selectedHistory !== null ? computeRiskMetrics(selectedHistory.close) : null,
+    [selectedHistory, shortPeriod],
+  );
+  const apiPrice =
+    state.status === "ready" &&
+    typeof state.quote.price === "number" &&
+    Number.isFinite(state.quote.price)
+      ? state.quote.price
+      : null;
+  const displayPrice = apiPrice ?? snapshotPrice;
+  const displayPriceSource =
+    apiPrice !== null && state.status === "ready"
+      ? state.quote.priceSource
+      : snapshotPrice !== null
+        ? "as_of"
+        : "unavailable";
+  const displayPriceAsOf =
+    apiPrice !== null && state.status === "ready" ? state.quote.priceAsOf : snapshotAsOf;
   return (
     <section className="security-live" aria-labelledby="live-market-heading">
       <div className="security-section-heading">
@@ -212,28 +257,54 @@ export function SecurityLivePanel({
       {state.status === "loading" ? (
         <div className="security-live-state" aria-live="polite" role="status">
           <strong>Loading the live quote and daily history…</strong>
-          <span>The preserved research snapshot remains visible while the adapter responds.</span>
+          <span>
+            Price source: {snapshotPrice === null ? "unavailable" : "as_of"} ·{" "}
+            {formatMoney(snapshotPrice)} · {snapshotAsOf}
+          </span>
         </div>
       ) : state.status === "error" ? (
         <div className="security-live-state security-live-error" role="status">
           <strong>Live market data is unavailable.</strong>
           <span>
-            {state.message} Snapshot price: {formatMoney(snapshotPrice)}. No synthetic history or
-            risk metric has been substituted.
+            {state.message} Price source: {displayPriceSource} · {formatMoney(displayPrice)} ·{" "}
+            {displayPriceAsOf}. No synthetic history or risk metric has been substituted.
           </span>
         </div>
       ) : (
         <>
           <div className="security-live-strip">
             <div>
-              <span>Live price</span>
-              <strong>{formatMoney(state.quote.price)}</strong>
+              <span>Price · {displayPriceSource}</span>
+              <strong>{formatMoney(displayPrice)}</strong>
+              <small className="security-period-range">
+                {displayPriceAsOf ?? "Observation time unavailable"}
+              </small>
             </div>
             <div>
-              <span>Daily change</span>
-              <strong className={(state.quote.changePercent ?? 0) >= 0 ? "research-positive" : ""}>
-                {formatPercent(state.quote.changePercent, 2, true)}
-              </strong>
+              <span>{labelPricePeriod(period)} return</span>
+              {(() => {
+                const summary =
+                  selectedHistory === null
+                    ? null
+                    : summarizePricePeriod(selectedHistory.dates, selectedHistory.close);
+
+                return (
+                  <>
+                    <strong
+                      className={
+                        summary !== null && summary.percent >= 0 ? "research-positive" : ""
+                      }
+                    >
+                      {formatPercent(summary?.percent ?? null, 2, true)}
+                    </strong>
+                    <small className="security-period-range">
+                      {summary === null
+                        ? "Exact range unavailable"
+                        : `${summary.startDate} → ${summary.endDate}`}
+                    </small>
+                  </>
+                );
+              })()}
             </div>
             <div>
               <span>Day range</span>
@@ -246,38 +317,70 @@ export function SecurityLivePanel({
               <strong>{formatMoney(state.quote.vwap)}</strong>
             </div>
           </div>
-          {state.quote.history === null ? (
+          <p className="security-risk-note" role="status" aria-live="polite">
+            Quote response generated {state.quote.generatedAt}. Price provenance is{" "}
+            <strong>{displayPriceSource}</strong>; an unavailable live value never replaces the{" "}
+            preserved as-of snapshot.
+          </p>
+          {selectedHistory === null ? (
             <div className="security-live-state" role="status">
-              <strong>Daily history is unavailable.</strong>
+              <strong>Selected-period history is unavailable.</strong>
               <span>The live price can still be used; risk metrics remain withheld.</span>
             </div>
           ) : (
             <PriceCanvas
               ticker={ticker}
-              dates={state.quote.history.dates}
-              closes={state.quote.history.close}
+              dates={selectedHistory.dates}
+              closes={selectedHistory.close}
             />
           )}
-          <div className="security-risk-grid" aria-label="V2-compatible price risk metrics">
-            {[
-              ["Annualized return", metric(risk?.cagrPercent ?? null, "%", 1)],
-              ["Volatility", metric(risk?.volatilityPercent ?? null, "%", 1)],
-              ["Sharpe", metric(risk?.sharpe ?? null)],
-              ["Sortino", metric(risk?.sortino ?? null)],
-              ["Max drawdown", metric(risk?.maxDrawdownPercent ?? null, "%", 1)],
-              ["Current drawdown", metric(risk?.currentDrawdownPercent ?? null, "%", 1)],
-              ["Calmar", metric(risk?.calmar ?? null)],
-            ].map(([label, value]) => (
+          <div className="security-risk-grid" aria-label="Selected-period price diagnostics">
+            {(shortPeriod
+              ? [
+                  [
+                    "Sessions",
+                    observedMetrics === null ? "Unavailable" : String(observedMetrics.sessions),
+                  ],
+                  ["Price change", formatMoney(observedMetrics?.priceChange ?? null)],
+                  [
+                    "Average session",
+                    formatPercent(observedMetrics?.averageSessionReturnPercent ?? null, 2, true),
+                  ],
+                  [
+                    "Best session",
+                    formatPercent(observedMetrics?.bestSessionPercent ?? null, 2, true),
+                  ],
+                  [
+                    "Worst session",
+                    formatPercent(observedMetrics?.worstSessionPercent ?? null, 2, true),
+                  ],
+                  ["Max drawdown", metric(observedMetrics?.maxDrawdownPercent ?? null, "%", 1)],
+                  [
+                    "Current drawdown",
+                    metric(observedMetrics?.currentDrawdownPercent ?? null, "%", 1),
+                  ],
+                ]
+              : [
+                  ["Annualized return", metric(risk?.cagrPercent ?? null, "%", 1)],
+                  ["Volatility", metric(risk?.volatilityPercent ?? null, "%", 1)],
+                  ["Sharpe", metric(risk?.sharpe ?? null)],
+                  ["Sortino", metric(risk?.sortino ?? null)],
+                  ["Max drawdown", metric(risk?.maxDrawdownPercent ?? null, "%", 1)],
+                  ["Current drawdown", metric(risk?.currentDrawdownPercent ?? null, "%", 1)],
+                  ["Calmar", metric(risk?.calmar ?? null)],
+                ]
+            ).map(([label, value]) => (
               <div key={label}>
                 <span>{label}</span>
                 <strong>{value}</strong>
               </div>
             ))}
           </div>
+
           <p className="security-risk-note">
-            Price-only metrics faithfully port the V2 risk calculation: 252 trading days, 4%
-            risk-free rate, sample volatility, and observed peak-to-trough drawdown. Beta and alpha
-            remain unavailable without a reconciled benchmark series.
+            {shortPeriod
+              ? "Short-range diagnostics use only the observed closes inside the selected period. Annualized Sharpe, Sortino, and Calmar are withheld because those ratios are not meaningful for such short samples."
+              : "Price-only metrics faithfully port the V2 risk calculation: 252 trading days, 4% risk-free rate, sample volatility, and observed peak-to-trough drawdown. Beta and alpha remain unavailable without a reconciled benchmark series."}
           </p>
         </>
       )}

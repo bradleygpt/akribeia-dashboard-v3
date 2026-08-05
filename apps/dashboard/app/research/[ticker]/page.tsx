@@ -5,6 +5,7 @@ import { formatMarketCap, formatMoney, formatPercent, formatRatio } from "../../
 import { SecurityLivePanel } from "./security-live-panel";
 import { SecurityRadar } from "./security-radar";
 import { SecurityDeepReference } from "./security-deep-reference";
+import EtfDetailPage from "../../etfs/[ticker]/page";
 
 interface PageProps {
   params: Promise<{ ticker: string }>;
@@ -22,12 +23,17 @@ function factorValue(row: ResearchRow, key: string, kind: "ratio" | "percent" | 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { ticker } = await params;
   const security = getResearchSecurity(decodeURIComponent(ticker));
-  return security === null
-    ? { title: "Security unavailable — Akribeia" }
-    : {
-        title: `${security.ticker} Research — Akribeia`,
-        description: `${security.name} quantitative score, valuation, buy point, pillars, factors, live price and V2-compatible risk metrics.`,
-      };
+  if (security === null) return { title: "Security unavailable — Akribeia" };
+  if (security.isEtf) {
+    return {
+      title: `${security.ticker} ETF Research — Akribeia`,
+      description: `${security.name} ETF reference, live price, risk, classification and captured holdings.`,
+    };
+  }
+  return {
+    title: `${security.ticker} Research — Akribeia`,
+    description: `${security.name} quantitative score, valuation, buy point, pillars, factors, live price and V2-compatible risk metrics.`,
+  };
 }
 
 export default async function SecurityDetailPage({ params }: PageProps) {
@@ -48,6 +54,10 @@ export default async function SecurityDetailPage({ params }: PageProps) {
         </main>
       </>
     );
+  }
+
+  if (security.isEtf) {
+    return <EtfDetailPage params={Promise.resolve({ ticker })} />;
   }
 
   const peers = loadResearchUniverse()
@@ -201,7 +211,11 @@ export default async function SecurityDetailPage({ params }: PageProps) {
 
         <SecurityRadar pillars={security.pillars} grades={security.grades} />
 
-        <SecurityLivePanel ticker={security.ticker} snapshotPrice={security.price} />
+        <SecurityLivePanel
+          ticker={security.ticker}
+          snapshotPrice={security.price}
+          snapshotAsOf={universe.source.publishedAt.slice(0, 10)}
+        />
         <SecurityDeepReference ticker={security.ticker} />
 
         <section className="security-factors" aria-labelledby="factor-heading">
