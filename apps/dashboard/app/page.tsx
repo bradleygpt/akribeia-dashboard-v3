@@ -23,6 +23,7 @@ import { FullUniverseExplorer } from "./full-universe-explorer";
 import { MarketHealthPanel } from "./market-health-panel";
 import { computeMarketBreadth } from "./market-health";
 import { loadV2Universe } from "./v2-universe";
+import { LandingPortal } from "../../portal/src/LandingPortal";
 import activeBenchmarkReadiness from "./generated/active-benchmark-readiness.json";
 import activeDashboard from "./generated/active-dashboard.json";
 import activeCorporateActionReadiness from "./generated/active-corporate-action-readiness.json";
@@ -126,7 +127,7 @@ const pipelineStages = [
   ["06", "Active selection", "Pointer + rollback"],
 ] as const;
 
-export default function Home() {
+export function MarketHealthDashboard() {
   const portfolioByTicker = new Map(
     dashboard.portfolio.positions.map((position) => [position.ticker, position]),
   );
@@ -2000,4 +2001,8 @@ export default function Home() {
       </main>
     </>
   );
+}
+
+export default function Home() {
+  return <LandingPortal />;
 }
