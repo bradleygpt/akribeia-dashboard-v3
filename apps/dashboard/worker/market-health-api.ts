@@ -19,7 +19,9 @@ const UNSUPPORTED_FED_FIELDS = new Set([
   "hold_probability",
   "hike_probability",
   "next_meeting",
+  "note",
 ]);
+const UNSUPPORTED_MACRO_DATA_FIELDS = new Set(["coming_soon_indicators"]);
 
 type Fetcher = typeof fetch;
 
@@ -74,15 +76,23 @@ function finite(value: unknown): number | null {
 
 export function quarantineUnsupportedMacroFields(staticData: MarketStaticData): MarketStaticData {
   const fedOutlook = asRecord(staticData.fed_outlook);
+  const macroData = asRecord(staticData.macro_data);
   const safeFedOutlook =
     fedOutlook === null
       ? undefined
       : Object.fromEntries(
           Object.entries(fedOutlook).filter(([key]) => !UNSUPPORTED_FED_FIELDS.has(key)),
         );
+  const safeMacroData =
+    macroData === null
+      ? undefined
+      : Object.fromEntries(
+          Object.entries(macroData).filter(([key]) => !UNSUPPORTED_MACRO_DATA_FIELDS.has(key)),
+        );
 
   return {
     ...staticData,
+    ...(safeMacroData === undefined ? {} : { macro_data: safeMacroData }),
     ...(safeFedOutlook === undefined ? {} : { fed_outlook: safeFedOutlook }),
     economic_calendar: [],
     fomc_meetings: [],

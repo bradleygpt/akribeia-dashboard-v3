@@ -27,6 +27,9 @@ const staticPayload = {
     unemployment_current: 4.2,
     gdp_latest_qoq_annualized: 2.4,
     cpi_current: 2.4,
+    coming_soon_indicators: [
+      { name: "FOMC Rate Decision Probability", status: "Needs futures data" },
+    ],
   },
   earnings_forecast: {
     sp500_earnings_growth: 8.1,
@@ -155,6 +158,12 @@ describe("V3 Market Health server adapter", () => {
     expect(safe.economic_calendar).toEqual([]);
     expect(safe.fomc_meetings).toEqual([]);
     expect(safe.fed_outlook).toEqual({ bias: "Data Dependent" });
+    expect(safe.macro_data).toEqual({
+      ism_composite: 53.9,
+      unemployment_current: 4.2,
+      gdp_latest_qoq_annualized: 2.4,
+      cpi_current: 2.4,
+    });
     expect(safe.macro_contract?.message).toContain(
       "Market-implied FOMC probabilities unavailable: no permitted free official source is configured.",
     );
