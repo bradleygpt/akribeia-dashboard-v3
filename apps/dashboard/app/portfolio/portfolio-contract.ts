@@ -91,12 +91,12 @@ export function parseHoldingsCsv(text: string): Holding[] {
   if (tickerIndex < 0 || sharesIndex < 0) return [];
   return lines.slice(1).flatMap((line) => {
     const cells = splitCsvLine(line);
-    const ticker = (cells[tickerIndex] ?? "").toUpperCase().replace(/[^A-Z0-9.\-]/g, "");
-    const shares = Number.parseFloat((cells[sharesIndex] ?? "").replace(/[^0-9.\-]/g, ""));
+    const ticker = (cells[tickerIndex] ?? "").toUpperCase().replace(/[^A-Z0-9.-]/g, "");
+    const shares = Number.parseFloat((cells[sharesIndex] ?? "").replace(/[^0-9.-]/g, ""));
     const cost =
       costIndex < 0
         ? Number.NaN
-        : Number.parseFloat((cells[costIndex] ?? "").replace(/[^0-9.\-]/g, ""));
+        : Number.parseFloat((cells[costIndex] ?? "").replace(/[^0-9.-]/g, ""));
     const holding = normalizeHolding({ ticker, shares, cost_basis: cost });
     return holding === null ? [] : [holding];
   });

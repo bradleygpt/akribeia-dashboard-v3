@@ -5,10 +5,9 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 
 test("keeps the approved V2 experience outside the server-rendered research tree", async () => {
-  const [layout, shell, css, experienceCss, packageJson] = await Promise.all([
+  const [layout, shell, experienceCss, packageJson] = await Promise.all([
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/experience-shell.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../app/experience.css", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
   ]);
