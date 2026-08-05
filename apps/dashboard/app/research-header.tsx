@@ -1,7 +1,16 @@
 export function ResearchHeader({
   active,
 }: {
-  active: "research" | "prolepsis" | "risk" | "sectors" | "etfs";
+  active:
+    | "research"
+    | "prolepsis"
+    | "risk"
+    | "sectors"
+    | "etfs"
+    | "macro"
+    | "strategies"
+    | "portfolio"
+    | "help";
 }) {
   return (
     <>
@@ -20,7 +29,10 @@ export function ResearchHeader({
         </a>
         <nav className="primary-nav" aria-label="Core research navigation">
           <a href="/">Home</a>
-          <a href="/#market-health">Market Health</a>
+          <a href="/dashboard#market-health">Market Health</a>
+          <a href="/macro" aria-current={active === "macro" ? "page" : undefined}>
+            Macro
+          </a>
           <a href="/research" aria-current={active === "research" ? "page" : undefined}>
             Screener
           </a>
@@ -35,6 +47,15 @@ export function ResearchHeader({
           </a>
           <a href="/etfs" aria-current={active === "etfs" ? "page" : undefined}>
             ETF Center
+          </a>
+          <a href="/strategies" aria-current={active === "strategies" ? "page" : undefined}>
+            Strategies
+          </a>
+          <a href="/portfolio" aria-current={active === "portfolio" ? "page" : undefined}>
+            Portfolio
+          </a>
+          <a href="/help" aria-current={active === "help" ? "page" : undefined}>
+            Help
           </a>
         </nav>
         <div className="header-status" aria-label="Research data integrity">
