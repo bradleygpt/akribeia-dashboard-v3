@@ -4,7 +4,29 @@ import { useEffect, useMemo, useState } from "react";
 import type { ResearchRow } from "../research-data";
 import { formatMarketCap, formatMoney } from "../research-format";
 
-type SectorSort = "score-desc" | "ticker-asc" | "market-cap-desc";
+type SectorSort =
+  | "security-ascending"
+  | "security-descending"
+  | "industry-ascending"
+  | "industry-descending"
+  | "score-ascending"
+  | "score-descending"
+  | "rating-ascending"
+  | "rating-descending"
+  | "price-ascending"
+  | "price-descending"
+  | "market-cap-ascending"
+  | "market-cap-descending";
+
+type SectorSortKey = "security" | "industry" | "score" | "rating" | "price" | "market-cap";
+
+export function parseSectorSort(sort: SectorSort): [SectorSortKey, "ascending" | "descending"] {
+  const separator = sort.lastIndexOf("-");
+  return [
+    sort.slice(0, separator) as SectorSortKey,
+    sort.slice(separator + 1) as "ascending" | "descending",
+  ];
+}
 
 interface NarrativeReference {
   generated_at?: string;
@@ -18,10 +40,53 @@ interface NarrativeEnvelope {
   error?: { message?: string };
 }
 
+function sectorSortValue(row: ResearchRow, key: SectorSortKey): string | number | null {
+  if (key === "security") return row.ticker;
+  if (key === "industry") return row.industry;
+  if (key === "score") return row.composite;
+  if (key === "rating") return row.rating;
+  if (key === "price") return row.price;
+  return row.marketCapB;
+}
+
+function SectorSortHeader({
+  column,
+  label,
+  sort,
+  onSort,
+}: {
+  column: SectorSortKey;
+  label: string;
+  sort: SectorSort;
+  onSort: (sort: SectorSort) => void;
+}) {
+  const [activeColumn, activeDirection] = parseSectorSort(sort);
+  const active = activeColumn === column;
+  const direction = active ? activeDirection : "none";
+  return (
+    <th scope="col" aria-sort={direction}>
+      <button
+        type="button"
+        className={active ? "research-sort-header is-active" : "research-sort-header"}
+        onClick={() =>
+          onSort(
+            `${column}-${
+              active && activeDirection === "ascending" ? "descending" : "ascending"
+            }` as SectorSort,
+          )
+        }
+      >
+        {label}
+        <span aria-hidden="true">{direction === "descending" ? "↓" : "↑"}</span>
+      </button>
+    </th>
+  );
+}
+
 export function SectorExplorer({ rows, sectors }: { rows: ResearchRow[]; sectors: string[] }) {
   const [selected, setSelected] = useState(sectors[0] ?? "");
   const [query, setQuery] = useState("");
-  const [sort, setSort] = useState<SectorSort>("score-desc");
+  const [sort, setSort] = useState<SectorSort>("score-descending");
   const [narrative, setNarrative] = useState<NarrativeReference | null>(null);
   const [sourceState, setSourceState] = useState<"loading" | "ready" | "error">("loading");
   const [attempt, setAttempt] = useState(0);
@@ -60,17 +125,22 @@ export function SectorExplorer({ rows, sectors }: { rows: ResearchRow[]; sectors
             row.industry.toLowerCase().includes(needle)),
       )
       .toSorted((left, right) => {
-        if (sort === "ticker-asc") return left.ticker.localeCompare(right.ticker);
-        if (sort === "market-cap-desc") {
-          return (
-            (right.marketCapB ?? Number.NEGATIVE_INFINITY) -
-              (left.marketCapB ?? Number.NEGATIVE_INFINITY) ||
-            left.ticker.localeCompare(right.ticker)
-          );
-        }
+        const [column, direction] = parseSectorSort(sort);
+        const leftValue = sectorSortValue(left, column);
+        const rightValue = sectorSortValue(right, column);
+        if (leftValue === null && rightValue === null)
+          return left.ticker.localeCompare(right.ticker);
+        if (leftValue === null) return 1;
+        if (rightValue === null) return -1;
+        const comparison =
+          typeof leftValue === "number" && typeof rightValue === "number"
+            ? leftValue - rightValue
+            : String(leftValue).localeCompare(String(rightValue), "en-US", {
+                sensitivity: "base",
+              });
         return (
-          (right.composite ?? Number.NEGATIVE_INFINITY) -
-            (left.composite ?? Number.NEGATIVE_INFINITY) || left.ticker.localeCompare(right.ticker)
+          (direction === "ascending" ? comparison : -comparison) ||
+          left.ticker.localeCompare(right.ticker)
         );
       });
   }, [query, rows, selected, sort]);
@@ -105,9 +175,9 @@ export function SectorExplorer({ rows, sectors }: { rows: ResearchRow[]; sectors
         <label>
           <span>Sort</span>
           <select value={sort} onChange={(event) => setSort(event.target.value as SectorSort)}>
-            <option value="score-desc">Score: high to low</option>
-            <option value="market-cap-desc">Market cap: high to low</option>
-            <option value="ticker-asc">Ticker A–Z</option>
+            <option value="score-descending">Score: high to low</option>
+            <option value="market-cap-descending">Market cap: high to low</option>
+            <option value="security-ascending">Ticker A–Z</option>
           </select>
         </label>
       </div>
@@ -147,12 +217,24 @@ export function SectorExplorer({ rows, sectors }: { rows: ResearchRow[]; sectors
             </caption>
             <thead>
               <tr>
-                <th scope="col">Security</th>
-                <th scope="col">Industry</th>
-                <th scope="col">Score</th>
-                <th scope="col">Rating</th>
-                <th scope="col">Price</th>
-                <th scope="col">Market cap</th>
+                {(
+                  [
+                    ["security", "Security"],
+                    ["industry", "Industry"],
+                    ["score", "Score"],
+                    ["rating", "Rating"],
+                    ["price", "Price"],
+                    ["market-cap", "Market cap"],
+                  ] as Array<[SectorSortKey, string]>
+                ).map(([column, label]) => (
+                  <SectorSortHeader
+                    column={column}
+                    key={column}
+                    label={label}
+                    sort={sort}
+                    onSort={setSort}
+                  />
+                ))}
               </tr>
             </thead>
             <tbody>

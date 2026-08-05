@@ -6,10 +6,45 @@ import type { UniverseDisplayRow } from "./v2-universe";
 
 const PAGE_SIZE = 50;
 
+type UniverseSortColumn = "ticker" | "sector" | "market-cap" | "score" | "rating";
+
 function marketCap(value: number | null): string {
   if (value === null) return "Not reported";
   if (value >= 1000) return `$${(value / 1000).toFixed(2)}T`;
   return `$${value.toFixed(value >= 100 ? 0 : 1)}B`;
+}
+
+function UniverseSortHeader({
+  column,
+  label,
+  sort,
+  onSort,
+}: {
+  column: UniverseSortColumn;
+  label: string;
+  sort: UniverseSort;
+  onSort: (sort: UniverseSort) => void;
+}) {
+  const ascending = `${column}-asc` as UniverseSort;
+  const descending = `${column}-desc` as UniverseSort;
+  const active = sort === ascending || sort === descending;
+  const direction = sort === ascending ? "ascending" : sort === descending ? "descending" : "none";
+  return (
+    <th scope="col" aria-sort={direction}>
+      <button
+        type="button"
+        className={active ? "universe-sort-header is-active" : "universe-sort-header"}
+        onClick={() => updateSort(onSort, sort === ascending ? descending : ascending)}
+      >
+        {label}
+        <span aria-hidden="true">{direction === "descending" ? "↓" : "↑"}</span>
+      </button>
+    </th>
+  );
+}
+
+function updateSort(onSort: (sort: UniverseSort) => void, sort: UniverseSort) {
+  onSort(sort);
 }
 
 export function FullUniverseExplorer({
@@ -98,11 +133,23 @@ export function FullUniverseExplorer({
               <caption className="sr-only">Searchable authoritative V2 security universe</caption>
               <thead>
                 <tr>
-                  <th scope="col">Security</th>
-                  <th scope="col">Sector / industry</th>
-                  <th scope="col">Market cap</th>
-                  <th scope="col">Equal-weight score</th>
-                  <th scope="col">Rating</th>
+                  {(
+                    [
+                      ["ticker", "Security"],
+                      ["sector", "Sector / industry"],
+                      ["market-cap", "Market cap"],
+                      ["score", "Equal-weight score"],
+                      ["rating", "Rating"],
+                    ] as Array<[UniverseSortColumn, string]>
+                  ).map(([column, label]) => (
+                    <UniverseSortHeader
+                      column={column}
+                      key={column}
+                      label={label}
+                      sort={filter.sort}
+                      onSort={(sort) => updateFilter({ sort })}
+                    />
+                  ))}
                 </tr>
               </thead>
               <tbody>

@@ -1,18 +1,23 @@
 import type { UniverseDisplayRow } from "./v2-universe";
 
-export type UniverseSort = "score-desc" | "market-cap-desc" | "ticker-asc" | "name-asc";
+export type UniverseSort =
+  | "ticker-asc"
+  | "ticker-desc"
+  | "name-asc"
+  | "name-desc"
+  | "sector-asc"
+  | "sector-desc"
+  | "market-cap-asc"
+  | "market-cap-desc"
+  | "score-asc"
+  | "score-desc"
+  | "rating-asc"
+  | "rating-desc";
 
 export interface UniverseFilter {
   query: string;
   sector: string;
   sort: UniverseSort;
-}
-
-function descendingNullable(left: number | null, right: number | null): number {
-  if (left === null && right === null) return 0;
-  if (left === null) return 1;
-  if (right === null) return -1;
-  return right - left;
 }
 
 export function filterUniverseRows(
@@ -31,24 +36,29 @@ export function filterUniverseRows(
     return matchesSector && matchesQuery;
   });
 
+  const separator = filter.sort.lastIndexOf("-");
+  const column = filter.sort.slice(0, separator);
+  const direction = filter.sort.slice(separator + 1);
   return filtered.toSorted((left, right) => {
-    if (filter.sort === "market-cap-desc") {
-      return (
-        descendingNullable(left.marketCapB, right.marketCapB) ||
-        left.ticker.localeCompare(right.ticker)
-      );
-    }
-
-    if (filter.sort === "ticker-asc") {
-      return left.ticker.localeCompare(right.ticker);
-    }
-
-    if (filter.sort === "name-asc") {
-      return left.name.localeCompare(right.name) || left.ticker.localeCompare(right.ticker);
-    }
-
+    const value = (row: UniverseDisplayRow): string | number | null => {
+      if (column === "ticker") return row.ticker;
+      if (column === "name") return row.name;
+      if (column === "sector") return row.sector;
+      if (column === "market-cap") return row.marketCapB;
+      if (column === "rating") return row.rating;
+      return row.composite;
+    };
+    const leftValue = value(left);
+    const rightValue = value(right);
+    if (leftValue === null && rightValue === null) return left.ticker.localeCompare(right.ticker);
+    if (leftValue === null) return 1;
+    if (rightValue === null) return -1;
+    const comparison =
+      typeof leftValue === "number" && typeof rightValue === "number"
+        ? leftValue - rightValue
+        : String(leftValue).localeCompare(String(rightValue), "en-US", { sensitivity: "base" });
     return (
-      descendingNullable(left.composite, right.composite) || left.ticker.localeCompare(right.ticker)
+      (direction === "asc" ? comparison : -comparison) || left.ticker.localeCompare(right.ticker)
     );
   });
 }

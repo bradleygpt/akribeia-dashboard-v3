@@ -4,9 +4,39 @@ import {
   type ResearchPreset,
   type ResearchRow,
 } from "./research-data";
+import { hasCompleteStockModelEvidence } from "./etfs/stock-model-evidence";
 
 export type ResearchSort =
-  "score-desc" | "score-asc" | "market-cap-desc" | "valuation-asc" | "buy-point-asc" | "ticker-asc";
+  | "score-desc"
+  | "score-asc"
+  | "ticker-desc"
+  | "ticker-asc"
+  | "sector-desc"
+  | "sector-asc"
+  | "rating-desc"
+  | "rating-asc"
+  | "price-desc"
+  | "price-asc"
+  | "fair-value-desc"
+  | "fair-value-asc"
+  | "valuation-desc"
+  | "valuation-asc"
+  | "buy-point-price-desc"
+  | "buy-point-price-asc"
+  | "buy-point-desc"
+  | "buy-point-asc"
+  | "pillar-valuation-desc"
+  | "pillar-valuation-asc"
+  | "pillar-growth-desc"
+  | "pillar-growth-asc"
+  | "pillar-profitability-desc"
+  | "pillar-profitability-asc"
+  | "pillar-momentum-desc"
+  | "pillar-momentum-asc"
+  | "pillar-eps-desc"
+  | "pillar-eps-asc"
+  | "market-cap-desc"
+  | "market-cap-asc";
 
 export interface ResearchFilters {
   query: string;
@@ -28,6 +58,10 @@ export function scoreForModel(
   row: ResearchRow,
   model: string,
 ): { composite: number | null; rating: string } {
+  if (row.isEtf && !hasCompleteStockModelEvidence(row)) {
+    return { composite: null, rating: "Not applicable (ETF)" };
+  }
+
   return row.presets[model] ?? { composite: row.composite, rating: row.rating };
 }
 
@@ -76,18 +110,56 @@ const percentageMetrics = new Set(
     .map(({ key }) => key),
 );
 
-function descendingNullable(left: number | null, right: number | null): number {
+function compareNullable(
+  left: number | string | null,
+  right: number | string | null,
+  direction: "asc" | "desc",
+): number {
   if (left === null && right === null) return 0;
   if (left === null) return 1;
   if (right === null) return -1;
-  return right - left;
+  const comparison =
+    typeof left === "number" && typeof right === "number"
+      ? left - right
+      : String(left).localeCompare(String(right), "en-US", { sensitivity: "base" });
+  return direction === "asc" ? comparison : -comparison;
 }
 
-function ascendingNullable(left: number | null, right: number | null): number {
-  if (left === null && right === null) return 0;
-  if (left === null) return 1;
-  if (right === null) return -1;
-  return left - right;
+function sortableValue(row: ResearchRow, column: string, model: string): number | string | null {
+  switch (column) {
+    case "score":
+      return scoreForModel(row, model).composite;
+    case "ticker":
+      return row.ticker;
+    case "sector":
+      return row.isEtf ? "ETF" : row.sector;
+    case "rating":
+      return scoreForModel(row, model).rating;
+    case "price":
+      return row.price;
+    case "fair-value":
+      return row.fairValue;
+    case "valuation":
+      return row.fairValuePremium;
+    case "buy-point-price":
+      return row.buyPoint;
+    case "buy-point":
+      return row.buyPointDistance;
+    case "pillar-valuation":
+      return row.pillars.Valuation ?? null;
+    case "pillar-growth":
+      return row.pillars.Growth ?? null;
+    case "pillar-profitability":
+      return row.pillars.Profitability ?? null;
+    case "pillar-momentum":
+      return row.pillars.Momentum ?? null;
+    case "pillar-eps":
+      return row.pillars["EPS Revisions"] ?? null;
+    case "market-cap":
+      return row.marketCapB;
+    default:
+      return null;
+  }
 }
 
 export function filterResearchRows(
@@ -124,31 +196,16 @@ export function filterResearchRows(
     );
   });
 
-  return result.toSorted((left, right) => {
-    const leftScore = scoreForModel(left, filters.model).composite;
-    const rightScore = scoreForModel(right, filters.model).composite;
-    if (filters.sort === "score-asc") {
-      return ascendingNullable(leftScore, rightScore) || left.ticker.localeCompare(right.ticker);
-    }
-    if (filters.sort === "market-cap-desc") {
-      return (
-        descendingNullable(left.marketCapB, right.marketCapB) ||
-        left.ticker.localeCompare(right.ticker)
-      );
-    }
-    if (filters.sort === "valuation-asc") {
-      return (
-        ascendingNullable(left.fairValuePremium, right.fairValuePremium) ||
-        left.ticker.localeCompare(right.ticker)
-      );
-    }
-    if (filters.sort === "buy-point-asc") {
-      return (
-        ascendingNullable(left.buyPointDistance, right.buyPointDistance) ||
-        left.ticker.localeCompare(right.ticker)
-      );
-    }
-    if (filters.sort === "ticker-asc") return left.ticker.localeCompare(right.ticker);
-    return descendingNullable(leftScore, rightScore) || left.ticker.localeCompare(right.ticker);
-  });
+  const separator = filters.sort.lastIndexOf("-");
+  const column = filters.sort.slice(0, separator);
+  const direction = filters.sort.slice(separator + 1) as "asc" | "desc";
+
+  return result.toSorted(
+    (left, right) =>
+      compareNullable(
+        sortableValue(left, column, filters.model),
+        sortableValue(right, column, filters.model),
+        direction,
+      ) || left.ticker.localeCompare(right.ticker),
+  );
 }

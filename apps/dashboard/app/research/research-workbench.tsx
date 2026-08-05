@@ -21,6 +21,7 @@ import {
   normalizeComparisonTickers,
   toggleComparisonTicker,
 } from "../research-comparison";
+import { hasCompleteStockModelEvidence } from "../etfs/stock-model-evidence";
 
 const PAGE_SIZE = 50;
 const WATCHLIST_KEY = "akribeia:v3:research-watchlist";
@@ -54,6 +55,55 @@ function ratingClass(rating: string): string {
   return "research-rating";
 }
 
+function securityHref(row: Pick<ResearchRow, "isEtf" | "ticker">): string {
+  const route = row.isEtf ? "etfs" : "research";
+  return `/${route}/${encodeURIComponent(row.ticker)}`;
+}
+
+function displayedPillarGrade(row: ResearchRow, pillar: string): string {
+  return row.isEtf && !hasCompleteStockModelEvidence(row)
+    ? "Unavailable"
+    : (row.grades[pillar] ?? "—");
+}
+
+function SortableResearchHeader({
+  column,
+  label,
+  sort,
+  onSort,
+}: {
+  column: string;
+  label: string;
+  sort: ResearchSort;
+  onSort: (sort: ResearchSort) => void;
+}) {
+  const ascending = `${column}-asc` as ResearchSort;
+  const descending = `${column}-desc` as ResearchSort;
+  const active = sort === ascending || sort === descending;
+  const direction = sort === ascending ? "ascending" : sort === descending ? "descending" : "none";
+  const stringColumn = column === "ticker" || column === "sector" || column === "rating";
+  const nextSort = active
+    ? sort === ascending
+      ? descending
+      : ascending
+    : stringColumn
+      ? ascending
+      : descending;
+
+  return (
+    <th scope="col" aria-sort={direction}>
+      <button
+        type="button"
+        className={active ? "research-sort-header is-active" : "research-sort-header"}
+        onClick={() => onSort(nextSort)}
+      >
+        {label}
+        <span aria-hidden="true">{direction === "ascending" ? "↑" : "↓"}</span>
+      </button>
+    </th>
+  );
+}
+
 function ResearchComparison({
   rows,
   model,
@@ -75,11 +125,11 @@ function ResearchComparison({
     ["Prem. / discount", (row) => formatPercent(row.fairValuePremium, 1, true)],
     ["Buy-point distance", (row) => formatPercent(row.buyPointDistance, 1, true)],
     ["Market cap", (row) => formatMarketCap(row.marketCapB)],
-    ["Valuation", (row) => row.grades.Valuation ?? "—"],
-    ["Growth", (row) => row.grades.Growth ?? "—"],
-    ["Profitability", (row) => row.grades.Profitability ?? "—"],
-    ["Momentum", (row) => row.grades.Momentum ?? "—"],
-    ["EPS revisions", (row) => row.grades["EPS Revisions"] ?? "—"],
+    ["Valuation", (row) => displayedPillarGrade(row, "Valuation")],
+    ["Growth", (row) => displayedPillarGrade(row, "Growth")],
+    ["Profitability", (row) => displayedPillarGrade(row, "Profitability")],
+    ["Momentum", (row) => displayedPillarGrade(row, "Momentum")],
+    ["EPS revisions", (row) => displayedPillarGrade(row, "EPS Revisions")],
   ];
 
   return (
@@ -103,7 +153,7 @@ function ResearchComparison({
               <th scope="col">Measure</th>
               {rows.map((row) => (
                 <th scope="col" key={row.ticker}>
-                  <a href={`/research/${encodeURIComponent(row.ticker)}`}>{row.ticker}</a>
+                  <a href={securityHref(row)}>{row.ticker}</a>
                   <button type="button" onClick={() => onRemove(row.ticker)}>
                     Remove
                   </button>
@@ -588,21 +638,96 @@ export function ResearchWorkbench({ rows, sectors }: { rows: ResearchRow[]; sect
                 <thead>
                   <tr>
                     <th scope="col">Track</th>
-                    <th scope="col">Security</th>
-                    <th scope="col">Sector / industry</th>
-                    <th scope="col">Score</th>
-                    <th scope="col">Rating</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Fair value</th>
-                    <th scope="col">Prem. / disc.</th>
-                    <th scope="col">Buy point</th>
-                    <th scope="col">BP distance</th>
-                    <th scope="col">Val</th>
-                    <th scope="col">Growth</th>
-                    <th scope="col">Prof.</th>
-                    <th scope="col">Mom.</th>
-                    <th scope="col">EPS</th>
-                    <th scope="col">Market cap</th>
+                    <SortableResearchHeader
+                      column="ticker"
+                      label="Security"
+                      sort={filters.sort}
+                      onSort={(sort) => updateFilters({ sort })}
+                    />
+                    <SortableResearchHeader
+                      column="sector"
+                      label="Sector / industry"
+                      sort={filters.sort}
+                      onSort={(sort) => updateFilters({ sort })}
+                    />
+                    <SortableResearchHeader
+                      column="score"
+                      label="Score"
+                      sort={filters.sort}
+                      onSort={(sort) => updateFilters({ sort })}
+                    />
+                    <SortableResearchHeader
+                      column="rating"
+                      label="Rating"
+                      sort={filters.sort}
+                      onSort={(sort) => updateFilters({ sort })}
+                    />
+                    <SortableResearchHeader
+                      column="price"
+                      label="Price"
+                      sort={filters.sort}
+                      onSort={(sort) => updateFilters({ sort })}
+                    />
+                    <SortableResearchHeader
+                      column="fair-value"
+                      label="Fair value"
+                      sort={filters.sort}
+                      onSort={(sort) => updateFilters({ sort })}
+                    />
+                    <SortableResearchHeader
+                      column="valuation"
+                      label="Prem. / disc."
+                      sort={filters.sort}
+                      onSort={(sort) => updateFilters({ sort })}
+                    />
+                    <SortableResearchHeader
+                      column="buy-point-price"
+                      label="Buy point"
+                      sort={filters.sort}
+                      onSort={(sort) => updateFilters({ sort })}
+                    />
+                    <SortableResearchHeader
+                      column="buy-point"
+                      label="BP distance"
+                      sort={filters.sort}
+                      onSort={(sort) => updateFilters({ sort })}
+                    />
+                    <SortableResearchHeader
+                      column="pillar-valuation"
+                      label="Val"
+                      sort={filters.sort}
+                      onSort={(sort) => updateFilters({ sort })}
+                    />
+                    <SortableResearchHeader
+                      column="pillar-growth"
+                      label="Growth"
+                      sort={filters.sort}
+                      onSort={(sort) => updateFilters({ sort })}
+                    />
+                    <SortableResearchHeader
+                      column="pillar-profitability"
+                      label="Prof."
+                      sort={filters.sort}
+                      onSort={(sort) => updateFilters({ sort })}
+                    />
+                    <SortableResearchHeader
+                      column="pillar-momentum"
+                      label="Mom."
+                      sort={filters.sort}
+                      onSort={(sort) => updateFilters({ sort })}
+                    />
+                    <SortableResearchHeader
+                      column="pillar-eps"
+                      label="EPS"
+                      sort={filters.sort}
+                      onSort={(sort) => updateFilters({ sort })}
+                    />
+                    <SortableResearchHeader
+                      column="market-cap"
+                      label="Market cap"
+                      sort={filters.sort}
+                      onSort={(sort) => updateFilters({ sort })}
+                    />
                   </tr>
                 </thead>
                 <tbody>
@@ -631,7 +756,7 @@ export function ResearchWorkbench({ rows, sectors }: { rows: ResearchRow[]; sect
                           />
                         </td>
                         <td className="research-security-cell">
-                          <a href={`/research/${encodeURIComponent(row.ticker)}`}>{row.ticker}</a>
+                          <a href={securityHref(row)}>{row.ticker}</a>
                           <span>{row.name}</span>
                         </td>
                         <td>

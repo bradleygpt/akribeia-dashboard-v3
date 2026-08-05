@@ -171,7 +171,7 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
   try {
     const address = server.address();
     assert.ok(address && typeof address === "object");
-    const url = `http://127.0.0.1:${address.port}/`;
+    const url = `http://127.0.0.1:${address.port}/dashboard`;
     const stdout = await renderInChrome(browser, url, profileDirectory);
 
     assert.match(stdout, /data-state="(?:healthy|stale)"/);
@@ -306,7 +306,7 @@ test("renders explicit partial and error Market Health states in Chrome", async 
       assert.ok(address && typeof address === "object");
       const stdout = await renderInChrome(
         browser,
-        `http://127.0.0.1:${address.port}/#market-health`,
+        `http://127.0.0.1:${address.port}/dashboard#market-health`,
         profileDirectory,
       );
 
