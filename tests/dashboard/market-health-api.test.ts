@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildMarketHealthSnapshot,
   handleMarketHealthApi,
+  quarantineUnsupportedMacroFields,
 } from "../../apps/dashboard/worker/market-health-api.js";
 
 function chartResponse(start = 100): Response {
@@ -34,6 +35,15 @@ const staticPayload = {
     as_of: "2026-07-29",
     signals: [],
   },
+  fed_outlook: {
+    cut_probability: 35,
+    hold_probability: 55,
+    hike_probability: 10,
+    next_meeting: "2026-05-06",
+    bias: "Data Dependent",
+  },
+  economic_calendar: [{ event: "Unsupported recurring event", date: "6 weeks" }],
+  fomc_meetings: ["2026-06-18", "2026-09-17"],
 };
 const pgiBakedPayload = {
   ok: true,
@@ -118,6 +128,39 @@ describe("V3 Market Health server adapter", () => {
     expect(
       (body.live as { indices: Array<{ name: string; ok: boolean }> }).indices[0],
     ).toMatchObject({ name: "S&P 500", ok: true });
+    expect(body.staticData).toMatchObject({
+      fed_outlook: { bias: "Data Dependent" },
+      economic_calendar: [],
+      fomc_meetings: [],
+      macro_contract: {
+        status: "blocked",
+        schedule: "unavailable",
+        probability: "unavailable",
+        provenance: "contract_pending",
+      },
+    });
+    const safeFedOutlook = (body.staticData as { fed_outlook: Record<string, unknown> })
+      .fed_outlook;
+    expect(safeFedOutlook).not.toHaveProperty("cut_probability");
+    expect(safeFedOutlook).not.toHaveProperty("hold_probability");
+    expect(safeFedOutlook).not.toHaveProperty("hike_probability");
+    expect(safeFedOutlook).not.toHaveProperty("next_meeting");
+  });
+
+  it("quarantines unsupported macro values without mutating the approved static input", () => {
+    const source = structuredClone(staticPayload);
+    const safe = quarantineUnsupportedMacroFields(source);
+
+    expect(source).toEqual(staticPayload);
+    expect(safe.economic_calendar).toEqual([]);
+    expect(safe.fomc_meetings).toEqual([]);
+    expect(safe.fed_outlook).toEqual({ bias: "Data Dependent" });
+    expect(safe.macro_contract?.message).toContain(
+      "Market-implied FOMC probabilities unavailable: no permitted free official source is configured.",
+    );
+    expect(safe.macro_contract?.message).toContain(
+      "No authoritative free official event schedule is configured. No date, time, timezone, or recurrence is inferred.",
+    );
   });
 
   it("uses the dated V2 baked PGI observation before the flagged hardcoded estimate", async () => {

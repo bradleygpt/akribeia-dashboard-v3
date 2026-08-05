@@ -98,6 +98,13 @@ export interface MarketStaticData {
   fed_outlook?: Record<string, unknown>;
   economic_calendar?: Array<Record<string, unknown>>;
   fomc_meetings?: string[];
+  macro_contract?: {
+    status: "blocked";
+    schedule: "unavailable";
+    probability: "unavailable";
+    provenance: "contract_pending";
+    message: string;
+  };
   macro_signals?: {
     signals?: MacroSignal[];
     as_of?: string | null;

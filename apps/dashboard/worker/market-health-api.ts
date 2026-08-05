@@ -12,6 +12,14 @@ const MARKET_STATIC_URL = `https://raw.githubusercontent.com/bradleygpt/quant-da
 const PGI_BAKED_URL = `https://raw.githubusercontent.com/bradleygpt/quant-dashboard-pro-v2/${V2_APP_COMMIT}/public/data/pgi_money_market.json`;
 const USER_AGENT = "Mozilla/5.0 (compatible; Akribeia/3.0; +https://akribeia.com)";
 const US_GDP_TRILLIONS = 29.7;
+const MACRO_CONTRACT_MESSAGE =
+  "No authoritative free official event schedule is configured. No date, time, timezone, or recurrence is inferred. Market-implied FOMC probabilities unavailable: no permitted free official source is configured.";
+const UNSUPPORTED_FED_FIELDS = new Set([
+  "cut_probability",
+  "hold_probability",
+  "hike_probability",
+  "next_meeting",
+]);
 
 type Fetcher = typeof fetch;
 
@@ -62,6 +70,30 @@ function asArray(value: unknown): unknown[] {
 
 function finite(value: unknown): number | null {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+export function quarantineUnsupportedMacroFields(staticData: MarketStaticData): MarketStaticData {
+  const fedOutlook = asRecord(staticData.fed_outlook);
+  const safeFedOutlook =
+    fedOutlook === null
+      ? undefined
+      : Object.fromEntries(
+          Object.entries(fedOutlook).filter(([key]) => !UNSUPPORTED_FED_FIELDS.has(key)),
+        );
+
+  return {
+    ...staticData,
+    ...(safeFedOutlook === undefined ? {} : { fed_outlook: safeFedOutlook }),
+    economic_calendar: [],
+    fomc_meetings: [],
+    macro_contract: {
+      status: "blocked",
+      schedule: "unavailable",
+      probability: "unavailable",
+      provenance: "contract_pending",
+      message: MACRO_CONTRACT_MESSAGE,
+    },
+  };
 }
 
 async function timedFetch(
@@ -197,7 +229,9 @@ async function loadStaticData(
 
   try {
     const value = await response.json();
-    return asRecord(value) === null ? null : (value as MarketStaticData);
+    return asRecord(value) === null
+      ? null
+      : quarantineUnsupportedMacroFields(value as MarketStaticData);
   } catch {
     return null;
   }
