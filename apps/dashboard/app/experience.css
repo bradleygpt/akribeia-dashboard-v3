@@ -1,0 +1,215 @@
+html.akribeia-overlay-active {
+  overflow: hidden;
+}
+
+.akribeia-route-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 46%, rgb(105 255 35 / 12%), transparent 26rem),
+    linear-gradient(135deg, #020806 0%, #07170f 55%, #102716 100%);
+  color: #f1f4e9;
+  animation: akribeia-transition-in 140ms ease-out both;
+}
+
+.akribeia-route-transition__field {
+  position: absolute;
+  inset: -20%;
+  opacity: 0.42;
+  transform: rotate(-12deg);
+}
+
+.akribeia-route-transition__field span {
+  position: absolute;
+  inset-inline: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(166 255 67 / 65%), transparent);
+  animation: akribeia-scan 1.35s linear infinite;
+}
+
+.akribeia-route-transition__field span:nth-child(1) {
+  top: 25%;
+}
+
+.akribeia-route-transition__field span:nth-child(2) {
+  top: 50%;
+  animation-delay: -450ms;
+}
+
+.akribeia-route-transition__field span:nth-child(3) {
+  top: 75%;
+  animation-delay: -900ms;
+}
+
+.akribeia-route-transition__content {
+  position: relative;
+  width: min(34rem, calc(100vw - 3rem));
+  text-align: center;
+}
+
+.akribeia-route-transition__mark {
+  display: inline-grid;
+  width: 3.4rem;
+  height: 3.4rem;
+  place-items: center;
+  border: 1px solid rgb(166 255 67 / 45%);
+  border-radius: 999px;
+  color: #a6ff43;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 2rem;
+  font-style: italic;
+  box-shadow: 0 0 3rem rgb(166 255 67 / 16%);
+}
+
+.akribeia-route-transition__content p {
+  margin: 1.25rem 0 1rem;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.76rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.akribeia-route-transition__track {
+  height: 2px;
+  overflow: hidden;
+  background: rgb(255 255 255 / 9%);
+}
+
+.akribeia-route-transition__track i {
+  display: block;
+  width: 34%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, #a6ff43, transparent);
+  animation: akribeia-progress 1.05s ease-in-out infinite;
+}
+
+body.akribeia-experience-ready main > section,
+body.akribeia-experience-ready main > div,
+body.akribeia-experience-ready .research-page > *,
+body.akribeia-experience-ready .risk-card-grid > article,
+body.akribeia-experience-ready .product-doors > a,
+body.akribeia-experience-ready .metrics > article {
+  animation: akribeia-card-arrive 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+body.akribeia-experience-ready main > :nth-child(2),
+body.akribeia-experience-ready .risk-card-grid > article:nth-child(2),
+body.akribeia-experience-ready .product-doors > a:nth-child(2) {
+  animation-delay: 70ms;
+}
+
+body.akribeia-experience-ready main > :nth-child(3),
+body.akribeia-experience-ready .risk-card-grid > article:nth-child(3),
+body.akribeia-experience-ready .product-doors > a:nth-child(3) {
+  animation-delay: 140ms;
+}
+
+body.akribeia-experience-ready main > :nth-child(4),
+body.akribeia-experience-ready .risk-card-grid > article:nth-child(4),
+body.akribeia-experience-ready .product-doors > a:nth-child(4) {
+  animation-delay: 210ms;
+}
+
+.risk-distribution button > div > span {
+  transform-origin: left center;
+  animation: akribeia-grow-x 780ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.research-table tbody tr,
+.risk-card-grid article,
+.product-doors a,
+.metrics article,
+.sector-explorer-controls,
+.etf-section-nav button {
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.research-table tbody tr:hover,
+.risk-card-grid article:hover,
+.product-doors a:hover,
+.metrics article:hover {
+  transform: translateY(-2px);
+}
+
+@keyframes akribeia-transition-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes akribeia-scan {
+  from {
+    opacity: 0;
+    transform: translateX(-18%);
+  }
+
+  20%,
+  80% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(18%);
+  }
+}
+
+@keyframes akribeia-progress {
+  0% {
+    transform: translateX(-110%);
+  }
+
+  55%,
+  100% {
+    transform: translateX(310%);
+  }
+}
+
+@keyframes akribeia-card-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes akribeia-grow-x {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.akribeia-experience-ready main > *,
+  body.akribeia-experience-ready .research-page > *,
+  body.akribeia-experience-ready .risk-card-grid > article,
+  body.akribeia-experience-ready .product-doors > a,
+  body.akribeia-experience-ready .metrics > article,
+  .risk-distribution button > div > span,
+  .akribeia-route-transition,
+  .akribeia-route-transition__field span,
+  .akribeia-route-transition__track i {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}

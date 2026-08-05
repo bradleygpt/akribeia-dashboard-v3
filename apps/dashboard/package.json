@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=22.13.0"
+    "node": "\u003e=22.13.0"
   },
   "scripts": {
     "dev": "vinext dev",
     "build": "vinext build",
+    "build:portal": "node scripts/build-with-portal.mjs",
     "start": "vinext start",
-    "test": "node --test tests/rendered-html.node.mjs tests/research-routes.node.mjs tests/browser-smoke.node.mjs tests/prolepsis.node.mjs"
+    "test": "node --test tests/rendered-html.node.mjs tests/research-routes.node.mjs tests/browser-smoke.node.mjs tests/experience-worker-safe.node.mjs tests/live-daily-change.node.mjs tests/prolepsis.node.mjs tests/portal-home.node.mjs"
   },
   "dependencies": {
     "@akribeia/contracts": "0.0.1",

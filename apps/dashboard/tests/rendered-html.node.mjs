@@ -3,13 +3,13 @@ import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-async function render() {
+async function render(pathname = "/dashboard") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
 
   return worker.fetch(
-    new Request("http://localhost/", {
+    new Request(`http://localhost${pathname}`, {
       headers: { accept: "text/html" },
     }),
     {
@@ -33,7 +33,7 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   const html = await response.text();
 
   assert.match(html, /<title>Akribeia — Quantitative Market Research<\/title>/i);
-  assert.match(html, /og-wave2\.png/);
+  assert.match(html, /og-portal\.png/);
   assert.match(html, /1536/);
   assert.match(html, /1024/);
   assert.match(html, /class="skip-link" href="#main-content"/);

@@ -1,4 +1,6 @@
 import { headers } from "next/headers";
+import { ExperienceShell } from "./experience-shell";
+import { resolveMetadataProtocol } from "./metadata-origin";
 import "./globals.css";
 
 const title = "Akribeia — Quantitative Market Research";
@@ -12,14 +14,17 @@ export async function generateMetadata() {
     requestHeaders.get("host") ??
     "localhost:3000";
   const forwardedProtocol = requestHeaders.get("x-forwarded-proto")?.split(",")[0]?.trim();
-  const protocol = forwardedProtocol === "http" ? "http" : "https";
+  const protocol = resolveMetadataProtocol(host, forwardedProtocol ?? null);
   const origin = new URL(`${protocol}://${host}`);
-  const socialImage = new URL("/og-wave2.png", origin);
+  const socialImage = new URL("/og-portal.png", origin);
 
   return {
     metadataBase: origin,
     title,
     description,
+    icons: {
+      icon: { url: "/favicon.svg", type: "image/svg+xml" },
+    },
     openGraph: {
       title,
       description,
@@ -29,7 +34,7 @@ export async function generateMetadata() {
           url: socialImage,
           width: 1536,
           height: 1024,
-          alt: "Akribeia Core Research — 1,361 securities, risk, sectors and ETF look-through",
+          alt: "Akribeia quantitative market research three-sun portal",
         },
       ],
     },
@@ -49,7 +54,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <ExperienceShell />
+        {children}
+      </body>
     </html>
   );
 }
