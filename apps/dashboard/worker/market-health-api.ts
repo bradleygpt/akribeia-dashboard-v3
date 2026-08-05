@@ -22,6 +22,7 @@ const UNSUPPORTED_FED_FIELDS = new Set([
   "note",
 ]);
 const UNSUPPORTED_MACRO_DATA_FIELDS = new Set(["coming_soon_indicators"]);
+const UNSUPPORTED_STATIC_FIELDS = new Set(["coming_soon_indicators"]);
 
 type Fetcher = typeof fetch;
 
@@ -89,9 +90,12 @@ export function quarantineUnsupportedMacroFields(staticData: MarketStaticData): 
       : Object.fromEntries(
           Object.entries(macroData).filter(([key]) => !UNSUPPORTED_MACRO_DATA_FIELDS.has(key)),
         );
+  const safeStaticData = Object.fromEntries(
+    Object.entries(staticData).filter(([key]) => !UNSUPPORTED_STATIC_FIELDS.has(key)),
+  );
 
   return {
-    ...staticData,
+    ...safeStaticData,
     ...(safeMacroData === undefined ? {} : { macro_data: safeMacroData }),
     ...(safeFedOutlook === undefined ? {} : { fed_outlook: safeFedOutlook }),
     economic_calendar: [],

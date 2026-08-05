@@ -164,6 +164,7 @@ describe("V3 Market Health server adapter", () => {
       gdp_latest_qoq_annualized: 2.4,
       cpi_current: 2.4,
     });
+    expect(safe).not.toHaveProperty("coming_soon_indicators");
     expect(safe.macro_contract?.message).toContain(
       "Market-implied FOMC probabilities unavailable: no permitted free official source is configured.",
     );
