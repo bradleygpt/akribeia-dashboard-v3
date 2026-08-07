@@ -433,6 +433,7 @@
 
   .portal-orbit-outer {
     inset: 6% 1% 7%;
+    transform: none;
   }
 
   .portal-orbit-inner {
