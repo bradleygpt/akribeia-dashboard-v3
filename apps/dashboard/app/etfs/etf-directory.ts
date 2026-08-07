@@ -16,6 +16,33 @@ export interface DirectoryLookthroughReference {
   asset_class?: string;
 }
 
+export interface ExpandedEtfReference {
+  ticker: string;
+  fundName: string;
+  issuer: string | null;
+  assetClass: string;
+  category: string | null;
+  sector: string | null;
+  industryOrTheme: string | null;
+  strategyType: string | null;
+  leverageInverse: boolean;
+  activePassive: "active" | "passive" | null;
+  singleStock: boolean;
+  scoredStatus: "scored" | "reference-only";
+  holdingsStatus: "complete" | "partial" | "unavailable";
+  holdingsSource: string | null;
+  holdingsAsOf: string | null;
+  numberHoldings: number | null;
+  top10Weight: number | null;
+  top25Weight: number | null;
+  largestHolding: string | null;
+  largestHoldingWeight: number | null;
+  dataFreshnessStatus: string;
+  source: string;
+  sourceAsOf: string;
+  sourceRetrievedAt: string;
+}
+
 export interface EtfDirectoryRow {
   ticker: string;
   name: string;
@@ -23,6 +50,7 @@ export interface EtfDirectoryRow {
   local: ResearchRow | null;
   reference: DirectoryEtfReference | null;
   lookthrough: DirectoryLookthroughReference | null;
+  expanded: ExpandedEtfReference | null;
 }
 
 export function buildEtfDirectory(
@@ -30,6 +58,7 @@ export function buildEtfDirectory(
   references: Readonly<Record<string, DirectoryEtfReference>> = {},
   lookthrough: Readonly<Record<string, DirectoryLookthroughReference>> = {},
   descriptions: Readonly<Record<string, string>> = {},
+  expanded: Readonly<Record<string, ExpandedEtfReference>> = {},
 ): EtfDirectoryRow[] {
   const local = new Map(rows.map((row) => [row.ticker, row]));
   const tickers = new Set([
@@ -37,6 +66,7 @@ export function buildEtfDirectory(
     ...Object.keys(references),
     ...Object.keys(lookthrough),
     ...Object.keys(descriptions),
+    ...Object.keys(expanded),
   ]);
 
   return [...tickers]
@@ -51,6 +81,7 @@ export function buildEtfDirectory(
       local: local.get(ticker) ?? null,
       reference: references[ticker] ?? null,
       lookthrough: lookthrough[ticker] ?? null,
+      expanded: expanded[ticker] ?? null,
     }))
     .toSorted((left, right) => left.ticker.localeCompare(right.ticker));
 }

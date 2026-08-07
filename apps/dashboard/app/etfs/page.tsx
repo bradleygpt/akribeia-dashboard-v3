@@ -17,15 +17,15 @@ export default function EtfCenterPage() {
       <ResearchHeader active="etfs" />
       <main id="main-content" tabIndex={-1} className="research-page etf-page">
         <section className="research-route-hero etf-route-hero">
-          <p className="mono-label">ETF CENTER / SCORE + STRUCTURE</p>
+          <p className="mono-label">ETF CENTER / DISCOVERY + STRUCTURE</p>
           <h1>
             See the fund.
             <span> Then see through it.</span>
           </h1>
           <p>
-            Compare the scored ETF cohort, inspect preserved allocation templates, and trace partial
-            top-holdings coverage into the underlying stock research universe. Coverage limits stay
-            attached to every look-through result.
+            Compare scored ETFs with a broad official symbol-directory reference universe, then
+            trace verified holdings into stock and ETF discovery. Reference-only rows never receive
+            synthetic scores, and every holdings limitation stays visible.
           </p>
           <dl>
             <div>
