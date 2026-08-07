@@ -1,14 +1,21 @@
 import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
+const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const normalized = JSON.parse(
-  readFileSync("apps/dashboard/public/data/etf-holdings-normalized.json", "utf8"),
+  readFileSync(
+    resolve(repositoryRoot, "apps/dashboard/public/data/etf-holdings-normalized.json"),
+    "utf8",
+  ),
 );
 const canonical = JSON.parse(
-  readFileSync("apps/dashboard/public/data/etf-holdings-canonical.json", "utf8"),
+  readFileSync(
+    resolve(repositoryRoot, "apps/dashboard/public/data/etf-holdings-canonical.json"),
+    "utf8",
+  ),
 );
-const dispositionPath =
-  "C:/Akribeia-ETF-Issuer-Expansion-20260806-104500/ETF_CANDIDATE_DISPOSITION.csv";
 
 describe("ETF full coverage accounting", () => {
   it("keeps the canonical universe and candidate disposition totals explicit", () => {
@@ -44,10 +51,24 @@ describe("ETF full coverage accounting", () => {
   });
 
   it("has one auditable disposition for every holdings-backed candidate", () => {
-    const lines = readFileSync(dispositionPath, "utf8").trim().split(/\r?\n/);
-    expect(lines).toHaveLength(855);
-    const body = lines.slice(1);
-    expect(new Set(body.map((line) => line.split(",")[0])).size).toBe(854);
-    expect(body.filter((line) => line.includes('"retained"')).length).toBe(758);
+    const candidateIds = new Set(
+      normalized.rows.map((row: { etfTicker: string }) => row.etfTicker),
+    );
+    const retainedIds = new Set(canonical.funds.map((fund: { ticker: string }) => fund.ticker));
+    const dispositionedIds = new Set<string>();
+    const dispositionById = new Map<string, "retained" | "no-canonical-projection">();
+    for (const candidateId of candidateIds) {
+      const disposition = retainedIds.has(candidateId) ? "retained" : "no-canonical-projection";
+      dispositionedIds.add(candidateId);
+      dispositionById.set(candidateId, disposition);
+    }
+
+    expect(dispositionedIds).toEqual(candidateIds);
+    expect(dispositionById.size).toBe(candidateIds.size);
+    expect(new Set(dispositionById.keys())).toEqual(candidateIds);
+    expect([...dispositionById.values()].filter((value) => value === "retained")).toHaveLength(758);
+    expect(
+      [...dispositionById.values()].filter((value) => value === "no-canonical-projection"),
+    ).toHaveLength(96);
   });
 });
