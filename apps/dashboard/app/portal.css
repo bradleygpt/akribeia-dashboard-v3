@@ -382,7 +382,17 @@
 }
 
 @media (max-width: 780px) {
+  .portal-home,
+  .portal-masthead,
+  .portal-intro,
+  .portal-scene,
+  .portal-footer {
+    min-width: 0;
+    max-width: 100%;
+  }
+
   .portal-masthead p {
+    min-width: 0;
     max-width: 9rem;
     font-size: 0.58rem;
     line-height: 1.45;
@@ -392,12 +402,28 @@
   .portal-intro {
     display: grid;
     gap: 1.5rem;
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .portal-intro h1 {
     max-width: 100%;
-    font-size: clamp(2.2rem, 10.5vw, 3.2rem);
+    width: calc(100vw - 2rem);
+    min-width: 0;
+    font-size: clamp(1.9rem, 8vw, 3.2rem);
     line-height: 0.98;
+    overflow-wrap: anywhere;
+  }
+
+  .portal-intro > p {
+    display: block;
+    min-width: 0;
+    max-width: min(16rem, calc(100vw - 5rem)) !important;
+    width: min(16rem, calc(100vw - 5rem)) !important;
+    font-size: 0.82rem;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   .portal-scene {
@@ -407,10 +433,12 @@
 
   .portal-orbit-outer {
     inset: 6% 1% 7%;
+    transform: none;
   }
 
   .portal-orbit-inner {
     inset: 20% 10% 22%;
+    transform: none;
   }
 
   .portal-sun {

@@ -1,4 +1,5 @@
 import { headers } from "next/headers";
+import type { Viewport } from "next";
 import { ExperienceShell } from "./experience-shell";
 import { resolveMetadataProtocol } from "./metadata-origin";
 import "./globals.css";
@@ -6,6 +7,11 @@ import "./globals.css";
 const title = "Akribeia — Quantitative Market Research";
 const description =
   "Market Health and a complete core-research system for screening, comparison, security risk, sector analytics and ETF look-through—backed by visible provenance.";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
 
 export async function generateMetadata() {
   const requestHeaders = await headers();
