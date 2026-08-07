@@ -418,9 +418,9 @@
   .portal-intro > p {
     display: block;
     min-width: 0;
-    max-width: calc(100vw - 2rem) !important;
-    width: calc(100vw - 2rem) !important;
-    font-size: 0.9rem;
+    max-width: min(16rem, calc(100vw - 5rem)) !important;
+    width: min(16rem, calc(100vw - 5rem)) !important;
+    font-size: 0.82rem;
     white-space: normal;
     overflow-wrap: anywhere;
     word-break: break-word;
@@ -438,6 +438,7 @@
 
   .portal-orbit-inner {
     inset: 20% 10% 22%;
+    transform: none;
   }
 
   .portal-sun {
