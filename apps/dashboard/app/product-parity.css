@@ -295,6 +295,48 @@
   margin-top: 1.2rem;
 }
 
+.strategy-roster {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 0.85rem;
+  margin-top: 1.2rem;
+}
+
+.strategy-roster-item {
+  min-width: 0;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  background: var(--paper);
+}
+
+.strategy-roster-item h3 {
+  margin: 0 0 0.2rem;
+  font-size: 1rem;
+}
+
+.strategy-roster-item p {
+  margin: 0 0 0.35rem;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.75;
+}
+
+.strategy-roster-item small {
+  display: block;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  opacity: 0.8;
+}
+
+.strategy-retired-note {
+  margin-top: 0.9rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  opacity: 0.85;
+  max-width: 60rem;
+}
+
 .strategy-definition-grid article,
 .help-route-grid article,
 .help-columns article {
