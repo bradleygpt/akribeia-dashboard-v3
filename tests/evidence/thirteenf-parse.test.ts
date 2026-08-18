@@ -1,11 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
+  detectThirteenFValueUnit,
   instrumentKeyFor,
   instrumentTypeFor,
   normalizeReportedValueUsd,
   parseInfoTableXml,
   parsePrimaryDocXml,
   thirteenFValueUnit,
+  type ParsedInfoTableRow,
 } from "@akribeia/evidence";
 
 const INFO_TABLE_XML = `<?xml version="1.0" encoding="UTF-8"?>
@@ -132,5 +134,43 @@ describe("13F value-unit discipline", () => {
   it("normalizes thousands-era values by exactly 1000", () => {
     expect(normalizeReportedValueUsd(4700, "thousands")).toBe(4700000);
     expect(normalizeReportedValueUsd(915000000, "dollars")).toBe(915000000);
+  });
+
+  const row = (reportedValue: number, shares: number): ParsedInfoTableRow => ({
+    nameOfIssuer: "TEST",
+    titleOfClass: "COM",
+    cusip: "123456789",
+    reportedValue,
+    shares,
+    sharesType: "SH",
+    putCall: null,
+  });
+
+  it("detects legacy thousands reporting after the boundary via implied prices", () => {
+    // A real dollar-reported book: implied prices in normal equity territory.
+    const dollarBook = [row(915000000, 1000000), row(50000000, 250000), row(9000000, 100000)];
+    expect(detectThirteenFValueUnit(dollarBook, "2026-08-14")).toEqual({
+      valueUnit: "dollars",
+      unitDetection: "filing-date-rule",
+    });
+
+    // The same book mis-filed in thousands: implied prices collapse below $2.
+    const thousandsBook = [row(915000, 1000000), row(50000, 250000), row(9000, 100000)];
+    expect(detectThirteenFValueUnit(thousandsBook, "2026-08-14")).toEqual({
+      valueUnit: "thousands",
+      unitDetection: "implied-price-correction",
+    });
+
+    // Pre-boundary filings are thousands by the date rule alone.
+    expect(detectThirteenFValueUnit(dollarBook, "2022-11-14")).toEqual({
+      valueUnit: "thousands",
+      unitDetection: "filing-date-rule",
+    });
+
+    // Too few rows: never guess, keep the date rule.
+    expect(detectThirteenFValueUnit([row(915000, 1000000)], "2026-08-14")).toEqual({
+      valueUnit: "dollars",
+      unitDetection: "filing-date-rule",
+    });
   });
 });

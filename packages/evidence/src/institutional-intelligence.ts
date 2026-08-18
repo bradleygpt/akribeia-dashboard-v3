@@ -14,12 +14,12 @@ import {
   type ThirteenFSourceReceipt,
 } from "@akribeia/contracts";
 import {
+  detectThirteenFValueUnit,
   instrumentKeyFor,
   instrumentTypeFor,
   normalizeReportedValueUsd,
   parseInfoTableXml,
   parsePrimaryDocXml,
-  thirteenFValueUnit,
   type ThirteenFAmendmentType,
 } from "./thirteenf-parse.js";
 
@@ -80,6 +80,7 @@ interface FilingRows {
   filingDate: string;
   amendmentType: ThirteenFAmendmentType;
   valueUnit: "dollars" | "thousands";
+  unitDetection: "filing-date-rule" | "implied-price-correction";
   positions: Map<string, InstitutionalPosition>;
 }
 
@@ -241,7 +242,10 @@ export async function generateInstitutionalIntelligence(
     const infoTableXml = await readFile(resolve(infoTable.path), "utf8");
     const parsedTable = parseInfoTableXml(infoTableXml);
     coverage.positionRowsParsed += parsedTable.rows.length;
-    const valueUnit = thirteenFValueUnit(filing.filingDate);
+    const { valueUnit, unitDetection } = detectThirteenFValueUnit(
+      parsedTable.rows,
+      filing.filingDate,
+    );
 
     const positions = new Map<string, InstitutionalPosition>();
     for (const row of parsedTable.rows) {
@@ -293,6 +297,7 @@ export async function generateInstitutionalIntelligence(
       filingDate: filing.filingDate,
       amendmentType: parsedPrimary.amendmentType,
       valueUnit,
+      unitDetection,
       positions,
     });
     byPeriod.set(filing.periodOfReport, periodFilings);
@@ -347,6 +352,7 @@ export async function generateInstitutionalIntelligence(
             filingDate: filing.filingDate,
             amendmentType: filing.amendmentType,
             valueUnit: filing.valueUnit,
+            unitDetection: filing.unitDetection,
             reportedPositionRows: filing.positions.size,
             contributesToEffectiveSet: effective.contributing.has(filing.accessionNumber),
           })),
@@ -553,7 +559,7 @@ export async function generateInstitutionalIntelligence(
       snapshotId: receipt.snapshotId,
     },
     valueUnitPolicy:
-      "filing-date-2023-01-03-boundary: filings dated on/after 2023-01-03 report whole dollars; earlier filings report thousands and are normalized by 1000",
+      "filing-date-2023-01-03-boundary with implied-price correction: filings dated on/after 2023-01-03 report whole dollars unless the filing's median implied price shows legacy thousands reporting, which is corrected by 1000 and flagged; earlier filings report thousands and are normalized by 1000",
     reportingLagPolicy:
       "13F filings are due up to 45 days after quarter end and describe quarter-end long positions only; they are never current positioning",
     displayCaps: { ...INSTITUTIONAL_DISPLAY_CAPS },

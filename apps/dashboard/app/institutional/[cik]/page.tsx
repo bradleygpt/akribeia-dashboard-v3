@@ -264,7 +264,12 @@ export default async function InstitutionalManagerPage({ params }: PageProps) {
                       <td className="institutional-category">
                         {filing.amendmentType === "NOT-AN-AMENDMENT" ? "—" : filing.amendmentType}
                       </td>
-                      <td className="institutional-category">{filing.valueUnit}</td>
+                      <td className="institutional-category">
+                        {filing.valueUnit}
+                        {filing.unitDetection === "implied-price-correction" ? (
+                          <span className="state-chip state-chip-warn">corrected ×1000</span>
+                        ) : null}
+                      </td>
                       <td>{filing.contributesToEffectiveSet ? "yes" : "superseded"}</td>
                     </tr>
                   )),

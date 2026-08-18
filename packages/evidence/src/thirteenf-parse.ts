@@ -151,6 +151,44 @@ export function normalizeReportedValueUsd(reportedValue: number, unit: "dollars"
   return unit === "dollars" ? reportedValue : reportedValue * 1000;
 }
 
+// Some filers still submit thousands-rounded values after the 2023 boundary
+// (observed live: books whose implied per-share prices cluster near real
+// prices divided by 1000). A dollar-reported book has a median implied price
+// in ordinary equity-price territory; a thousands-reported book sits far
+// below it. The correction is deterministic, one-directional (it only ever
+// multiplies), and is recorded on the filing record wherever it fires.
+export const THIRTEENF_IMPLIED_PRICE_FLOOR_USD = 2;
+const IMPLIED_PRICE_MINIMUM_ROWS = 3;
+
+export interface ThirteenFUnitDecision {
+  valueUnit: "dollars" | "thousands";
+  unitDetection: "filing-date-rule" | "implied-price-correction";
+}
+
+export function detectThirteenFValueUnit(
+  rows: readonly ParsedInfoTableRow[],
+  filingDate: string,
+): ThirteenFUnitDecision {
+  const dateRuleUnit = thirteenFValueUnit(filingDate);
+  if (dateRuleUnit === "thousands") {
+    return { valueUnit: "thousands", unitDetection: "filing-date-rule" };
+  }
+
+  const impliedPrices = rows
+    .filter((row) => row.sharesType === "SH" && row.shares > 0 && row.reportedValue > 0)
+    .map((row) => row.reportedValue / row.shares)
+    .sort((left, right) => left - right);
+  if (impliedPrices.length < IMPLIED_PRICE_MINIMUM_ROWS) {
+    return { valueUnit: "dollars", unitDetection: "filing-date-rule" };
+  }
+
+  const median = impliedPrices[Math.floor(impliedPrices.length / 2)];
+  if (median < THIRTEENF_IMPLIED_PRICE_FLOOR_USD) {
+    return { valueUnit: "thousands", unitDetection: "implied-price-correction" };
+  }
+  return { valueUnit: "dollars", unitDetection: "filing-date-rule" };
+}
+
 export function instrumentKeyFor(row: ParsedInfoTableRow): string {
   const instrument = row.putCall === null ? (row.sharesType === "SH" ? "shares" : "principal") : row.putCall.toLowerCase();
   return `${row.cusip}:${instrument}`;
