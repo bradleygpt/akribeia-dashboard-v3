@@ -36,7 +36,11 @@
     "filing-availability:generate": "npm run typecheck && node packages/evidence/dist/filing-availability-cli.js",
     "validate": "npm run typecheck && npm run lint && npm run build && npm run test:ci",
     "ci": "npm run format:check && npm run validate",
-    "security:audit": "node scripts/security-audit.mjs"
+    "security:audit": "node scripts/security-audit.mjs",
+    "thirteenf:fetch": "npm run typecheck && node packages/evidence/dist/thirteenf-source-cli.js",
+    "institutional:generate": "npm run typecheck && node packages/evidence/dist/institutional-cli.js",
+    "alpha-decay:collect": "npm run typecheck && node packages/evidence/dist/alpha-decay-cli.js capture-and-report",
+    "alpha-decay:report": "npm run typecheck && node packages/evidence/dist/alpha-decay-cli.js report-only"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
