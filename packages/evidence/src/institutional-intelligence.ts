@@ -40,7 +40,10 @@ function normalizeIssuerName(name: string): string {
   return name
     .toUpperCase()
     .replace(/[^A-Z0-9]+/g, " ")
-    .replace(/\b(INC|CORP|CORPORATION|CO|COMPANY|PLC|LTD|LP|LLC|SA|NV|HOLDINGS|HLDGS|GROUP|GRP|TRUST|THE|NEW|DEL|COM)\b/g, " ")
+    .replace(
+      /\b(INC|CORP|CORPORATION|CO|COMPANY|PLC|LTD|LP|LLC|SA|NV|HOLDINGS|HLDGS|GROUP|GRP|TRUST|THE|NEW|DEL|COM)\b/g,
+      " ",
+    )
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -231,7 +234,9 @@ export async function generateInstitutionalIntelligence(
         `13F filing ${filing.accessionNumber} period mismatch between receipt and primary document.`,
       );
     }
-    const filerNameMatch = /<(?:[A-Za-z0-9]+:)?name>([^<]+)<\/(?:[A-Za-z0-9]+:)?name>/.exec(primaryXml);
+    const filerNameMatch = /<(?:[A-Za-z0-9]+:)?name>([^<]+)<\/(?:[A-Za-z0-9]+:)?name>/.exec(
+      primaryXml,
+    );
     if (filerNameMatch !== null && !filerNames.has(filing.cik)) {
       filerNames.set(filing.cik, filerNameMatch[1].trim());
     }
@@ -310,7 +315,10 @@ export async function generateInstitutionalIntelligence(
     { period: string; positions: Map<string, InstitutionalPosition>; totalValueUsd: number }
   >();
   const latestDeltaByManagerInstrument = new Map<string, Map<string, InstitutionalDelta>>();
-  const managerDeltaStates = new Map<string, "computed" | "insufficient-history" | "indeterminate-amendment">();
+  const managerDeltaStates = new Map<
+    string,
+    "computed" | "insufficient-history" | "indeterminate-amendment"
+  >();
 
   for (const managerConfig of [...directory.managers].sort((left, right) =>
     left.name.localeCompare(right.name),
@@ -394,8 +402,10 @@ export async function generateInstitutionalIntelligence(
           totalEntryCount: 0,
         };
       } else {
-        const prior = effectiveByPeriod.get(fromPeriodRecord.periodOfReport)?.positions ?? new Map();
-        const current = effectiveByPeriod.get(toPeriodRecord.periodOfReport)?.positions ?? new Map();
+        const prior =
+          effectiveByPeriod.get(fromPeriodRecord.periodOfReport)?.positions ?? new Map();
+        const current =
+          effectiveByPeriod.get(toPeriodRecord.periodOfReport)?.positions ?? new Map();
         const keys = [...new Set([...prior.keys(), ...current.keys()])].sort((left, right) =>
           left.localeCompare(right),
         );
@@ -437,8 +447,13 @@ export async function generateInstitutionalIntelligence(
           .filter(({ classification }) => classification !== "UNCHANGED")
           .sort((left, right) => {
             const leftMagnitude = Math.abs((left.currentValueUsd ?? 0) - (left.priorValueUsd ?? 0));
-            const rightMagnitude = Math.abs((right.currentValueUsd ?? 0) - (right.priorValueUsd ?? 0));
-            return rightMagnitude - leftMagnitude || left.instrumentKey.localeCompare(right.instrumentKey);
+            const rightMagnitude = Math.abs(
+              (right.currentValueUsd ?? 0) - (right.priorValueUsd ?? 0),
+            );
+            return (
+              rightMagnitude - leftMagnitude ||
+              left.instrumentKey.localeCompare(right.instrumentKey)
+            );
           })
           .slice(0, INSTITUTIONAL_DISPLAY_CAPS.deltasPerManager);
 
@@ -572,7 +587,8 @@ export async function generateInstitutionalIntelligence(
       positionRowsParsed: coverage.positionRowsParsed,
       uniqueInstruments: instrumentIdentity.size,
       resolvedInstruments: identityStatuses.filter(({ status }) => status === "resolved").length,
-      unresolvedInstruments: identityStatuses.filter(({ status }) => status === "unresolved").length,
+      unresolvedInstruments: identityStatuses.filter(({ status }) => status === "unresolved")
+        .length,
       excludedContaminatedInstruments: identityStatuses.filter(
         ({ status }) => status === "excluded-contaminated",
       ).length,

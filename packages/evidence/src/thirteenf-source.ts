@@ -108,13 +108,12 @@ export function selectThirteenFFilings(
     }
   }
 
-  return selected
-    .sort(
-      (left, right) =>
-        left.reportDate.localeCompare(right.reportDate) ||
-        left.filingDate.localeCompare(right.filingDate) ||
-        left.accessionNumber.localeCompare(right.accessionNumber),
-    );
+  return selected.sort(
+    (left, right) =>
+      left.reportDate.localeCompare(right.reportDate) ||
+      left.filingDate.localeCompare(right.filingDate) ||
+      left.accessionNumber.localeCompare(right.accessionNumber),
+  );
 }
 
 interface EdgarIndexItem {
@@ -140,8 +139,10 @@ function pickInformationTable(items: EdgarIndexItem[], primaryDocument: string):
   const candidates = named.length > 0 ? named : xmlItems;
   return candidates
     .slice()
-    .sort((left, right) => Number(right.size) - Number(left.size) || left.name.localeCompare(right.name))[0]
-    .name;
+    .sort(
+      (left, right) =>
+        Number(right.size) - Number(left.size) || left.name.localeCompare(right.name),
+    )[0].name;
 }
 
 export async function captureThirteenFSources(

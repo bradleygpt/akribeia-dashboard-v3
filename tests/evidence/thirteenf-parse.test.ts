@@ -81,9 +81,9 @@ describe("13F information table parsing", () => {
     expect(() => parseInfoTableXml("<informationTable></informationTable>")).toThrow(
       /no infoTable entries/,
     );
-    expect(() =>
-      parseInfoTableXml(INFO_TABLE_XML.replace("037833100", "BAD")),
-    ).toThrow(/malformed CUSIP/);
+    expect(() => parseInfoTableXml(INFO_TABLE_XML.replace("037833100", "BAD"))).toThrow(
+      /malformed CUSIP/,
+    );
   });
 });
 

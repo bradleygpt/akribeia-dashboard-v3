@@ -161,8 +161,8 @@ export default async function InstitutionalManagerPage({ params }: PageProps) {
           {manager.deltas === null ? (
             <p className="institutional-empty-inline">
               Only one reporting period has been captured for this manager, so no
-              quarter-over-quarter change ledger exists yet. It will populate with the next
-              captured quarter.
+              quarter-over-quarter change ledger exists yet. It will populate with the next captured
+              quarter.
             </p>
           ) : manager.deltas.state === "indeterminate-amendment" ? (
             <p className="institutional-empty-inline">
@@ -208,7 +208,10 @@ export default async function InstitutionalManagerPage({ params }: PageProps) {
                             entry.nameOfIssuer
                           )}
                           {entry.instrumentType !== "shares" ? (
-                            <span className="institutional-category"> ({entry.instrumentType})</span>
+                            <span className="institutional-category">
+                              {" "}
+                              ({entry.instrumentType})
+                            </span>
                           ) : null}
                         </td>
                         <td>
@@ -219,7 +222,9 @@ export default async function InstitutionalManagerPage({ params }: PageProps) {
                         <td className="numeric">{formatShares(entry.priorShares)}</td>
                         <td className="numeric">{formatShares(entry.currentShares)}</td>
                         <td className="numeric">
-                          {entry.shareChange === null ? "—" : formatShares(Math.abs(entry.shareChange))}
+                          {entry.shareChange === null
+                            ? "—"
+                            : formatShares(Math.abs(entry.shareChange))}
                           {entry.shareChange !== null && entry.shareChange < 0 ? " sold" : ""}
                         </td>
                         <td className="numeric">

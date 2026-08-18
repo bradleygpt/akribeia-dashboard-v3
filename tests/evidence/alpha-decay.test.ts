@@ -213,7 +213,9 @@ describe("alpha decay report", () => {
 
     const horizon5 = report.horizons.find(({ horizonTradingDays }) => horizonTradingDays === 5);
     expect(horizon5?.state).toBe("computed");
-    expect(horizon5?.vintagesUsed).toBeGreaterThanOrEqual(ALPHA_DECAY_POLICY.minVintagesForDecayCurve);
+    expect(horizon5?.vintagesUsed).toBeGreaterThanOrEqual(
+      ALPHA_DECAY_POLICY.minVintagesForDecayCurve,
+    );
     expect(horizon5?.meanRankIc).toBeGreaterThan(0.9);
     expect(horizon5?.hitRate).toBeGreaterThan(0.9);
     expect(horizon5?.topMinusBottomQuintileSpread).toBeGreaterThan(0);

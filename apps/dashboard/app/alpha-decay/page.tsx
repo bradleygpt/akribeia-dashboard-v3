@@ -144,9 +144,7 @@ export default function AlphaDecayPage() {
             {report.halfLife.state === "computed" ? (
               <strong>{report.halfLife.halfLifeTradingDays?.toFixed(0)} trading days</strong>
             ) : report.halfLife.state === "not-well-defined" ? (
-              <strong className="alpha-decay-muted">
-                not well-defined for the observed curve
-              </strong>
+              <strong className="alpha-decay-muted">not well-defined for the observed curve</strong>
             ) : (
               <strong className="alpha-decay-muted">insufficient history</strong>
             )}
@@ -199,23 +197,23 @@ export default function AlphaDecayPage() {
           <h2 className="institutional-section-title">Methodology, stated up front</h2>
           <ul>
             <li>
-              Vintages are captured from the checksum-verified active build and written
-              write-once; corrections are additive, never rewrites.
+              Vintages are captured from the checksum-verified active build and written write-once;
+              corrections are additive, never rewrites.
             </li>
             <li>
               Statistics are Spearman rank ICs between vintage ranks and forward returns computed
-              from the vintages’ own receipted prices; a name missing its forward window is
-              excluded and counted, never zero-filled.
+              from the vintages’ own receipted prices; a name missing its forward window is excluded
+              and counted, never zero-filled.
             </li>
             <li>
               Pre-registered minimums: {report.policy.minVintagesForDecayCurve} vintages per decay
-              horizon, {report.policy.minVintagesForPersistence} adjacent pairs for persistence,
-              {" "}{report.policy.minCrossSectionPerCohort} names per cohort cross-section. Below a
+              horizon, {report.policy.minVintagesForPersistence} adjacent pairs for persistence,{" "}
+              {report.policy.minCrossSectionPerCohort} names per cohort cross-section. Below a
               minimum the surface says so instead of estimating.
             </li>
             <li>
-              Nothing here is a performance track record, and no historical reconstruction is
-              shown: if the contemporaneous history does not exist, the lab fails closed.
+              Nothing here is a performance track record, and no historical reconstruction is shown:
+              if the contemporaneous history does not exist, the lab fails closed.
             </li>
           </ul>
         </section>

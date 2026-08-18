@@ -23,12 +23,7 @@ type ManagerSort =
   | "concentration-desc";
 
 type RollupSort =
-  | "ticker-asc"
-  | "ticker-desc"
-  | "holders-asc"
-  | "holders-desc"
-  | "value-asc"
-  | "value-desc";
+  "ticker-asc" | "ticker-desc" | "holders-asc" | "holders-desc" | "value-asc" | "value-desc";
 
 function SortHeader<Sort extends string>({
   column,
@@ -157,7 +152,12 @@ export function InstitutionalWorkbench() {
           <table className="research-table institutional-table">
             <thead>
               <tr>
-                <SortHeader column="name" label="Manager" sort={managerSort} onSort={setManagerSort} />
+                <SortHeader
+                  column="name"
+                  label="Manager"
+                  sort={managerSort}
+                  onSort={setManagerSort}
+                />
                 <th scope="col">Category</th>
                 <th scope="col">Period / filed</th>
                 <SortHeader
@@ -185,7 +185,10 @@ export function InstitutionalWorkbench() {
               {managers.map(({ manager, period, filingDate, concentration }) => (
                 <tr key={manager.cik}>
                   <td>
-                    <a href={`/institutional/${manager.cik}`} className="institutional-manager-link">
+                    <a
+                      href={`/institutional/${manager.cik}`}
+                      className="institutional-manager-link"
+                    >
                       {manager.name}
                     </a>
                     {period?.effectiveState === "indeterminate-amendment" ? (
@@ -233,9 +236,19 @@ export function InstitutionalWorkbench() {
           <table className="research-table institutional-table">
             <thead>
               <tr>
-                <SortHeader column="ticker" label="Ticker" sort={rollupSort} onSort={setRollupSort} />
+                <SortHeader
+                  column="ticker"
+                  label="Ticker"
+                  sort={rollupSort}
+                  onSort={setRollupSort}
+                />
                 <th scope="col">Registrant</th>
-                <SortHeader column="holders" label="Holders" sort={rollupSort} onSort={setRollupSort} />
+                <SortHeader
+                  column="holders"
+                  label="Holders"
+                  sort={rollupSort}
+                  onSort={setRollupSort}
+                />
                 <SortHeader
                   column="value"
                   label="Aggregate value"
@@ -257,8 +270,11 @@ export function InstitutionalWorkbench() {
                   <td className="numeric">{rollup.holderCount}</td>
                   <td className="numeric">{formatUsdCompact(rollup.aggregateValueUsd)}</td>
                   <td className="institutional-shifts">
-                    {rollup.directionOfTravel.added > 0 ? `+${rollup.directionOfTravel.added} new · ` : ""}
-                    {rollup.directionOfTravel.increased} up · {rollup.directionOfTravel.reduced} down
+                    {rollup.directionOfTravel.added > 0
+                      ? `+${rollup.directionOfTravel.added} new · `
+                      : ""}
+                    {rollup.directionOfTravel.increased} up · {rollup.directionOfTravel.reduced}{" "}
+                    down
                     {rollup.directionOfTravel.exited > 0
                       ? ` · ${rollup.directionOfTravel.exited} exits`
                       : ""}

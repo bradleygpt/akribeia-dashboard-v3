@@ -164,7 +164,9 @@ export async function loadAlphaDecayVintages(vintagesRoot: string): Promise<Alph
     throw error;
   }
   const vintages: AlphaDecayVintage[] = [];
-  for (const name of names.filter((candidate) => /^\d{4}-\d{2}-\d{2}\.json$/.test(candidate)).sort()) {
+  for (const name of names
+    .filter((candidate) => /^\d{4}-\d{2}-\d{2}\.json$/.test(candidate))
+    .sort()) {
     const vintage = AlphaDecayVintageSchema.parse(
       JSON.parse(await readFile(join(resolve(vintagesRoot), name), "utf8")),
     );
@@ -297,8 +299,10 @@ export async function generateAlphaDecayReport(
     for (const fromVintage of vintages) {
       const match = dates.find((candidate) => {
         const distance = calendarDaysBetween(fromVintage.observationDate, candidate);
-        return distance >= targetCalendarDays - CALENDAR_TOLERANCE_DAYS &&
-          distance <= targetCalendarDays + CALENDAR_TOLERANCE_DAYS;
+        return (
+          distance >= targetCalendarDays - CALENDAR_TOLERANCE_DAYS &&
+          distance <= targetCalendarDays + CALENDAR_TOLERANCE_DAYS
+        );
       });
       if (match === undefined) {
         excluded += 1;

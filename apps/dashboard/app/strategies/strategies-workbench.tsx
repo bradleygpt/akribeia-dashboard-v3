@@ -239,29 +239,29 @@ export function StrategiesWorkbench() {
             {Object.entries(definitions)
               .filter(([name]) => !isRetiredStrategyName(name))
               .map(([name, definition]) => {
-              const strategy = strategies.find((candidate) => string(candidate.label) === name);
-              const bookType = string(strategy?.book_type);
-              return (
-                <article key={name}>
-                  <header>
-                    <div>
-                      <p>{strategyFactorLabel(name) ?? "Source-defined strategy"}</p>
-                      <h3>{name}</h3>
-                    </div>
-                    <span data-book={bookType ?? "unavailable"}>{bookType ?? "unavailable"}</span>
-                  </header>
-                  <p>{definition.thesis ?? "Definition unavailable in the approved source."}</p>
-                  <details>
-                    <summary>Show dated AI rationale</summary>
-                    <p>{definition.rationale ?? "Rationale unavailable."}</p>
-                    <small>
-                      Source model: {string(rationalePayload?.model) ?? "Unavailable"}. This dated
-                      narrative is not a recommendation.
-                    </small>
-                  </details>
-                </article>
-              );
-            })}
+                const strategy = strategies.find((candidate) => string(candidate.label) === name);
+                const bookType = string(strategy?.book_type);
+                return (
+                  <article key={name}>
+                    <header>
+                      <div>
+                        <p>{strategyFactorLabel(name) ?? "Source-defined strategy"}</p>
+                        <h3>{name}</h3>
+                      </div>
+                      <span data-book={bookType ?? "unavailable"}>{bookType ?? "unavailable"}</span>
+                    </header>
+                    <p>{definition.thesis ?? "Definition unavailable in the approved source."}</p>
+                    <details>
+                      <summary>Show dated AI rationale</summary>
+                      <p>{definition.rationale ?? "Rationale unavailable."}</p>
+                      <small>
+                        Source model: {string(rationalePayload?.model) ?? "Unavailable"}. This dated
+                        narrative is not a recommendation.
+                      </small>
+                    </details>
+                  </article>
+                );
+              })}
           </div>
         ) : (
           <p className="parity-unavailable">

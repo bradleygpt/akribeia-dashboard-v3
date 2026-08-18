@@ -77,7 +77,9 @@ describe("governed security exclusions", () => {
     expect(canonical.coverage.equitiesCovered + canonical.coverage.equitiesUncovered).toBe(1290);
     // Every fund that held MCW retains its listing through its other holdings.
     expect(canonical.coverage.retainedEtfs).toBe(canonical.funds.length);
-    const coveredTickers = new Set(canonical.rows.map(({ constituentTicker }) => constituentTicker));
+    const coveredTickers = new Set(
+      canonical.rows.map(({ constituentTicker }) => constituentTicker),
+    );
     expect(canonical.coverage.equitiesCovered).toBe(coveredTickers.size);
   });
 

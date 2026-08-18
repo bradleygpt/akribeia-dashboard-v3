@@ -14,9 +14,9 @@ function decodeXmlText(value: string): string {
 
 function tagText(source: string, tag: string): string | null {
   // Namespace-prefixed and plain tags both appear in EDGAR 13F documents.
-  const match = new RegExp(`<(?:[A-Za-z0-9]+:)?${tag}(?:\\s[^>]*)?>([\\s\\S]*?)</(?:[A-Za-z0-9]+:)?${tag}>`).exec(
-    source,
-  );
+  const match = new RegExp(
+    `<(?:[A-Za-z0-9]+:)?${tag}(?:\\s[^>]*)?>([\\s\\S]*?)</(?:[A-Za-z0-9]+:)?${tag}>`,
+  ).exec(source);
   return match === null ? null : decodeXmlText(match[1].trim());
 }
 
@@ -46,7 +46,9 @@ function parseRequiredNumber(raw: string | null, field: string, entry: string): 
 }
 
 export function parseInfoTableXml(xml: string): ParsedInfoTable {
-  const entries = xml.match(/<(?:[A-Za-z0-9]+:)?infoTable(?:\s[^>]*)?>[\s\S]*?<\/(?:[A-Za-z0-9]+:)?infoTable>/g);
+  const entries = xml.match(
+    /<(?:[A-Za-z0-9]+:)?infoTable(?:\s[^>]*)?>[\s\S]*?<\/(?:[A-Za-z0-9]+:)?infoTable>/g,
+  );
   if (entries === null) {
     throw new Error("13F information table XML contains no infoTable entries.");
   }
@@ -57,7 +59,9 @@ export function parseInfoTableXml(xml: string): ParsedInfoTable {
     const cusipRaw = tagText(entry, "cusip");
     const cusip = cusipRaw === null ? null : cusipRaw.toUpperCase();
     if (nameOfIssuer === null || titleOfClass === null || cusip === null) {
-      throw new Error(`13F information table entry is missing identity fields: ${entry.slice(0, 200)}`);
+      throw new Error(
+        `13F information table entry is missing identity fields: ${entry.slice(0, 200)}`,
+      );
     }
     if (!/^[0-9A-Z]{9}$/.test(cusip)) {
       throw new Error(`13F information table entry has a malformed CUSIP "${cusip}".`);
@@ -67,7 +71,9 @@ export function parseInfoTableXml(xml: string): ParsedInfoTable {
     const sharesType: "SH" | "PRN" | null =
       sharesTypeRaw === "SH" || sharesTypeRaw === "PRN" ? sharesTypeRaw : null;
     if (sharesType === null) {
-      throw new Error(`13F information table entry has an unknown sshPrnamtType "${sharesTypeRaw}".`);
+      throw new Error(
+        `13F information table entry has an unknown sshPrnamtType "${sharesTypeRaw}".`,
+      );
     }
 
     const putCallRaw = tagText(entry, "putCall");
@@ -91,7 +97,8 @@ export function parseInfoTableXml(xml: string): ParsedInfoTable {
   return { rows };
 }
 
-export type ThirteenFAmendmentType = "RESTATEMENT" | "NEW HOLDINGS" | "NOT-AN-AMENDMENT" | "UNSTATED";
+export type ThirteenFAmendmentType =
+  "RESTATEMENT" | "NEW HOLDINGS" | "NOT-AN-AMENDMENT" | "UNSTATED";
 
 export interface ParsedPrimaryDoc {
   periodOfReport: string;
@@ -147,7 +154,10 @@ export function thirteenFValueUnit(filingDate: string): "dollars" | "thousands" 
   return filingDate >= THIRTEENF_DOLLAR_UNIT_BOUNDARY_FILING_DATE ? "dollars" : "thousands";
 }
 
-export function normalizeReportedValueUsd(reportedValue: number, unit: "dollars" | "thousands"): number {
+export function normalizeReportedValueUsd(
+  reportedValue: number,
+  unit: "dollars" | "thousands",
+): number {
   return unit === "dollars" ? reportedValue : reportedValue * 1000;
 }
 
@@ -190,11 +200,18 @@ export function detectThirteenFValueUnit(
 }
 
 export function instrumentKeyFor(row: ParsedInfoTableRow): string {
-  const instrument = row.putCall === null ? (row.sharesType === "SH" ? "shares" : "principal") : row.putCall.toLowerCase();
+  const instrument =
+    row.putCall === null
+      ? row.sharesType === "SH"
+        ? "shares"
+        : "principal"
+      : row.putCall.toLowerCase();
   return `${row.cusip}:${instrument}`;
 }
 
-export function instrumentTypeFor(row: ParsedInfoTableRow): "shares" | "principal" | "put" | "call" {
+export function instrumentTypeFor(
+  row: ParsedInfoTableRow,
+): "shares" | "principal" | "put" | "call" {
   if (row.putCall === "Put") return "put";
   if (row.putCall === "Call") return "call";
   return row.sharesType === "SH" ? "shares" : "principal";

@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
@@ -125,7 +125,9 @@ describe("institutional intelligence generation", () => {
     return createHash("sha256").update(payload).digest("hex");
   }
 
-  function infoTableXml(rows: Array<{ issuer: string; cusip: string; value: number; shares: number }>): string {
+  function infoTableXml(
+    rows: Array<{ issuer: string; cusip: string; value: number; shares: number }>,
+  ): string {
     const body = rows
       .map(
         (row) => `<infoTable>

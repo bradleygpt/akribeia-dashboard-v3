@@ -128,19 +128,19 @@ export function loadV2Universe(): V2Universe {
   const rows = payload.rows
     .filter((row) => !isExcludedSecurityTicker(row.ticker))
     .map<UniverseDisplayRow>((row) => ({
-    ticker: row.ticker,
-    name: row.name ?? row.ticker,
-    sector: row.sector?.trim() || "Unclassified",
-    industry: row.industry?.trim() || "Unclassified",
-    marketCapB: row.marketCapB,
-    composite: row.byPreset.equal?.c ?? null,
-    rating: row.byPreset.equal?.r ?? "Unavailable",
-    isEtf: row.sector === "ETF",
-    momentum1m: row.raw.momentum_1m ?? null,
-    momentum3m: row.raw.momentum_3m ?? null,
-    above50Sma: row.raw.momentum_vs_sma50 ?? null,
-    above200Sma: row.raw.momentum_vs_sma200 ?? null,
-  }));
+      ticker: row.ticker,
+      name: row.name ?? row.ticker,
+      sector: row.sector?.trim() || "Unclassified",
+      industry: row.industry?.trim() || "Unclassified",
+      marketCapB: row.marketCapB,
+      composite: row.byPreset.equal?.c ?? null,
+      rating: row.byPreset.equal?.r ?? "Unavailable",
+      isEtf: row.sector === "ETF",
+      momentum1m: row.raw.momentum_1m ?? null,
+      momentum3m: row.raw.momentum_3m ?? null,
+      above50Sma: row.raw.momentum_vs_sma50 ?? null,
+      above200Sma: row.raw.momentum_vs_sma200 ?? null,
+    }));
 
   return {
     rows,
