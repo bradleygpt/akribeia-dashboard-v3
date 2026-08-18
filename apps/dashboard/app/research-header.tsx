@@ -10,6 +10,8 @@ export function ResearchHeader({
     | "macro"
     | "strategies"
     | "portfolio"
+    | "institutional"
+    | "alpha-decay"
     | "help";
 }) {
   return (
@@ -53,6 +55,12 @@ export function ResearchHeader({
           </a>
           <a href="/portfolio" aria-current={active === "portfolio" ? "page" : undefined}>
             Portfolio
+          </a>
+          <a href="/institutional" aria-current={active === "institutional" ? "page" : undefined}>
+            13F
+          </a>
+          <a href="/alpha-decay" aria-current={active === "alpha-decay" ? "page" : undefined}>
+            Alpha Decay
           </a>
           <a href="/help" aria-current={active === "help" ? "page" : undefined}>
             Help

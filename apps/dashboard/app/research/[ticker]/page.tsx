@@ -5,6 +5,7 @@ import { formatMarketCap, formatMoney, formatPercent, formatRatio } from "../../
 import { SecurityLivePanel } from "./security-live-panel";
 import { SecurityRadar } from "./security-radar";
 import { SecurityDeepReference } from "./security-deep-reference";
+import { SecurityInstitutional } from "./security-institutional";
 import EtfDetailPage from "../../etfs/[ticker]/page";
 
 interface PageProps {
@@ -217,6 +218,8 @@ export default async function SecurityDetailPage({ params }: PageProps) {
           snapshotAsOf={universe.source.publishedAt.slice(0, 10)}
         />
         <SecurityDeepReference ticker={security.ticker} />
+
+        <SecurityInstitutional ticker={security.ticker} />
 
         <section className="security-factors" aria-labelledby="factor-heading">
           <div className="security-section-heading">
