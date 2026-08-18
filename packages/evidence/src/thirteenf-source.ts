@@ -78,29 +78,37 @@ export function selectThirteenFFilings(
     if (form !== "13F-HR" && form !== "13F-HR/A") {
       continue;
     }
-    const reportDate = recent.reportDate[index];
-    if (reportDate === "") {
-      throw new Error(
-        `13F filing ${recent.accessionNumber[index]} for CIK ${history.cik} has no reportDate.`,
-      );
-    }
+    // Submissions metadata often points at the XSL-rendered view
+    // (e.g. "xslForm13F_X02/primary_doc.xml"); the raw XML lives at the
+    // accession root under the final path segment.
     rows.push({
       cik: history.cik,
       accessionNumber: recent.accessionNumber[index],
       form,
       filingDate: recent.filingDate[index],
-      reportDate,
-      primaryDocument: recent.primaryDocument[index],
+      reportDate: recent.reportDate[index],
+      primaryDocument: recent.primaryDocument[index].split("/").at(-1) ?? "",
     });
   }
 
   const selectedPeriods = [...new Set(rows.map(({ reportDate }) => reportDate))]
+    .filter((reportDate) => reportDate !== "")
     .sort((left, right) => right.localeCompare(left))
     .slice(0, periodsPerManager);
   const selectedPeriodSet = new Set(selectedPeriods);
 
-  return rows
-    .filter(({ reportDate }) => selectedPeriodSet.has(reportDate))
+  const selected = rows.filter(({ reportDate }) => selectedPeriodSet.has(reportDate));
+  for (const filing of selected) {
+    // Pre-XML-era rows can miss these fields; the selected recent periods
+    // must not.
+    if (filing.primaryDocument.length === 0) {
+      throw new Error(
+        `13F filing ${filing.accessionNumber} for CIK ${history.cik} has no primary document.`,
+      );
+    }
+  }
+
+  return selected
     .sort(
       (left, right) =>
         left.reportDate.localeCompare(right.reportDate) ||

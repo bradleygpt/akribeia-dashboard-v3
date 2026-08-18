@@ -1,0 +1,974 @@
+{
+  "receiptSchemaVersion": "1.0.0",
+  "snapshotId": "2026-08-18",
+  "retrievedAt": "2026-08-18T15:21:05.232Z",
+  "sourcePolicy": {
+    "provider": "U.S. Securities and Exchange Commission",
+    "api": "EDGAR Archives",
+    "access": "public-no-api-key",
+    "declaredUserAgent": true,
+    "maxRequestsPerSecond": 10
+  },
+  "filings": [
+    {
+      "cik": "0000921669",
+      "accessionNumber": "0001539497-26-001469",
+      "form": "13F-HR",
+      "filingDate": "2026-05-15",
+      "periodOfReport": "2026-03-31",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/921669/000153949726001469/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0000921669/0001539497-26-001469/index.json",
+          "sha256": "450ac20f04c7814438fdb287658a9ccbc1ba2ccebbf37f13d0bf0455b7154eb3",
+          "byteSize": 657
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/921669/000153949726001469/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0000921669/0001539497-26-001469/primary_doc.xml",
+          "sha256": "9ded7627ad38457c1714b3ca87a225e69a99885a109dd363276994e41d2fe32b",
+          "byteSize": 4835
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/921669/000153949726001469/infotable.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0000921669/0001539497-26-001469/infotable.xml",
+          "sha256": "50c6b184b86a81c2f93710efa4693c8b06e1deb24bbee7a51c8de85b8ee4b426",
+          "byteSize": 9488
+        }
+      ]
+    },
+    {
+      "cik": "0000921669",
+      "accessionNumber": "0001539497-26-002243",
+      "form": "13F-HR",
+      "filingDate": "2026-08-14",
+      "periodOfReport": "2026-06-30",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/921669/000153949726002243/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0000921669/0001539497-26-002243/index.json",
+          "sha256": "ddeaef6752af3dbe19371661d13675adf237938adcd6f049ed6c62baf5532e11",
+          "byteSize": 657
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/921669/000153949726002243/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0000921669/0001539497-26-002243/primary_doc.xml",
+          "sha256": "9a4c488ebdf5f1927dfd515cb3946bda675ac3c6842ab2bd930f680e7a8bae53",
+          "byteSize": 4788
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/921669/000153949726002243/infotable.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0000921669/0001539497-26-002243/infotable.xml",
+          "sha256": "a951df721137a772e1e800ce3cae5281649bb47fd3b00f5a1bf45cebd73a4c94",
+          "byteSize": 9485
+        }
+      ]
+    },
+    {
+      "cik": "0001029160",
+      "accessionNumber": "0000902664-26-002529",
+      "form": "13F-HR",
+      "filingDate": "2026-05-15",
+      "periodOfReport": "2026-03-31",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1029160/000090266426002529/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001029160/0000902664-26-002529/index.json",
+          "sha256": "4d9a5b5fd27050079d82227134bea74428fa57453680cb49b6cd7306990a5c02",
+          "byteSize": 661
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1029160/000090266426002529/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001029160/0000902664-26-002529/primary_doc.xml",
+          "sha256": "53d0c18659863807f226b71a419a0966caba9c0689abeb45c6fb828ce18ce42a",
+          "byteSize": 2433
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1029160/000090266426002529/infotable.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001029160/0000902664-26-002529/infotable.xml",
+          "sha256": "44c1045e3d1cd37f58560417e4080a493ed882af46c06b76f9ae427c931b3c2f",
+          "byteSize": 131659
+        }
+      ]
+    },
+    {
+      "cik": "0001029160",
+      "accessionNumber": "0000902664-26-003507",
+      "form": "13F-HR",
+      "filingDate": "2026-08-14",
+      "periodOfReport": "2026-06-30",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1029160/000090266426003507/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001029160/0000902664-26-003507/index.json",
+          "sha256": "e0c163a2587c3550cad84dab02f1c79ebae5d740b75dad17e3a4b93eac795b36",
+          "byteSize": 661
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1029160/000090266426003507/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001029160/0000902664-26-003507/primary_doc.xml",
+          "sha256": "4cc9da417e414eb18c146ec9f28f6559f197a1af325ee70936c72b5a54ddc883",
+          "byteSize": 2008
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1029160/000090266426003507/infotable.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001029160/0000902664-26-003507/infotable.xml",
+          "sha256": "709d79ac27c4b9852ab6cec5e538773d3476eeed72dc9edac6a9f37b2dc93d97",
+          "byteSize": 123734
+        }
+      ]
+    },
+    {
+      "cik": "0001040273",
+      "accessionNumber": "0001040273-26-000002",
+      "form": "13F-HR",
+      "filingDate": "2026-05-15",
+      "periodOfReport": "2026-03-31",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1040273/000104027326000002/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001040273/0001040273-26-000002/index.json",
+          "sha256": "c1e963b7481164fef6b3b603f45ce0d50dca22cff2ad7fd1d61433a79dd3b71d",
+          "byteSize": 660
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1040273/000104027326000002/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001040273/0001040273-26-000002/primary_doc.xml",
+          "sha256": "f819151e6a1ca8b8449b93755fa2f87591ac4becae2538fbc1e6a89a1147dbbc",
+          "byteSize": 2024
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1040273/000104027326000002/infotable.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001040273/0001040273-26-000002/infotable.xml",
+          "sha256": "0985d1454d412ee23301612b079739d88919a9ebf1e0e567366523454cf89835",
+          "byteSize": 18928
+        }
+      ]
+    },
+    {
+      "cik": "0001040273",
+      "accessionNumber": "0001040273-26-000003",
+      "form": "13F-HR",
+      "filingDate": "2026-08-14",
+      "periodOfReport": "2026-06-30",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1040273/000104027326000003/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001040273/0001040273-26-000003/index.json",
+          "sha256": "d073198d540ffbaf7d482dad6d55b3a331e98d38d169b1d6160aa7dd8b997e0f",
+          "byteSize": 660
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1040273/000104027326000003/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001040273/0001040273-26-000003/primary_doc.xml",
+          "sha256": "ac1214e7dea4292e17997dee7cb5c7b6142b0a32402b1214766b652ef465a659",
+          "byteSize": 2024
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1040273/000104027326000003/infotable.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001040273/0001040273-26-000003/infotable.xml",
+          "sha256": "e8f6e757c5dd59146f87eb38b58db4db88033d847903fea89fb03aae39bafc0c",
+          "byteSize": 24759
+        }
+      ]
+    },
+    {
+      "cik": "0001061165",
+      "accessionNumber": "0000919574-26-003439",
+      "form": "13F-HR",
+      "filingDate": "2026-05-15",
+      "periodOfReport": "2026-03-31",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1061165/000091957426003439/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001061165/0000919574-26-003439/index.json",
+          "sha256": "e6499486494662c1a0f81e20b31eca036bf74f532fbfae4ffaf2dda8ed83f476",
+          "byteSize": 660
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1061165/000091957426003439/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001061165/0000919574-26-003439/primary_doc.xml",
+          "sha256": "da749453bb098421b9e385850816af9227bfaae2afc67d09c39b82acb5e29d93",
+          "byteSize": 2193
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1061165/000091957426003439/infotable.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001061165/0000919574-26-003439/infotable.xml",
+          "sha256": "affaad00e5b4f616ce11dd6dd92ff1adccb345af8a0ad56b790fcf184ccda992",
+          "byteSize": 17014
+        }
+      ]
+    },
+    {
+      "cik": "0001061165",
+      "accessionNumber": "0000919574-26-005485",
+      "form": "13F-HR",
+      "filingDate": "2026-08-14",
+      "periodOfReport": "2026-06-30",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1061165/000091957426005485/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001061165/0000919574-26-005485/index.json",
+          "sha256": "e5bc3e691c83077cfc8af747c729610e15218a679385de08b2ca791525f50fe3",
+          "byteSize": 660
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1061165/000091957426005485/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001061165/0000919574-26-005485/primary_doc.xml",
+          "sha256": "d0f2c50453ff58e74a8a7efc42031b23d69c338d0eecc3a0f7cfe5edf1cb58b1",
+          "byteSize": 2147
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1061165/000091957426005485/infotable.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001061165/0000919574-26-005485/infotable.xml",
+          "sha256": "fff0b92dafed90ec4db8a4286446ba0ec32200b53d546ef745045ab37e45872e",
+          "byteSize": 16158
+        }
+      ]
+    },
+    {
+      "cik": "0001061768",
+      "accessionNumber": "0001061768-26-000007",
+      "form": "13F-HR",
+      "filingDate": "2026-05-14",
+      "periodOfReport": "2026-03-31",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1061768/000106176826000007/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001061768/0001061768-26-000007/index.json",
+          "sha256": "f2a90fc515e9095bd5daa3de678680bb8f5f5855a8a8caf21c07cb5adb7c7f01",
+          "byteSize": 662
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1061768/000106176826000007/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001061768/0001061768-26-000007/primary_doc.xml",
+          "sha256": "8b6442f84a7855f0b7f018791d3aba337f5b6402a6d86f2d598f46b46bd120ae",
+          "byteSize": 1968
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1061768/000106176826000007/BGLLCQ12026.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001061768/0001061768-26-000007/BGLLCQ12026.xml",
+          "sha256": "e4a04e6bfeb369042c6061b6dc31c8038b911370788052ba070370f97c5b0b59",
+          "byteSize": 11876
+        }
+      ]
+    },
+    {
+      "cik": "0001061768",
+      "accessionNumber": "0001061768-26-000010",
+      "form": "13F-HR",
+      "filingDate": "2026-08-13",
+      "periodOfReport": "2026-06-30",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1061768/000106176826000010/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001061768/0001061768-26-000010/index.json",
+          "sha256": "158eadaf2079e30ab9f7ae9de10aac499518ed7b023ba72ffdc5e394bd21abb7",
+          "byteSize": 662
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1061768/000106176826000010/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001061768/0001061768-26-000010/primary_doc.xml",
+          "sha256": "607717660ee58e7bb121991e4fa26c7969f13741ad0d051a81d0dc88a0ac7326",
+          "byteSize": 1967
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1061768/000106176826000010/BGLLCQ22026.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001061768/0001061768-26-000010/BGLLCQ22026.xml",
+          "sha256": "070e79e76c47a633774e77ab432f9792fe0f693dbacde2211b15af4fba045577",
+          "byteSize": 12409
+        }
+      ]
+    },
+    {
+      "cik": "0001067983",
+      "accessionNumber": "0001193125-26-226661",
+      "form": "13F-HR",
+      "filingDate": "2026-05-15",
+      "periodOfReport": "2026-03-31",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1067983/000119312526226661/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001067983/0001193125-26-226661/index.json",
+          "sha256": "77d2fa9f5f3b1320dc3d904ec00cef7d24ad39045cb4b9c392dd2d989c526a79",
+          "byteSize": 656
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1067983/000119312526226661/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001067983/0001193125-26-226661/primary_doc.xml",
+          "sha256": "a3898f9f1e9defe28e9bed8cebafa83ed5a468bb2bbe758984039364dc1355fd",
+          "byteSize": 5555
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1067983/000119312526226661/53405.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001067983/0001193125-26-226661/53405.xml",
+          "sha256": "47b2bdae43512763cbd6459b6980827fc0a4fdc05515b4609950a7ab52b55316",
+          "byteSize": 45259
+        }
+      ]
+    },
+    {
+      "cik": "0001067983",
+      "accessionNumber": "0001193125-26-352200",
+      "form": "13F-HR",
+      "filingDate": "2026-08-14",
+      "periodOfReport": "2026-06-30",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1067983/000119312526352200/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001067983/0001193125-26-352200/index.json",
+          "sha256": "55b791cd90a12c4fe10c0d13471853e3e53ccbede45157b4264092aa0f5674f9",
+          "byteSize": 656
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1067983/000119312526352200/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001067983/0001193125-26-352200/primary_doc.xml",
+          "sha256": "7e7b3a8f87a290f56454b6ecaacd2cb4639af97a36d0c4064ee3d78be0d56723",
+          "byteSize": 5555
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1067983/000119312526352200/56757.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001067983/0001193125-26-352200/56757.xml",
+          "sha256": "6a2798aa0fa9731c33b0f0b748229eaf7cdf118f9c46fd5a4a9a3de6979d4d95",
+          "byteSize": 44724
+        }
+      ]
+    },
+    {
+      "cik": "0001079114",
+      "accessionNumber": "0001172661-23-004012",
+      "form": "13F-HR",
+      "filingDate": "2023-11-14",
+      "periodOfReport": "2023-09-30",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1079114/000117266123004012/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001079114/0001172661-23-004012/index.json",
+          "sha256": "c68098a5f74faace25ef37658becc28f8344c8017ce480a3b4ccb900a68d02f7",
+          "byteSize": 660
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1079114/000117266123004012/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001079114/0001172661-23-004012/primary_doc.xml",
+          "sha256": "5bca0fd7c1deddcaa444dd8ecbc4612b18541551ab48dabc66da5c789d4eb1e8",
+          "byteSize": 3390
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1079114/000117266123004012/infotable.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001079114/0001172661-23-004012/infotable.xml",
+          "sha256": "0c72292cc2d3c26ac1e66f4f14865cf50b624a9b9321f60185351f65f28f5e5b",
+          "byteSize": 56938
+        }
+      ]
+    },
+    {
+      "cik": "0001079114",
+      "accessionNumber": "0001172661-24-001512",
+      "form": "13F-HR",
+      "filingDate": "2024-02-14",
+      "periodOfReport": "2023-12-31",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1079114/000117266124001512/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001079114/0001172661-24-001512/index.json",
+          "sha256": "124273275d6776c6700699ef0b1ba188903e981a19528ea58e998965200fbaac",
+          "byteSize": 660
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1079114/000117266124001512/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001079114/0001172661-24-001512/primary_doc.xml",
+          "sha256": "08033aeab364d5b7b0d43462eca5d2336f94eb31f586f2194c25c740670329a8",
+          "byteSize": 3390
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1079114/000117266124001512/infotable.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001079114/0001172661-24-001512/infotable.xml",
+          "sha256": "033b7a0b44a87eb5c2c8ead6b420d1588a3acb119e1f95422204fdfd72c9280e",
+          "byteSize": 56876
+        }
+      ]
+    },
+    {
+      "cik": "0001103804",
+      "accessionNumber": "0001103804-26-000004",
+      "form": "13F-HR",
+      "filingDate": "2026-05-15",
+      "periodOfReport": "2026-03-31",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1103804/000110380426000004/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001103804/0001103804-26-000004/index.json",
+          "sha256": "0cf0be18ea3ec84d02762f73c7b6b4ffd5c75477a0c9bd753a6d1af6f422dceb",
+          "byteSize": 656
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1103804/000110380426000004/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001103804/0001103804-26-000004/primary_doc.xml",
+          "sha256": "fa325cfa6ff1c9ef50e59754faf80b15f7d0d8d6f98fdb4e0dd56b91cd177c9d",
+          "byteSize": 2065
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1103804/000110380426000004/MSFS13F033126.XML",
+          "path": "data/reference/sec/13f/2026-08-18/0001103804/0001103804-26-000004/MSFS13F033126.XML",
+          "sha256": "813f188bd4f711771526b37f18a1053fcb6ec62a1c32e2525e54a96b2ceff8b1",
+          "byteSize": 42107
+        }
+      ]
+    },
+    {
+      "cik": "0001103804",
+      "accessionNumber": "0001103804-26-000006",
+      "form": "13F-HR",
+      "filingDate": "2026-08-14",
+      "periodOfReport": "2026-06-30",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1103804/000110380426000006/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001103804/0001103804-26-000006/index.json",
+          "sha256": "69ebd88d3b7b6c9d33d995b9267befead32bb3238b85cee547d1c22dd67da6a2",
+          "byteSize": 660
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1103804/000110380426000006/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001103804/0001103804-26-000006/primary_doc.xml",
+          "sha256": "462656b4d199e50081d5c8a77e155b12853fdc69a00499b6fb01550742756fda",
+          "byteSize": 2065
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1103804/000110380426000006/Q2202613F.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001103804/0001103804-26-000006/Q2202613F.xml",
+          "sha256": "4e903b32133bcad3290ae458571e3221e237f4762ee4f24bfcfa0777f676bfbd",
+          "byteSize": 48549
+        }
+      ]
+    },
+    {
+      "cik": "0001135730",
+      "accessionNumber": "0000919574-26-003501",
+      "form": "13F-HR",
+      "filingDate": "2026-05-15",
+      "periodOfReport": "2026-03-31",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1135730/000091957426003501/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001135730/0000919574-26-003501/index.json",
+          "sha256": "4baa437c7ea301fbc9853c25776fc3d4aa63b38884d5fe18643e72fd2c7f3a1e",
+          "byteSize": 661
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1135730/000091957426003501/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001135730/0000919574-26-003501/primary_doc.xml",
+          "sha256": "8bdd8e0e42b8f75293ec6af7ed1baa05f463054d51ff3650bc470a394c9bdebb",
+          "byteSize": 10196
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1135730/000091957426003501/infotable.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001135730/0000919574-26-003501/infotable.xml",
+          "sha256": "03b27c211ee08c788991fd27dd1c85747f3fd064b9f86258f75124887e910c85",
+          "byteSize": 98590
+        }
+      ]
+    },
+    {
+      "cik": "0001135730",
+      "accessionNumber": "0000919574-26-005478",
+      "form": "13F-HR",
+      "filingDate": "2026-08-14",
+      "periodOfReport": "2026-06-30",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1135730/000091957426005478/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001135730/0000919574-26-005478/index.json",
+          "sha256": "9f6e7137fe4dc919427ee9e0a6df07122431e78d5d211a72cb18e0fa1eb9f0c4",
+          "byteSize": 662
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1135730/000091957426005478/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001135730/0000919574-26-005478/primary_doc.xml",
+          "sha256": "9ec7bb83184c9637239eee98544e4c8270bc8a4562a1364a85233a6eef73fe3c",
+          "byteSize": 10196
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1135730/000091957426005478/infotable.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001135730/0000919574-26-005478/infotable.xml",
+          "sha256": "5f6b3c918e1c0cd63f0be16a87f4797bb25be8bda0a60d7ef251133b4a0ec3a8",
+          "byteSize": 105564
+        }
+      ]
+    },
+    {
+      "cik": "0001167483",
+      "accessionNumber": "0000919574-26-003362",
+      "form": "13F-HR",
+      "filingDate": "2026-05-15",
+      "periodOfReport": "2026-03-31",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1167483/000091957426003362/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001167483/0000919574-26-003362/index.json",
+          "sha256": "6eed1bf5a8af1cb38bf87fbd9f1368c6547641e3b583731042856ead825fb254",
+          "byteSize": 660
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1167483/000091957426003362/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001167483/0000919574-26-003362/primary_doc.xml",
+          "sha256": "56efa4db9c81ba9b17da151dad202cafdfa4160c88e8f129d635c210e24f8771",
+          "byteSize": 2187
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1167483/000091957426003362/infotable.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001167483/0000919574-26-003362/infotable.xml",
+          "sha256": "a8b43f8ef11e5945b0196668953badd026c0e8e93265eb55035ebf7a56bf3fcb",
+          "byteSize": 25399
+        }
+      ]
+    },
+    {
+      "cik": "0001167483",
+      "accessionNumber": "0000919574-26-005427",
+      "form": "13F-HR",
+      "filingDate": "2026-08-14",
+      "periodOfReport": "2026-06-30",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1167483/000091957426005427/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001167483/0000919574-26-005427/index.json",
+          "sha256": "3e2ae96fad9beb67b7451f5a7663f06c71b74978da3678df023862398c7d775d",
+          "byteSize": 660
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1167483/000091957426005427/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001167483/0000919574-26-005427/primary_doc.xml",
+          "sha256": "8fe932e31d7d75a7c3920b12cb246d402eb8686d82ff65c2413f55b1dbdc265f",
+          "byteSize": 2187
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1167483/000091957426005427/infotable.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001167483/0000919574-26-005427/infotable.xml",
+          "sha256": "3072071589437742400f4fe619ca08091b90c049ce6ccfa0cdb3acec42fd3fa6",
+          "byteSize": 21727
+        }
+      ]
+    },
+    {
+      "cik": "0001336528",
+      "accessionNumber": "0001172661-26-001091",
+      "form": "13F-HR",
+      "filingDate": "2026-02-17",
+      "periodOfReport": "2025-12-31",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1336528/000117266126001091/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001336528/0001172661-26-001091/index.json",
+          "sha256": "23b84add365683046f6bd5d55de861a99b9420acadc32de0f21e21e417c0e390",
+          "byteSize": 659
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1336528/000117266126001091/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001336528/0001172661-26-001091/primary_doc.xml",
+          "sha256": "5dfcf5b3323956cc82fdf40e21399632475a022b499f7c66f368e6d54df7ab70",
+          "byteSize": 2193
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1336528/000117266126001091/infotable.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001336528/0001172661-26-001091/infotable.xml",
+          "sha256": "1d5e5891dd2e814407c210c9df3199cac55d776deac230de0eff79350852d66b",
+          "byteSize": 5536
+        }
+      ]
+    },
+    {
+      "cik": "0001336528",
+      "accessionNumber": "0001172661-26-002336",
+      "form": "13F-HR",
+      "filingDate": "2026-05-15",
+      "periodOfReport": "2026-03-31",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1336528/000117266126002336/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001336528/0001172661-26-002336/index.json",
+          "sha256": "7445577d868cf64422a728be384c39b7d4a062876507b2438c1466a94f88fff8",
+          "byteSize": 659
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1336528/000117266126002336/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001336528/0001172661-26-002336/primary_doc.xml",
+          "sha256": "983412e1170dd9dcf661c03fa98cb2c6df1a70c5213997bb83b9ca494f2a8f59",
+          "byteSize": 2193
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1336528/000117266126002336/infotable.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001336528/0001172661-26-002336/infotable.xml",
+          "sha256": "dd90778af69fcee4b7d5107e2893686e371d8ce856a62a8ac79fb144e9dc6dcd",
+          "byteSize": 5520
+        }
+      ]
+    },
+    {
+      "cik": "0001350694",
+      "accessionNumber": "0001350694-26-000002",
+      "form": "13F-HR",
+      "filingDate": "2026-05-15",
+      "periodOfReport": "2026-03-31",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1350694/000135069426000002/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001350694/0001350694-26-000002/index.json",
+          "sha256": "5d2bd98436839e203169308a54998679de1bef2b4e457dafe6a312af8067d4f9",
+          "byteSize": 661
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1350694/000135069426000002/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001350694/0001350694-26-000002/primary_doc.xml",
+          "sha256": "5a80db0901edc9bf522e2fc3c44fcf1c4b70a4b7e706bdbb1f33266931285020",
+          "byteSize": 2073
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1350694/000135069426000002/infotable.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001350694/0001350694-26-000002/infotable.xml",
+          "sha256": "3d12419747dd9e36a859dc2fff527d3adec43ab3385dab53958d59639244f872",
+          "byteSize": 597030
+        }
+      ]
+    },
+    {
+      "cik": "0001350694",
+      "accessionNumber": "0001350694-26-000003",
+      "form": "13F-HR",
+      "filingDate": "2026-08-14",
+      "periodOfReport": "2026-06-30",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1350694/000135069426000003/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001350694/0001350694-26-000003/index.json",
+          "sha256": "011280fc4b3fbb1565fe5bfa3b8d5cdf61ca3fda4f282f4a8f1b9ef769a1d628",
+          "byteSize": 661
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1350694/000135069426000003/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001350694/0001350694-26-000003/primary_doc.xml",
+          "sha256": "19fd9584282951edf38431a1371a3f97ae28ab2ee77774e51dd02511a608eb8c",
+          "byteSize": 2073
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1350694/000135069426000003/infotable.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001350694/0001350694-26-000003/infotable.xml",
+          "sha256": "c7153d8ba40fa905c682dd52fdfb78e1daf856f88dd62cb6adfe44df5f2e9be4",
+          "byteSize": 599469
+        }
+      ]
+    },
+    {
+      "cik": "0001536411",
+      "accessionNumber": "0001536411-26-000004",
+      "form": "13F-HR",
+      "filingDate": "2026-05-15",
+      "periodOfReport": "2026-03-31",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1536411/000153641126000004/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001536411/0001536411-26-000004/index.json",
+          "sha256": "8370c8b30f8ab7d38cbcf45afc103c3b49e7fcda13aa745274a2f027cb18661a",
+          "byteSize": 667
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1536411/000153641126000004/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001536411/0001536411-26-000004/primary_doc.xml",
+          "sha256": "8ee0fe4b123b287bf363f6c351831f33f767385de4ef310a8a93ace9444a0ed6",
+          "byteSize": 2027
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1536411/000153641126000004/form13f_20260331.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001536411/0001536411-26-000004/form13f_20260331.xml",
+          "sha256": "d7437f4dec7a03fa0ef803e48f83a5cf1893a9a4a30856c2844af336708552fb",
+          "byteSize": 27399
+        }
+      ]
+    },
+    {
+      "cik": "0001536411",
+      "accessionNumber": "0001536411-26-000006",
+      "form": "13F-HR",
+      "filingDate": "2026-08-14",
+      "periodOfReport": "2026-06-30",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1536411/000153641126000006/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001536411/0001536411-26-000006/index.json",
+          "sha256": "fd4c2727da18366ddeec611b30d7dc8f1e6e4a7cabaf04beb9e5d560f9c1a60e",
+          "byteSize": 667
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1536411/000153641126000006/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001536411/0001536411-26-000006/primary_doc.xml",
+          "sha256": "8b36208d25571f1ae61e22999c11c2242557410c9b8b6a7046c676c211b62d0c",
+          "byteSize": 2027
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1536411/000153641126000006/form13f_20260630.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001536411/0001536411-26-000006/form13f_20260630.xml",
+          "sha256": "35901ddfac3b14fec984d3bd0fc8d307d3216b005b03dfad0536dcfc55b7c592",
+          "byteSize": 37074
+        }
+      ]
+    },
+    {
+      "cik": "0001649339",
+      "accessionNumber": "0001879202-25-000038",
+      "form": "13F-HR",
+      "filingDate": "2025-08-14",
+      "periodOfReport": "2025-06-30",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1649339/000187920225000038/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001649339/0001879202-25-000038/index.json",
+          "sha256": "baf2b22701cb92aad4ff3103a9541a3dbc15ebed10a7e91cd044f4120c3f55fe",
+          "byteSize": 659
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1649339/000187920225000038/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001649339/0001879202-25-000038/primary_doc.xml",
+          "sha256": "f10f927f99dbd70ec58d25d8c2386b18016db85805a9f2e14b9ac182d22e3634",
+          "byteSize": 2816
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1649339/000187920225000038/infotable.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001649339/0001879202-25-000038/infotable.xml",
+          "sha256": "aa33c7432e8a01dbff3d5e0e2c844d3f1b100faa5a29a9995e955c6b0f1c27e2",
+          "byteSize": 8073
+        }
+      ]
+    },
+    {
+      "cik": "0001649339",
+      "accessionNumber": "0001649339-25-000007",
+      "form": "13F-HR",
+      "filingDate": "2025-11-03",
+      "periodOfReport": "2025-09-30",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1649339/000164933925000007/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001649339/0001649339-25-000007/index.json",
+          "sha256": "deade15dffe66b67e22ac58460e2ec9215ae26ff2e5f1be9ad80d39f6a747bf0",
+          "byteSize": 659
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1649339/000164933925000007/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001649339/0001649339-25-000007/primary_doc.xml",
+          "sha256": "c31693a064f44fce7c8f69354724eeedd2d1aaead3a6e9160270621582a6c44c",
+          "byteSize": 2816
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1649339/000164933925000007/infotable.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001649339/0001649339-25-000007/infotable.xml",
+          "sha256": "51bad29039048163a873e90e19f1bb07bf484e243ad1da33bad8e2c786e34f1b",
+          "byteSize": 4438
+        }
+      ]
+    },
+    {
+      "cik": "0001656456",
+      "accessionNumber": "0001656456-26-000002",
+      "form": "13F-HR",
+      "filingDate": "2026-05-15",
+      "periodOfReport": "2026-03-31",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1656456/000165645626000002/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001656456/0001656456-26-000002/index.json",
+          "sha256": "aeb001a091b0e98e77cd5dde4dcf8275f2ea554d016d1346994ec6659aa6f46d",
+          "byteSize": 667
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1656456/000165645626000002/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001656456/0001656456-26-000002/primary_doc.xml",
+          "sha256": "3ab8049fc330e58c9715762e08c23d33d215c9c0ecc6c69f13a349a0b73c7044",
+          "byteSize": 1894
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1656456/000165645626000002/Form13FInfoTable.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001656456/0001656456-26-000002/Form13FInfoTable.xml",
+          "sha256": "2a647f79088d3ea5f11cf107e9734569a3fcd49ebc40f6f6373f3c4cefc59989",
+          "byteSize": 15770
+        }
+      ]
+    },
+    {
+      "cik": "0001656456",
+      "accessionNumber": "0001656456-26-000003",
+      "form": "13F-HR",
+      "filingDate": "2026-08-14",
+      "periodOfReport": "2026-06-30",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1656456/000165645626000003/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001656456/0001656456-26-000003/index.json",
+          "sha256": "c9f27b18e855a00468d7b578a1b6d985ff27245c9ef927d558b3f148fb5262bd",
+          "byteSize": 667
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1656456/000165645626000003/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001656456/0001656456-26-000003/primary_doc.xml",
+          "sha256": "fb0605557f670c4adfa66c8da29320f3c35bf6f3b36d1b90b127b68129510184",
+          "byteSize": 2233
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1656456/000165645626000003/Form13FInfoTable.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001656456/0001656456-26-000003/Form13FInfoTable.xml",
+          "sha256": "fba823d3b3b1a5b8a554564bfb7167045c58f751c00ef37209a8587f9bade1b6",
+          "byteSize": 13880
+        }
+      ]
+    },
+    {
+      "cik": "0001791786",
+      "accessionNumber": "0001013594-26-000613",
+      "form": "13F-HR",
+      "filingDate": "2026-05-15",
+      "periodOfReport": "2026-03-31",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1791786/000101359426000613/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001791786/0001013594-26-000613/index.json",
+          "sha256": "7c3fbb087ef08dee6187d9c6458876886227194c14675bb4460de2611edef6f2",
+          "byteSize": 667
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1791786/000101359426000613/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001791786/0001013594-26-000613/primary_doc.xml",
+          "sha256": "43068815fd095506c46cba81964b30b0795425cf3f5088d537ee4e8c0b3bb8df",
+          "byteSize": 2707
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1791786/000101359426000613/form13fInfoTable.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001791786/0001013594-26-000613/form13fInfoTable.xml",
+          "sha256": "e2a478d4a8830a8e0629d3bd523916d32a14c31f47e72b2dd3d3fac2853acf7a",
+          "byteSize": 16076
+        }
+      ]
+    },
+    {
+      "cik": "0001791786",
+      "accessionNumber": "0001013594-26-000915",
+      "form": "13F-HR",
+      "filingDate": "2026-08-14",
+      "periodOfReport": "2026-06-30",
+      "documents": [
+        {
+          "role": "filing-index",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1791786/000101359426000915/index.json",
+          "path": "data/reference/sec/13f/2026-08-18/0001791786/0001013594-26-000915/index.json",
+          "sha256": "7be4650733b076c21d1838eb3f2d53b51e459b5798dc64127d92d54d1fbabec9",
+          "byteSize": 667
+        },
+        {
+          "role": "primary-document",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1791786/000101359426000915/primary_doc.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001791786/0001013594-26-000915/primary_doc.xml",
+          "sha256": "619d6356480b11c1b0a810a53c9714627eab750e991587c47e25ff415724ce1c",
+          "byteSize": 2707
+        },
+        {
+          "role": "information-table",
+          "uri": "https://www.sec.gov/Archives/edgar/data/1791786/000101359426000915/form13fInfoTable.xml",
+          "path": "data/reference/sec/13f/2026-08-18/0001791786/0001013594-26-000915/form13fInfoTable.xml",
+          "sha256": "c359d76b3e67d8e2a901131179572b4505e1ebb9b6842b4619c99a84a8d6a022",
+          "byteSize": 14176
+        }
+      ]
+    }
+  ]
+}

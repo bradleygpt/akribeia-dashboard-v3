@@ -19,8 +19,10 @@ const artifact = await generateInstitutionalIntelligence({
   generatedAt: new Date().toISOString(),
 });
 
+// Compact serialization: this artifact is an order of magnitude larger than
+// the other generated projections and ships inside the worker bundle.
 const outputPath = resolve("apps/dashboard/app/generated/active-institutional-intelligence.json");
-await writeFile(outputPath, `${JSON.stringify(artifact, null, 2)}\n`);
+await writeFile(outputPath, `${JSON.stringify(artifact)}\n`);
 
 process.stdout.write(
   `${JSON.stringify(

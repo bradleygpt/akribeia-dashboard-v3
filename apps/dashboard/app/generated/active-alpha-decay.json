@@ -1,0 +1,101 @@
+{
+  "reportSchemaVersion": "1.0.0",
+  "generatedAt": "2026-08-18T15:22:23.808Z",
+  "signalId": "akribeia-composite-v3",
+  "methodology": "spearman-rank-ic-prospective-only: statistics use contemporaneously captured immutable vintages and receipted forward prices; no hindsight reconstruction",
+  "policy": {
+    "minVintagesForDecayCurve": 40,
+    "minVintagesForPersistence": 12,
+    "minCrossSectionPerCohort": 30,
+    "horizonsTradingDays": [
+      5,
+      10,
+      21,
+      42,
+      63,
+      126
+    ]
+  },
+  "ledger": {
+    "vintageCount": 1,
+    "firstObservationDate": "2026-07-28",
+    "latestObservationDate": "2026-07-28",
+    "observationDates": [
+      "2026-07-28"
+    ]
+  },
+  "overallState": "insufficient-history",
+  "horizons": [
+    {
+      "horizonTradingDays": 5,
+      "state": "insufficient-history",
+      "vintagesUsed": 0,
+      "vintagesRequired": 40,
+      "meanRankIc": null,
+      "hitRate": null,
+      "topMinusBottomQuintileSpread": null,
+      "excludedForMissingForwardWindow": 1
+    },
+    {
+      "horizonTradingDays": 10,
+      "state": "insufficient-history",
+      "vintagesUsed": 0,
+      "vintagesRequired": 40,
+      "meanRankIc": null,
+      "hitRate": null,
+      "topMinusBottomQuintileSpread": null,
+      "excludedForMissingForwardWindow": 1
+    },
+    {
+      "horizonTradingDays": 21,
+      "state": "insufficient-history",
+      "vintagesUsed": 0,
+      "vintagesRequired": 40,
+      "meanRankIc": null,
+      "hitRate": null,
+      "topMinusBottomQuintileSpread": null,
+      "excludedForMissingForwardWindow": 1
+    },
+    {
+      "horizonTradingDays": 42,
+      "state": "insufficient-history",
+      "vintagesUsed": 0,
+      "vintagesRequired": 40,
+      "meanRankIc": null,
+      "hitRate": null,
+      "topMinusBottomQuintileSpread": null,
+      "excludedForMissingForwardWindow": 1
+    },
+    {
+      "horizonTradingDays": 63,
+      "state": "insufficient-history",
+      "vintagesUsed": 0,
+      "vintagesRequired": 40,
+      "meanRankIc": null,
+      "hitRate": null,
+      "topMinusBottomQuintileSpread": null,
+      "excludedForMissingForwardWindow": 1
+    },
+    {
+      "horizonTradingDays": 126,
+      "state": "insufficient-history",
+      "vintagesUsed": 0,
+      "vintagesRequired": 40,
+      "meanRankIc": null,
+      "hitRate": null,
+      "topMinusBottomQuintileSpread": null,
+      "excludedForMissingForwardWindow": 1
+    }
+  ],
+  "rankPersistence": {
+    "state": "insufficient-history",
+    "vintagePairsUsed": 0,
+    "vintagePairsRequired": 12,
+    "meanRankAutocorrelation": null
+  },
+  "halfLife": {
+    "state": "insufficient-history",
+    "halfLifeTradingDays": null
+  },
+  "cohorts": []
+}

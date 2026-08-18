@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<edgarSubmission xsi:schemaLocation="http://www.sec.gov/edgar/thirteenffiler eis_13F_Filer.xsd" xmlns="http://www.sec.gov/edgar/thirteenffiler" xmlns:ns1="http://www.sec.gov/edgar/common" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <schemaVersion>X0202</schemaVersion>
+  <headerData>
+    <submissionType>13F-HR</submissionType>
+    <filerInfo>
+      <liveTestFlag>LIVE</liveTestFlag>
+      <flags>
+        <confirmingCopyFlag>false</confirmingCopyFlag>
+        <returnCopyFlag>true</returnCopyFlag>
+        <overrideInternetFlag>false</overrideInternetFlag>
+      </flags>
+      <filer>
+        <credentials>
+          <cik>0001135730</cik>
+          <ccc>XXXXXXXX</ccc>
+        </credentials>
+      </filer>
+      <periodOfReport>06-30-2026</periodOfReport>
+    </filerInfo>
+  </headerData>
+  <formData>
+    <coverPage>
+      <reportCalendarOrQuarter>06-30-2026</reportCalendarOrQuarter>
+      <isAmendment>false</isAmendment>
+      <filingManager>
+        <name>COATUE MANAGEMENT LLC</name>
+        <address>
+          <ns1:street1>9 West 57th Street</ns1:street1>
+          <ns1:street2>25th Floor</ns1:street2>
+          <ns1:city>New York</ns1:city>
+          <ns1:stateOrCountry>NY</ns1:stateOrCountry>
+          <ns1:zipCode>10019</ns1:zipCode>
+        </address>
+      </filingManager>
+      <reportType>13F HOLDINGS REPORT</reportType>
+      <form13FFileNumber>028-06391</form13FFileNumber>
+      <crdNumber>000157910</crdNumber>
+      <secFileNumber>801-73669</secFileNumber>
+      <provideInfoForInstruction5>N</provideInfoForInstruction5>
+    </coverPage>
+    <signatureBlock>
+      <name>Philippe Laffont</name>
+      <title>Authorized Signatory</title>
+      <phone>212-715-5100</phone>
+      <signature>/s/ Philippe Laffont</signature>
+      <city>NEW YORK</city>
+      <stateOrCountry>NY</stateOrCountry>
+      <signatureDate>08-14-2026</signatureDate>
+    </signatureBlock>
+    <summaryPage>
+      <otherIncludedManagersCount>27</otherIncludedManagersCount>
+      <tableEntryTotal>211</tableEntryTotal>
+      <tableValueTotal>48629053706</tableValueTotal>
+      <otherManagers2Info>
+        <otherManager2>
+          <sequenceNumber>1</sequenceNumber>
+          <otherManager>
+            <cik>0001664809</cik>
+            <form13FFileNumber>028-17315</form13FFileNumber>
+            <name>COATUE OFFSHORE MASTER FUND LP</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>2</sequenceNumber>
+          <otherManager>
+            <cik>0002010714</cik>
+            <form13FFileNumber>028-23809</form13FFileNumber>
+            <name>Coatue Strategic Maple Long Only Fund LP</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>3</sequenceNumber>
+          <otherManager>
+            <cik>0001633822</cik>
+            <form13FFileNumber>028-16615</form13FFileNumber>
+            <name>Coatue Long Only Offshore Master Fund Ltd</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>4</sequenceNumber>
+          <otherManager>
+            <cik>0002010699</cik>
+            <form13FFileNumber>028-23808</form13FFileNumber>
+            <name>Coatue F1 LP</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>5</sequenceNumber>
+          <otherManager>
+            <cik>0001820111</cik>
+            <form13FFileNumber>028-20808</form13FFileNumber>
+            <name>Coatue Smart Transportation Fund I LP</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>6</sequenceNumber>
+          <otherManager>
+            <cik>0001909273</cik>
+            <form13FFileNumber>028-24491</form13FFileNumber>
+            <name>Coatue Climate Tech Fund II LP</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>7</sequenceNumber>
+          <otherManager>
+            <cik>0002018682</cik>
+            <form13FFileNumber>028-25217</form13FFileNumber>
+            <name>Coatue Opportunity Fund II LP</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>8</sequenceNumber>
+          <otherManager>
+            <cik>0002044660</cik>
+            <form13FFileNumber>028-25214</form13FFileNumber>
+            <name>Coatue Cardinal Main Fund LP</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>9</sequenceNumber>
+          <otherManager>
+            <cik>0001877824</cik>
+            <form13FFileNumber>028-21889</form13FFileNumber>
+            <name>Coatue Asia Fund LP</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>10</sequenceNumber>
+          <otherManager>
+            <cik>0001698950</cik>
+            <form13FFileNumber>028-20867</form13FFileNumber>
+            <name>COATUE KONA III LP</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>11</sequenceNumber>
+          <otherManager>
+            <cik>0001856455</cik>
+            <form13FFileNumber>028-26599</form13FFileNumber>
+            <name>Coatue US 44 LLC</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>12</sequenceNumber>
+          <otherManager>
+            <cik>0001793842</cik>
+            <form13FFileNumber>028-20807</form13FFileNumber>
+            <name>Coatue Growth Fund IV LP</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>13</sequenceNumber>
+          <otherManager>
+            <cik>0002044719</cik>
+            <form13FFileNumber>028-26604</form13FFileNumber>
+            <name>Coatue Structured Co-Investment Offshore Fund A LP</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>14</sequenceNumber>
+          <otherManager>
+            <cik>0001937648</cik>
+            <form13FFileNumber>028-26608</form13FFileNumber>
+            <name>Coatue Tactical Solutions CT Fund B LP</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>15</sequenceNumber>
+          <otherManager>
+            <cik>0002044519</cik>
+            <form13FFileNumber>028-26607</form13FFileNumber>
+            <name>Coatue Innovative Strategies Fund</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>16</sequenceNumber>
+          <otherManager>
+            <cik>0001929193</cik>
+            <form13FFileNumber>028-26609</form13FFileNumber>
+            <name>Coatue Structured Fund LP</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>17</sequenceNumber>
+          <otherManager>
+            <cik>0001830176</cik>
+            <form13FFileNumber>028-26605</form13FFileNumber>
+            <name>Coatue CT 88 LLC</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>18</sequenceNumber>
+          <otherManager>
+            <cik>0002020991</cik>
+            <form13FFileNumber>028-26606</form13FFileNumber>
+            <name>Coatue CT 158 LP</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>19</sequenceNumber>
+          <otherManager>
+            <cik>0001758558</cik>
+            <form13FFileNumber>028-26601</form13FFileNumber>
+            <name>COATUE EARLY STAGE FUND LP</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>20</sequenceNumber>
+          <otherManager>
+            <cik>0001848663</cik>
+            <form13FFileNumber>028-26600</form13FFileNumber>
+            <name>Coatue Growth Fund V LP</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>21</sequenceNumber>
+          <otherManager>
+            <cik>0002130611</cik>
+            <form13FFileNumber>028-26968</form13FFileNumber>
+            <name>Coatue Tactical Solutions PS Holdings AIV 8 LP</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>22</sequenceNumber>
+          <otherManager>
+            <cik>0002130570</cik>
+            <form13FFileNumber>028-26969</form13FFileNumber>
+            <name>Coatue Tactical Solutions PS Holdings AIV VII LP</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>23</sequenceNumber>
+          <otherManager>
+            <cik>0002130577</cik>
+            <form13FFileNumber>028-26970</form13FFileNumber>
+            <name>Coatue Tactical Solutions PS Holdings AIV I LP</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>24</sequenceNumber>
+          <otherManager>
+            <cik>0002130566</cik>
+            <form13FFileNumber>028-26967</form13FFileNumber>
+            <name>Coatue Crown Fund LP</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>25</sequenceNumber>
+          <otherManager>
+            <cik>0002130793</cik>
+            <form13FFileNumber>028-26973</form13FFileNumber>
+            <name>Coatue US 70 LLC</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>26</sequenceNumber>
+          <otherManager>
+            <cik>0002130586</cik>
+            <form13FFileNumber>028-26975</form13FFileNumber>
+            <name>Coatue PE Asia 55 LLC</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>27</sequenceNumber>
+          <otherManager>
+            <cik>0002130580</cik>
+            <form13FFileNumber>028-26971</form13FFileNumber>
+            <name>Coatue US 21 LLC</name>
+          </otherManager>
+        </otherManager2>
+      </otherManagers2Info>
+    </summaryPage>
+  </formData>
+</edgarSubmission>
