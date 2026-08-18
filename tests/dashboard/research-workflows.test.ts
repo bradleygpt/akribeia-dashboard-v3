@@ -55,10 +55,10 @@ describe("Wave 2 research universe", () => {
 
   it("retains the complete no-floor stock and ETF population", () => {
     const universe = loadResearchUniverse();
-    expect(universe.total).toBe(1361);
-    expect(universe.stocks).toBe(1291);
+    expect(universe.total).toBe(1360);
+    expect(universe.stocks).toBe(1290);
     expect(universe.etfs).toBe(70);
-    expect(new Set(universe.rows.map(({ ticker }) => ticker)).size).toBe(1361);
+    expect(new Set(universe.rows.map(({ ticker }) => ticker)).size).toBe(1360);
   });
 
   it("fails closed for SPY stock-model grades while preserving an evidenced equity", () => {
@@ -134,7 +134,7 @@ describe("Wave 2 research universe", () => {
       new Set(),
     );
     expect(results.map(({ ticker }) => ticker)).toContain("AAPL");
-    expect(universe.rows).toHaveLength(1361);
+    expect(universe.rows).toHaveLength(1360);
   });
 
   it("implements all named quick-screen predicates over preserved values", () => {
@@ -194,9 +194,9 @@ describe("Wave 2 research universe", () => {
     }
   });
 
-  it("reconciles sector membership to all 1,291 stocks", () => {
+  it("reconciles sector membership to all 1,290 governed stocks", () => {
     const sectors = buildSectorResearch();
-    expect(sectors.reduce((sum, sector) => sum + sector.count, 0)).toBe(1291);
+    expect(sectors.reduce((sum, sector) => sum + sector.count, 0)).toBe(1290);
     expect(sectors.every(({ averageScore }) => averageScore !== null)).toBe(true);
     expect(sectors.some(({ sector }) => sector === "Technology")).toBe(true);
   });

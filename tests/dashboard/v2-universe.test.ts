@@ -7,13 +7,18 @@ import {
 } from "../../apps/dashboard/app/v2-universe.js";
 
 describe("authoritative V2 universe", () => {
-  it("preserves the complete no-floor payload without ticker exclusions", () => {
+  it("serves the governed no-floor universe with only registry-governed exclusions applied", () => {
+    // The preserved V2 archive stays complete and byte-identical (its pinned
+    // provenance hash is asserted below and in the governed-exclusions
+    // tests); the served universe applies exactly the governed exclusion
+    // registry (currently MCW) with recomputed counts.
     const universe = loadV2Universe();
 
-    expect(universe.total).toBe(1361);
-    expect(universe.stocks).toBe(1291);
+    expect(universe.total).toBe(1360);
+    expect(universe.stocks).toBe(1290);
     expect(universe.etfs).toBe(70);
-    expect(new Set(universe.rows.map(({ ticker }) => ticker)).size).toBe(1361);
+    expect(new Set(universe.rows.map(({ ticker }) => ticker)).size).toBe(1360);
+    expect(universe.rows.some(({ ticker }) => ticker === "MCW")).toBe(false);
     expect(universe.rows.every(({ ticker, name }) => ticker && name)).toBe(true);
     expect(universe.provenance.sha256).toBe(V2_UNIVERSE_EXPECTED.sha256);
   });

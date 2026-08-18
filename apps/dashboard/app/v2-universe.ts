@@ -1,4 +1,5 @@
 import preservedUniverse from "../../../data/reference/v2-baseline/fixtures/universe_floor0.json";
+import { isExcludedSecurityTicker } from "./security-exclusions";
 
 export const V2_UNIVERSE_EXPECTED = {
   rows: 1361,
@@ -121,7 +122,12 @@ export function validateV2UniversePayload(
 
 export function loadV2Universe(): V2Universe {
   const payload = validateV2UniversePayload(preservedUniverse, V2_UNIVERSE_EXPECTED);
-  const rows = payload.rows.map<UniverseDisplayRow>((row) => ({
+  // The validated payload is the byte-identical preserved V2 archive; the
+  // governed universe applies the exclusion registry at derivation so counts
+  // below are recomputed, never patched.
+  const rows = payload.rows
+    .filter((row) => !isExcludedSecurityTicker(row.ticker))
+    .map<UniverseDisplayRow>((row) => ({
     ticker: row.ticker,
     name: row.name ?? row.ticker,
     sector: row.sector?.trim() || "Unclassified",
@@ -141,9 +147,9 @@ export function loadV2Universe(): V2Universe {
     sectors: [...new Set(rows.map(({ sector }) => sector))].sort((left, right) =>
       left.localeCompare(right),
     ),
-    total: payload.meta.n_total,
-    stocks: payload.meta.n_stocks,
-    etfs: payload.meta.n_etf,
+    total: rows.length,
+    stocks: rows.filter(({ isEtf }) => !isEtf).length,
+    etfs: rows.filter(({ isEtf }) => isEtf).length,
     provenance: V2_UNIVERSE_EXPECTED,
   };
 }

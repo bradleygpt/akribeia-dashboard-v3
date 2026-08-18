@@ -41,6 +41,7 @@ import activeSecRegistrants from "./generated/active-sec-registrants.json";
 import activeSecurityMaster from "./generated/active-security-master.json";
 import activeUniverseMembership from "./generated/active-universe-membership.json";
 import activeWalkForwardReadiness from "./generated/active-walk-forward-readiness.json";
+import { GOVERNED_SECURITY_EXCLUSIONS } from "./security-exclusions";
 
 const benchmarkReadiness = BenchmarkReadinessSchema.parse(activeBenchmarkReadiness);
 const dashboard = VerticalSliceDashboardSchema.parse(activeDashboard);
@@ -210,7 +211,7 @@ export function MarketHealthDashboard() {
               </p>
               <div className="hero-actions" aria-label="Start exploring Akribeia">
                 <a href="#market-health">Open Market Health</a>
-                <a href="/research">Research all 1,361 securities</a>
+                <a href="/research">Research all 1,360 securities</a>
               </div>
             </div>
             <aside className="hero-evidence" aria-label="Akribeia coverage and trust">
@@ -242,7 +243,7 @@ export function MarketHealthDashboard() {
             <a href="#universe">
               <span>02</span>
               <strong>Full Universe</strong>
-              <small>1,361 scored securities without a hidden cap floor</small>
+              <small>1,360 scored securities without a hidden cap floor</small>
             </a>
             <a href="#scores">
               <span>03</span>
@@ -349,7 +350,7 @@ export function MarketHealthDashboard() {
               </div>
               <div>
                 <dt>Excluded</dt>
-                <dd>0</dd>
+                <dd>{GOVERNED_SECURITY_EXCLUSIONS.length}</dd>
               </div>
             </dl>
           </div>

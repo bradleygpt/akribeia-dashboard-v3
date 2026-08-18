@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0.0",
+  "policy": "Tickers listed here are removed from the governed dashboard universe and every derived non-Prolepsis surface and count. The preserved V2 baseline fixture is never edited: it remains a byte-identical historical capture, and exclusions are applied at every point of derivation so counts are recomputed rather than patched.",
+  "exclusions": [
+    {
+      "ticker": "MCW",
+      "reason": "Contaminated identity linkage: the symbol was mapped to the wrong company identity. Excluded from the governed universe until a correct identity mapping is rebuilt and independently validated.",
+      "directive": "2026-08-18 corrected go-live blocker handoff, section 3",
+      "excludedAt": "2026-08-18"
+    }
+  ]
+}

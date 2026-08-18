@@ -30,7 +30,7 @@ test("server-renders the Wave 2 research workbench", async () => {
   assert.match(html, /High conviction/);
   assert.match(html, /Quality compounders/);
   assert.match(html, /Search ticker, company or industry/);
-  assert.match(html, /1,361/);
+  assert.match(html, /1,360/);
   assert.match(html, /Compare NVDA/);
   assert.match(html, /aria-sort="descending"/);
   assert.match(html, /research-sort-header is-active/);
@@ -64,7 +64,7 @@ test("server-renders sector analytics", async () => {
   assert.match(html, /Inspect the companies behind the aggregate/);
   assert.match(html, /Loading pinned V2 sector narrative/);
   assert.match(html, /Technology/);
-  assert.match(html, /1,291 stocks/);
+  assert.match(html, /1,290 stocks/);
 });
 
 test("server-renders the ETF Center", async () => {

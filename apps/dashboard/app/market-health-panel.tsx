@@ -288,7 +288,7 @@ export function MarketHealthPanel({
         <article>
           <p>Market breadth</p>
           <strong>{breadth.breadthScore.toFixed(0)}</strong>
-          <span>Computed across all 1,361 securities</span>
+          <span>Computed across all 1,360 governed securities</span>
         </article>
         <article>
           <p>Risk state</p>

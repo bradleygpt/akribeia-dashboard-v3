@@ -17,7 +17,7 @@ test("expanded ETF directory preserves reference-only and holdings provenance", 
   assert.ok(holdings.coverage.etfsWithUnavailableHoldings > 0);
   assert.ok(holdings.coverage.sourceBreakdown.secNportRows > 30_000);
   assert.ok(holdings.rows.some((row) => row.sourceStatus === "sec-nport-equity"));
-  assert.equal(canonical.coverage.canonicalEquities, 1291);
+  assert.equal(canonical.coverage.canonicalEquities, 1290);
   assert.ok(canonical.coverage.equitiesCovered > 1200);
   assert.ok(holdings.rows.every((row) => Number.isFinite(row.portfolioWeight)));
 });

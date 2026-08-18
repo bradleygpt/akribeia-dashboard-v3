@@ -182,7 +182,7 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
     assert.match(stdout, /See the market whole/);
     assert.match(stdout, /Test every signal/);
     assert.match(stdout, /Open Market Health/);
-    assert.match(stdout, /Research all 1,361 securities/);
+    assert.match(stdout, /Research all 1,360 securities/);
     assert.match(stdout, /Research integrity/);
     assert.match(
       stdout,
@@ -194,10 +194,10 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
     assert.match(stdout, /Earnings health/);
     assert.match(stdout, /Market breadth/);
     assert.match(stdout, /Risk state/);
-    assert.match(stdout, /Computed across all 1,361 securities/);
+    assert.match(stdout, /Computed across all 1,360 governed securities/);
     assert.match(stdout, /Every validated name\. No hidden cap floor\./);
     assert.match(stdout, /Search all securities/);
-    assert.match(stdout, /1,361/);
+    assert.match(stdout, /1,360/);
     assert.match(stdout, /authoritative no-floor universe/);
     assert.match(stdout, /Highest composite scores/);
     assert.match(stdout, /A dated receipt, with limits intact/);
@@ -313,7 +313,7 @@ test("renders explicit partial and error Market Health states in Chrome", async 
       assert.match(stdout, scenario.expected);
       assert.match(stdout, scenario.message);
       assert.match(stdout, /Retry sources/);
-      assert.match(stdout, /Computed across all 1,361 securities/);
+      assert.match(stdout, /Computed across all 1,360 governed securities/);
     } finally {
       await new Promise((resolveClose, rejectClose) => {
         server.close((error) => (error ? rejectClose(error) : resolveClose()));
