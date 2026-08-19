@@ -1,6 +1,7 @@
 import { loadResearchUniverse } from "../research-data";
 import { ResearchHeader } from "../research-header";
 import { EtfCenter } from "./etf-center";
+import { defaultFinderBasket } from "./etf-finder-default-basket";
 
 export const metadata = {
   title: "ETF Center — Akribeia",
@@ -11,6 +12,7 @@ export const metadata = {
 export default function EtfCenterPage() {
   const universe = loadResearchUniverse();
   const etfs = universe.rows.filter(({ isEtf }) => isEtf);
+  const finderBasket = defaultFinderBasket(universe.rows);
 
   return (
     <>
@@ -46,7 +48,7 @@ export default function EtfCenterPage() {
             </div>
           </dl>
         </section>
-        <EtfCenter rows={etfs} />
+        <EtfCenter rows={etfs} defaultBasket={finderBasket} />
         <footer className="research-route-footer">
           <span>V2 ETF reference data · V3 fail-closed adapter</span>
           <span>Research only · not investment advice</span>

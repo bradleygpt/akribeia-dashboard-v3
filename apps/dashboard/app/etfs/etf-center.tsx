@@ -12,6 +12,7 @@ import {
   type ExpandedEtfReference,
 } from "./etf-directory";
 import { exactIntersection, nearIntersection, normalizeTicker } from "./multi-stock-intersection";
+import { ETF_FINDER_MAX_STOCKS, type DefaultFinderBasket } from "./etf-finder-default-basket";
 
 type Section =
   "universe" | "find" | "index" | "compare" | "builder" | "lookthrough" | "reverse" | "maps";
@@ -385,7 +386,13 @@ function ReferenceState({
   return children;
 }
 
-export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
+export function EtfCenter({
+  rows,
+  defaultBasket,
+}: {
+  rows: ResearchRow[];
+  defaultBasket: DefaultFinderBasket;
+}) {
   const [section, setSection] = useState<Section>("universe");
   const [reference, setReference] = useState<EtfReference | null>(null);
   const [lookthrough, setLookthrough] = useState<LookthroughReference | null>(null);
@@ -414,8 +421,11 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
     key: "marketCap",
     direction: "descending",
   });
-  const [basket, setBasket] = useState("AAPL, MSFT, NVDA");
-  const [selectedStocks, setSelectedStocks] = useState<string[]>(["NVDA", "AMD"]);
+  const [basket, setBasket] = useState(defaultBasket.tickers.join(", "));
+  // D4 governing rule: the finder's default basket is the current
+  // Buy-or-better Growth Momentum names, up to 25 — never hard-coded tickers
+  // and never lower-grade filler when fewer than 25 qualify.
+  const [selectedStocks, setSelectedStocks] = useState<string[]>(defaultBasket.tickers);
   const [stockInput, setStockInput] = useState("");
   const [attempt, setAttempt] = useState(0);
 
@@ -681,7 +691,7 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
 
   function addSelectedStock() {
     const ticker = normalizeTicker(stockInput);
-    if (!ticker || selectedStocks.includes(ticker) || selectedStocks.length >= 20) return;
+    if (!ticker || selectedStocks.includes(ticker) || selectedStocks.length >= 25) return;
     setSelectedStocks((current) => [...current, ticker]);
     setStockInput("");
   }
@@ -978,13 +988,31 @@ export function EtfCenter({ rows }: { rows: ResearchRow[] }) {
             </div>
             <span>Exact results contain every selected stock. Near matches are separate.</span>
           </div>
+          <p className="etf-default-basket-note">
+            {defaultBasket.eligibleCount > 0 ? (
+              <>
+                Default basket: the {defaultBasket.tickers.length} current Buy-or-better Growth
+                Momentum names (capacity {ETF_FINDER_MAX_STOCKS};{" "}
+                {defaultBasket.eligibleCount >= ETF_FINDER_MAX_STOCKS
+                  ? `${defaultBasket.eligibleCount} qualify today`
+                  : `only ${defaultBasket.eligibleCount} qualify today — no lower-grade filler is added`}
+                ). Edit it freely below.
+              </>
+            ) : (
+              <>
+                No securities currently rate Buy or better on the Growth Momentum screener, so the
+                default basket is unavailable rather than filled with lower-grade names. Add tickers
+                manually below.
+              </>
+            )}
+          </p>
           <ReferenceState
             loading={loading}
             error={referenceError("etf-holdings")}
             onRetry={() => setAttempt((current) => current + 1)}
           >
             <label className="etf-reverse-search">
-              <span>Add stock ticker (1–20)</span>
+              <span>Add stock ticker (1–25)</span>
               <div className="etf-multi-stock-input">
                 <input
                   type="search"
