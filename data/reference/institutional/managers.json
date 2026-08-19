@@ -1,0 +1,34 @@
+{
+  "directorySchemaVersion": "1.0.0",
+  "policy": {
+    "selectionBasis": "Curated seed of prominent concentrated 13F filers whose quarterly long books are widely followed research inputs. Directory-driven: adding a manager is a data change plus a fresh receipted capture, never a code change. Every CIK is verified at capture time against the SEC submissions record and the filing's own cover page.",
+    "knownExclusions": [
+      {
+        "name": "Index/custody giants (BlackRock, Vanguard, State Street)",
+        "reason": "Multi-thousand-position index books say little about active conviction and would dominate committed source bytes."
+      },
+      {
+        "name": "Quant multi-managers (Renaissance, Citadel, Millennium, D. E. Shaw, Two Sigma, AQR)",
+        "reason": "13F long-only quarter-end snapshots misrepresent hedged, high-turnover books; including them invites exactly the freshness misreading this product must avoid."
+      }
+    ]
+  },
+  "managers": [
+    { "cik": "0001067983", "name": "Berkshire Hathaway", "category": "conglomerate" },
+    { "cik": "0001350694", "name": "Bridgewater Associates", "category": "macro" },
+    { "cik": "0001336528", "name": "Pershing Square Capital Management", "category": "activist" },
+    { "cik": "0000921669", "name": "Icahn Carl C.", "category": "activist" },
+    { "cik": "0001791786", "name": "Elliott Investment Management", "category": "activist" },
+    { "cik": "0001029160", "name": "Soros Fund Management", "category": "family-office" },
+    { "cik": "0001536411", "name": "Duquesne Family Office", "category": "family-office" },
+    { "cik": "0001656456", "name": "Appaloosa LP", "category": "event-driven" },
+    { "cik": "0001040273", "name": "Third Point", "category": "event-driven" },
+    { "cik": "0001061768", "name": "Baupost Group", "category": "value" },
+    { "cik": "0001079114", "name": "Greenlight Capital", "category": "value" },
+    { "cik": "0001649339", "name": "Scion Asset Management", "category": "value" },
+    { "cik": "0001061165", "name": "Lone Pine Capital", "category": "growth" },
+    { "cik": "0001103804", "name": "Viking Global Investors", "category": "long-short-equity" },
+    { "cik": "0001167483", "name": "Tiger Global Management", "category": "growth" },
+    { "cik": "0001135730", "name": "Coatue Management", "category": "growth" }
+  ]
+}

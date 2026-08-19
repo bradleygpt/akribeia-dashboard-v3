@@ -19,7 +19,7 @@ const canonical = JSON.parse(
 
 describe("ETF full coverage accounting", () => {
   it("keeps the canonical universe and candidate disposition totals explicit", () => {
-    expect(canonical.coverage.canonicalEquities).toBe(1291);
+    expect(canonical.coverage.canonicalEquities).toBe(1290);
     expect(canonical.coverage.candidateHoldingsBackedEtfs).toBeGreaterThan(854);
     expect(canonical.coverage.retainedEtfs).toBeGreaterThan(758);
     expect(canonical.coverage.equitiesUncovered).toBe(3);

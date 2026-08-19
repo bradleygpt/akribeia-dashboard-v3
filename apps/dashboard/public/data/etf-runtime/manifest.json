@@ -1,14 +1,14 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-06T16:55:40.804Z",
-  "canonicalUniverseHash": "f9350b5534f15cd439c03077b6a9f3305e78bd4f76772a1ad8ec2ce3da8ea302",
+  "generatedAt": "2026-08-18T19:34:26.336Z",
+  "canonicalUniverseHash": "acc3c10953c8b96dd5e146601c201942d69eb30f3b5d26a54d61e2aca3ee2cdf",
   "retainedEtfs": 1286,
-  "canonicalHoldingsRows": 96594,
+  "canonicalHoldingsRows": 96586,
   "dictionary": [
     {
       "filename": "canonical-ticker-dictionary.json",
-      "bytes": 8269,
-      "sha256": "cedaf0cebaf8dbdf8c85d3afe87dfa5e32ad5c45dd8c51119351f6bc825bd6b6"
+      "bytes": 8263,
+      "sha256": "57ad9a94920b4a88afdcf532052f3f9b7a7e292457b4d03cfe24c26f50714f49"
     },
     {
       "filename": "etf-dictionary.json",
@@ -18,80 +18,80 @@
   ],
   "index": {
     "filename": "ticker-etf-index.json",
-    "bytes": 5374264,
-    "sha256": "1c0c298bd5ac6fa7b4a5f42adebd9f5b0b5ff493795841229a10144e5515835f"
+    "bytes": 5373761,
+    "sha256": "edb31b789fda3d1e23f2016621d664842d5f8e73b0586c83899d01c61b6d3381"
   },
   "summary": {
     "filename": "etf-summary.json",
     "bytes": 323837,
-    "sha256": "6b5acb8a66662815fd16a9872eb20d72782cdf6469383c71ff47c5b9d6cc5f17"
+    "sha256": "9ee3da107667066031568083c9f304419d0d1d5c0d46da7198db8214088057cd"
   },
   "shards": [
     {
       "filename": "etf-holdings-00.json",
       "bytes": 802348,
-      "sha256": "2e9ed9975ba6adcdc55187b8bc50918fe6b2e146f3fc4044085102f4b1a1bd1c"
+      "sha256": "837512523a6483f860844758b901cb3070a607d3575b25d58c9cb66153060d8e"
     },
     {
       "filename": "etf-holdings-01.json",
-      "bytes": 1076847,
-      "sha256": "7aa6ddfb3c1d95d48d582b02f43ea5e211403fa7592076f28e0aa4d14b3bbf98"
+      "bytes": 1076721,
+      "sha256": "a3e12ee13ca83ad4b5683732034cbe1d6e869c5668259fcc1038ae1307beeb3d"
     },
     {
       "filename": "etf-holdings-02.json",
-      "bytes": 566864,
-      "sha256": "e62a286af8f383e373904552af2de9e6252d77f248d64c8eb0623fbbdc97efc0"
+      "bytes": 566733,
+      "sha256": "64d845b38a08ed25a6fedd4a08af81e9e3ed5b58dd37fc13460b9bf1e480c44c"
     },
     {
       "filename": "etf-holdings-03.json",
-      "bytes": 1397264,
-      "sha256": "a911bccb809abeec1c42b68149521b9eebb5b08d50334e120055d2b5c9b2928e"
+      "bytes": 1397004,
+      "sha256": "243704c8db90d95b3a9bd3dd7ba9968842c6c059f8ebc73fe9d008c6a41c4e57"
     },
     {
       "filename": "etf-holdings-04.json",
-      "bytes": 1241705,
-      "sha256": "fb09283525159d51eeddcef9462478aa7ac156701b4b07dd0d447a7ccece6f13"
+      "bytes": 1241704,
+      "sha256": "11c099c33a34edadafe0584acd02438e392bf0b955194a69190014b542237c14"
     },
     {
       "filename": "etf-holdings-05.json",
-      "bytes": 613232,
-      "sha256": "75a4aa742ca4688cfc0faf74772ea0816786a43a855ad87bbb8835125b2d04b0"
+      "bytes": 613096,
+      "sha256": "546ec77dbe41b7c3f42abcc17762448f5deba5623f0affaed52944fd04a6ad54"
     },
     {
       "filename": "etf-holdings-06.json",
-      "bytes": 1554146,
-      "sha256": "850fe867415a24daca7d59da9c979d3b46430f4d86093022d4b843259df4a87d"
+      "bytes": 1554144,
+      "sha256": "41c922bb6ad5016783733cfac2b33c17848313d8edf05292f42b37c744fb8eb2"
     },
     {
       "filename": "etf-holdings-07.json",
-      "bytes": 1083612,
-      "sha256": "55a6756e0fc6eaf539a0c75aa8e0160e275dd6c128e62718294aa97d89fe6474"
+      "bytes": 1083479,
+      "sha256": "6ccbecdf47745b1b19939e6554a65e84205b6d3d016a971ca5f1818d02fbb793"
     },
     {
       "filename": "etf-holdings-08.json",
       "bytes": 1706808,
-      "sha256": "dbaf8cc7ceb8942ac9f2ca5a7b6b294d0b1ec24af432d37d41a2054d0631ad58"
+      "sha256": "652b87fca6ad2cd7ded2ce17157b193ea20ff53760fad8dee12892883ecc5a40"
     },
     {
       "filename": "etf-holdings-09.json",
-      "bytes": 1646381,
-      "sha256": "6cd7ddd9c95879cce5ae57ecfe5f324cbc41ee95da4bcec08ee445afb174fefe"
+      "bytes": 1646214,
+      "sha256": "07668bc18b61e089a96afece0480079b0b3a0e12c8b1be17bfcd1b8520325f27"
     },
     {
       "filename": "etf-holdings-10.json",
-      "bytes": 1166741,
-      "sha256": "d4ea1a350444b6b8d731528f23367d27c6e50c322a4a5ae0557ce06855c4847b"
+      "bytes": 1166740,
+      "sha256": "66bf9a1f8f931138c9dee72d09659a3713f65808a6d8d0b697c06af42cd6e97b"
     },
     {
       "filename": "etf-holdings-11.json",
-      "bytes": 1205726,
-      "sha256": "f63ae61acace7aa3a66d9d0436948968b6a458b4c647d88600b1750c15ee57c9"
+      "bytes": 1205548,
+      "sha256": "9f8ebd1e8380efdf7c9c566308a67d0ea3c7ec0b90078e8e8e6ecd5760f35b4e"
     },
     {
       "filename": "etf-holdings-12.json",
-      "bytes": 1129442,
-      "sha256": "54ba2012b52f6243d843ac8bccb5de37f892282e718017a180d205874087ef7d"
+      "bytes": 1129441,
+      "sha256": "7ab6a2681eee238ece0de9c1d9e9d1e0697a2629fdae149d92b3e57b366cda9c"
     }
   ],
-  "totalShardRows": 96594
+  "totalShardRows": 96586
 }

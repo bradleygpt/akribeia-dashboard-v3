@@ -3238,3 +3238,398 @@ export const DailyObservationCollectionReceiptSchema = z
 export type DailyObservationCollectionReceipt = z.infer<
   typeof DailyObservationCollectionReceiptSchema
 >;
+
+// ---------------------------------------------------------------------------
+// Phase 12A — Institutional Intelligence (13F)
+// ---------------------------------------------------------------------------
+
+const ThirteenFFormSchema = z.enum(["13F-HR", "13F-HR/A"]);
+const CusipSchema = z.string().regex(/^[0-9A-Z]{9}$/);
+
+export const InstitutionalManagerDirectorySchema = z
+  .object({
+    directorySchemaVersion: z.literal("1.0.0"),
+    policy: z
+      .object({
+        selectionBasis: z.string().min(1),
+        knownExclusions: z
+          .array(z.object({ name: z.string().min(1), reason: z.string().min(1) }).strict())
+          .min(0),
+      })
+      .strict(),
+    managers: z
+      .array(
+        z
+          .object({
+            cik: SecCikSchema,
+            name: z.string().trim().min(1),
+            category: z.enum([
+              "conglomerate",
+              "macro",
+              "activist",
+              "long-short-equity",
+              "value",
+              "growth",
+              "event-driven",
+              "family-office",
+            ]),
+            note: z.string().optional(),
+          })
+          .strict(),
+      )
+      .min(1),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    const ciks = value.managers.map(({ cik }) => cik);
+    if (new Set(ciks).size !== ciks.length) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Institutional manager directory CIKs must be unique.",
+        path: ["managers"],
+      });
+    }
+  });
+export type InstitutionalManagerDirectory = z.infer<typeof InstitutionalManagerDirectorySchema>;
+
+export const ThirteenFSourceReceiptSchema = z
+  .object({
+    receiptSchemaVersion: z.literal("1.0.0"),
+    snapshotId: z.string().date(),
+    retrievedAt: IsoDateTimeSchema,
+    sourcePolicy: z
+      .object({
+        provider: z.literal("U.S. Securities and Exchange Commission"),
+        api: z.literal("EDGAR Archives"),
+        access: z.literal("public-no-api-key"),
+        declaredUserAgent: z.literal(true),
+        maxRequestsPerSecond: z.literal(10),
+      })
+      .strict(),
+    filings: z
+      .array(
+        z
+          .object({
+            cik: SecCikSchema,
+            accessionNumber: SecAccessionNumberSchema,
+            form: ThirteenFFormSchema,
+            filingDate: z.string().date(),
+            periodOfReport: z.string().date(),
+            documents: z
+              .array(
+                z
+                  .object({
+                    role: z.enum(["filing-index", "primary-document", "information-table"]),
+                    uri: z.string().url(),
+                    path: z.string().min(1),
+                    sha256: Sha256Schema,
+                    byteSize: z.number().int().positive(),
+                  })
+                  .strict(),
+              )
+              .min(3),
+          })
+          .strict(),
+      )
+      .min(1),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    const accessions = value.filings.map(({ accessionNumber }) => accessionNumber);
+    if (new Set(accessions).size !== accessions.length) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "13F source receipts must not contain duplicate accessions.",
+        path: ["filings"],
+      });
+    }
+  });
+export type ThirteenFSourceReceipt = z.infer<typeof ThirteenFSourceReceiptSchema>;
+
+const InstitutionalPositionSchema = z
+  .object({
+    instrumentKey: z.string().min(1),
+    cusip: CusipSchema,
+    nameOfIssuer: z.string().min(1),
+    titleOfClass: z.string().min(1),
+    instrumentType: z.enum(["shares", "principal", "put", "call"]),
+    shares: z.number().nonnegative(),
+    valueUsd: z.number().nonnegative(),
+    identity: z
+      .object({
+        status: z.enum(["resolved", "unresolved", "excluded-contaminated"]),
+        ticker: SecTickerSchema.nullable(),
+        method: z.enum(["registrant-title-exact", "none"]),
+      })
+      .strict(),
+  })
+  .strict();
+export type InstitutionalPosition = z.infer<typeof InstitutionalPositionSchema>;
+
+const InstitutionalDeltaSchema = z
+  .object({
+    instrumentKey: z.string().min(1),
+    cusip: CusipSchema,
+    nameOfIssuer: z.string().min(1),
+    instrumentType: z.enum(["shares", "principal", "put", "call"]),
+    classification: z.enum(["NEW", "INCREASED", "REDUCED", "EXITED", "UNCHANGED"]),
+    priorShares: z.number().nonnegative().nullable(),
+    currentShares: z.number().nonnegative().nullable(),
+    shareChange: z.number().nullable(),
+    shareChangePct: z.number().nullable(),
+    priorValueUsd: z.number().nonnegative().nullable(),
+    currentValueUsd: z.number().nonnegative().nullable(),
+    identityTicker: SecTickerSchema.nullable(),
+  })
+  .strict();
+export type InstitutionalDelta = z.infer<typeof InstitutionalDeltaSchema>;
+
+const InstitutionalManagerPeriodSchema = z
+  .object({
+    periodOfReport: z.string().date(),
+    effectiveState: z.enum(["usable", "indeterminate-amendment"]),
+    filings: z
+      .array(
+        z
+          .object({
+            accessionNumber: SecAccessionNumberSchema,
+            form: ThirteenFFormSchema,
+            filingDate: z.string().date(),
+            amendmentType: z.enum(["RESTATEMENT", "NEW HOLDINGS", "NOT-AN-AMENDMENT", "UNSTATED"]),
+            valueUnit: z.enum(["dollars", "thousands"]),
+            unitDetection: z.enum(["filing-date-rule", "implied-price-correction"]),
+            reportedPositionRows: z.number().int().nonnegative(),
+            contributesToEffectiveSet: z.boolean(),
+          })
+          .strict(),
+      )
+      .min(1),
+    positionCount: z.number().int().nonnegative(),
+    displayedPositionCount: z.number().int().nonnegative(),
+    totalValueUsd: z.number().nonnegative(),
+    topHoldingConcentrationPct: z.number().min(0).max(100).nullable(),
+    top10ConcentrationPct: z.number().min(0).max(100).nullable(),
+    positions: z.array(InstitutionalPositionSchema),
+  })
+  .strict();
+export type InstitutionalManagerPeriod = z.infer<typeof InstitutionalManagerPeriodSchema>;
+
+const InstitutionalManagerSchema = z
+  .object({
+    cik: SecCikSchema,
+    name: z.string().min(1),
+    category: z.string().min(1),
+    note: z.string().optional(),
+    filerNameFromSec: z.string().min(1),
+    periods: z.array(InstitutionalManagerPeriodSchema).min(1),
+    deltas: z
+      .object({
+        fromPeriod: z.string().date(),
+        toPeriod: z.string().date(),
+        state: z.enum(["computed", "insufficient-history", "indeterminate-amendment"]),
+        entries: z.array(InstitutionalDeltaSchema),
+        displayedEntryCount: z.number().int().nonnegative(),
+        totalEntryCount: z.number().int().nonnegative(),
+      })
+      .strict()
+      .nullable(),
+  })
+  .strict();
+export type InstitutionalManager = z.infer<typeof InstitutionalManagerSchema>;
+
+const InstitutionalStockRollupSchema = z
+  .object({
+    ticker: SecTickerSchema,
+    secTitle: z.string().min(1),
+    holderCount: z.number().int().positive(),
+    holders: z
+      .array(
+        z
+          .object({
+            cik: SecCikSchema,
+            managerName: z.string().min(1),
+            valueUsd: z.number().nonnegative(),
+            shares: z.number().nonnegative(),
+            portfolioWeightPct: z.number().min(0).max(100).nullable(),
+            latestClassification: z
+              .enum(["NEW", "INCREASED", "REDUCED", "EXITED", "UNCHANGED"])
+              .nullable(),
+          })
+          .strict(),
+      )
+      .min(1),
+    aggregateValueUsd: z.number().nonnegative(),
+    directionOfTravel: z
+      .object({
+        added: z.number().int().nonnegative(),
+        increased: z.number().int().nonnegative(),
+        reduced: z.number().int().nonnegative(),
+        exited: z.number().int().nonnegative(),
+        unchanged: z.number().int().nonnegative(),
+        withoutHistory: z.number().int().nonnegative(),
+      })
+      .strict(),
+  })
+  .strict();
+export type InstitutionalStockRollup = z.infer<typeof InstitutionalStockRollupSchema>;
+
+export const InstitutionalIntelligenceSchema = z
+  .object({
+    artifactSchemaVersion: z.literal("1.0.0"),
+    generatedAt: IsoDateTimeSchema,
+    sourceReceipt: z
+      .object({ path: z.string().min(1), sha256: Sha256Schema, snapshotId: z.string().date() })
+      .strict(),
+    valueUnitPolicy: z.literal(
+      "filing-date-2023-01-03-boundary with implied-price correction: filings dated on/after 2023-01-03 report whole dollars unless the filing's median implied price shows legacy thousands reporting, which is corrected by 1000 and flagged; earlier filings report thousands and are normalized by 1000",
+    ),
+    reportingLagPolicy: z.literal(
+      "13F filings are due up to 45 days after quarter end and describe quarter-end long positions only; they are never current positioning",
+    ),
+    displayCaps: z
+      .object({
+        positionsPerManager: z.number().int().positive(),
+        deltasPerManager: z.number().int().positive(),
+      })
+      .strict(),
+    coverage: z
+      .object({
+        managerCount: z.number().int().positive(),
+        filingsProcessed: z.number().int().positive(),
+        amendmentsProcessed: z.number().int().nonnegative(),
+        amendmentsSuperseding: z.number().int().nonnegative(),
+        duplicateAccessionsRejected: z.number().int().nonnegative(),
+        positionRowsParsed: z.number().int().positive(),
+        uniqueInstruments: z.number().int().positive(),
+        resolvedInstruments: z.number().int().nonnegative(),
+        unresolvedInstruments: z.number().int().nonnegative(),
+        excludedContaminatedInstruments: z.number().int().nonnegative(),
+      })
+      .strict(),
+    managers: z.array(InstitutionalManagerSchema).min(1),
+    stockRollups: z.array(InstitutionalStockRollupSchema),
+  })
+  .strict();
+export type InstitutionalIntelligence = z.infer<typeof InstitutionalIntelligenceSchema>;
+
+// ---------------------------------------------------------------------------
+// Phase 12B — Alpha Decay Lab (prospective, fail-closed)
+// ---------------------------------------------------------------------------
+
+export const AlphaDecayVintageSchema = z
+  .object({
+    vintageSchemaVersion: z.literal("1.0.0"),
+    observationDate: z.string().date(),
+    capturedAt: IsoDateTimeSchema,
+    signalId: z.literal("akribeia-composite-v3"),
+    modelVersion: z.string().min(1),
+    sourceBuildId: SafeBuildIdSchema,
+    sourceScoresSha256: Sha256Schema,
+    universeCount: z.number().int().positive(),
+    securities: z
+      .array(
+        z
+          .object({
+            ticker: SecTickerSchema,
+            rank: z.number().int().positive(),
+            score: z.number(),
+            sector: z.string().min(1),
+            price: z.number().positive(),
+            marketCapB: z.number().nonnegative().nullable(),
+            eligible: z.boolean(),
+          })
+          .strict(),
+      )
+      .min(1),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    const tickers = value.securities.map(({ ticker }) => ticker);
+    const ranks = value.securities.map(({ rank }) => rank);
+    const ranksValid = [...ranks].sort((a, b) => a - b).every((rank, index) => rank === index + 1);
+    if (new Set(tickers).size !== tickers.length || !ranksValid) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Alpha decay vintages need unique tickers and dense 1..N ranks.",
+        path: ["securities"],
+      });
+    }
+    if (value.securities.length !== value.universeCount) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "universeCount must equal the captured security count.",
+        path: ["universeCount"],
+      });
+    }
+  });
+export type AlphaDecayVintage = z.infer<typeof AlphaDecayVintageSchema>;
+
+const AlphaDecayHorizonSchema = z
+  .object({
+    horizonTradingDays: z.number().int().positive(),
+    state: z.enum(["computed", "insufficient-history"]),
+    vintagesUsed: z.number().int().nonnegative(),
+    vintagesRequired: z.number().int().positive(),
+    meanRankIc: z.number().nullable(),
+    hitRate: z.number().min(0).max(1).nullable(),
+    topMinusBottomQuintileSpread: z.number().nullable(),
+    excludedForMissingForwardWindow: z.number().int().nonnegative(),
+  })
+  .strict();
+
+export const AlphaDecayReportSchema = z
+  .object({
+    reportSchemaVersion: z.literal("1.0.0"),
+    generatedAt: IsoDateTimeSchema,
+    signalId: z.literal("akribeia-composite-v3"),
+    methodology: z.literal(
+      "spearman-rank-ic-prospective-only: statistics use contemporaneously captured immutable vintages and receipted forward prices; no hindsight reconstruction",
+    ),
+    policy: z
+      .object({
+        minVintagesForDecayCurve: z.number().int().positive(),
+        minVintagesForPersistence: z.number().int().positive(),
+        minCrossSectionPerCohort: z.number().int().positive(),
+        horizonsTradingDays: z.array(z.number().int().positive()).min(1),
+      })
+      .strict(),
+    ledger: z
+      .object({
+        vintageCount: z.number().int().nonnegative(),
+        firstObservationDate: z.string().date().nullable(),
+        latestObservationDate: z.string().date().nullable(),
+        observationDates: z.array(z.string().date()),
+      })
+      .strict(),
+    overallState: z.enum(["insufficient-history", "partially-computed", "computed"]),
+    horizons: z.array(AlphaDecayHorizonSchema).min(1),
+    rankPersistence: z
+      .object({
+        state: z.enum(["computed", "insufficient-history"]),
+        vintagePairsUsed: z.number().int().nonnegative(),
+        vintagePairsRequired: z.number().int().positive(),
+        meanRankAutocorrelation: z.number().nullable(),
+      })
+      .strict(),
+    halfLife: z
+      .object({
+        state: z.enum(["computed", "not-well-defined", "insufficient-history"]),
+        halfLifeTradingDays: z.number().positive().nullable(),
+      })
+      .strict(),
+    cohorts: z
+      .array(
+        z
+          .object({
+            dimension: z.enum(["sector"]),
+            cohort: z.string().min(1),
+            state: z.enum(["computed", "insufficient-coverage", "insufficient-history"]),
+            crossSection: z.number().int().nonnegative(),
+            meanRankIc21d: z.number().nullable(),
+          })
+          .strict(),
+      )
+      .min(0),
+  })
+  .strict();
+export type AlphaDecayReport = z.infer<typeof AlphaDecayReportSchema>;

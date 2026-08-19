@@ -34,6 +34,10 @@ export * from "./sec-submissions-source.js";
 export * from "./security-master.js";
 export * from "./universe-membership.js";
 export * from "./walk-forward-readiness.js";
+export * from "./thirteenf-parse.js";
+export * from "./thirteenf-source.js";
+export * from "./institutional-intelligence.js";
+export * from "./alpha-decay.js";
 
 const REQUIRED_ARTIFACTS = ["dashboard", "portfolio", "scores"] as const;
 const BENCHMARK_REASON =

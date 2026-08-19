@@ -6,6 +6,7 @@ data/reference/v2-baseline/validation-results/*.txt
 # Preserve checksum-pinned provider bytes exactly as retrieved.
 data/reference/sec/**/company_tickers*.json
 data/reference/sec/**/CIK*.json
+data/reference/sec/13f/**/index.json
 data/evidence/**
 
 # Generated projections and immutable publication artifacts retain pipeline-sealed bytes.

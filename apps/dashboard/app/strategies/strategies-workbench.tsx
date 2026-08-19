@@ -2,6 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { compareNullable } from "../product-parity";
+import {
+  ACTIVE_STRATEGIES,
+  RETIRED_STRATEGIES,
+  isRetiredStrategyName,
+  strategyFactorLabel,
+} from "./strategy-status";
 
 type Direction = "ascending" | "descending";
 type SortKey = "strategy" | "book" | "entry" | "ticker" | "daily" | "rebalance" | "alltime";
@@ -55,13 +61,9 @@ function performance(value: number | null): string {
   return `${sign}${value.toFixed(1)}%`;
 }
 
-const FACTORS: Record<string, string> = {
-  Katalepsis: "ML posterior · c78q",
-  Aristeia: "Event / PEAD",
-  Auxo: "Growth",
-  Prosodos: "Profitability",
-  Pronoia: "ML 12-month foresight",
-};
+// Factor labels come from the governed strategy-status module; retired
+// strategies (Aristeia, Prosodos) never receive active presentation even
+// though the pinned V2 snapshot predates their retirement.
 
 export function StrategiesWorkbench() {
   const [holdingsEnvelope, setHoldingsEnvelope] = useState<Envelope | null>(null);
@@ -102,9 +104,17 @@ export function StrategiesWorkbench() {
     holdingsEnvelope?.payload && typeof holdingsEnvelope.payload === "object"
       ? (holdingsEnvelope.payload as Record<string, unknown>)
       : null;
-  const strategies = Array.isArray(holdingsPayload?.strategies)
+  const allSourceStrategies = Array.isArray(holdingsPayload?.strategies)
     ? (holdingsPayload.strategies as Array<Record<string, unknown>>)
     : [];
+  // Pinned V2 records predate the 2026-08-11 strategy retirement; retired
+  // sleeves are excluded from all active presentation.
+  const strategies = allSourceStrategies.filter(
+    (strategy) => !isRetiredStrategyName(string(strategy.label) ?? ""),
+  );
+  const retiredInSource = allSourceStrategies
+    .map((strategy) => string(strategy.label) ?? "")
+    .filter((label) => isRetiredStrategyName(label));
   const rows = useMemo<HoldingRow[]>(
     () =>
       strategies.flatMap((strategy) => {
@@ -168,11 +178,57 @@ export function StrategiesWorkbench() {
         </span>
       </section>
 
+      <section className="parity-section" aria-labelledby="roster-heading">
+        <div className="research-subheading">
+          <div>
+            <p className="mono-label">GOVERNED ACTIVE ROSTER / 2026-08-11 STATE</p>
+            <h2 id="roster-heading">Active strategy sleeves</h2>
+          </div>
+          <span>Kairos replaced Aristeia on 2026-08-11 · Prosodos retired</span>
+        </div>
+        <div className="strategy-roster" role="list">
+          {ACTIVE_STRATEGIES.map((strategy) => {
+            const hasPinnedRecords = strategies.some(
+              (candidate) => string(candidate.label) === strategy.name,
+            );
+            return (
+              <article role="listitem" key={strategy.name} className="strategy-roster-item">
+                <h3>{strategy.name}</h3>
+                <p>{strategy.factor ?? "Factor label pending pinned records"}</p>
+                <small>
+                  {strategy.note ? `${strategy.note} ` : ""}
+                  {holdingsEnvelope === null
+                    ? "Loading pinned records…"
+                    : hasPinnedRecords
+                      ? "Pinned V2 records below."
+                      : "No pinned V2 records yet — this sleeve postdates the pinned snapshot; records appear with the next approved data refresh."}
+                </small>
+              </article>
+            );
+          })}
+        </div>
+        {retiredInSource.length > 0 ? (
+          <p className="strategy-retired-note" role="note">
+            Retired sleeves excluded from active presentation:{" "}
+            {RETIRED_STRATEGIES.filter(({ name }) => retiredInSource.includes(name))
+              .map(
+                (strategy) =>
+                  `${strategy.name} (${strategy.factor ?? "factor unrecorded"}${
+                    strategy.retiredOn ? `, retired ${strategy.retiredOn}` : ", retired"
+                  })`,
+              )
+              .join(" · ")}
+            . Their pinned records remain preserved in the source snapshot but are not shown as
+            active strategies.
+          </p>
+        ) : null}
+      </section>
+
       <section className="parity-section" aria-labelledby="definitions-heading">
         <div className="research-subheading">
           <div>
-            <p className="mono-label">APPROVED V2 DEFINITIONS</p>
-            <h2 id="definitions-heading">Five strategy sleeves</h2>
+            <p className="mono-label">APPROVED V2 DEFINITIONS / ACTIVE SLEEVES ONLY</p>
+            <h2 id="definitions-heading">Strategy definitions</h2>
           </div>
           <span>
             {generatedAt ? `Rationale snapshot ${generatedAt}` : "Rationale date unavailable"}
@@ -180,30 +236,32 @@ export function StrategiesWorkbench() {
         </div>
         {Object.keys(definitions).length > 0 ? (
           <div className="strategy-definition-grid">
-            {Object.entries(definitions).map(([name, definition]) => {
-              const strategy = strategies.find((candidate) => string(candidate.label) === name);
-              const bookType = string(strategy?.book_type);
-              return (
-                <article key={name}>
-                  <header>
-                    <div>
-                      <p>{FACTORS[name] ?? "Source-defined strategy"}</p>
-                      <h3>{name}</h3>
-                    </div>
-                    <span data-book={bookType ?? "unavailable"}>{bookType ?? "unavailable"}</span>
-                  </header>
-                  <p>{definition.thesis ?? "Definition unavailable in the approved source."}</p>
-                  <details>
-                    <summary>Show dated AI rationale</summary>
-                    <p>{definition.rationale ?? "Rationale unavailable."}</p>
-                    <small>
-                      Source model: {string(rationalePayload?.model) ?? "Unavailable"}. This dated
-                      narrative is not a recommendation.
-                    </small>
-                  </details>
-                </article>
-              );
-            })}
+            {Object.entries(definitions)
+              .filter(([name]) => !isRetiredStrategyName(name))
+              .map(([name, definition]) => {
+                const strategy = strategies.find((candidate) => string(candidate.label) === name);
+                const bookType = string(strategy?.book_type);
+                return (
+                  <article key={name}>
+                    <header>
+                      <div>
+                        <p>{strategyFactorLabel(name) ?? "Source-defined strategy"}</p>
+                        <h3>{name}</h3>
+                      </div>
+                      <span data-book={bookType ?? "unavailable"}>{bookType ?? "unavailable"}</span>
+                    </header>
+                    <p>{definition.thesis ?? "Definition unavailable in the approved source."}</p>
+                    <details>
+                      <summary>Show dated AI rationale</summary>
+                      <p>{definition.rationale ?? "Rationale unavailable."}</p>
+                      <small>
+                        Source model: {string(rationalePayload?.model) ?? "Unavailable"}. This dated
+                        narrative is not a recommendation.
+                      </small>
+                    </details>
+                  </article>
+                );
+              })}
           </div>
         ) : (
           <p className="parity-unavailable">

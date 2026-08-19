@@ -3,6 +3,7 @@
 @import "./experience.css";
 @import "./portal.css";
 @import "./product-parity.css";
+@import "./institutional/institutional.css";
 
 :root {
   --ink: #101914;

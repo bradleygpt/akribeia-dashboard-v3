@@ -46,7 +46,7 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /See the market whole/);
   assert.match(html, /Test every signal/);
   assert.match(html, /Open Market Health/);
-  assert.match(html, /Research all 1,361 securities/);
+  assert.match(html, /Research all 1,360 securities/);
   assert.match(html, /aria-label="Akribeia product areas"/);
   assert.match(html, /Regime, macro, earnings, breadth and risk/);
   assert.match(html, /data-market-health-state="loading"/);
@@ -57,7 +57,7 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /Earnings health/);
   assert.match(html, /Market breadth/);
   assert.match(html, /Risk state/);
-  assert.match(html, /Computed across all 1,361 securities/);
+  assert.match(html, /Computed across all 1,360 governed securities/);
   assert.match(html, /no market-cap floor/i);
   assert.match(html, /Trust policy/);
   assert.match(html, /Fail closed/);
@@ -77,8 +77,8 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /Every validated name\. No hidden cap floor\./);
   assert.match(html, /Search all securities/);
   assert.match(html, /authoritative no-floor universe/);
-  assert.match(html, />1,361</);
-  assert.match(html, />1,291</);
+  assert.match(html, />1,360</);
+  assert.match(html, />1,290</);
   assert.match(html, />70</);
   assert.match(html, /SHA-256/);
   assert.match(html, /10624afb7f413c2a1c3490c29b99e37a9fa5c0776a0a58f53de6d7af73b337e4/);

@@ -14,8 +14,8 @@ const artifact = JSON.parse(
 
 describe("canonical dashboard ETF coverage", () => {
   it("covers the exact canonical equity artifact and never retains directory-only ETFs", () => {
-    expect(artifact.coverage.canonicalEquities).toBe(1291);
-    expect(artifact.coverage.equitiesCovered + artifact.coverage.equitiesUncovered).toBe(1291);
+    expect(artifact.coverage.canonicalEquities).toBe(1290);
+    expect(artifact.coverage.equitiesCovered + artifact.coverage.equitiesUncovered).toBe(1290);
     expect(artifact.funds.length).toBeGreaterThan(250);
     expect(new Set(artifact.rows.map((row) => row.etfTicker)).size).toBe(artifact.funds.length);
     expect(artifact.funds.map((fund) => fund.ticker)).toEqual(

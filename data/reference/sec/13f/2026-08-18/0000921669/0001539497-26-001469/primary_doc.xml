@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<edgarSubmission xsi:schemaLocation="http://www.sec.gov/edgar/thirteenffiler eis_13F_Filer.xsd" xmlns="http://www.sec.gov/edgar/thirteenffiler" xmlns:ns1="http://www.sec.gov/edgar/common" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <schemaVersion>X0202</schemaVersion>
+  <headerData>
+    <submissionType>13F-HR</submissionType>
+    <filerInfo>
+      <liveTestFlag>LIVE</liveTestFlag>
+      <flags>
+        <confirmingCopyFlag>false</confirmingCopyFlag>
+        <returnCopyFlag>false</returnCopyFlag>
+        <overrideInternetFlag>false</overrideInternetFlag>
+      </flags>
+      <filer>
+        <credentials>
+          <cik>0000921669</cik>
+          <ccc>XXXXXXXX</ccc>
+        </credentials>
+      </filer>
+      <periodOfReport>03-31-2026</periodOfReport>
+    </filerInfo>
+  </headerData>
+  <formData>
+    <coverPage>
+      <reportCalendarOrQuarter>03-31-2026</reportCalendarOrQuarter>
+      <isAmendment>false</isAmendment>
+      <filingManager>
+        <name>ICAHN CARL C</name>
+        <address>
+          <ns1:street1>C/O ICAHN ENTERPRISES L.P.</ns1:street1>
+          <ns1:street2>16690 COLLINS AVE., PH-1</ns1:street2>
+          <ns1:city>SUNNY ISLES BEACH</ns1:city>
+          <ns1:stateOrCountry>FL</ns1:stateOrCountry>
+          <ns1:zipCode>33160</ns1:zipCode>
+        </address>
+      </filingManager>
+      <reportType>13F HOLDINGS REPORT</reportType>
+      <form13FFileNumber>028-04333</form13FFileNumber>
+      <provideInfoForInstruction5>N</provideInfoForInstruction5>
+    </coverPage>
+    <signatureBlock>
+      <name>Jesse A. Lynn</name>
+      <title>Attorney-In-Fact</title>
+      <phone>305-422-4131</phone>
+      <signature>/s/  Jesse A. Lynn</signature>
+      <city>Sunny Isles Beach</city>
+      <stateOrCountry>FL</stateOrCountry>
+      <signatureDate>05-15-2026</signatureDate>
+    </signatureBlock>
+    <summaryPage>
+      <otherIncludedManagersCount>9</otherIncludedManagersCount>
+      <tableEntryTotal>18</tableEntryTotal>
+      <tableValueTotal>8553640766</tableValueTotal>
+      <isConfidentialOmitted>true</isConfidentialOmitted>
+      <otherManagers2Info>
+        <otherManager2>
+          <sequenceNumber>1</sequenceNumber>
+          <otherManager>
+            <cik>0001412093</cik>
+            <form13FFileNumber>028-12848</form13FFileNumber>
+            <name>ICAHN CAPITAL LP</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>2</sequenceNumber>
+          <otherManager>
+            <cik>0000945612</cik>
+            <form13FFileNumber>028-04970</form13FFileNumber>
+            <name>HIGH COAST LIMITED PARTNERSHIP</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>3</sequenceNumber>
+          <otherManager>
+            <cik>0000928475</cik>
+            <form13FFileNumber>028-04460</form13FFileNumber>
+            <name>HIGHCREST INVESTORS LLC</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>4</sequenceNumber>
+          <otherManager>
+            <cik>0001315356</cik>
+            <form13FFileNumber>028-11469</form13FFileNumber>
+            <name>GASCON PARTNERS</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>5</sequenceNumber>
+          <otherManager>
+            <cik>0001257325</cik>
+            <form13FFileNumber>028-13170</form13FFileNumber>
+            <name>THORNWOOD ASSOCIATES LIMITED PARTNERSHIP</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>6</sequenceNumber>
+          <otherManager>
+            <cik>0001327741</cik>
+            <form13FFileNumber>028-12621</form13FFileNumber>
+            <name>CCI ONSHORE LLC</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>7</sequenceNumber>
+          <otherManager>
+            <cik>0001830292</cik>
+            <form13FFileNumber>028-20387</form13FFileNumber>
+            <name>IEP Energy Holding LLC</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>8</sequenceNumber>
+          <otherManager>
+            <cik>0002043224</cik>
+            <form13FFileNumber>028-25603</form13FFileNumber>
+            <name>UAN Services, LLC</name>
+          </otherManager>
+        </otherManager2>
+        <otherManager2>
+          <sequenceNumber>9</sequenceNumber>
+          <otherManager>
+            <cik>0001738751</cik>
+            <form13FFileNumber>028-19369</form13FFileNumber>
+            <name>AMERICAN ENTERTAINMENT PROPERTIES CORP.</name>
+          </otherManager>
+        </otherManager2>
+      </otherManagers2Info>
+    </summaryPage>
+  </formData>
+</edgarSubmission>

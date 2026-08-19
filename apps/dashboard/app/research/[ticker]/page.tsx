@@ -5,6 +5,7 @@ import { formatMarketCap, formatMoney, formatPercent, formatRatio } from "../../
 import { SecurityLivePanel } from "./security-live-panel";
 import { SecurityRadar } from "./security-radar";
 import { SecurityDeepReference } from "./security-deep-reference";
+import { SecurityInstitutional } from "./security-institutional";
 import EtfDetailPage from "../../etfs/[ticker]/page";
 
 interface PageProps {
@@ -48,7 +49,7 @@ export default async function SecurityDetailPage({ params }: PageProps) {
           <section className="research-not-found">
             <p className="mono-label">SECURITY RECORD / UNAVAILABLE</p>
             <h1>No preserved record for “{decodeURIComponent(ticker).toUpperCase()}”.</h1>
-            <p>The requested ticker is not present in the authoritative 1,361-security universe.</p>
+            <p>The requested ticker is not present in the governed 1,360-security universe.</p>
             <a href="/research">Return to the research workbench</a>
           </section>
         </main>
@@ -217,6 +218,8 @@ export default async function SecurityDetailPage({ params }: PageProps) {
           snapshotAsOf={universe.source.publishedAt.slice(0, 10)}
         />
         <SecurityDeepReference ticker={security.ticker} />
+
+        <SecurityInstitutional ticker={security.ticker} />
 
         <section className="security-factors" aria-labelledby="factor-heading">
           <div className="security-section-heading">

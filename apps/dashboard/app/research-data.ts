@@ -1,6 +1,7 @@
 import preservedUniverse from "../../../data/reference/v2-baseline/fixtures/universe_floor0.json";
 import preservedMeta from "../../../data/reference/v2-baseline/fixtures/meta.json";
 import { V2_UNIVERSE_EXPECTED, validateV2UniversePayload } from "./v2-universe";
+import { isExcludedSecurityTicker } from "./security-exclusions";
 
 export const RESEARCH_PRESETS = {
   all: {
@@ -157,15 +158,20 @@ let cachedUniverse: ResearchUniverse | undefined;
 export function loadResearchUniverse(): ResearchUniverse {
   if (cachedUniverse !== undefined) return cachedUniverse;
   const payload = validateV2UniversePayload(preservedUniverse, V2_UNIVERSE_EXPECTED);
-  const rows = (payload.rows as unknown as SourceRow[]).map(mapRow);
+  // The validated payload is the byte-identical preserved V2 archive; the
+  // governed universe applies the exclusion registry at this single point of
+  // derivation, so every surface and count downstream is recomputed.
+  const rows = (payload.rows as unknown as SourceRow[])
+    .filter(({ ticker }) => !isExcludedSecurityTicker(ticker))
+    .map(mapRow);
   cachedUniverse = {
     rows,
     sectors: [...new Set(rows.filter(({ isEtf }) => !isEtf).map(({ sector }) => sector))].sort(
       (left, right) => left.localeCompare(right),
     ),
-    total: payload.meta.n_total,
-    stocks: payload.meta.n_stocks,
-    etfs: payload.meta.n_etf,
+    total: rows.length,
+    stocks: rows.filter(({ isEtf }) => !isEtf).length,
+    etfs: rows.filter(({ isEtf }) => isEtf).length,
     source: V2_UNIVERSE_EXPECTED,
   };
   return cachedUniverse;

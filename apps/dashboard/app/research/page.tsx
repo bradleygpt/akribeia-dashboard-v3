@@ -5,7 +5,7 @@ import { ResearchWorkbench } from "./research-workbench";
 export const metadata = {
   title: "Core Research Workbench — Akribeia",
   description:
-    "Screen, filter, sort, compare and inspect all 1,361 securities in the preserved Akribeia V2 research universe.",
+    "Screen, filter, sort, compare and inspect all 1,360 securities in the governed Akribeia research universe.",
 };
 
 export default function ResearchPage() {
