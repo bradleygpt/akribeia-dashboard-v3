@@ -1,6 +1,7 @@
 /* global fetch, console */
 
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { readEtfArtifact } from "./lib/etf-artifact-store.mjs";
 
 const evidence = "C:/Akribeia-ETF-Universe-Expansion-20260805-220041";
 const base =
@@ -37,9 +38,7 @@ const currentRows = [...current].sort().map((ticker) => {
 const expanded = JSON.parse(
   await readFile("apps/dashboard/public/data/etf-universe-expanded.json", "utf8"),
 );
-const normalized = JSON.parse(
-  await readFile("apps/dashboard/public/data/etf-holdings-normalized.json", "utf8"),
-);
+const normalized = await readEtfArtifact("apps/dashboard/public/data/etf-holdings-normalized.json");
 const expandedRows = expanded.etfs.map((row) => [
   row.ticker,
   row.fundName,
@@ -162,7 +161,7 @@ await writeFile(
 );
 await writeFile(
   `${evidence}/ETF_HOLDINGS_NORMALIZATION.md`,
-  `# Holdings normalization\n\nRows are uppercased and retained as source ratios. Duplicate ETF/constituent rows are not synthesized. Non-US symbols containing a dot remain explicitly unmapped. Partial source coverage is never promoted to complete coverage; unavailable holdings remain unavailable.\n\nNormalized artifact: apps/dashboard/public/data/etf-holdings-normalized.json\n`,
+  `# Holdings normalization\n\nRows are uppercased and retained as source ratios. Duplicate ETF/constituent rows are not synthesized. Non-US symbols containing a dot remain explicitly unmapped. Partial source coverage is never promoted to complete coverage; unavailable holdings remain unavailable.\n\nNormalized artifact: apps/dashboard/public/data/etf-holdings-normalized/manifest.json\n`,
 );
 await writeFile(
   `${evidence}/ETF_SIMILARITY_METHOD.md`,

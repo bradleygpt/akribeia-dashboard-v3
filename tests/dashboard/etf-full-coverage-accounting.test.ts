@@ -1,20 +1,14 @@
-import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
+import { readEtfArtifactSync } from "../../apps/dashboard/scripts/lib/etf-artifact-store.mjs";
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
-const normalized = JSON.parse(
-  readFileSync(
-    resolve(repositoryRoot, "apps/dashboard/public/data/etf-holdings-normalized.json"),
-    "utf8",
-  ),
+const normalized = readEtfArtifactSync(
+  resolve(repositoryRoot, "apps/dashboard/public/data/etf-holdings-normalized.json"),
 );
-const canonical = JSON.parse(
-  readFileSync(
-    resolve(repositoryRoot, "apps/dashboard/public/data/etf-holdings-canonical.json"),
-    "utf8",
-  ),
+const canonical = readEtfArtifactSync(
+  resolve(repositoryRoot, "apps/dashboard/public/data/etf-holdings-canonical.json"),
 );
 
 describe("ETF full coverage accounting", () => {

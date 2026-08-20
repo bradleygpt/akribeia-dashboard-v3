@@ -2,6 +2,7 @@
 import { createReadStream } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { createInterface } from "node:readline";
+import { readEtfArtifact } from "./lib/etf-artifact-store.mjs";
 
 const sourceRoot = process.env.AKRIBEIA_SEC_NPORT_ROOT ?? "C:/Akribeia-sec-nport";
 const evidence =
@@ -10,15 +11,11 @@ const quarters = ["2025q1", "2025q2", "2025q3", "2025q4", "q1", "q2"];
 const directory = JSON.parse(
   await readFile("apps/dashboard/public/data/etf-universe-expanded.json", "utf8"),
 );
-const canonical = JSON.parse(
-  await readFile("apps/dashboard/public/data/etf-holdings-canonical.json", "utf8"),
-);
+const canonical = await readEtfArtifact("apps/dashboard/public/data/etf-holdings-canonical.json");
 const mf = JSON.parse(
   await readFile("data/reference/sec/2026-07-30/company_tickers_mf.json", "utf8"),
 );
-const currentRows = JSON.parse(
-  await readFile("apps/dashboard/public/data/etf-holdings-sec-nport.json", "utf8"),
-);
+const currentRows = await readEtfArtifact("apps/dashboard/public/data/etf-holdings-sec-nport.json");
 const etfSet = new Set(directory.etfs.map((row) => row.ticker.toUpperCase()));
 const currentByEtf = new Set(currentRows.rows.map((row) => row.etfTicker));
 const canonicalTickers = new Set(canonical.rows.map((row) => row.constituentTicker));

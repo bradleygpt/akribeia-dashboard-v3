@@ -1,10 +1,11 @@
 /* global Buffer, console */
 import { createHash } from "node:crypto";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
+import { readEtfArtifact } from "./lib/etf-artifact-store.mjs";
 
 const root = "apps/dashboard/public/data";
 const out = `${root}/etf-runtime`;
-const canonical = JSON.parse(await readFile(`${root}/etf-holdings-canonical.json`, "utf8"));
+const canonical = await readEtfArtifact(`${root}/etf-holdings-canonical.json`);
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const writeJson = async (name, value) => {
   const bytes = Buffer.from(`${JSON.stringify(value)}\n`);

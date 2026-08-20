@@ -1,5 +1,6 @@
 /* global console */
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile } from "node:fs/promises";
+import { writeEtfArtifact } from "./lib/etf-artifact-store.mjs";
 
 const sourceRoot = "C:/Akribeia-ishares";
 const manifest = JSON.parse(await readFile(`${sourceRoot}/manifest.json`, "utf8"));
@@ -128,10 +129,7 @@ const artifact = {
   invertedIndex,
 };
 await mkdir("apps/dashboard/public/data", { recursive: true });
-await writeFile(
-  "apps/dashboard/public/data/etf-holdings-ishares.json",
-  `${JSON.stringify(artifact)}\n`,
-);
+await writeEtfArtifact("apps/dashboard/public/data/etf-holdings-ishares.json", artifact);
 console.log(
   JSON.stringify({
     funds: funds.length,

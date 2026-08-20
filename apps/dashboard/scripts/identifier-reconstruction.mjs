@@ -4,6 +4,7 @@ import { createHash } from "node:crypto";
 import { createReadStream } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { createInterface } from "node:readline";
+import { readEtfArtifact } from "./lib/etf-artifact-store.mjs";
 
 const evidence =
   process.env.AKRIBEIA_IDENTIFIER_EVIDENCE ??
@@ -67,7 +68,7 @@ const canonicalByName = new Map(canonical.map((row) => [normalizeName(row.name),
 
 const sourceRows = [];
 for (const file of sourceFiles) {
-  const artifact = JSON.parse(await readFile(file, "utf8"));
+  const artifact = await readEtfArtifact(file);
   for (const row of artifact.rows ?? []) sourceRows.push({ ...row, sourceArtifact: file });
 }
 const uniqueSourceRows = new Map();

@@ -7,6 +7,7 @@ import {
 } from "../../apps/dashboard/app/security-exclusions";
 import { getResearchSecurity, loadResearchUniverse } from "../../apps/dashboard/app/research-data";
 import { V2_UNIVERSE_EXPECTED, loadV2Universe } from "../../apps/dashboard/app/v2-universe";
+import { readEtfArtifactSync } from "../../apps/dashboard/scripts/lib/etf-artifact-store.mjs";
 
 function readJson(path: string): unknown {
   return JSON.parse(readFileSync(new URL(`../../${path}`, import.meta.url), "utf8"));
@@ -58,7 +59,9 @@ describe("governed security exclusions", () => {
   });
 
   it("removes MCW from the canonical ETF artifact with recomputed coverage", () => {
-    const canonical = readJson("apps/dashboard/public/data/etf-holdings-canonical.json") as {
+    const canonical = readEtfArtifactSync(
+      new URL("../../apps/dashboard/public/data/etf-holdings-canonical.json", import.meta.url),
+    ) as {
       coverage: {
         canonicalEquities: number;
         equitiesCovered: number;

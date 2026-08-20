@@ -1,11 +1,10 @@
 /* global console */
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
+import { readEtfArtifact } from "./lib/etf-artifact-store.mjs";
 
 const evidence = "C:/Akribeia-ETF-Full-Coverage-20260806-001500";
-const artifact = JSON.parse(
-  await readFile("apps/dashboard/public/data/etf-holdings-canonical.json", "utf8"),
-);
+const artifact = await readEtfArtifact("apps/dashboard/public/data/etf-holdings-canonical.json");
 const csv = (rows) =>
   rows.map((row) => row.map((value) => JSON.stringify(value ?? "")).join(",")).join("\n") + "\n";
 const cases = [

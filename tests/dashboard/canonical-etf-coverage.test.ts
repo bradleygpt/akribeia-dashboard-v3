@@ -1,11 +1,9 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import { readEtfArtifactSync } from "../../apps/dashboard/scripts/lib/etf-artifact-store.mjs";
 
-const artifact = JSON.parse(
-  readFileSync(
-    new URL("../../apps/dashboard/public/data/etf-holdings-canonical.json", import.meta.url),
-    "utf8",
-  ),
+const artifact = readEtfArtifactSync(
+  new URL("../../apps/dashboard/public/data/etf-holdings-canonical.json", import.meta.url),
 ) as {
   coverage: { canonicalEquities: number; equitiesCovered: number; equitiesUncovered: number };
   funds: Array<{ ticker: string }>;

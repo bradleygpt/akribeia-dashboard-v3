@@ -1,10 +1,11 @@
 /* global console */
 
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
+import { readEtfArtifact } from "./lib/etf-artifact-store.mjs";
 
 const evidence = "C:/Akribeia-ETF-Multi-Stock-Expansion-20260805-225108";
 const root = "apps/dashboard/public/data/";
-const artifact = JSON.parse(await readFile(`${root}etf-holdings-normalized.json`, "utf8"));
+const artifact = await readEtfArtifact(`${root}etf-holdings-normalized.json`);
 const index = artifact.invertedIndex;
 const cases = [
   ["semiconductors", "NVDA + AMD"],

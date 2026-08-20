@@ -1,14 +1,11 @@
 /* global console */
 
 import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { readEtfArtifact } from "./lib/etf-artifact-store.mjs";
 
 const evidence = "C:/Akribeia-ETF-SEC-Holdings-20260805-231139";
-const artifact = JSON.parse(
-  await readFile("apps/dashboard/public/data/etf-holdings-normalized.json", "utf8"),
-);
-const sec = JSON.parse(
-  await readFile("apps/dashboard/public/data/etf-holdings-sec-nport.json", "utf8"),
-);
+const artifact = await readEtfArtifact("apps/dashboard/public/data/etf-holdings-normalized.json");
+const sec = await readEtfArtifact("apps/dashboard/public/data/etf-holdings-sec-nport.json");
 const metadata = JSON.parse(
   await readFile("apps/dashboard/public/data/etf-universe-expanded.json", "utf8"),
 );

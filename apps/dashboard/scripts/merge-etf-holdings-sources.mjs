@@ -1,16 +1,10 @@
 /* global console */
 
-import { readFile, writeFile } from "node:fs/promises";
+import { readEtfArtifact, writeEtfArtifact } from "./lib/etf-artifact-store.mjs";
 
-const legacy = JSON.parse(
-  await readFile("apps/dashboard/public/data/etf-holdings-normalized.json", "utf8"),
-);
-const sec = JSON.parse(
-  await readFile("apps/dashboard/public/data/etf-holdings-sec-nport.json", "utf8"),
-);
-const issuer = JSON.parse(
-  await readFile("apps/dashboard/public/data/etf-holdings-ishares.json", "utf8"),
-);
+const legacy = await readEtfArtifact("apps/dashboard/public/data/etf-holdings-normalized.json");
+const sec = await readEtfArtifact("apps/dashboard/public/data/etf-holdings-sec-nport.json");
+const issuer = await readEtfArtifact("apps/dashboard/public/data/etf-holdings-ishares.json");
 const byKey = new Map();
 const secEtfTickers = new Set(sec.rows.map((row) => row.etfTicker));
 const issuerEtfTickers = new Set(issuer.rows.map((row) => row.etfTicker));
@@ -75,9 +69,5 @@ const artifact = {
   invertedIndex,
   rows,
 };
-await writeFile(
-  "apps/dashboard/public/data/etf-holdings-normalized.json",
-  `${JSON.stringify(artifact)}\n`,
-  "utf8",
-);
+await writeEtfArtifact("apps/dashboard/public/data/etf-holdings-normalized.json", artifact);
 console.log(JSON.stringify(artifact.coverage));
