@@ -1,10 +1,11 @@
 /* global console, process */
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
+import { readEtfArtifact, writeEtfArtifact } from "./lib/etf-artifact-store.mjs";
 
 const seriesEvidence =
   process.env.AKRIBEIA_SERIES_EVIDENCE ?? "C:/Akribeia-ETF-Series-Level-EDGAR-20260806-140000";
 const canonicalPath = "apps/dashboard/public/data/etf-holdings-canonical.json";
-const canonical = JSON.parse(await readFile(canonicalPath, "utf8"));
+const canonical = await readEtfArtifact(canonicalPath);
 const series = JSON.parse(
   await readFile(`${seriesEvidence}/SEC_ETF_SERIES_NORMALIZED_HOLDINGS.json`, "utf8"),
 );
@@ -76,7 +77,7 @@ canonical.coverage.equitiesUncovered =
   canonical.coverage.canonicalEquities - canonical.coverage.equitiesCovered;
 canonical.coverage.candidateHoldingsBackedEtfs =
   canonical.coverage.candidateHoldingsBackedEtfs + additions.length;
-await writeFile(canonicalPath, `${JSON.stringify(canonical)}\n`, "utf8");
+await writeEtfArtifact(canonicalPath, canonical);
 console.log(
   JSON.stringify({
     additions: additions.length,

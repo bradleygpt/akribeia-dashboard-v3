@@ -1,15 +1,14 @@
 /* global console, fetch, setTimeout, TextDecoder */
 import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { readEtfArtifact } from "./lib/etf-artifact-store.mjs";
 
 const sourceRoot = "C:/Akribeia-ishares";
 const sourceJson = "C:/Akribeia-sec-nport/ishares-products.json";
 const directory = JSON.parse(
   await readFile("apps/dashboard/public/data/etf-universe-expanded.json", "utf8"),
 );
-const canonical = JSON.parse(
-  await readFile("apps/dashboard/public/data/etf-holdings-canonical.json", "utf8"),
-);
+const canonical = await readEtfArtifact("apps/dashboard/public/data/etf-holdings-canonical.json");
 const product = JSON.parse(await readFile(sourceJson, "utf8"));
 const columns = product.data.tableData.columns.map((column) => column.name);
 const index = Object.fromEntries(columns.map((column, position) => [column, position]));

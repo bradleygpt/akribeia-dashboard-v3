@@ -1,0 +1,174 @@
+{
+  "schemaVersion": "1.0.0",
+  "artifact": "etf-holdings-normalized",
+  "maxShardBytes": 4194304,
+  "source": {
+    "bytes": 42810078,
+    "sha256": "7004b2d0097dced965a74a73820d0570507027629765abe38622dd8ccd7fa94a"
+  },
+  "logical": {
+    "bytes": 42810077,
+    "sha256": "d0c0a975150a48106dfef6f6b31aff5273cc29cc963e57b9eeaa2620f95a3d1d"
+  },
+  "sections": [
+    {
+      "key": "schemaVersion",
+      "kind": "inline",
+      "value": "2.0.0-zero-cost-multi-source"
+    },
+    {
+      "key": "generatedAt",
+      "kind": "inline",
+      "value": "2026-08-06T14:49:25.119Z"
+    },
+    {
+      "key": "policy",
+      "kind": "inline",
+      "value": "SEC N-PORT equity holdings are preferred; approved V2 reference rows supplement funds not present in SEC N-PORT. All source status and as-of fields remain attached; no complete claim is made for partial data."
+    },
+    {
+      "key": "sources",
+      "kind": "inline",
+      "value": [
+        {
+          "name": "iShares/BlackRock official product screener and issuer latest holdings CSV",
+          "productScreener": "https://www.ishares.com/us/product-screener/product-screener-v3.jsn?dcrPath=/templatedata/config/product-screener-v3/data/en/us-ishares/product-screener-ketto",
+          "permission": "Public issuer-hosted product data and latest-holdings CSV; attribution and as-of retained.",
+          "retrievedAt": "2026-08-06T14:48:28.308Z"
+        },
+        {
+          "name": "SEC Form N-PORT and N-CEN Data Sets",
+          "datasets": [
+            {
+              "id": "2026q1",
+              "nportUrl": "https://www.sec.gov/files/dera/data/form-n-port-data-sets/2026q1_nport.zip",
+              "ncenUrl": "https://www.sec.gov/files/dera/data/form-n-cen-data-sets/2026q1_ncen.zip"
+            },
+            {
+              "id": "2026q2",
+              "nportUrl": "https://www.sec.gov/files/dera/data/form-n-port-data-sets/2026q2_nport.zip",
+              "ncenUrl": "https://www.sec.gov/files/dera/data/form-n-cen-data-sets/2026q2_ncen.zip"
+            }
+          ],
+          "asOf": "latest per-fund report across 2026 Q1 and 2026 Q2 datasets",
+          "retrievedAt": "2026-08-06T13:20:16.111Z",
+          "permission": "Official SEC public data set; as-filed public filings."
+        },
+        null
+      ]
+    },
+    {
+      "key": "coverage",
+      "kind": "inline",
+      "value": {
+        "totalEtfs": 854,
+        "etfsWithCompleteHoldings": 0,
+        "etfsWithPartialHoldings": 854,
+        "etfsWithUnavailableHoldings": 4721,
+        "totalHoldingsRows": 76485,
+        "medianHoldingsDepth": 32,
+        "fundsWithAtLeast25Holdings": 496,
+        "fundsWithAtLeast50Holdings": 327,
+        "sourceBreakdown": {
+          "secNportRows": 53226,
+          "officialIssuerRows": 22061,
+          "approvedV2Rows": 1228
+        }
+      }
+    },
+    {
+      "key": "invertedIndex",
+      "kind": "object",
+      "count": 6895,
+      "logical": {
+        "bytes": 4806820,
+        "sha256": "f96cbfb37bf985487ce25cf1e443e16e4563f0aeac20aa2453e9aefcedbd9abb"
+      },
+      "shards": [
+        {
+          "filename": "inverted-index-000.json",
+          "count": 3572,
+          "bytes": 4193702,
+          "sha256": "09419677f146596ceef45d519844f851030d8fe8e6368d2911ccf8efcdced11d"
+        },
+        {
+          "filename": "inverted-index-001.json",
+          "count": 3323,
+          "bytes": 613121,
+          "sha256": "71517e636cf052e3380b59741bf17bfe61e28381d5a918d66bac6b03e39afb0d"
+        }
+      ]
+    },
+    {
+      "key": "rows",
+      "kind": "array",
+      "count": 76485,
+      "logical": {
+        "bytes": 38001547,
+        "sha256": "bfaa460fd10f90310674d7d1cd2f0470e5c322173d2f7679e17ec5b76d69f11f"
+      },
+      "shards": [
+        {
+          "filename": "rows-000.json",
+          "count": 8607,
+          "bytes": 4194200,
+          "sha256": "30b2df20f7713a033edf67f4abf38d658a3af40ffa4c0e7003d5a882259c754a"
+        },
+        {
+          "filename": "rows-001.json",
+          "count": 8453,
+          "bytes": 4193857,
+          "sha256": "5b3dd995ad921b641406418a0aa1af9e7a24016525bfacfe83355519d3bf5a1e"
+        },
+        {
+          "filename": "rows-002.json",
+          "count": 8377,
+          "bytes": 4194181,
+          "sha256": "96eaa990cb969d6add9632b21d14d2f047c00c3a5e8fde86e6775c69f4679be4"
+        },
+        {
+          "filename": "rows-003.json",
+          "count": 8374,
+          "bytes": 4194161,
+          "sha256": "119fb001bdcc84b683c2bc3a57ccbfed29d296e29aed47d3f4421ba5fa4ebed9"
+        },
+        {
+          "filename": "rows-004.json",
+          "count": 8371,
+          "bytes": 4193942,
+          "sha256": "1efaf6c61011e13b86cb92893e9d1618591746812577782a47a1cbf1b4e4e8f1"
+        },
+        {
+          "filename": "rows-005.json",
+          "count": 8256,
+          "bytes": 4193930,
+          "sha256": "d7489ee0056c394999847e34bf7987eed63b5418ccea47bb34f593fe6a2a7167"
+        },
+        {
+          "filename": "rows-006.json",
+          "count": 8473,
+          "bytes": 4194041,
+          "sha256": "45a43088f14c8ba42934b979ed67d3eb97e93369f0b2156f830b8b1e0cadbad0"
+        },
+        {
+          "filename": "rows-007.json",
+          "count": 8596,
+          "bytes": 4194185,
+          "sha256": "12721518aea80f99c7a3b2c0e982d76be109f4ff708d1198e6e527c73f3bdd01"
+        },
+        {
+          "filename": "rows-008.json",
+          "count": 8464,
+          "bytes": 4194126,
+          "sha256": "5450c4cf5adcb5775b8a5522ca68ab288133d3f3e74a2e11cf1697cf7436fb0d"
+        },
+        {
+          "filename": "rows-009.json",
+          "count": 514,
+          "bytes": 254943,
+          "sha256": "f9fcb1294aa52ff5163316d324751e2e15a50d347d72275b50fbf377c65bca5f"
+        }
+      ]
+    }
+  ]
+}

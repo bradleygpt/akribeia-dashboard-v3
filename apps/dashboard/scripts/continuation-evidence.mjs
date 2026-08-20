@@ -1,6 +1,7 @@
 /* global console, process */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
+import { readEtfArtifact } from "./lib/etf-artifact-store.mjs";
 
 const evidence =
   process.env.AKRIBEIA_EVIDENCE ?? "C:/Akribeia-ETF-Full-Coverage-Continuation-20260806-094500";
@@ -9,9 +10,9 @@ const universe = JSON.parse(
   await readFile("data/reference/v2-baseline/fixtures/universe_floor0.json", "utf8"),
 );
 const directory = JSON.parse(await readFile(`${root}etf-universe-expanded.json`, "utf8"));
-const normalized = JSON.parse(await readFile(`${root}etf-holdings-normalized.json`, "utf8"));
-const canonical = JSON.parse(await readFile(`${root}etf-holdings-canonical.json`, "utf8"));
-const issuer = JSON.parse(await readFile(`${root}etf-holdings-ishares.json`, "utf8"));
+const normalized = await readEtfArtifact(`${root}etf-holdings-normalized.json`);
+const canonical = await readEtfArtifact(`${root}etf-holdings-canonical.json`);
+const issuer = await readEtfArtifact(`${root}etf-holdings-ishares.json`);
 const canonicalRows = universe.rows
   .filter((row) => row.sector !== "ETF")
   .map((row) => ({

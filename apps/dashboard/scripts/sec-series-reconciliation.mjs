@@ -1,5 +1,6 @@
 /* global console, process */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { readEtfArtifact } from "./lib/etf-artifact-store.mjs";
 
 const evidence =
   process.env.AKRIBEIA_SEC_EVIDENCE ?? "C:/Akribeia-ETF-SEC-Series-Reconciliation-20260806-121500";
@@ -8,8 +9,8 @@ const mf = JSON.parse(
   await readFile("data/reference/sec/2026-07-30/company_tickers_mf.json", "utf8"),
 );
 const directory = JSON.parse(await readFile(`${root}/etf-universe-expanded.json`, "utf8"));
-const sec = JSON.parse(await readFile(`${root}/etf-holdings-sec-nport.json`, "utf8"));
-const canonical = JSON.parse(await readFile(`${root}/etf-holdings-canonical.json`, "utf8"));
+const sec = await readEtfArtifact(`${root}/etf-holdings-sec-nport.json`);
+const canonical = await readEtfArtifact(`${root}/etf-holdings-canonical.json`);
 await mkdir(`${evidence}/screenshots`, { recursive: true });
 
 const csv = (rows) =>

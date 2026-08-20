@@ -4,10 +4,9 @@ import {
   exactIntersection,
   nearIntersection,
 } from "../../apps/dashboard/app/etfs/multi-stock-intersection";
+import { readEtfArtifactSync } from "../../apps/dashboard/scripts/lib/etf-artifact-store.mjs";
 
-const canonical = JSON.parse(
-  readFileSync("apps/dashboard/public/data/etf-holdings-canonical.json", "utf8"),
-);
+const canonical = readEtfArtifactSync("apps/dashboard/public/data/etf-holdings-canonical.json");
 const manifest = JSON.parse(
   readFileSync("apps/dashboard/public/data/etf-runtime/manifest.json", "utf8"),
 );

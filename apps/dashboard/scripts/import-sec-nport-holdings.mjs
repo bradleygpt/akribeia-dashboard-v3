@@ -1,8 +1,9 @@
 /* global console, process */
 
 import { createReadStream } from "node:fs";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile } from "node:fs/promises";
 import { createInterface } from "node:readline";
+import { writeEtfArtifact } from "./lib/etf-artifact-store.mjs";
 
 const sourceRoot = process.env.AKRIBEIA_SEC_NPORT_ROOT ?? "C:/Akribeia-sec-nport";
 const q2 = `${sourceRoot}/q2`;
@@ -204,5 +205,5 @@ const artifact = {
   rows,
 };
 await mkdir("apps/dashboard/public/data", { recursive: true });
-await writeFile(outputPath, `${JSON.stringify(artifact)}\n`, "utf8");
+await writeEtfArtifact(outputPath, artifact);
 console.log(JSON.stringify(artifact.coverage));

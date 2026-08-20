@@ -1,14 +1,13 @@
 /* global console */
 
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { readEtfArtifact, writeEtfArtifact } from "./lib/etf-artifact-store.mjs";
 
 const evidence = "C:/Akribeia-ETF-Full-Coverage-20260806-001500";
 const universe = JSON.parse(
   await readFile("data/reference/v2-baseline/fixtures/universe_floor0.json", "utf8"),
 );
-const holdings = JSON.parse(
-  await readFile("apps/dashboard/public/data/etf-holdings-normalized.json", "utf8"),
-);
+const holdings = await readEtfArtifact("apps/dashboard/public/data/etf-holdings-normalized.json");
 const directory = JSON.parse(
   await readFile("apps/dashboard/public/data/etf-universe-expanded.json", "utf8"),
 );
@@ -163,11 +162,7 @@ const canonicalArtifact = {
       }, new Map()),
   ),
 };
-await writeFile(
-  "apps/dashboard/public/data/etf-holdings-canonical.json",
-  `${JSON.stringify(canonicalArtifact)}\n`,
-  "utf8",
-);
+await writeEtfArtifact("apps/dashboard/public/data/etf-holdings-canonical.json", canonicalArtifact);
 const csv = (rows) =>
   rows.map((row) => row.map((value) => JSON.stringify(value ?? "")).join(",")).join("\n") + "\n";
 await mkdir(evidence, { recursive: true });

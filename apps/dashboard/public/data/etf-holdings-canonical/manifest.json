@@ -1,0 +1,167 @@
+{
+  "schemaVersion": "1.0.0",
+  "artifact": "etf-holdings-canonical",
+  "maxShardBytes": 4194304,
+  "source": {
+    "bytes": 50547861,
+    "sha256": "61c811aa030c041ade2e8d92165ea2f69c814059b28954d99b8cd0cedeffe720"
+  },
+  "logical": {
+    "bytes": 50547861,
+    "sha256": "61c811aa030c041ade2e8d92165ea2f69c814059b28954d99b8cd0cedeffe720"
+  },
+  "sections": [
+    {
+      "key": "schemaVersion",
+      "kind": "inline",
+      "value": "1.0.0-canonical-dashboard-equities"
+    },
+    {
+      "key": "generatedAt",
+      "kind": "inline",
+      "value": "2026-08-06T14:50:51.810Z"
+    },
+    {
+      "key": "source",
+      "kind": "inline",
+      "value": {
+        "artifact": "data/reference/v2-baseline/fixtures/universe_floor0.json",
+        "sha256": "10624AFB7F413C2A1C3490C29B99E37A9FA5C0776A0A58F53DE6D7AF73B337E4",
+        "rows": 1291,
+        "governedExclusions": [
+          "MCW"
+        ],
+        "governedExclusionsRegistry": "data/reference/governed-security-exclusions.json",
+        "note": "The preserved V2 baseline archive is unmodified; exclusions are applied at derivation and all counts above are recomputed from the governed universe."
+      }
+    },
+    {
+      "key": "coverage",
+      "kind": "inline",
+      "value": {
+        "canonicalEquities": 1290,
+        "candidateHoldingsBackedEtfs": 1382,
+        "retainedEtfs": 1286,
+        "equitiesCovered": 1287,
+        "equitiesUncovered": 3
+      }
+    },
+    {
+      "key": "funds",
+      "kind": "array",
+      "count": 1286,
+      "logical": {
+        "bytes": 810595,
+        "sha256": "48bfdedb0b916a462f3aa90fb800ef984a6cb91d3affc6c7d76cc232e3118b8b"
+      },
+      "shards": [
+        {
+          "filename": "funds-000.json",
+          "count": 1286,
+          "bytes": 810596,
+          "sha256": "2f477ec157c97971f93f22eb2fedae1546f0d513b157a0d72f2badf95f995466"
+        }
+      ]
+    },
+    {
+      "key": "rows",
+      "kind": "array",
+      "count": 96586,
+      "logical": {
+        "bytes": 43723498,
+        "sha256": "189c3a8c08fe66d39399edef3a82bf7963a5c03363ce8608cbc21c7b38a9f0df"
+      },
+      "shards": [
+        {
+          "filename": "rows-000.json",
+          "count": 10091,
+          "bytes": 4194082,
+          "sha256": "9cf5eaed44418f07261cfce83525fce7084f4365218e6aecb82e1d78df7e2bea"
+        },
+        {
+          "filename": "rows-001.json",
+          "count": 9189,
+          "bytes": 4194127,
+          "sha256": "05c388b8b397bff9f0129428ebdef29753d8c51b5f2980dfb74be65ada0c4ae7"
+        },
+        {
+          "filename": "rows-002.json",
+          "count": 8898,
+          "bytes": 4194206,
+          "sha256": "e1fc3587376755db000a584ad3f495aff5727fcedb5f59604e0b7d8d4d736218"
+        },
+        {
+          "filename": "rows-003.json",
+          "count": 9396,
+          "bytes": 4194187,
+          "sha256": "373e74ea297cca5da3b2a1074cd9079e32c0b9bd19de4cb6d6d131ba20070311"
+        },
+        {
+          "filename": "rows-004.json",
+          "count": 9388,
+          "bytes": 4194277,
+          "sha256": "e204ded1ad91c5a38dd63acc9bd5c1baf11480bb36275cc359970a5fc0dd4cb8"
+        },
+        {
+          "filename": "rows-005.json",
+          "count": 8631,
+          "bytes": 4194066,
+          "sha256": "eb992411ae6def2daea77cfd5d19ceff9886dd701b09137a74e5212bca61e2d9"
+        },
+        {
+          "filename": "rows-006.json",
+          "count": 9358,
+          "bytes": 4193953,
+          "sha256": "c8a7b0192485ccd2cfb8cbf76df8333397abf32e5a950556fbe566b72bcd7920"
+        },
+        {
+          "filename": "rows-007.json",
+          "count": 9159,
+          "bytes": 4194034,
+          "sha256": "929445314a52acef276c30911b6ad995e54d295c74b3105970a493ad63142cae"
+        },
+        {
+          "filename": "rows-008.json",
+          "count": 9358,
+          "bytes": 4193950,
+          "sha256": "bd16ae1fcd0d0b9cd02e9882c854a3ef3ab9715d884a0f6b3e67159a22f1fc8e"
+        },
+        {
+          "filename": "rows-009.json",
+          "count": 9309,
+          "bytes": 4194105,
+          "sha256": "d41f0fcb5cb8ac1c2c47d59eaaa9b5b1cf2cb4ed7ff6eff4d134d7bb84b481d4"
+        },
+        {
+          "filename": "rows-010.json",
+          "count": 3809,
+          "bytes": 1782532,
+          "sha256": "2fc8c6ba47a60b26a1e1220ff9dd12b95353057f967b23294ccb048514c0d87c"
+        }
+      ]
+    },
+    {
+      "key": "invertedIndex",
+      "kind": "object",
+      "count": 1287,
+      "logical": {
+        "bytes": 6013064,
+        "sha256": "1730c950dbd7c4cb71c3c1e982cecd804902888402c9ac27c8688963f70014ad"
+      },
+      "shards": [
+        {
+          "filename": "inverted-index-000.json",
+          "count": 571,
+          "bytes": 4193013,
+          "sha256": "d5a7971459d453b2680bd111ccdadd9cc2fa1a40964d0716e2a05d2e197f40b0"
+        },
+        {
+          "filename": "inverted-index-001.json",
+          "count": 716,
+          "bytes": 1820054,
+          "sha256": "c95ac97a4552cd1745da958cdbf4abc79177d57c02b1b70217a29b88c4e036a5"
+        }
+      ]
+    }
+  ]
+}

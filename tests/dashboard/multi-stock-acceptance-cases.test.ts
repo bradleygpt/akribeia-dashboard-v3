@@ -1,15 +1,12 @@
-import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
   exactIntersection,
   nearIntersection,
 } from "../../apps/dashboard/app/etfs/multi-stock-intersection";
+import { readEtfArtifactSync } from "../../apps/dashboard/scripts/lib/etf-artifact-store.mjs";
 
-const artifact = JSON.parse(
-  readFileSync(
-    new URL("../../apps/dashboard/public/data/etf-holdings-normalized.json", import.meta.url),
-    "utf8",
-  ),
+const artifact = readEtfArtifactSync(
+  new URL("../../apps/dashboard/public/data/etf-holdings-normalized.json", import.meta.url),
 ) as {
   invertedIndex: Record<string, Array<{ etfTicker: string; weight: number; holdingRank: number }>>;
 };

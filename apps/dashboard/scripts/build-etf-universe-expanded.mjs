@@ -1,6 +1,7 @@
 /* global fetch, URL, console */
 
 import { mkdir, writeFile } from "node:fs/promises";
+import { writeEtfArtifact } from "./lib/etf-artifact-store.mjs";
 
 const SOURCES = [
   {
@@ -169,9 +170,8 @@ await writeFile(
   `${JSON.stringify(output)}\n`,
   "utf8",
 );
-await writeFile(
+await writeEtfArtifact(
   new URL("../public/data/etf-holdings-normalized.json", import.meta.url),
-  `${JSON.stringify(holdingsArtifact)}\n`,
-  "utf8",
+  holdingsArtifact,
 );
 console.log(JSON.stringify({ totalEtfs: output.totalEtfs, asOf, retrievedAt }));

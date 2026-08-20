@@ -5,7 +5,8 @@
 // coverage counts — never by cosmetically subtracting from displayed numbers.
 // The preserved V2 baseline fixture is read-only input and is never modified.
 
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
+import { readEtfArtifact, writeEtfArtifact } from "./lib/etf-artifact-store.mjs";
 
 const registry = JSON.parse(
   await readFile("data/reference/governed-security-exclusions.json", "utf8"),
@@ -17,7 +18,7 @@ if (excluded.size === 0) {
 }
 
 const canonicalPath = "apps/dashboard/public/data/etf-holdings-canonical.json";
-const canonical = JSON.parse(await readFile(canonicalPath, "utf8"));
+const canonical = await readEtfArtifact(canonicalPath);
 const universe = JSON.parse(
   await readFile("data/reference/v2-baseline/fixtures/universe_floor0.json", "utf8"),
 );
@@ -78,7 +79,7 @@ const artifact = {
   invertedIndex,
 };
 
-await writeFile(canonicalPath, JSON.stringify(artifact));
+await writeEtfArtifact(canonicalPath, artifact);
 
 const after = {
   canonicalEquities: artifact.coverage.canonicalEquities,

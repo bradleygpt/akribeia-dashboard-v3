@@ -1,14 +1,15 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
+import { readEtfArtifact } from "../scripts/lib/etf-artifact-store.mjs";
 
 const root = new URL("../", import.meta.url);
 const read = (path) => readFile(new URL(path, root), "utf8");
 
 test("expanded ETF directory preserves reference-only and holdings provenance", async () => {
   const directory = JSON.parse(await read("public/data/etf-universe-expanded.json"));
-  const holdings = JSON.parse(await read("public/data/etf-holdings-normalized.json"));
-  const canonical = JSON.parse(await read("public/data/etf-holdings-canonical.json"));
+  const holdings = await readEtfArtifact(new URL("public/data/etf-holdings-normalized.json", root));
+  const canonical = await readEtfArtifact(new URL("public/data/etf-holdings-canonical.json", root));
   assert.ok(directory.totalEtfs > 151);
   assert.equal(directory.totalEtfs, directory.etfs.length);
   assert.ok(directory.etfs.every((row) => row.scoredStatus === "reference-only"));
