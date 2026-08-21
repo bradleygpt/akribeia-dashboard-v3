@@ -18,10 +18,9 @@ test("mounts lightweight navigation motion outside the server research tree", as
   assert.match(shell, /data-route-transition="active"/);
   assert.match(shell, /prefers-reduced-motion: reduce/);
   assert.match(shell, /pathname === "\/dashboard".*Loading Market Health/);
-  assert.match(shell, /pathname === "\/".*Returning to the Akribeia portal/);
+  assert.match(shell, /pathname === "\/".*Returning to Market Health/);
 
   assert.doesNotMatch(shell, /next\/navigation/);
-  assert.doesNotMatch(shell, /LoadingOverlay/);
   assert.doesNotMatch(shell, /requestAnimationFrame/);
 
   assert.match(css, /\.akribeia-route-transition/);
@@ -31,9 +30,15 @@ test("mounts lightweight navigation motion outside the server research tree", as
   assert.match(packageJson, /experience-worker-safe\.node\.mjs/);
 });
 
-test("does not restore the heavy canvas intro or streamed route fallbacks", async () => {
+test("restores the preserved loading intro without streamed route fallbacks", async () => {
+  const shell = await readFile(new URL("../app/experience-shell.tsx", import.meta.url), "utf8");
+
+  assert.match(shell, /import LoadingOverlay from "\.\/loading-overlay"/);
+  assert.match(shell, /sessionStorage\.getItem\(INTRO_KEY\)/);
+  assert.match(shell, /className="akribeia-intro-veil"/);
+  await access(new URL("../app/loading-overlay.tsx", import.meta.url));
+
   const prohibitedFiles = [
-    "../app/loading-overlay.tsx",
     "../app/loading.tsx",
     "../app/route-loading.tsx",
     "../app/research/loading.tsx",

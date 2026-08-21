@@ -10,7 +10,7 @@
     "build": "vinext build",
     "build:portal": "node scripts/build-with-portal.mjs",
     "start": "vinext start",
-    "test": "node --test tests/rendered-html.node.mjs tests/research-routes.node.mjs tests/browser-smoke.node.mjs tests/experience-worker-safe.node.mjs tests/live-daily-change.node.mjs tests/prolepsis.node.mjs tests/portal-home.node.mjs"
+    "test": "node --test tests/rendered-html.node.mjs tests/research-routes.node.mjs tests/browser-smoke.node.mjs tests/experience-worker-safe.node.mjs tests/experience-parity.node.mjs tests/live-daily-change.node.mjs tests/prolepsis.node.mjs tests/root-entry.node.mjs"
   },
   "dependencies": {
     "@akribeia/contracts": "0.0.1",
