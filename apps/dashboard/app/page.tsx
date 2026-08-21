@@ -23,7 +23,6 @@ import { FullUniverseExplorer } from "./full-universe-explorer";
 import { MarketHealthPanel } from "./market-health-panel";
 import { computeMarketBreadth } from "./market-health";
 import { loadV2Universe } from "./v2-universe";
-import { LandingPortal } from "../../portal/src/LandingPortal";
 import activeBenchmarkReadiness from "./generated/active-benchmark-readiness.json";
 import activeDashboard from "./generated/active-dashboard.json";
 import activeCorporateActionReadiness from "./generated/active-corporate-action-readiness.json";
@@ -2005,5 +2004,5 @@ export function MarketHealthDashboard() {
 }
 
 export default function Home() {
-  return <LandingPortal />;
+  return <MarketHealthDashboard />;
 }

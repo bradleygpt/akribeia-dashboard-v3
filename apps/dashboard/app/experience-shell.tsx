@@ -1,6 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import LoadingOverlay from "./loading-overlay";
+
+const INTRO_KEY = "akribeia:v3:intro:wave2";
+
+type IntroState = "checking" | "playing" | "ready";
 
 function describeDestination(pathname: string): string {
   if (pathname.startsWith("/research/")) return "Opening security intelligence";
@@ -15,19 +20,53 @@ function describeDestination(pathname: string): string {
   if (pathname === "/strategies") return "Loading strategy research";
   if (pathname === "/portfolio") return "Opening device-local portfolio analytics";
   if (pathname === "/help") return "Opening product help";
-  if (pathname === "/") return "Returning to the Akribeia portal";
+  if (pathname === "/") return "Returning to Market Health";
   return "Resolving Akribeia research";
 }
 
 export function ExperienceShell() {
+  const [introState, setIntroState] = useState<IntroState>("checking");
   const [routeBusy, setRouteBusy] = useState(false);
   const [routeLabel, setRouteLabel] = useState("Resolving Akribeia research");
   const navigationTimer = useRef<number | null>(null);
   const recoveryTimer = useRef<number | null>(null);
 
   useEffect(() => {
-    document.body.classList.add("akribeia-experience-ready");
+    const parameters = new URLSearchParams(window.location.search);
+    const forceIntro = parameters.get("intro") === "1";
+    const forceSkip = parameters.get("intro") === "0";
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const automatedBrowser = navigator.webdriver && !forceIntro;
 
+    let seen = false;
+    try {
+      seen = window.sessionStorage.getItem(INTRO_KEY) === "seen";
+    } catch {
+      seen = false;
+    }
+
+    if (forceSkip || reducedMotion || automatedBrowser || (seen && !forceIntro)) {
+      setIntroState("ready");
+      return;
+    }
+
+    setIntroState("playing");
+  }, []);
+
+  useEffect(() => {
+    document.body.classList.toggle("akribeia-experience-ready", introState === "ready");
+    document.documentElement.classList.toggle(
+      "akribeia-overlay-active",
+      introState !== "ready" || routeBusy,
+    );
+
+    return () => {
+      document.body.classList.remove("akribeia-experience-ready");
+      document.documentElement.classList.remove("akribeia-overlay-active");
+    };
+  }, [introState, routeBusy]);
+
+  useEffect(() => {
     function clearTimers() {
       if (navigationTimer.current !== null) {
         window.clearTimeout(navigationTimer.current);
@@ -93,20 +132,17 @@ export function ExperienceShell() {
 
       setRouteLabel(describeDestination(destination.pathname));
       setRouteBusy(true);
-      document.documentElement.classList.add("akribeia-overlay-active");
 
       navigationTimer.current = window.setTimeout(() => {
         try {
           window.location.assign(destination.href);
         } catch {
           setRouteBusy(false);
-          document.documentElement.classList.remove("akribeia-overlay-active");
         }
       }, 140);
 
       recoveryTimer.current = window.setTimeout(() => {
         setRouteBusy(false);
-        document.documentElement.classList.remove("akribeia-overlay-active");
       }, 8000);
     }
 
@@ -114,41 +150,55 @@ export function ExperienceShell() {
 
     return () => {
       document.removeEventListener("click", handleClick, true);
-      document.body.classList.remove("akribeia-experience-ready");
-      document.documentElement.classList.remove("akribeia-overlay-active");
       clearTimers();
     };
   }, []);
 
-  if (!routeBusy) {
-    return null;
-  }
+  const finishIntro = useCallback(() => {
+    try {
+      window.sessionStorage.setItem(INTRO_KEY, "seen");
+    } catch {
+      // The intro still completes when storage is unavailable.
+    }
+
+    setIntroState("ready");
+  }, []);
 
   return (
-    <div
-      className="akribeia-route-transition"
-      role="status"
-      aria-live="assertive"
-      aria-label={routeLabel}
-      data-route-transition="active"
-    >
-      <div className="akribeia-route-transition__field" aria-hidden="true">
-        <span />
-        <span />
-        <span />
-      </div>
+    <>
+      {introState === "checking" ? (
+        <div className="akribeia-intro-veil" aria-hidden="true" />
+      ) : null}
 
-      <div className="akribeia-route-transition__content">
-        <span className="akribeia-route-transition__mark" aria-hidden="true">
-          A
-        </span>
+      {introState === "playing" ? <LoadingOverlay onDone={finishIntro} /> : null}
 
-        <p>{routeLabel}</p>
+      {routeBusy ? (
+        <div
+          className="akribeia-route-transition"
+          role="status"
+          aria-live="assertive"
+          aria-label={routeLabel}
+          data-route-transition="active"
+        >
+          <div className="akribeia-route-transition__field" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
 
-        <div className="akribeia-route-transition__track" aria-hidden="true">
-          <i />
+          <div className="akribeia-route-transition__content">
+            <span className="akribeia-route-transition__mark" aria-hidden="true">
+              A
+            </span>
+
+            <p>{routeLabel}</p>
+
+            <div className="akribeia-route-transition__track" aria-hidden="true">
+              <i />
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      ) : null}
+    </>
   );
 }

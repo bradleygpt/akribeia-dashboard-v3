@@ -4,29 +4,36 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 
-test("keeps the approved V2 experience outside the server-rendered research tree", async () => {
-  const [layout, shell, experienceCss, packageJson] = await Promise.all([
+test("keeps the approved V2 loading experience byte-faithful and client-mounted", async () => {
+  const [layout, shell, overlay, experienceCss, packageJson] = await Promise.all([
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/experience-shell.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/loading-overlay.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/experience.css", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
   ]);
 
   assert.match(layout, /<ExperienceShell\s*\/>\s*\{children\}/);
-  assert.doesNotMatch(layout, /<ExperienceShell>\{children\}<\/ExperienceShell>/);
-  assert.match(shell, /export function ExperienceShell\(\)/);
-  assert.doesNotMatch(shell, /ReactNode/);
-  assert.match(shell, /function describeDestination\(pathname: string\)/);
-  assert.match(shell, /className="akribeia-route-transition"/);
-  assert.match(shell, /data-route-transition="active"/);
-  assert.match(shell, /sameDocument/);
-  assert.match(shell, /event\.preventDefault\(\)/);
-  assert.match(shell, /window\.location\.assign\(destination\.href\)/);
+  assert.match(shell, /sessionStorage\.getItem\(INTRO_KEY\)/);
   assert.match(shell, /prefers-reduced-motion: reduce/);
+  assert.match(shell, /navigator\.webdriver/);
+  assert.match(shell, /className="akribeia-intro-veil"/);
+  assert.match(shell, /<LoadingOverlay onDone=\{finishIntro\} \/>/);
+
+  assert.match(overlay, /"use client"/);
+  assert.match(overlay, /name: "starfield", dur: 2200/);
+  assert.match(overlay, /name: "converge", dur: 5000/);
+  assert.match(overlay, /name: "bear", dur: 2600/);
+  assert.match(overlay, /name: "bigbang", dur: 1400/);
+  assert.match(overlay, /name: "draw", dur: 4800/);
+  assert.match(overlay, /name: "settle", dur: 2200/);
+  assert.match(overlay, /className="akl-skip"/);
+  assert.match(overlay, /finish\.current\(SKIP_FADE_MS\)/);
 
   assert.match(experienceCss, /body\.akribeia-experience-ready/);
+  assert.match(experienceCss, /\.akribeia-intro-veil/);
   assert.match(experienceCss, /@media \(prefers-reduced-motion: reduce\)/);
-  assert.match(packageJson, /experience-worker-safe\.node\.mjs/);
+  assert.match(packageJson, /experience-parity\.node\.mjs/);
 
   async function sourceFiles(directory) {
     const entries = await readdir(directory, { withFileTypes: true });
@@ -40,25 +47,21 @@ test("keeps the approved V2 experience outside the server-rendered research tree
     return nested.flat();
   }
 
-  const sourceRoots = [
-    fileURLToPath(new URL("../app", import.meta.url)),
-    fileURLToPath(new URL("../worker", import.meta.url)),
-  ];
-  const sourceText = (
+  const appRoot = fileURLToPath(new URL("../app", import.meta.url));
+  const importers = (
     await Promise.all(
-      sourceRoots.flatMap(async (root) =>
-        Promise.all((await sourceFiles(root)).map((path) => readFile(path, "utf8"))),
-      ),
+      (await sourceFiles(appRoot)).map(async (path) => {
+        const text = await readFile(path, "utf8");
+        return /from "\.\/loading-overlay"/.test(text) ? [path] : [];
+      }),
     )
-  )
-    .flat()
-    .join("\n");
-  assert.doesNotMatch(sourceText, /loading-overlay|route-loading/);
+  ).flat();
+  assert.equal(importers.length, 1);
+  assert.match(importers[0], /experience-shell\.tsx$/);
 });
 
 test("does not stream duplicate fallbacks around the large research routes", async () => {
   const removedFallbacks = [
-    "../app/loading-overlay.tsx",
     "../app/loading.tsx",
     "../app/route-loading.tsx",
     "../app/research/loading.tsx",
