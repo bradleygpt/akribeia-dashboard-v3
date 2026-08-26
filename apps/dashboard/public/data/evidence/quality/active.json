@@ -1,23 +1,23 @@
 {
   "reportSchemaVersion": "1.0.0",
-  "buildId": "preview-20260728-pipeline-v4-a34fc842220f",
-  "modelVersion": "3.0.0-preview.3",
-  "recordedAt": "2026-07-30T04:36:30Z",
+  "buildId": "preview-20260825-pipeline-v5-f7d093b626d6",
+  "modelVersion": "3.0.0",
+  "recordedAt": "2026-08-26T01:56:31Z",
   "quality": {
     "status": "pass",
-    "rowCount": 643,
-    "uniqueTickerCount": 643,
+    "rowCount": 654,
+    "uniqueTickerCount": 654,
     "duplicateTickers": [],
     "invalidPriceCount": 0,
     "invalidMarketCapCount": 0,
-    "eligibleSecurities": 643,
+    "eligibleSecurities": 654,
     "excludedSecurities": 0,
     "factorCoverage": [
       {
         "pillar": "valuation",
         "sourceField": "pillars.Valuation",
         "weight": 0.2,
-        "availableSecurities": 643,
+        "availableSecurities": 654,
         "missingSecurities": 0,
         "coverage": 1
       },
@@ -25,7 +25,7 @@
         "pillar": "growth",
         "sourceField": "pillars.Growth",
         "weight": 0.2,
-        "availableSecurities": 643,
+        "availableSecurities": 654,
         "missingSecurities": 0,
         "coverage": 1
       },
@@ -33,7 +33,7 @@
         "pillar": "profitability",
         "sourceField": "pillars.Profitability",
         "weight": 0.2,
-        "availableSecurities": 643,
+        "availableSecurities": 654,
         "missingSecurities": 0,
         "coverage": 1
       },
@@ -41,7 +41,7 @@
         "pillar": "momentum",
         "sourceField": "pillars.Momentum",
         "weight": 0.2,
-        "availableSecurities": 643,
+        "availableSecurities": 654,
         "missingSecurities": 0,
         "coverage": 1
       },
@@ -49,17 +49,17 @@
         "pillar": "revisions",
         "sourceField": "pillars.EPS Revisions",
         "weight": 0.2,
-        "availableSecurities": 643,
+        "availableSecurities": 654,
         "missingSecurities": 0,
         "coverage": 1
       }
     ],
     "scoreDistribution": {
-      "count": 643,
-      "minimum": 4.558571428571429,
-      "maximum": 9.801904761904762,
-      "mean": 6.956257128045623,
-      "median": 6.951904761904763
+      "count": 654,
+      "minimum": 3.5533333333333337,
+      "maximum": 9.85047619047619,
+      "mean": 6.953369739333047,
+      "median": 6.979047619047619
     },
     "portfolio": {
       "positionCount": 9,

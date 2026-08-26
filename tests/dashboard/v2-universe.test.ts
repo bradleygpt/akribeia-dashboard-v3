@@ -1,3 +1,4 @@
+import { GOVERNED_TOTAL, GOVERNED_STOCKS } from "../observation-fixture";
 import { describe, expect, it } from "vitest";
 import { filterUniverseRows } from "../../apps/dashboard/app/universe-filtering.js";
 import {
@@ -14,10 +15,10 @@ describe("authoritative V2 universe", () => {
     // registry (currently MCW) with recomputed counts.
     const universe = loadV2Universe();
 
-    expect(universe.total).toBe(1360);
-    expect(universe.stocks).toBe(1290);
+    expect(universe.total).toBe(GOVERNED_TOTAL);
+    expect(universe.stocks).toBe(GOVERNED_STOCKS);
     expect(universe.etfs).toBe(70);
-    expect(new Set(universe.rows.map(({ ticker }) => ticker)).size).toBe(1360);
+    expect(new Set(universe.rows.map(({ ticker }) => ticker)).size).toBe(GOVERNED_TOTAL);
     expect(universe.rows.some(({ ticker }) => ticker === "MCW")).toBe(false);
     expect(universe.rows.every(({ ticker, name }) => ticker && name)).toBe(true);
     expect(universe.provenance.sha256).toBe(V2_UNIVERSE_EXPECTED.sha256);

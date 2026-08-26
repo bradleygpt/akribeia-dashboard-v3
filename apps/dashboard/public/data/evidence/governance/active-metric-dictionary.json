@@ -1,10 +1,10 @@
 {
   "dictionarySchemaVersion": "1.0.0",
-  "modelVersion": "3.0.0-preview.3",
+  "modelVersion": "3.0.0",
   "source": {
-    "repositoryPath": "data/reference/v2-baseline/fixtures/meta.json",
-    "sourceCommit": "0de8cd6",
-    "contentSha256": "68c594f533a13424e1e21d6b0cd70980d91c62f019ae8173d6e75e3bb00bdadc"
+    "repositoryPath": "data/observations/current/meta.json",
+    "sourceCommit": "c2e1f5e",
+    "contentSha256": "a6a6b28dd748a11483fa5369194f34cb6679382e1f541625737b699b492fe60f"
   },
   "methodologyStatus": "component-list-preserved-transform-formulas-unavailable",
   "pillars": [

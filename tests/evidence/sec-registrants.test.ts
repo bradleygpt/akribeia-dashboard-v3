@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve as resolvePath } from "node:path";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -38,6 +40,10 @@ afterEach(async () => {
       .map((directory) => rm(directory, { recursive: true, force: true })),
   );
 });
+
+const COMMITTED_REGISTRANTS = JSON.parse(
+  readFileSync(resolvePath("apps/dashboard/app/generated/active-sec-registrants.json"), "utf8"),
+) as Record<string, unknown>;
 
 describe("SEC registrant identity source", () => {
   it("captures exact provider bytes with a checksum-pinned immutable receipt", async () => {
@@ -127,21 +133,7 @@ describe("SEC registrant crosswalk", () => {
 
     expect(crosswalk.status).toBe("partial-current-snapshot");
     expect(crosswalk.historicalIdentityEligible).toBe(false);
-    expect(crosswalk.coverage).toEqual({
-      activeSecurityCount: 643,
-      matchedSecurityCount: 632,
-      unmatchedSecurityCount: 11,
-      ambiguousSecurityCount: 0,
-      operatingCompanyCount: 588,
-      companyCikMatchCount: 585,
-      registeredFundCount: 55,
-      fundClassMatchCount: 47,
-      uniqueCikCount: 595,
-      registrantCoverage: 632 / 643,
-      companyCikCoverage: 585 / 588,
-      fundClassCoverage: 47 / 55,
-      operatingCompanyListingIdentityCoverage: 0,
-    });
+    expect(crosswalk.coverage).toEqual(COMMITTED_REGISTRANTS.coverage);
     expect(crosswalk.unmatched.map(({ ticker }) => ticker)).toEqual([
       "BAI",
       "BK",

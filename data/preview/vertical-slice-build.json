@@ -1,13 +1,13 @@
 {
-  "buildId": "preview-20260728-pipeline-v4-a34fc842220f",
-  "evaluatedAt": "2026-07-30T04:36:30Z",
-  "observedAt": "2026-07-28T17:06:46Z",
+  "buildId": "preview-20260825-pipeline-v5-f7d093b626d6",
+  "evaluatedAt": "2026-08-26T01:56:31Z",
+  "observedAt": "2026-08-25T16:21:08Z",
   "maxAgeSeconds": 604800,
-  "sourcePath": "data/reference/v2-baseline/fixtures/universe_floor10.json",
-  "metadataPath": "data/reference/v2-baseline/fixtures/meta.json",
+  "sourcePath": "data/observations/current/universe_floor10.json",
+  "metadataPath": "data/observations/current/meta.json",
   "outputRoot": "apps/dashboard/public/data",
   "projectionPath": "apps/dashboard/app/generated/active-dashboard.json",
-  "sourceCommit": "0de8cd6",
-  "schemaVersion": "3.0.0-preview.4",
-  "modelVersion": "3.0.0-preview.3"
+  "sourceCommit": "c2e1f5e",
+  "schemaVersion": "3.0.0",
+  "modelVersion": "3.0.0"
 }

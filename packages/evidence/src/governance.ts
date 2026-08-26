@@ -186,7 +186,7 @@ export async function generateModelGovernance(
   }
 
   const source = {
-    repositoryPath: "data/reference/v2-baseline/fixtures/meta.json",
+    repositoryPath: "data/observations/current/meta.json",
     sourceCommit: metadata.source_commit,
     contentSha256: sha256(metadataPayload),
   };

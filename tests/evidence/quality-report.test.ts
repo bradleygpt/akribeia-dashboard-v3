@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve as resolvePath } from "node:path";
 import { cp, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -35,6 +37,10 @@ afterEach(async () => {
   );
 });
 
+const COMMITTED_QUALITY = JSON.parse(
+  readFileSync(resolvePath("apps/dashboard/app/generated/active-quality-report.json"), "utf8"),
+) as Record<string, unknown>;
+
 describe("data quality and drift report", () => {
   it("reports exact active-build quality and insufficient drift history", async () => {
     const root = await temporaryRoot();
@@ -42,22 +48,7 @@ describe("data quality and drift report", () => {
     const payload = await readFile(result.reportPath, "utf8");
     const report = DataQualityReportSchema.parse(JSON.parse(payload));
 
-    expect(report.quality).toMatchObject({
-      status: "pass",
-      rowCount: 643,
-      uniqueTickerCount: 643,
-      duplicateTickers: [],
-      invalidPriceCount: 0,
-      invalidMarketCapCount: 0,
-      eligibleSecurities: 643,
-      excludedSecurities: 0,
-    });
-    expect(report.quality.scoreDistribution).toMatchObject({
-      count: 643,
-      minimum: 4.558571428571429,
-      maximum: 9.801904761904762,
-      median: 6.951904761904763,
-    });
+    expect(report.quality).toEqual(COMMITTED_QUALITY.quality);
     expect(report.quality.portfolio.reconciled).toBe(true);
     expect(report.drift.status).toBe("insufficient-history");
     expect(report.drift.comparisons).toEqual([]);

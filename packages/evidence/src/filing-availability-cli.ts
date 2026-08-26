@@ -7,7 +7,9 @@ const result = await generateFilingAvailability({
     "apps/dashboard/public/data/evidence/sec-registrants/active.json",
   ),
   publishedDataRoot: resolve("apps/dashboard/public/data"),
-  sourceReceiptPath: resolve("data/reference/sec/filing-submissions/2026-07-30/receipt.json"),
+  sourceReceiptPath: resolve(
+    `data/reference/sec/filing-submissions/${process.env.SEC_SNAPSHOT_ID ?? "2026-07-30"}/receipt.json`,
+  ),
   reportRoot: resolve("data/evidence/filing-availability"),
   dashboardProjectionPath: resolve("apps/dashboard/app/generated/active-filing-availability.json"),
   publicReportRoot: resolve("apps/dashboard/public/data/evidence/filing-availability"),

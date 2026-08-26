@@ -49,7 +49,7 @@ export default async function SecurityDetailPage({ params }: PageProps) {
           <section className="research-not-found">
             <p className="mono-label">SECURITY RECORD / UNAVAILABLE</p>
             <h1>No preserved record for “{decodeURIComponent(ticker).toUpperCase()}”.</h1>
-            <p>The requested ticker is not present in the governed 1,360-security universe.</p>
+            <p>The requested ticker is not present in the governed research universe.</p>
             <a href="/research">Return to the research workbench</a>
           </section>
         </main>

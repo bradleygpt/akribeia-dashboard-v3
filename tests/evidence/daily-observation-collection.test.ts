@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve as resolvePath } from "node:path";
 import { cp, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -38,6 +40,15 @@ afterEach(async () => {
   );
 });
 
+const ACTIVE_BUILD_ID = (
+  JSON.parse(readFileSync(resolvePath("apps/dashboard/public/data/active-build.json"), "utf8")) as {
+    activeBuildId: string;
+  }
+).activeBuildId;
+const ACTIVE_AS_OF = ACTIVE_BUILD_ID.match(/preview-(\d{4})(\d{2})(\d{2})/)!
+  .slice(1)
+  .join("-");
+
 describe("daily prospective observation collection", () => {
   it("collects only when the candidate date advances the ledger", () => {
     expect(classifyDailyObservationDate("2026-07-28", [])).toBe("collect");
@@ -63,9 +74,9 @@ describe("daily prospective observation collection", () => {
 
     expect(result.receipt.disposition).toBe("no-op-duplicate-date");
     expect(receipt.ledger).toMatchObject({
-      observationDates: ["2026-07-28"],
-      observationDayCountBefore: 1,
-      observationDayCountAfter: 1,
+      observationDates: ["2026-07-28", ACTIVE_AS_OF],
+      observationDayCountBefore: 2,
+      observationDayCountAfter: 2,
     });
     expect(receipt.dailyEvidence).toBeNull();
     expect(receipt.prospectiveReadiness).toBeNull();
@@ -103,17 +114,11 @@ describe("daily prospective observation collection", () => {
     expect(
       JSON.parse(
         await readFile(
-          join(
-            evidenceRoot,
-            "daily",
-            "2026-07-28",
-            "preview-20260728-pipeline-v4-a34fc842220f",
-            "evidence.json",
-          ),
+          join(evidenceRoot, "daily", ACTIVE_AS_OF, ACTIVE_BUILD_ID, "evidence.json"),
           "utf8",
         ),
       ).asOfDate,
-    ).toBe("2026-07-28");
+    ).toBe(ACTIVE_AS_OF);
   });
 
   it("rejects a forged receipt that inflates collection progress", async () => {

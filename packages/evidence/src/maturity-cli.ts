@@ -1,8 +1,16 @@
+import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { generateMaturityAssessment } from "./maturity.js";
 
+// Derive the active evidence root from the active daily record itself so the
+// assessment always follows the current build instead of a frozen path.
+const activeDaily = JSON.parse(
+  await readFile(resolve("apps/dashboard/public/data/evidence/active.json"), "utf8"),
+) as { asOfDate: string; build: { buildId: string } };
 const activeEvidenceRoot = resolve(
-  "apps/dashboard/public/data/evidence/daily/2026-07-28/preview-20260728-pipeline-v4-a34fc842220f",
+  "apps/dashboard/public/data/evidence/daily",
+  activeDaily.asOfDate,
+  activeDaily.build.buildId,
 );
 const result = await generateMaturityAssessment({
   activeDailyEvidencePath: resolve("apps/dashboard/public/data/evidence/active.json"),

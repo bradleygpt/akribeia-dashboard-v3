@@ -211,7 +211,9 @@ export function MarketHealthDashboard() {
               </p>
               <div className="hero-actions" aria-label="Start exploring Akribeia">
                 <a href="#market-health">Open Market Health</a>
-                <a href="/research">Research all 1,360 securities</a>
+                <a href="/research">
+                  Research all {v2Universe.total.toLocaleString("en-US")} securities
+                </a>
               </div>
             </div>
             <aside className="hero-evidence" aria-label="Akribeia coverage and trust">
@@ -243,7 +245,10 @@ export function MarketHealthDashboard() {
             <a href="#universe">
               <span>02</span>
               <strong>Full Universe</strong>
-              <small>1,360 scored securities without a hidden cap floor</small>
+              <small>
+                {v2Universe.total.toLocaleString("en-US")} scored securities without a hidden cap
+                floor
+              </small>
             </a>
             <a href="#scores">
               <span>03</span>
@@ -281,6 +286,7 @@ export function MarketHealthDashboard() {
         <MarketHealthPanel
           breadth={marketBreadth}
           universeAsOf={v2Universe.provenance.publishedAt.slice(0, 10)}
+          universeTotal={v2Universe.total}
         />
 
         <section className="pipeline" aria-labelledby="pipeline-heading">
@@ -359,7 +365,7 @@ export function MarketHealthDashboard() {
 
           <div className="universe-provenance">
             <span>
-              V2 app {v2Universe.provenance.appCommit.slice(0, 9)} · data{" "}
+              V2 bake {v2Universe.provenance.sourceCommit.slice(0, 9)} · data{" "}
               {v2Universe.provenance.bulkDataCommit.slice(0, 9)}
             </span>
             <span>

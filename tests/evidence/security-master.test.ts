@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve as resolvePath } from "node:path";
 import { cp, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -36,6 +38,10 @@ afterEach(async () => {
   );
 });
 
+const COMMITTED_MASTER = JSON.parse(
+  readFileSync(resolvePath("apps/dashboard/app/generated/active-security-master.json"), "utf8"),
+) as Record<string, unknown>;
+
 describe("provisional security master", () => {
   it("maps every validated ticker to one deterministic, explicitly provisional identity", async () => {
     const root = await temporaryRoot();
@@ -45,15 +51,7 @@ describe("provisional security master", () => {
     const micron = master.securities.find(({ currentTicker }) => currentTicker === "MU");
 
     expect(master.status).toBe("provisional");
-    expect(master.coverage).toEqual({
-      securityCount: 643,
-      uniqueSecurityIdCount: 643,
-      uniqueCurrentTickerCount: 643,
-      provisionalIdentityCount: 643,
-      permanentIdentifierCount: 0,
-      duplicateSecurityIds: [],
-      duplicateCurrentTickers: [],
-    });
+    expect(master.coverage).toEqual(COMMITTED_MASTER.coverage);
     expect(master.identityPolicy).toMatchObject({
       identifierBasis: "current-ticker-only",
       permanentIdentifiersAvailable: false,

@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -6,6 +7,10 @@ import { MATURITY_LEVELS, MaturityAssessmentSchema } from "@akribeia/contracts";
 import { generateMaturityAssessment } from "@akribeia/evidence";
 
 const temporaryDirectories: string[] = [];
+
+const activeDaily = JSON.parse(
+  readFileSync(resolve("apps/dashboard/public/data/evidence/active.json"), "utf8"),
+) as { asOfDate: string; build: { buildId: string } };
 
 async function temporaryRoot(): Promise<string> {
   const root = await mkdtemp(join(tmpdir(), "akribeia-maturity-"));
@@ -20,7 +25,10 @@ function options(
   return {
     activeDailyEvidencePath: resolve("apps/dashboard/public/data/evidence/active.json"),
     activeReproductionReportPath: resolve(
-      "apps/dashboard/public/data/evidence/daily/2026-07-28/preview-20260728-pipeline-v4-a34fc842220f/reproducibility.json",
+      "apps/dashboard/public/data/evidence/daily",
+      activeDaily.asOfDate,
+      activeDaily.build.buildId,
+      "reproducibility.json",
     ),
     activeModelCardPath: resolve(
       "apps/dashboard/public/data/evidence/governance/active-model-card.json",
