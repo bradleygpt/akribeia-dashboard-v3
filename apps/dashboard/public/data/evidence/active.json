@@ -1,46 +1,46 @@
 {
   "evidenceSchemaVersion": "1.0.0",
-  "asOfDate": "2026-08-25",
-  "recordedAt": "2026-08-26T01:56:31Z",
+  "asOfDate": "2026-08-26",
+  "recordedAt": "2026-08-26T13:03:12Z",
   "build": {
-    "buildId": "preview-20260825-pipeline-v5-f7d093b626d6",
+    "buildId": "preview-20260826-pipeline-v5-a263a98e352c",
     "schemaVersion": "3.0.0",
     "modelVersion": "3.0.0",
-    "generatedAt": "2026-08-26T01:56:31Z",
-    "publishedAt": "2026-08-26T01:56:31Z",
+    "generatedAt": "2026-08-26T13:03:12Z",
+    "publishedAt": "2026-08-26T13:03:12Z",
     "status": "healthy",
     "publicationDecision": "publish"
   },
   "source": {
     "dataset": "V2 production baseline — $10B+ universe",
     "repositoryPath": "data/observations/current/universe_floor10.json",
-    "sourceCommit": "c2e1f5e",
-    "contentSha256": "f7d093b626d6372733fe7ab855196d58d0ea73f94317def3f7768ea5442ce457",
-    "observedAt": "2026-08-25T16:21:08Z",
+    "sourceCommit": "3b57e26",
+    "contentSha256": "a263a98e352c10c1eec23202d65237fe0d912a4be08e3033a50f07b0bc181a18",
+    "observedAt": "2026-08-26T05:08:51Z",
     "rowCount": 654,
     "freshnessStatus": "current",
-    "ageSeconds": 34523,
+    "ageSeconds": 28461,
     "maxAgeSeconds": 604800
   },
   "artifacts": [
     {
       "name": "dashboard",
       "path": "dashboard.json",
-      "sha256": "fd72149f360e838dfbbfaa26008553c252eb33a2d535b9ee62484cabdea18741",
+      "sha256": "f7ae306174922173a6cb04db8485478cb6f8bd7662d8d55993e6f9c1ad6e282a",
       "byteSize": 13475,
       "rowCount": 1
     },
     {
       "name": "portfolio",
       "path": "portfolio.json",
-      "sha256": "3be83a2e0873d658dccd65bdfdf57da3d2b94fadafda7ba55887926f2286f213",
+      "sha256": "40fcd1fe0c91381b067f0d4cb9bc4a8fd2978ac8db45eaf1e12a27bc834f6847",
       "byteSize": 9513,
       "rowCount": 9
     },
     {
       "name": "scores",
       "path": "scores.json",
-      "sha256": "832c6f62975dd952628f75cc5533de1cbd35b7a1a6a9c97f340d46e9a8e40eb6",
+      "sha256": "f56b3bfa375d786673c924a3d094dbc700a8dbc09d2c11314e4af996e14d416d",
       "byteSize": 891455,
       "rowCount": 654
     }

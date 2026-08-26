@@ -4,8 +4,8 @@
   "title": "Akribeia V3 equal-weight five-pillar research model",
   "maturity": "research-preview",
   "releaseEligible": false,
-  "activeBuildId": "preview-20260825-pipeline-v5-f7d093b626d6",
-  "recordedAt": "2026-08-26T01:56:31Z",
+  "activeBuildId": "preview-20260826-pipeline-v5-a263a98e352c",
+  "recordedAt": "2026-08-26T13:03:12Z",
   "purpose": "Rank a preserved large-cap research universe with transparent factor coverage and feed a deterministic constrained model portfolio.",
   "intendedUses": [
     "Inspect cross-sectional research scores and their factor contributions.",
@@ -61,7 +61,7 @@
       "status": "pass",
       "summary": "654 securities satisfy the explicit 100% coverage gate.",
       "evidence": [
-        "daily/2026-08-25/preview-20260825-pipeline-v5-f7d093b626d6/evidence.json"
+        "daily/2026-08-26/preview-20260826-pipeline-v5-a263a98e352c/evidence.json"
       ]
     },
     {
@@ -69,7 +69,7 @@
       "status": "pass",
       "summary": "The active portfolio reconciles exactly to one billion weight units under position and sector caps.",
       "evidence": [
-        "daily/2026-08-25/preview-20260825-pipeline-v5-f7d093b626d6/evidence.json"
+        "daily/2026-08-26/preview-20260826-pipeline-v5-a263a98e352c/evidence.json"
       ]
     },
     {
@@ -77,7 +77,7 @@
       "status": "not-started",
       "summary": "No point-in-time benchmark input is present in the repository; no benchmark return was computed.",
       "evidence": [
-        "daily/2026-08-25/preview-20260825-pipeline-v5-f7d093b626d6/evidence.json"
+        "daily/2026-08-26/preview-20260826-pipeline-v5-a263a98e352c/evidence.json"
       ]
     },
     {
@@ -93,7 +93,7 @@
       "status": "insufficient-evidence",
       "summary": "One immutable research snapshot exists; the 30 consecutive healthy daily builds required for cutover do not.",
       "evidence": [
-        "daily/2026-08-25/preview-20260825-pipeline-v5-f7d093b626d6/evidence.json",
+        "daily/2026-08-26/preview-20260826-pipeline-v5-a263a98e352c/evidence.json",
         "MIGRATION.md"
       ]
     }
@@ -108,8 +108,8 @@
   "changePolicy": "Any weight, pillar, missing-data, normalization, or component-definition change requires a new model version and regenerated validation evidence.",
   "source": {
     "repositoryPath": "data/observations/current/meta.json",
-    "sourceCommit": "c2e1f5e",
-    "contentSha256": "a6a6b28dd748a11483fa5369194f34cb6679382e1f541625737b699b492fe60f"
+    "sourceCommit": "3b57e26",
+    "contentSha256": "0a013eacfc6975d9fada82ef2152f3a1f2f9f361756b1dcd49db40cfcc3a850c"
   },
   "notice": "Research preview only. Scores and model weights are evidence artifacts, not investment advice or a promise of future performance."
 }
