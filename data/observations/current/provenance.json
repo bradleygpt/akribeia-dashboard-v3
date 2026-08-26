@@ -1,40 +1,40 @@
 {
   "kind": "v2-point-in-time-observation",
-  "retrieved_at": "2026-08-26T01:56:31.004Z",
-  "observed_at": "2026-08-25T16:21:08.000Z",
+  "retrieved_at": "2026-08-26T13:07:26.846Z",
+  "observed_at": "2026-08-26T05:08:51.000Z",
   "bulk_data_repository": "bradleygpt/akribeia-data",
-  "bulk_data_commit": "ff9109b25928",
+  "bulk_data_commit": "07655525b09e1a8eaa52fb5697e2db4c082d3daa",
   "delivery": "commit-pinned jsDelivr",
   "meta_url": "https://quant-dashboard-pro-v2.vercel.app/data/meta.json",
-  "v2_source_commit": "c2e1f5e",
+  "v2_source_commit": "3b57e26",
   "files": {
     "universe_floor0.json": {
-      "sha256": "4f314a72b83d3dac29ae4b4ff9bea5aa18485b87a47eb434cfaf753ddb2f7c3b",
-      "bytes": 1807857,
+      "sha256": "c78bab756c837b6cffa103b095ff9bd8d16a320c433e452602badf9e54ced672",
+      "bytes": 1807821,
       "rows": 1362,
       "stocks": 1292,
       "etfs": 70,
-      "url": "https://cdn.jsdelivr.net/gh/bradleygpt/akribeia-data@ff9109b25928/data/universe_floor0.json"
+      "url": "https://cdn.jsdelivr.net/gh/bradleygpt/akribeia-data@07655525b09e1a8eaa52fb5697e2db4c082d3daa/data/universe_floor0.json"
     },
     "universe_floor1.json": {
-      "sha256": "60f00e92dbd2aa1f3b09d2c0953399a8b7e18b61781dd2187414ef05e37e20a2",
-      "bytes": 1711455,
+      "sha256": "4baa4cca97652dc91329a5bcdc57623918d948864b1e520f709408136bca11c8",
+      "bytes": 1711415,
       "rows": 1289,
       "stocks": 1224,
       "etfs": 65,
-      "url": "https://cdn.jsdelivr.net/gh/bradleygpt/akribeia-data@ff9109b25928/data/universe_floor1.json"
+      "url": "https://cdn.jsdelivr.net/gh/bradleygpt/akribeia-data@07655525b09e1a8eaa52fb5697e2db4c082d3daa/data/universe_floor1.json"
     },
     "universe_floor10.json": {
-      "sha256": "f7d093b626d6372733fe7ab855196d58d0ea73f94317def3f7768ea5442ce457",
-      "bytes": 878505,
+      "sha256": "a263a98e352c10c1eec23202d65237fe0d912a4be08e3033a50f07b0bc181a18",
+      "bytes": 878514,
       "rows": 654,
       "stocks": 599,
       "etfs": 55,
-      "url": "https://cdn.jsdelivr.net/gh/bradleygpt/akribeia-data@ff9109b25928/data/universe_floor10.json"
+      "url": "https://cdn.jsdelivr.net/gh/bradleygpt/akribeia-data@07655525b09e1a8eaa52fb5697e2db4c082d3daa/data/universe_floor10.json"
     }
   },
   "meta": {
-    "sha256": "a6a6b28dd748a11483fa5369194f34cb6679382e1f541625737b699b492fe60f",
+    "sha256": "0a013eacfc6975d9fada82ef2152f3a1f2f9f361756b1dcd49db40cfcc3a850c",
     "bytes": 19555
   }
 }
