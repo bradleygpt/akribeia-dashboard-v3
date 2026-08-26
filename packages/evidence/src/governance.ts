@@ -353,7 +353,10 @@ export async function generateModelGovernance(
   });
   const modelCardPayload = deterministicJson(modelCard);
   const dictionaryPayload = deterministicJson(metricDictionary);
-  const relativeRoot = join("models", modelCard.modelVersion);
+  // Immutable per model version AND build: each observation publishes its own
+  // receipted card (same pattern as the maturity/readiness stores), so a new
+  // daily build never conflicts with the version's earlier immutable records.
+  const relativeRoot = join("models", modelCard.modelVersion, modelCard.activeBuildId);
   const modelCardPath = join(resolve(options.governanceRoot), relativeRoot, "model-card.json");
   const metricDictionaryPath = join(
     resolve(options.governanceRoot),

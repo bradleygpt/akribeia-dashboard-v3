@@ -536,7 +536,7 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   const modelCard = JSON.parse(packagedModelCard);
   const dictionary = JSON.parse(packagedDictionary);
   const versionedGovernanceRoot = new URL(
-    `../dist/client/data/evidence/governance/models/${modelCard.modelVersion}/`,
+    `../dist/client/data/evidence/governance/models/${modelCard.modelVersion}/${modelCard.activeBuildId}/`,
     import.meta.url,
   );
   const [versionedModelCard, versionedDictionary] = await Promise.all([

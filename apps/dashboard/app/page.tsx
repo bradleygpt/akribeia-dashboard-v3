@@ -1265,12 +1265,12 @@ export function MarketHealthDashboard() {
             </div>
             <div className="governance-links">
               <a
-                href={`/data/evidence/governance/models/${modelCard.modelVersion}/model-card.json`}
+                href={`/data/evidence/governance/models/${modelCard.modelVersion}/${modelCard.activeBuildId}/model-card.json`}
               >
                 View model card
               </a>
               <a
-                href={`/data/evidence/governance/models/${modelCard.modelVersion}/metric-dictionary.json`}
+                href={`/data/evidence/governance/models/${modelCard.modelVersion}/${modelCard.activeBuildId}/metric-dictionary.json`}
               >
                 View metric dictionary
               </a>
