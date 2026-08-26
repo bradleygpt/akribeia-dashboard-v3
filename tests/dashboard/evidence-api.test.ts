@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve as resolvePath } from "node:path";
 import { readFile } from "node:fs/promises";
 import { isAbsolute, relative, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -62,6 +64,12 @@ function limiter(limit = 20) {
   });
 }
 
+const ACTIVE_BUILD_ID = (
+  JSON.parse(readFileSync(resolvePath("apps/dashboard/public/data/active-build.json"), "utf8")) as {
+    activeBuildId: string;
+  }
+).activeBuildId;
+
 describe("protected evidence API", () => {
   it("leaves non-API requests to the application router", async () => {
     const response = await handleEvidenceApi(
@@ -83,7 +91,7 @@ describe("protected evidence API", () => {
     expect(response?.status).toBe(200);
     await expect(response?.json()).resolves.toMatchObject({
       status: "healthy",
-      buildId: "preview-20260728-pipeline-v4-a34fc842220f",
+      buildId: ACTIVE_BUILD_ID,
       checks: {
         activePointer: "pass",
         scoreArtifact: "sha256-and-byte-size-pass",
@@ -250,7 +258,7 @@ describe("protected evidence API", () => {
     expect(response?.headers.get("cache-control")).toBe("no-store");
     expect(response?.headers.get("ratelimit-remaining")).toBe("19");
     expect(payload).toMatchObject({
-      buildId: "preview-20260728-pipeline-v4-a34fc842220f",
+      buildId: ACTIVE_BUILD_ID,
       security: {
         ticker: "MU",
         eligible: true,

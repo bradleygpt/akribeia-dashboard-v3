@@ -1,8 +1,8 @@
 {
   "maturitySchemaVersion": "1.0.0",
-  "buildId": "preview-20260728-pipeline-v4-a34fc842220f",
-  "modelVersion": "3.0.0-preview.3",
-  "assessedAt": "2026-07-30T04:36:30Z",
+  "buildId": "preview-20260825-pipeline-v5-f7d093b626d6",
+  "modelVersion": "3.0.0",
+  "assessedAt": "2026-08-26T01:56:31Z",
   "currentLevel": "research-preview",
   "releaseEligible": false,
   "observations": {
@@ -77,7 +77,7 @@
           "status": "blocked",
           "detail": "No point-in-time benchmark observation or validated comparison is available.",
           "evidence": [
-            "daily/2026-07-28/preview-20260728-pipeline-v4-a34fc842220f/evidence.json"
+            "daily/2026-08-25/preview-20260825-pipeline-v5-f7d093b626d6/evidence.json"
           ]
         },
         {

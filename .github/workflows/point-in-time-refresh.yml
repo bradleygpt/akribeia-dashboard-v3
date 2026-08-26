@@ -1,0 +1,157 @@
+name: Point-in-time observation refresh
+
+# Ingest the newest V2 point-in-time observation (nightly bake published to the
+# commit-pinned bulk data repository), rebuild the evidence chain against it,
+# and open a reviewable pull request only when the full repository gate passes.
+# Fail-closed: an unchanged source is a successful no-op; any fetch, receipt,
+# generation, or validation failure blocks the refresh without a commit.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "45 5 * * 2-6"
+
+concurrency:
+  group: point-in-time-refresh
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Resolve the newest bulk data commit
+        id: source
+        shell: bash
+        run: |
+          data_commit=$(git ls-remote https://github.com/bradleygpt/akribeia-data.git HEAD | cut -f1)
+          if [[ ! "$data_commit" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "Could not resolve the bulk data HEAD commit." >&2
+            exit 1
+          fi
+          echo "data_commit=$data_commit" >> "$GITHUB_OUTPUT"
+
+      - name: Ingest the current observation
+        id: ingest
+        shell: bash
+        run: |
+          before_build=$(node -p 'JSON.parse(require("node:fs").readFileSync("data/preview/vertical-slice-build.json","utf8")).buildId')
+          node scripts/ingest-v2-observation.node.mjs "${{ steps.source.outputs.data_commit }}"
+          after_build=$(node -p 'JSON.parse(require("node:fs").readFileSync("data/preview/vertical-slice-build.json","utf8")).buildId')
+          echo "before_build=$before_build" >> "$GITHUB_OUTPUT"
+          echo "after_build=$after_build" >> "$GITHUB_OUTPUT"
+          if [[ "$before_build" == "$after_build" ]]; then
+            echo "unchanged=true" >> "$GITHUB_OUTPUT"
+            git checkout -- data/preview/vertical-slice-build.json data/observations || true
+            git clean -fd data/observations || true
+          else
+            echo "unchanged=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Stop on an unchanged observation
+        if: steps.ingest.outputs.unchanged == 'true'
+        shell: bash
+        run: |
+          echo "## Point-in-time refresh" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "No new observation: the source build is unchanged (no-op)." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Capture the SEC submissions snapshot
+        if: steps.ingest.outputs.unchanged == 'false'
+        shell: bash
+        run: |
+          if [[ -z "$SEC_USER_AGENT" ]]; then
+            echo "SEC_USER_AGENT secret is required for the submissions snapshot." >&2
+            exit 1
+          fi
+          snapshot_id=$(date -u +%F)
+          echo "SEC_SNAPSHOT_ID=$snapshot_id" >> "$GITHUB_ENV"
+          # The pipeline build must exist before the SEC capture selects CIKs.
+          npm run preview:generate
+          npm run evidence:generate
+          npm run governance:generate
+          npm run quality:generate
+          npm run master:generate
+          npm run registrants:generate
+          SEC_SNAPSHOT_ID="$snapshot_id" npm run filing-sources:fetch
+
+      - name: Regenerate the dependent evidence chain
+        if: steps.ingest.outputs.unchanged == 'false'
+        shell: bash
+        run: |
+          SEC_SNAPSHOT_ID="$SEC_SNAPSHOT_ID" npm run filing-availability:generate
+          npm run historical-readiness:generate
+          npm run universe-membership:generate
+          npm run corporate-actions:generate
+          npm run exit-disposition:generate
+          npm run execution-costs:generate
+          npm run benchmark-readiness:generate
+          npm run walk-forward-readiness:generate
+          npm run prospective-readiness:generate
+          npm run maturity:generate
+
+      - name: Validate the refreshed build
+        if: steps.ingest.outputs.unchanged == 'false'
+        run: |
+          npm run ci
+          npm audit --audit-level=high
+          git diff --check
+
+      - name: Open a reviewable refresh pull request
+        if: steps.ingest.outputs.unchanged == 'false'
+        shell: bash
+        run: |
+          build_id='${{ steps.ingest.outputs.after_build }}'
+          observation_date=$(node -p 'JSON.parse(require("node:fs").readFileSync("data/observations/current/provenance.json","utf8")).observed_at.slice(0,10)')
+          branch="automation/point-in-time-refresh-${observation_date}-${GITHUB_RUN_ID}"
+
+          git config user.name "akribeia-observation-bot"
+          git config user.email "akribeia-observation-bot@users.noreply.github.com"
+          git switch -c "$branch"
+          git add --all
+          git diff --cached --check
+          git commit -m "data: point-in-time observation refresh ${observation_date} (${build_id})"
+          git push --set-upstream origin "$branch"
+
+          pr_body="$RUNNER_TEMP/point-in-time-refresh-pr-body.md"
+          cat > "$pr_body" <<'BODY'
+          ## Summary
+
+          - ingests the newest V2 point-in-time observation with a commit-pinned receipt
+          - rebuilds the immutable evidence build and every dependent governed artifact
+          - captures a fresh SEC submissions snapshot for the selected active-company CIKs
+          - leaves the immutable V2-to-V3 parity fixtures untouched
+
+          ## Validation
+
+          - full repository CI passed
+          - dependency audit passed at high severity
+          - whitespace validation passed
+
+          ## Safety
+
+          This automated pull request does not deploy production, alter V2, fabricate market data, or claim investment performance.
+          BODY
+
+          gh pr create \
+            --base main \
+            --head "$branch" \
+            --title "data: point-in-time observation refresh ${observation_date}" \
+            --body-file "$pr_body"

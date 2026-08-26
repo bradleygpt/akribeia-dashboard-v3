@@ -1,7 +1,7 @@
 {
   "crosswalkSchemaVersion": "1.0.0",
-  "buildId": "preview-20260728-pipeline-v4-a34fc842220f",
-  "modelVersion": "3.0.0-preview.3",
+  "buildId": "preview-20260825-pipeline-v5-f7d093b626d6",
+  "modelVersion": "3.0.0",
   "generatedAt": "2026-07-30T06:49:38.889Z",
   "status": "partial-current-snapshot",
   "historicalIdentityEligible": false,
@@ -12,17 +12,17 @@
     "retrievedAt": "2026-07-30T06:49:38.889Z"
   },
   "coverage": {
-    "activeSecurityCount": 643,
-    "matchedSecurityCount": 632,
+    "activeSecurityCount": 654,
+    "matchedSecurityCount": 643,
     "unmatchedSecurityCount": 11,
     "ambiguousSecurityCount": 0,
-    "operatingCompanyCount": 588,
-    "companyCikMatchCount": 585,
+    "operatingCompanyCount": 599,
+    "companyCikMatchCount": 596,
     "registeredFundCount": 55,
     "fundClassMatchCount": 47,
-    "uniqueCikCount": 595,
-    "registrantCoverage": 0.9828926905132193,
-    "companyCikCoverage": 0.9948979591836735,
+    "uniqueCikCount": 606,
+    "registrantCoverage": 0.9831804281345565,
+    "companyCikCoverage": 0.994991652754591,
     "fundClassCoverage": 0.8545454545454545,
     "operatingCompanyListingIdentityCoverage": 0
   },
@@ -875,6 +875,17 @@
       "identityScope": "registrant-only"
     },
     {
+      "ticker": "BMNR",
+      "provisionalSecurityId": "AKR-TICKER:BMNR",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0001829311",
+      "secTitle": "BITMINE IMMERSION TECHNOLOGIES, INC.",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
       "ticker": "BMRN",
       "provisionalSecurityId": "AKR-TICKER:BMRN",
       "sourceType": "company-ticker",
@@ -1288,17 +1299,6 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0001739940",
       "secTitle": "Cigna Group",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
-      "ticker": "CIFR",
-      "provisionalSecurityId": "AKR-TICKER:CIFR",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0001819989",
-      "secTitle": "Cipher Digital Inc.",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"
@@ -1909,6 +1909,17 @@
       "identityScope": "registrant-only"
     },
     {
+      "ticker": "DOCU",
+      "provisionalSecurityId": "AKR-TICKER:DOCU",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0001261333",
+      "secTitle": "DOCUSIGN, INC.",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
       "ticker": "DOV",
       "provisionalSecurityId": "AKR-TICKER:DOV",
       "sourceType": "company-ticker",
@@ -2025,6 +2036,17 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0000712515",
       "secTitle": "ELECTRONIC ARTS INC.",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
+      "ticker": "EAT",
+      "provisionalSecurityId": "AKR-TICKER:EAT",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0000703351",
+      "secTitle": "BRINKER INTERNATIONAL, INC",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"
@@ -2481,6 +2503,17 @@
       "identityScope": "registrant-only"
     },
     {
+      "ticker": "FORM",
+      "provisionalSecurityId": "AKR-TICKER:FORM",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0001039399",
+      "secTitle": "FORMFACTOR INC",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
       "ticker": "FOX",
       "provisionalSecurityId": "AKR-TICKER:FOX",
       "sourceType": "company-ticker",
@@ -2668,6 +2701,17 @@
       "identityScope": "registrant-only"
     },
     {
+      "ticker": "GKOS",
+      "provisionalSecurityId": "AKR-TICKER:GKOS",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0001192448",
+      "secTitle": "GLAUKOS Corp",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
       "ticker": "GL",
       "provisionalSecurityId": "AKR-TICKER:GL",
       "sourceType": "company-ticker",
@@ -2833,6 +2877,17 @@
       "identityScope": "registrant-only"
     },
     {
+      "ticker": "HALO",
+      "provisionalSecurityId": "AKR-TICKER:HALO",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0001159036",
+      "secTitle": "HALOZYME THERAPEUTICS, INC.",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
       "ticker": "HAS",
       "provisionalSecurityId": "AKR-TICKER:HAS",
       "sourceType": "company-ticker",
@@ -2883,6 +2938,17 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0001783879",
       "secTitle": "Robinhood Markets, Inc.",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
+      "ticker": "HSIC",
+      "provisionalSecurityId": "AKR-TICKER:HSIC",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0001000228",
+      "secTitle": "HENRY SCHEIN INC",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"
@@ -3202,6 +3268,17 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0001035267",
       "secTitle": "INTUITIVE SURGICAL INC",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
+      "ticker": "IT",
+      "provisionalSecurityId": "AKR-TICKER:IT",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0000749251",
+      "secTitle": "GARTNER INC",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"
@@ -3768,6 +3845,17 @@
       "identityScope": "registrant-only"
     },
     {
+      "ticker": "MANH",
+      "provisionalSecurityId": "AKR-TICKER:MANH",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0001056696",
+      "secTitle": "MANHATTAN ASSOCIATES INC",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
       "ticker": "MAR",
       "provisionalSecurityId": "AKR-TICKER:MAR",
       "sourceType": "company-ticker",
@@ -4082,6 +4170,17 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0000789019",
       "secTitle": "MICROSOFT CORP",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
+      "ticker": "MSGS",
+      "provisionalSecurityId": "AKR-TICKER:MSGS",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0001636519",
+      "secTitle": "Madison Square Garden Sports Corp.",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"
@@ -5693,6 +5792,17 @@
       "identityScope": "registrant-only"
     },
     {
+      "ticker": "SWKS",
+      "provisionalSecurityId": "AKR-TICKER:SWKS",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0000004127",
+      "secTitle": "SKYWORKS SOLUTIONS, INC.",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
       "ticker": "SYF",
       "provisionalSecurityId": "AKR-TICKER:SYF",
       "sourceType": "company-ticker",
@@ -6122,6 +6232,17 @@
       "identityScope": "registrant-only"
     },
     {
+      "ticker": "UHS",
+      "provisionalSecurityId": "AKR-TICKER:UHS",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0000352915",
+      "secTitle": "UNIVERSAL HEALTH SERVICES INC",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
       "ticker": "ULTA",
       "provisionalSecurityId": "AKR-TICKER:ULTA",
       "sourceType": "company-ticker",
@@ -6287,17 +6408,6 @@
       "identityScope": "registered-fund-class"
     },
     {
-      "ticker": "VIRT",
-      "provisionalSecurityId": "AKR-TICKER:VIRT",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0001592386",
-      "secTitle": "Virtu Financial, Inc.",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
       "ticker": "VLO",
       "provisionalSecurityId": "AKR-TICKER:VLO",
       "sourceType": "company-ticker",
@@ -6414,6 +6524,17 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0000875320",
       "secTitle": "VERTEX PHARMACEUTICALS INC / MA",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
+      "ticker": "VSAT",
+      "provisionalSecurityId": "AKR-TICKER:VSAT",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0000797721",
+      "secTitle": "VIASAT INC",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"

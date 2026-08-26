@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve as resolvePath } from "node:path";
 import { cp, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -28,6 +30,13 @@ afterEach(async () => {
   );
 });
 
+const COMMITTED_PROSPECTIVE = JSON.parse(
+  readFileSync(
+    resolvePath("apps/dashboard/app/generated/active-prospective-readiness.json"),
+    "utf8",
+  ),
+) as { progress: Record<string, unknown> };
+
 describe("prospective readiness", () => {
   it("reports one of thirty observation days without inventing execution or performance", async () => {
     const value = await temporaryRoot();
@@ -37,18 +46,10 @@ describe("prospective readiness", () => {
 
     expect(report.prospectiveValidationEligible).toBe(false);
     expect(report.certificationEligible).toBe(false);
-    expect(report.progress).toEqual({
-      immutableDailyEvidenceRecordCount: 1,
-      uniqueObservationDayCount: 1,
-      remainingObservationDayCount: 29,
-      executablePortfolioRecordCount: 0,
-      costedReturnObservationCount: 0,
-      approvedBenchmarkComparisonCount: 0,
-      monthlyValidationReportCount: 0,
-      earliestObservationDate: "2026-07-28",
-      latestObservationDate: "2026-07-28",
-    });
-    expect(report.observations).toHaveLength(1);
+    expect(report.progress).toEqual(COMMITTED_PROSPECTIVE.progress);
+    expect(report.observations).toHaveLength(
+      COMMITTED_PROSPECTIVE.progress.uniqueObservationDayCount as number,
+    );
     expect(report.observations[0]).toMatchObject({
       asOfDate: "2026-07-28",
       reproductionVerified: true,

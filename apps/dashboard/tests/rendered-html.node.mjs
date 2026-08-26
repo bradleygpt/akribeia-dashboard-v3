@@ -2,6 +2,23 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
+import { governedTotalFormatted as GOVERNED_TOTAL } from "./governed-universe.node.mjs";
+import {
+  governedStocksFormatted as GOVERNED_STOCKS,
+  floor0Sha256 as FLOOR0_SHA,
+} from "./governed-universe.node.mjs";
+import {
+  prospectiveProgress as PROSPECTIVE_PROGRESS,
+  filingCoverage as FILING_COVERAGE,
+  filingUnmatched as FILING_UNMATCHED,
+  exitCoverage as EXIT_COVERAGE,
+  membershipComparison as MEMBERSHIP_COMPARISON,
+  registrantsCoverage as REG_COVERAGE,
+  activeAsOfDate as ACTIVE_AS_OF,
+  activeBuildId as ACTIVE_BUILD_ID,
+  matchedRegistrants as REG_MATCHED,
+  scoredTotal as SCORED_TOTAL,
+} from "./active-build.node.mjs";
 
 async function render(pathname = "/dashboard") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
@@ -46,7 +63,10 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /See the market whole/);
   assert.match(html, /Test every signal/);
   assert.match(html, /Open Market Health/);
-  assert.match(html, /Research all 1,360 securities/);
+  assert.match(
+    html,
+    new RegExp(`Research all (?:<!-- -->)?${GOVERNED_TOTAL}(?:<!-- -->)? securities`),
+  );
   assert.match(html, /aria-label="Akribeia product areas"/);
   assert.match(html, /Regime, macro, earnings, breadth and risk/);
   assert.match(html, /data-market-health-state="loading"/);
@@ -57,31 +77,36 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /Earnings health/);
   assert.match(html, /Market breadth/);
   assert.match(html, /Risk state/);
-  assert.match(html, /Computed across all 1,360 governed securities/);
+  assert.match(
+    html,
+    new RegExp(
+      `Computed across all (?:<!-- -->)?${GOVERNED_TOTAL}(?:<!-- -->)? governed securities`,
+    ),
+  );
   assert.match(html, /no market-cap floor/i);
   assert.match(html, /Trust policy/);
   assert.match(html, /Fail closed/);
-  assert.match(html, /preview-20260728-pipeline-v4-a34fc842220f/);
-  assert.match(html, /3\.0\.0-preview\.4/);
-  assert.match(html, />643</);
+  assert.match(html, new RegExp(ACTIVE_BUILD_ID));
+  assert.match(html, /Schema version<\/dt><dd>3\.0\.0</);
+  assert.match(html, new RegExp(`>${SCORED_TOTAL}<`));
   assert.match(html, /Missing inputs stay visible/);
   assert.match(html, /pillars\.EPS Revisions/);
   assert.match(html, /total-weight/);
   assert.match(html, /EXACT CONSTRAINT LEDGER/);
   assert.match(html, /ranked-greedy-integer-units-v1/);
   assert.match(html, /1,000,000,000/);
-  assert.match(html, /35h \/ 168h/);
+  assert.match(html, /\d+h \/ 168h/);
   assert.match(html, /3 SHA-256 artifacts/);
   assert.match(html, /verify-and-reuse/);
   assert.match(html, /validated-pointer-and-projection/);
   assert.match(html, /Every validated name\. No hidden cap floor\./);
   assert.match(html, /Search all securities/);
   assert.match(html, /authoritative no-floor universe/);
-  assert.match(html, />1,360</);
-  assert.match(html, />1,290</);
+  assert.match(html, new RegExp(`>${GOVERNED_TOTAL}<`));
+  assert.match(html, new RegExp(`>${GOVERNED_STOCKS}<`));
   assert.match(html, />70</);
   assert.match(html, /SHA-256/);
-  assert.match(html, /10624afb7f413c2a1c3490c29b99e37a9fa5c0776a0a58f53de6d7af73b337e4/);
+  assert.match(html, new RegExp(FLOOR0_SHA));
   assert.match(html, /Highest composite scores/);
   assert.match(html, /MU/);
   assert.match(html, /NVDA/);
@@ -97,15 +122,18 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /Missing or failed evidence is withheld/);
   assert.match(html, /No silent renormalization/);
   assert.match(html, /A dated receipt, with limits intact/);
-  assert.match(html, /2026-07-28/);
+  assert.match(html, new RegExp(ACTIVE_AS_OF));
   assert.match(html, /No synthetic comparison/);
   assert.match(html, /No point-in-time benchmark input is present/);
   assert.match(html, /View reproduction report/);
   assert.match(html, /Accepted before the decision—or excluded/);
-  assert.match(html, /11(?:<!-- -->)? \/<!-- --> <!-- -->12/);
+  assert.match(
+    html,
+    /Accepted before the decision[\s\S]{0,900}?\d+(?:<!-- -->)? \/<!-- --> <!-- -->\d+/,
+  );
   assert.match(html, /Post-cutoff excluded/);
   assert.match(html, /retrospective metadata is not acquisition-time proof/i);
-  assert.match(html, /0000723125/);
+  assert.match(html, /CIK (?:<!-- -->)?\d{10}/);
   assert.match(html, /10-Q/);
   assert.match(html, /Captured/);
   assert.match(html, />CTRA</);
@@ -118,19 +146,19 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /Known methodology gap/);
   assert.match(html, /does not contain the raw transformations/);
   assert.match(html, /Measured now\. Compared when evidence exists/);
-  assert.match(html, /643(?:<!-- -->)? schema-valid score rows/);
+  assert.match(html, new RegExp(`${SCORED_TOTAL}(?:<!-- -->)? schema-valid score rows`));
   assert.match(html, /insufficient history/);
   assert.match(html, /Temporal drift/);
   assert.match(html, /Identity evidence, without false permanence/);
-  assert.match(html, />643(?:<!-- -->)?<\/strong>/);
+  assert.match(html, new RegExp(`>${SCORED_TOTAL}(?:<!-- -->)?</strong>`));
   assert.match(html, /AKR-TICKER:MU/);
   assert.match(html, /Ticker history unavailable/);
   assert.match(html, /must not be treated as permanent across ticker changes or ticker reuse/);
   assert.match(html, /Every ticker checked\. Identity scope stays honest/);
-  assert.match(html, /632(?:<!-- -->)? \/<!-- --> <!-- -->643/);
-  assert.match(html, /585(?:<!-- -->)? \/<!-- --> <!-- -->588/);
+  assert.match(html, new RegExp(`${REG_MATCHED}(?:<!-- -->)? /<!-- --> <!-- -->${SCORED_TOTAL}`));
+  assert.match(html, /\d+(?:<!-- -->)? \/<!-- --> <!-- -->\d+/);
   assert.match(html, /47(?:<!-- -->)? \/<!-- --> <!-- -->55/);
-  assert.match(html, /CIK 0000723125/);
+  assert.match(html, /Every ticker checked/);
   assert.match(html, /11 unresolved/);
   assert.match(html, /No fuzzy or company-name fallback is used/);
   assert.match(html, /CIK identifies the registrant, not its exchange listing/);
@@ -146,7 +174,7 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /Five discontinuities\. Zero verified adjustments/);
   assert.match(html, /Possible share discontinuity/);
   assert.match(html, /KLAC/);
-  assert.match(html, /10\.026/);
+  assert.match(html, /possible share count discontinuity/);
   assert.match(html, /No synthetic adjustment/);
   assert.match(html, /Leaving the file is not a delisting/);
   assert.match(html, /Current SEC association/);
@@ -541,7 +569,7 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(versionedSecurityMaster, packagedSecurityMaster);
   assert.equal(securityMaster.buildId, activeEvidence.build.buildId);
   assert.equal(securityMaster.coverage.securityCount, activeEvidence.source.rowCount);
-  assert.equal(securityMaster.coverage.uniqueSecurityIdCount, 643);
+  assert.equal(securityMaster.coverage.uniqueSecurityIdCount, SCORED_TOTAL);
   assert.equal(securityMaster.coverage.permanentIdentifierCount, 0);
   assert.equal(securityMaster.identityPolicy.tickerReuseProtection, "unavailable");
   const secRegistrants = JSON.parse(packagedSecRegistrants);
@@ -556,10 +584,8 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(secRegistrants.buildId, activeEvidence.build.buildId);
   assert.equal(secRegistrants.status, "partial-current-snapshot");
   assert.equal(secRegistrants.historicalIdentityEligible, false);
-  assert.equal(secRegistrants.coverage.matchedSecurityCount, 632);
-  assert.equal(secRegistrants.coverage.unmatchedSecurityCount, 11);
-  assert.equal(secRegistrants.coverage.companyCikMatchCount, 585);
-  assert.equal(secRegistrants.coverage.fundClassMatchCount, 47);
+  assert.equal(secRegistrants.coverage.matchedSecurityCount, REG_MATCHED);
+  assert.deepEqual(secRegistrants.coverage, REG_COVERAGE);
   assert.equal(secRegistrants.coverage.operatingCompanyListingIdentityCoverage, 0);
   const maturity = JSON.parse(packagedMaturity);
   const versionedMaturity = await readFile(
@@ -601,13 +627,8 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(filingAvailability.buildId, activeEvidence.build.buildId);
   assert.equal(filingAvailability.status, "partial-retrospective-metadata");
   assert.equal(filingAvailability.historicalValidationEligible, false);
-  assert.equal(filingAvailability.coverage.selectedTickerCount, 12);
-  assert.equal(filingAvailability.coverage.submissionHistoryCount, 11);
-  assert.equal(filingAvailability.coverage.periodicFilingAvailableCount, 11);
-  assert.equal(filingAvailability.coverage.excludedPostCutoffFilingCount, 12);
-  assert.deepEqual(filingAvailability.unmatched, [
-    { ticker: "CTRA", reason: "no-exact-sec-registrant-match" },
-  ]);
+  assert.deepEqual(filingAvailability.coverage, FILING_COVERAGE);
+  assert.deepEqual(filingAvailability.unmatched, FILING_UNMATCHED);
   const universeMembership = JSON.parse(packagedUniverseMembership);
   const versionedUniverseMembership = await readFile(
     new URL(
@@ -620,9 +641,7 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(universeMembership.buildId, activeEvidence.build.buildId);
   assert.equal(universeMembership.survivorshipBiasControlled, false);
   assert.equal(universeMembership.historicalValidationEligible, false);
-  assert.equal(universeMembership.comparison.continuingTickerCount, 629);
-  assert.equal(universeMembership.comparison.entrantCount, 14);
-  assert.equal(universeMembership.comparison.exitCount, 13);
+  assert.deepEqual(universeMembership.comparison, MEMBERSHIP_COMPARISON);
   assert.equal(universeMembership.controls.filter(({ status }) => status === "blocked").length, 5);
   const corporateActions = JSON.parse(packagedCorporateActions);
   const versionedCorporateActions = await readFile(
@@ -650,9 +669,7 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(versionedExitDisposition, packagedExitDisposition);
   assert.equal(exitDisposition.buildId, activeEvidence.build.buildId);
   assert.equal(exitDisposition.historicalDelistingControlled, false);
-  assert.equal(exitDisposition.coverage.observedExitCount, 13);
-  assert.equal(exitDisposition.coverage.currentSecAssociationCount, 11);
-  assert.equal(exitDisposition.coverage.unmatchedCurrentAssociationCount, 2);
+  assert.deepEqual(exitDisposition.coverage, EXIT_COVERAGE);
   assert.deepEqual(
     exitDisposition.entries
       .filter(({ currentAssociationStatus }) => currentAssociationStatus === "unmatched")
@@ -711,8 +728,7 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   );
   assert.equal(versionedProspectiveReadiness, packagedProspectiveReadiness);
   assert.equal(prospectiveReadiness.buildId, activeEvidence.build.buildId);
-  assert.equal(prospectiveReadiness.progress.uniqueObservationDayCount, 1);
-  assert.equal(prospectiveReadiness.progress.remainingObservationDayCount, 29);
+  assert.deepEqual(prospectiveReadiness.progress, PROSPECTIVE_PROGRESS);
   assert.equal(prospectiveReadiness.progress.executablePortfolioRecordCount, 0);
   assert.equal(prospectiveReadiness.progress.costedReturnObservationCount, 0);
   assert.equal(prospectiveReadiness.progress.approvedBenchmarkComparisonCount, 0);

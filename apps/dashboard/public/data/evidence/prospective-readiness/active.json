@@ -1,8 +1,8 @@
 {
   "reportSchemaVersion": "1.0.0",
-  "buildId": "preview-20260728-pipeline-v4-a34fc842220f",
-  "modelVersion": "3.0.0-preview.3",
-  "assessedAt": "2026-07-30T04:36:30Z",
+  "buildId": "preview-20260825-pipeline-v5-f7d093b626d6",
+  "modelVersion": "3.0.0",
+  "assessedAt": "2026-08-26T01:56:31Z",
   "status": "blocked-insufficient-prospective-history",
   "prospectiveValidationEligible": false,
   "certificationEligible": false,
@@ -14,15 +14,15 @@
     "monthlyValidationReports": 1
   },
   "progress": {
-    "immutableDailyEvidenceRecordCount": 1,
-    "uniqueObservationDayCount": 1,
-    "remainingObservationDayCount": 29,
+    "immutableDailyEvidenceRecordCount": 2,
+    "uniqueObservationDayCount": 2,
+    "remainingObservationDayCount": 28,
     "executablePortfolioRecordCount": 0,
     "costedReturnObservationCount": 0,
     "approvedBenchmarkComparisonCount": 0,
     "monthlyValidationReportCount": 0,
     "earliestObservationDate": "2026-07-28",
-    "latestObservationDate": "2026-07-28"
+    "latestObservationDate": "2026-08-25"
   },
   "observations": [
     {
@@ -33,6 +33,19 @@
       "evidenceRecordPath": "daily/2026-07-28/preview-20260728-pipeline-v4-a34fc842220f/evidence.json",
       "evidenceRecordSha256": "82409751141892e4a0aa9f2ca6df923818c5c08e66fda0470e061f1e7f5862d9",
       "reproducibilityReportPath": "daily/2026-07-28/preview-20260728-pipeline-v4-a34fc842220f/reproducibility.json",
+      "reproductionVerified": true,
+      "executionRecorded": false,
+      "costedReturnComputed": false,
+      "approvedBenchmarkCompared": false
+    },
+    {
+      "asOfDate": "2026-08-25",
+      "buildId": "preview-20260825-pipeline-v5-f7d093b626d6",
+      "modelVersion": "3.0.0",
+      "recordedAt": "2026-08-26T01:56:31Z",
+      "evidenceRecordPath": "daily/2026-08-25/preview-20260825-pipeline-v5-f7d093b626d6/evidence.json",
+      "evidenceRecordSha256": "dd21eef7909c056e158965fe85ccc995ea7c00af3aaf418cb38120ecca932e73",
+      "reproducibilityReportPath": "daily/2026-08-25/preview-20260825-pipeline-v5-f7d093b626d6/reproducibility.json",
       "reproductionVerified": true,
       "executionRecorded": false,
       "costedReturnComputed": false,
@@ -65,7 +78,7 @@
     {
       "key": "immutable-daily-ledger",
       "status": "partial",
-      "detail": "1 of 30 required independent daily observation dates are present in the immutable ledger."
+      "detail": "2 of 30 required independent daily observation dates are present in the immutable ledger."
     },
     {
       "key": "independent-observation-window",
@@ -107,7 +120,7 @@
     {
       "key": "thirty-immutable-observation-days",
       "requiredCount": 30,
-      "observedCount": 1,
+      "observedCount": 2,
       "satisfied": false,
       "detail": "Collect 30 distinct immutable daily evidence dates without backfilling or rewriting records."
     },

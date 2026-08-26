@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve as resolvePath } from "node:path";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -30,6 +32,13 @@ afterEach(async () => {
   );
 });
 
+const COMMITTED_EXEC = JSON.parse(
+  readFileSync(
+    resolvePath("apps/dashboard/app/generated/active-execution-cost-readiness.json"),
+    "utf8",
+  ),
+) as { targets: unknown };
+
 describe("execution-cost readiness", () => {
   it("preserves exact targets while all execution economics remain null", async () => {
     const value = await root();
@@ -49,17 +58,11 @@ describe("execution-cost readiness", () => {
     });
     expect(
       report.targets.map(({ ticker, targetWeightUnits }) => [ticker, targetWeightUnits]),
-    ).toEqual([
-      ["MU", 120_000_000],
-      ["NVDA", 120_000_000],
-      ["OVV", 120_000_000],
-      ["BKNG", 120_000_000],
-      ["PCG", 120_000_000],
-      ["NBIX", 120_000_000],
-      ["VST", 120_000_000],
-      ["CTRA", 120_000_000],
-      ["SNDK", 40_000_000],
-    ]);
+    ).toEqual(
+      (COMMITTED_EXEC.targets as { ticker: string; targetWeightUnits: number }[]).map(
+        ({ ticker, targetWeightUnits }) => [ticker, targetWeightUnits],
+      ),
+    );
     expect(report.controls.map(({ status }) => status)).toEqual([
       "pass",
       "blocked",

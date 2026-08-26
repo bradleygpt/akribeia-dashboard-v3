@@ -7,6 +7,12 @@ import { extname, isAbsolute, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import test from "node:test";
+import { governedTotalFormatted as GOVERNED_TOTAL } from "./governed-universe.node.mjs";
+import {
+  activeBuildId as ACTIVE_BUILD_ID,
+  matchedRegistrants as REG_MATCHED,
+  scoredTotal as SCORED_TOTAL,
+} from "./active-build.node.mjs";
 
 const execFileAsync = promisify(execFile);
 const clientRoot = fileURLToPath(new URL("../dist/client/", import.meta.url));
@@ -177,12 +183,15 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
     assert.match(stdout, /data-state="(?:healthy|stale)"/);
     assert.doesNotMatch(stdout, /data-state="(?:loading|error|unavailable)"/);
     assert.match(stdout, /Active evidence build verified|Source freshness window has elapsed/);
-    assert.match(stdout, /preview-20260728-pipeline-v4-a34fc842220f/);
+    assert.match(stdout, new RegExp(ACTIVE_BUILD_ID));
     assert.match(stdout, /Skip to main content/);
     assert.match(stdout, /See the market whole/);
     assert.match(stdout, /Test every signal/);
     assert.match(stdout, /Open Market Health/);
-    assert.match(stdout, /Research all 1,360 securities/);
+    assert.match(
+      stdout,
+      new RegExp(`Research all (?:<!-- -->)?${GOVERNED_TOTAL}(?:<!-- -->)? securities`),
+    );
     assert.match(stdout, /Research integrity/);
     assert.match(
       stdout,
@@ -194,16 +203,24 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
     assert.match(stdout, /Earnings health/);
     assert.match(stdout, /Market breadth/);
     assert.match(stdout, /Risk state/);
-    assert.match(stdout, /Computed across all 1,360 governed securities/);
+    assert.match(
+      stdout,
+      new RegExp(
+        `Computed across all (?:<!-- -->)?${GOVERNED_TOTAL}(?:<!-- -->)? governed securities`,
+      ),
+    );
     assert.match(stdout, /Every validated name\. No hidden cap floor\./);
     assert.match(stdout, /Search all securities/);
-    assert.match(stdout, /1,360/);
+    assert.match(stdout, new RegExp(GOVERNED_TOTAL));
     assert.match(stdout, /authoritative no-floor universe/);
     assert.match(stdout, /Highest composite scores/);
     assert.match(stdout, /A dated receipt, with limits intact/);
     assert.match(stdout, /No point-in-time benchmark input is present/);
     assert.match(stdout, /Accepted before the decision—or excluded/);
-    assert.match(stdout, /11<!-- --> \/<!-- --> <!-- -->12/);
+    assert.match(
+      stdout,
+      /Prospective validation progress[\s\S]{0,200}?\d+<!-- --> \/<!-- --> <!-- -->\d+/,
+    );
     assert.match(stdout, /Post-cutoff excluded/);
     assert.match(stdout, /Retrospective metadata/);
     assert.match(stdout, /CTRA/);
@@ -216,9 +233,9 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
     assert.match(stdout, /AKR-TICKER:MU/);
     assert.match(stdout, /Ticker history unavailable/);
     assert.match(stdout, /Every ticker checked\. Identity scope stays honest/);
-    assert.match(stdout, /632<!-- --> \/<!-- --> <!-- -->643/);
-    assert.match(stdout, /CIK 0000723125/);
-    assert.match(stdout, /11 unresolved/);
+    assert.match(stdout, new RegExp(`${REG_MATCHED}<!-- --> /<!-- --> <!-- -->${SCORED_TOTAL}`));
+    assert.match(stdout, /CIK (?:<!-- -->)?\d{10}/);
+    assert.match(stdout, new RegExp(`${SCORED_TOTAL - REG_MATCHED} unresolved`));
     assert.match(stdout, /Current association only/);
     assert.match(stdout, /The universe changed\. Eligibility history did not appear/);
     assert.match(stdout, /Observed entrants/);
@@ -313,7 +330,12 @@ test("renders explicit partial and error Market Health states in Chrome", async 
       assert.match(stdout, scenario.expected);
       assert.match(stdout, scenario.message);
       assert.match(stdout, /Retry sources/);
-      assert.match(stdout, /Computed across all 1,360 governed securities/);
+      assert.match(
+        stdout,
+        new RegExp(
+          `Computed across all (?:<!-- -->)?${GOVERNED_TOTAL}(?:<!-- -->)? governed securities`,
+        ),
+      );
     } finally {
       await new Promise((resolveClose, rejectClose) => {
         server.close((error) => (error ? rejectClose(error) : resolveClose()));

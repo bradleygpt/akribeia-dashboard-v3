@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
@@ -10,9 +11,17 @@ import {
 
 const dashboardRoot = resolve("apps/dashboard/public/data");
 const pointerPath = resolve(dashboardRoot, "active-build.json");
-const activeBuildId = "preview-20260728-pipeline-v4-a34fc842220f";
+// The active pointer and its observation timestamp are read from the real
+// published tree, so the fixtures track each scheduled observation.
+const activeBuildId = (JSON.parse(readFileSync(pointerPath, "utf8")) as { activeBuildId: string })
+  .activeBuildId;
 const buildRoot = resolve(dashboardRoot, "builds", activeBuildId);
-const observedAt = "2026-07-28T17:06:46.000Z";
+const observedAt = (
+  JSON.parse(readFileSync(resolve(buildRoot, "manifest.json"), "utf8")) as {
+    artifacts?: unknown;
+    generatedAt: string;
+  } & { [key: string]: unknown }
+).generatedAt as string;
 
 const healthyInput: AvailabilityClassificationInput = {
   buildId: activeBuildId,
@@ -51,7 +60,7 @@ describe("dashboard data availability", () => {
   it("reports a current build while source freshness is within policy", () => {
     const result = classifyDashboardAvailability(
       healthyInput,
-      new Date("2026-07-29T17:06:46.000Z"),
+      new Date(Date.parse(observedAt) + 86_400_000),
     );
 
     expect(result.kind).toBe("healthy");
@@ -62,7 +71,7 @@ describe("dashboard data availability", () => {
   it("keeps verified history visible with an explicit stale warning", () => {
     const result = classifyDashboardAvailability(
       healthyInput,
-      new Date("2026-08-04T17:06:47.000Z"),
+      new Date(Date.parse(observedAt) + 604_800_000 + 1_000),
     );
 
     expect(result.kind).toBe("stale");
@@ -78,7 +87,7 @@ describe("dashboard data availability", () => {
         publicationDecision: "hold-last-known-good",
         artifactStatus: "fallback",
       },
-      new Date("2026-07-29T17:06:46.000Z"),
+      new Date(Date.parse(observedAt) + 3_600_000),
     );
 
     expect(result.kind).toBe("degraded");
@@ -93,7 +102,7 @@ describe("dashboard data availability", () => {
         publicationDecision: "block",
         artifactStatus: "invalid",
       },
-      new Date("2026-07-29T17:06:46.000Z"),
+      new Date(Date.parse(observedAt) + 3_600_000),
     );
 
     expect(result.kind).toBe("unavailable");
@@ -103,7 +112,7 @@ describe("dashboard data availability", () => {
   it("verifies the real pointer, manifest, dashboard hash, size, schema, and lineage", async () => {
     const result = await loadDashboardAvailability({
       fetcher: fixtureFetcher as typeof fetch,
-      now: new Date("2026-07-29T17:06:46.000Z"),
+      now: new Date(Date.parse(observedAt) + 3_600_000),
     });
 
     expect(result.kind).toBe("healthy");

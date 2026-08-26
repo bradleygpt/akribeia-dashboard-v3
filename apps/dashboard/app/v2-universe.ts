@@ -1,15 +1,23 @@
-import preservedUniverse from "../../../data/reference/v2-baseline/fixtures/universe_floor0.json";
+import preservedUniverse from "../../../data/observations/current/universe_floor0.json";
+import observationProvenance from "../../../data/observations/current/provenance.json";
 import { isExcludedSecurityTicker } from "./security-exclusions";
 
+// The expected shape of the current point-in-time observation comes from the
+// ingestion receipt written alongside the data (scripts/
+// ingest-v2-observation.node.mjs). The pin is still fail-closed — the loader
+// refuses a payload that disagrees with its own receipt — but the receipt now
+// travels with each scheduled observation instead of being frozen to the
+// 2026-07-25 preserved archive.
+const floor0Receipt = observationProvenance.files["universe_floor0.json"];
+
 export const V2_UNIVERSE_EXPECTED = {
-  rows: 1361,
-  stocks: 1291,
-  etfs: 70,
-  sha256: "10624afb7f413c2a1c3490c29b99e37a9fa5c0776a0a58f53de6d7af73b337e4",
-  appCommit: "b477349a8691fdc5000641a6ae2893dbbfae2de6",
-  sourceCommit: "1858840c581f406492dec2e809830d05764ad3d9",
-  bulkDataCommit: "a1304c59706a93f6b2aae775743f511c61539845",
-  publishedAt: "2026-07-25T04:50:09Z",
+  rows: floor0Receipt.rows,
+  stocks: floor0Receipt.stocks,
+  etfs: floor0Receipt.etfs,
+  sha256: floor0Receipt.sha256,
+  sourceCommit: observationProvenance.v2_source_commit,
+  bulkDataCommit: observationProvenance.bulk_data_commit,
+  publishedAt: observationProvenance.observed_at,
 } as const;
 
 interface V2PresetCell {

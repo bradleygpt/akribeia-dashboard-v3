@@ -1,5 +1,5 @@
-import preservedUniverse from "../../../data/reference/v2-baseline/fixtures/universe_floor0.json";
-import preservedMeta from "../../../data/reference/v2-baseline/fixtures/meta.json";
+import preservedUniverse from "../../../data/observations/current/universe_floor0.json";
+import preservedMeta from "../../../data/observations/current/meta.json";
 import { V2_UNIVERSE_EXPECTED, validateV2UniversePayload } from "./v2-universe";
 import { isExcludedSecurityTicker } from "./security-exclusions";
 

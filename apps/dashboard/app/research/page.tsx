@@ -5,7 +5,7 @@ import { ResearchWorkbench } from "./research-workbench";
 export const metadata = {
   title: "Core Research Workbench — Akribeia",
   description:
-    "Screen, filter, sort, compare and inspect all 1,360 securities in the governed Akribeia research universe.",
+    "Screen, filter, sort, compare and inspect every security in the governed Akribeia research universe.",
 };
 
 export default function ResearchPage() {
@@ -48,8 +48,8 @@ export default function ResearchPage() {
         <ResearchWorkbench rows={universe.rows} sectors={universe.sectors} />
         <footer className="research-route-footer">
           <span>
-            Preserved V2 app {universe.source.appCommit.slice(0, 12)} · source{" "}
-            {universe.source.sourceCommit.slice(0, 12)}
+            V2 bake {universe.source.sourceCommit.slice(0, 12)} · data{" "}
+            {universe.source.bulkDataCommit.slice(0, 12)}
           </span>
           <span>Research only · not investment advice</span>
         </footer>

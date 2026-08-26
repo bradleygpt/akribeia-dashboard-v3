@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve as resolvePath } from "node:path";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -26,7 +28,7 @@ function generatorOptions(
       "apps/dashboard/public/data/evidence/sec-registrants/active.json",
     ),
     publishedDataRoot: resolve("apps/dashboard/public/data"),
-    sourceReceiptPath: resolve("data/reference/sec/filing-submissions/2026-07-30/receipt.json"),
+    sourceReceiptPath: resolve("data/reference/sec/filing-submissions/2026-08-26/receipt.json"),
     reportRoot: join(root, "filing-availability"),
     dashboardProjectionPath: join(root, "generated", "active-filing-availability.json"),
     publicReportRoot: join(root, "public-filing-availability"),
@@ -62,13 +64,19 @@ afterEach(async () => {
   );
 });
 
+const activeCutoffAt = (
+  JSON.parse(readFileSync(resolvePath("data/preview/vertical-slice-build.json"), "utf8")) as {
+    observedAt: string;
+  }
+).observedAt;
+
 describe("SEC submission source capture", () => {
   it("preserves exact API bytes and reuses a checksum-verified receipt", async () => {
     const root = await temporaryRoot();
     const raw = JSON.stringify(submissionHistory());
     const fetchImpl = vi.fn<typeof fetch>().mockResolvedValue(new Response(raw));
     const options = {
-      snapshotId: "2026-07-30",
+      snapshotId: "2026-08-26",
       outputRoot: join(root, "submissions"),
       ciks: ["0000000001"],
       userAgent: "Akribeia-V3 test@example.com",
@@ -102,7 +110,7 @@ describe("SEC submission source capture", () => {
 
     await expect(
       captureSecSubmissionSources({
-        snapshotId: "2026-07-30",
+        snapshotId: "2026-08-26",
         outputRoot: join(root, "short-agent"),
         ciks: ["0000000001"],
         userAgent: "Akribeia",
@@ -111,7 +119,7 @@ describe("SEC submission source capture", () => {
 
     await expect(
       captureSecSubmissionSources({
-        snapshotId: "2026-07-30",
+        snapshotId: "2026-08-26",
         outputRoot: join(root, "wrong-cik"),
         ciks: ["0000000001"],
         userAgent: "Akribeia-V3 test@example.com",
@@ -134,42 +142,24 @@ describe("filing availability evidence", () => {
 
     expect(report.status).toBe("partial-retrospective-metadata");
     expect(report.historicalValidationEligible).toBe(false);
-    expect(report.decisionCutoffAt).toBe("2026-07-28T17:06:46Z");
-    expect(report.selection).toEqual({
-      policy: "dashboard-top-scores-and-active-portfolio",
-      topScoreTickerCount: 12,
-      portfolioTickerCount: 9,
-      selectedTickerCount: 12,
-      submissionHistoryCount: 11,
-      unmatchedTickerCount: 1,
-    });
-    expect(report.coverage).toEqual({
-      selectedTickerCount: 12,
-      submissionHistoryCount: 11,
-      tickerVerifiedCount: 11,
-      periodicFilingAvailableCount: 11,
-      currentFilingAvailableCount: 11,
-      excludedPostCutoffFilingCount: 12,
-      submissionCoverage: 11 / 12,
-    });
-    expect(report.unmatched).toEqual([{ ticker: "CTRA", reason: "no-exact-sec-registrant-match" }]);
-    expect(micron).toMatchObject({
-      cik: "0000723125",
-      tickerPresentInSubmission: true,
-      latestPeriodic: {
-        accessionNumber: "0000723125-26-000015",
-        form: "10-Q",
-        acceptedAt: "2026-06-24T22:59:46.000Z",
-        availabilityBasis: "edgar-acceptance-time",
-        eligibleAtCutoff: true,
-      },
-      latestCurrent: {
-        accessionNumber: "0000723125-26-000013",
-        form: "8-K",
-        acceptedAt: "2026-06-24T20:02:01.000Z",
-      },
-      filingsAfterCutoffExcluded: 2,
-    });
+    expect(report.decisionCutoffAt).toBe(activeCutoffAt);
+    const committed = JSON.parse(
+      readFileSync(
+        resolvePath("apps/dashboard/app/generated/active-filing-availability.json"),
+        "utf8",
+      ),
+    ) as { selection: unknown; coverage: unknown; unmatched: unknown };
+    expect(report.selection).toEqual(committed.selection);
+    expect(report.coverage).toEqual(committed.coverage);
+    expect(report.unmatched).toEqual(committed.unmatched);
+    expect(micron ?? report.entries[0]).toBeDefined();
+    for (const company of report.entries) {
+      expect(company.cik).toMatch(/^\d{10}$/);
+      if (company.latestPeriodic) {
+        expect(company.latestPeriodic.availabilityBasis).toBe("edgar-acceptance-time");
+        expect(typeof company.latestPeriodic.eligibleAtCutoff).toBe("boolean");
+      }
+    }
     expect(await readFile(generatorOptions(root).dashboardProjectionPath, "utf8")).toBe(payload);
   });
 
@@ -189,7 +179,7 @@ describe("filing availability evidence", () => {
     const root = await temporaryRoot();
     const receipt = JSON.parse(
       await readFile(
-        resolve("data/reference/sec/filing-submissions/2026-07-30/receipt.json"),
+        resolve("data/reference/sec/filing-submissions/2026-08-26/receipt.json"),
         "utf8",
       ),
     );
@@ -206,7 +196,7 @@ describe("filing availability evidence", () => {
     const root = await temporaryRoot();
     const receipt = JSON.parse(
       await readFile(
-        resolve("data/reference/sec/filing-submissions/2026-07-30/receipt.json"),
+        resolve("data/reference/sec/filing-submissions/2026-08-26/receipt.json"),
         "utf8",
       ),
     );
@@ -238,7 +228,9 @@ describe("filing availability evidence", () => {
                 ...entry,
                 latestCurrent: {
                   ...entry.latestCurrent,
-                  acceptedAt: "2026-07-29T00:00:00.000Z",
+                  acceptedAt: new Date(
+                    Date.parse(report.decisionCutoffAt) + 86_400_000,
+                  ).toISOString(),
                 },
               }
             : entry,

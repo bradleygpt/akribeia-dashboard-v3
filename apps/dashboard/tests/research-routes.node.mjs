@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { governedTotalFormatted as GOVERNED_TOTAL } from "./governed-universe.node.mjs";
 
 async function render(pathname) {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
@@ -30,7 +31,7 @@ test("server-renders the Wave 2 research workbench", async () => {
   assert.match(html, /High conviction/);
   assert.match(html, /Quality compounders/);
   assert.match(html, /Search ticker, company or industry/);
-  assert.match(html, /1,360/);
+  assert.match(html, new RegExp(GOVERNED_TOTAL));
   assert.match(html, /Compare NVDA/);
   assert.match(html, /aria-sort="descending"/);
   assert.match(html, /research-sort-header is-active/);

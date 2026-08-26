@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve as resolvePath } from "node:path";
 import { cp, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -33,6 +35,12 @@ afterEach(async () => {
   );
 });
 
+const ACTIVE_BUILD_ID = (
+  JSON.parse(readFileSync(resolvePath("apps/dashboard/public/data/active-build.json"), "utf8")) as {
+    activeBuildId: string;
+  }
+).activeBuildId;
+
 describe("immutable daily evidence", () => {
   it("receipts the active build with explicit benchmark and performance limits", async () => {
     const root = await temporaryRoot();
@@ -50,8 +58,13 @@ describe("immutable daily evidence", () => {
     const report = EvidenceReproducibilityReportSchema.parse(JSON.parse(reportPayload));
 
     expect(result.disposition).toBe("published");
-    expect(record.asOfDate).toBe("2026-07-28");
-    expect(record.build.buildId).toBe("preview-20260728-pipeline-v4-a34fc842220f");
+    expect(record.asOfDate).toBe(
+      record.build.buildId
+        .match(/preview-(\d{4})(\d{2})(\d{2})/)!
+        .slice(1)
+        .join("-"),
+    );
+    expect(record.build.buildId).toBe(ACTIVE_BUILD_ID);
     expect(record.artifacts.map(({ name }) => name)).toEqual(["dashboard", "portfolio", "scores"]);
     expect(record.portfolio.totalWeightUnits).toBe(1_000_000_000);
     expect(record.portfolio.positions).toHaveLength(9);

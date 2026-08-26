@@ -4,7 +4,7 @@ import { generateModelGovernance } from "./governance.js";
 const result = await generateModelGovernance({
   activeDailyEvidencePath: resolve("apps/dashboard/public/data/evidence/active.json"),
   evidenceRoot: resolve("data/evidence"),
-  metadataPath: resolve("data/reference/v2-baseline/fixtures/meta.json"),
+  metadataPath: resolve("data/observations/current/meta.json"),
   governanceRoot: resolve("data/evidence/governance"),
   dashboardProjectionRoot: resolve("apps/dashboard/app/generated"),
   publicGovernanceRoot: resolve("apps/dashboard/public/data/evidence/governance"),

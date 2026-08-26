@@ -1,3 +1,4 @@
+import { GOVERNED_STOCKS } from "../observation-fixture";
 import { describe, expect, it } from "vitest";
 import {
   ETF_FINDER_ELIGIBLE_RATINGS,
@@ -134,7 +135,7 @@ describe("D4 against the live governed universe", () => {
   const basket = defaultFinderBasket(universe.rows);
 
   it("derives the current basket from the governed screener with no hard-coded tickers", () => {
-    expect(basket.stockUniverseCount).toBe(1290);
+    expect(basket.stockUniverseCount).toBe(GOVERNED_STOCKS);
     expect(basket.eligibleCount).toBeGreaterThan(0);
     expect(basket.tickers.length).toBe(Math.min(basket.eligibleCount, ETF_FINDER_MAX_STOCKS));
     expect(basket.tickers.length).toBeLessThanOrEqual(25);

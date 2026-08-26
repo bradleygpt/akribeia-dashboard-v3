@@ -20,7 +20,7 @@ function options(
   return {
     activeDailyEvidencePath: resolve("apps/dashboard/public/data/evidence/active.json"),
     evidenceRoot: resolve("data/evidence"),
-    metadataPath: resolve("data/reference/v2-baseline/fixtures/meta.json"),
+    metadataPath: resolve("data/observations/current/meta.json"),
     governanceRoot: join(root, "governance"),
     dashboardProjectionRoot: join(root, "generated"),
     publicGovernanceRoot: join(root, "public-governance"),
@@ -50,7 +50,7 @@ describe("model governance evidence", () => {
     const dictionary = MetricDictionarySchema.parse(JSON.parse(dictionaryPayload));
 
     expect(result.disposition).toBe("published");
-    expect(card.modelVersion).toBe("3.0.0-preview.3");
+    expect(card.modelVersion).toBe("3.0.0");
     expect(card.maturity).toBe("research-preview");
     expect(card.releaseEligible).toBe(false);
     expect(card.validation.map(({ gate, status }) => [gate, status])).toEqual([
@@ -100,7 +100,7 @@ describe("model governance evidence", () => {
   it("rejects metric metadata from a different source commit", async () => {
     const root = await temporaryRoot();
     const metadata = JSON.parse(
-      await readFile(resolve("data/reference/v2-baseline/fixtures/meta.json"), "utf8"),
+      await readFile(resolve("data/observations/current/meta.json"), "utf8"),
     );
     const metadataPath = join(root, "wrong-source-meta.json");
 
@@ -117,7 +117,7 @@ describe("model governance evidence", () => {
   it("rejects metric metadata with noncanonical pillars", async () => {
     const root = await temporaryRoot();
     const metadata = JSON.parse(
-      await readFile(resolve("data/reference/v2-baseline/fixtures/meta.json"), "utf8"),
+      await readFile(resolve("data/observations/current/meta.json"), "utf8"),
     );
     const metadataPath = join(root, "wrong-pillars-meta.json");
 
@@ -132,7 +132,7 @@ describe("model governance evidence", () => {
   it("rejects a metadata weight that disagrees with the active model", async () => {
     const root = await temporaryRoot();
     const metadata = JSON.parse(
-      await readFile(resolve("data/reference/v2-baseline/fixtures/meta.json"), "utf8"),
+      await readFile(resolve("data/observations/current/meta.json"), "utf8"),
     );
     const metadataPath = join(root, "wrong-weight-meta.json");
 

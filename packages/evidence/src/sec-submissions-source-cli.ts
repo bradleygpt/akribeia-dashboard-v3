@@ -3,6 +3,11 @@ import { resolve } from "node:path";
 import { SecRegistrantCrosswalkSchema, VerticalSliceDashboardSchema } from "@akribeia/contracts";
 import { captureSecSubmissionSources } from "./sec-submissions-source.js";
 
+const snapshotId = process.env.SEC_SNAPSHOT_ID;
+if (snapshotId === undefined || !/^\d{4}-\d{2}-\d{2}$/.test(snapshotId)) {
+  throw new Error("SEC_SNAPSHOT_ID is required (YYYY-MM-DD).");
+}
+
 const userAgent = process.env.SEC_USER_AGENT;
 if (userAgent === undefined) {
   throw new Error("SEC_USER_AGENT is required. Use the SEC-declared company/contact format.");
@@ -26,8 +31,8 @@ const ciks = crosswalk.matches
   )
   .map(({ cik }) => cik);
 const result = await captureSecSubmissionSources({
-  snapshotId: "2026-07-30",
-  outputRoot: resolve("data/reference/sec/filing-submissions/2026-07-30"),
+  snapshotId,
+  outputRoot: resolve(`data/reference/sec/filing-submissions/${snapshotId}`),
   ciks,
   userAgent,
 });

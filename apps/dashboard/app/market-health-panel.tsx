@@ -113,9 +113,11 @@ function indexByName(
 export function MarketHealthPanel({
   breadth,
   universeAsOf,
+  universeTotal,
 }: {
   breadth: MarketBreadth;
   universeAsOf: string;
+  universeTotal: number;
 }) {
   const [request, setRequest] = useState<RequestState>({
     kind: "loading",
@@ -288,7 +290,9 @@ export function MarketHealthPanel({
         <article>
           <p>Market breadth</p>
           <strong>{breadth.breadthScore.toFixed(0)}</strong>
-          <span>Computed across all 1,360 governed securities</span>
+          <span>
+            Computed across all {universeTotal.toLocaleString("en-US")} governed securities
+          </span>
         </article>
         <article>
           <p>Risk state</p>
