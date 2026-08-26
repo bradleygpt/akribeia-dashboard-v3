@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { resolve as resolvePath } from "node:path";
 import { readFile } from "node:fs/promises";
 import { isAbsolute, relative, resolve } from "node:path";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   createFixedWindowRateLimiter,
   handleEvidenceApi,
@@ -291,6 +291,114 @@ describe("protected evidence API", () => {
     });
     expect(payload.explanation).toContain("Missing factors are never silently reweighted");
     expect(payload.citations).toContain("scores.json:security.contributions");
+  });
+
+  it("answers a thesis request deterministically with a reason when no model is configured", async () => {
+    const response = await handleEvidenceApi(
+      protectedRequest("/api/v3/ai/explain", { ticker: "MU", focus: "thesis" }),
+      env(),
+      limiter(),
+    );
+    const payload = await response?.json();
+
+    expect(response?.status).toBe(200);
+    expect(payload).toMatchObject({
+      ticker: "MU",
+      mode: "deterministic-evidence",
+      externalModelUsed: false,
+      focus: "thesis",
+      thesisUnavailableReason: "external model not configured",
+    });
+  });
+
+  it("serves a grounded THESIS narrative when the external model is configured", async () => {
+    const calls: { url: string; body: string; headers: Headers }[] = [];
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+        calls.push({
+          url: String(input),
+          body: String(init?.body ?? ""),
+          headers: new Headers(init?.headers),
+        });
+        return new Response(
+          JSON.stringify({
+            candidates: [
+              { content: { parts: [{ text: "MU carries the published composite score." }] } },
+            ],
+          }),
+          { status: 200 },
+        );
+      }),
+    );
+
+    try {
+      const response = await handleEvidenceApi(
+        protectedRequest("/api/v3/ai/explain", { ticker: "MU", focus: "thesis" }),
+        { ...env(), THESIS_GEMINI_API_KEY: "test-key" },
+        limiter(),
+      );
+      const payload = await response?.json();
+
+      expect(response?.status).toBe(200);
+      expect(payload).toMatchObject({
+        ticker: "MU",
+        mode: "llm-thesis",
+        externalModelUsed: true,
+        focus: "thesis",
+      });
+      expect(payload.thesisUnavailableReason).toBeUndefined();
+      expect(payload.citations).toContain("external-model:gemini-2.0-flash");
+      // grounded prompt: published figures in, credential out of the URL
+      expect(calls).toHaveLength(1);
+      expect(calls[0].url).toContain("generativelanguage.googleapis.com");
+      expect(calls[0].url).not.toContain("test-key");
+      expect(calls[0].headers.get("x-goog-api-key")).toBe("test-key");
+      expect(calls[0].body).toContain("Ticker: MU");
+      expect(calls[0].body).toContain("Do not give investment");
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it("fails closed to the deterministic explanation when the external model errors", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response("upstream error", { status: 500 })),
+    );
+
+    try {
+      const response = await handleEvidenceApi(
+        protectedRequest("/api/v3/ai/explain", { ticker: "MU", focus: "thesis" }),
+        { ...env(), THESIS_GEMINI_API_KEY: "test-key" },
+        limiter(),
+      );
+      const payload = await response?.json();
+
+      expect(response?.status).toBe(200);
+      expect(payload).toMatchObject({
+        mode: "deterministic-evidence",
+        externalModelUsed: false,
+        focus: "thesis",
+        thesisUnavailableReason: "external model returned HTTP 500",
+      });
+      expect(payload.explanation.length).toBeGreaterThan(0);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it("reports the external model as configured in health when the secret exists", async () => {
+    const response = await handleEvidenceApi(
+      new Request("https://akribeia.example/api/v3/health"),
+      { ...env(), THESIS_GEMINI_API_KEY: "test-key" },
+      limiter(),
+    );
+
+    await expect(response?.json()).resolves.toMatchObject({
+      status: "healthy",
+      externalModelConfigured: true,
+    });
   });
 
   it("fails closed when an immutable artifact is tampered", async () => {
