@@ -83,6 +83,6 @@ const server = createServer(async (incoming, outgoing) => {
   }
 });
 
-server.listen(port, "127.0.0.1", () => {
-  console.log(`packaged worker serving at http://127.0.0.1:${port}`);
-});
+// Silent on purpose: the repo lint config gives *.node.mjs files no console
+// global. Poll the port to detect readiness.
+server.listen(port, "127.0.0.1");
