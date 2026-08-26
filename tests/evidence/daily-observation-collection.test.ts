@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { resolve as resolvePath } from "node:path";
 import { cp, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -45,6 +45,11 @@ const ACTIVE_BUILD_ID = (
     activeBuildId: string;
   }
 ).activeBuildId;
+// The full committed ledger, derived from the repository itself so the
+// duplicate-date no-op stays correct as scheduled observations accumulate.
+const LEDGER_DATES = readdirSync(resolvePath("data/evidence/daily"))
+  .filter((name) => /^\d{4}-\d{2}-\d{2}$/.test(name))
+  .sort();
 const ACTIVE_AS_OF = ACTIVE_BUILD_ID.match(/preview-(\d{4})(\d{2})(\d{2})/)!
   .slice(1)
   .join("-");
@@ -74,9 +79,9 @@ describe("daily prospective observation collection", () => {
 
     expect(result.receipt.disposition).toBe("no-op-duplicate-date");
     expect(receipt.ledger).toMatchObject({
-      observationDates: ["2026-07-28", ACTIVE_AS_OF],
-      observationDayCountBefore: 2,
-      observationDayCountAfter: 2,
+      observationDates: LEDGER_DATES,
+      observationDayCountBefore: LEDGER_DATES.length,
+      observationDayCountAfter: LEDGER_DATES.length,
     });
     expect(receipt.dailyEvidence).toBeNull();
     expect(receipt.prospectiveReadiness).toBeNull();
