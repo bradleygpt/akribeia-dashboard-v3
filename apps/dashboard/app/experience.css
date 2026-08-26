@@ -214,6 +214,31 @@ body.akribeia-experience-ready .product-doors > a:nth-child(4) {
   }
 }
 
+/* Portal landing: unlayered scoped typography. The site's global h1/p element
+   styles are unlayered and would otherwise override the portal's layered
+   Tailwind utilities (cascade layers lose to unlayered styles regardless of
+   specificity), blowing the HUD wordmark up to marketing-hero size. */
+.tri-portal {
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+}
+
+.tri-portal h1 {
+  margin: 0;
+  font-family: inherit;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.42em;
+  line-height: 1.25;
+}
+
+.tri-portal p {
+  margin: 0;
+}
+
+.tri-portal a {
+  text-decoration: none;
+}
+
 /* Preserved V2 loading/entry experience (restored from the approved artifact port). */
 html {
   background: #04060c;
@@ -230,14 +255,15 @@ body.akribeia-experience-ready {
   animation: akribeia-content-arrive 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* Opacity only: a filter here would persist (fill-mode both) and turn body into
+   the containing block for every position:fixed descendant, collapsing
+   full-screen overlays (portal landing, route transition) to zero height. */
 @keyframes akribeia-content-arrive {
   from {
     opacity: 0;
-    filter: saturate(0.72);
   }
   to {
     opacity: 1;
-    filter: saturate(1);
   }
 }
 

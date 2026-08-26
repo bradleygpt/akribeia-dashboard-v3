@@ -1,3 +1,4 @@
+import PortalLanding from "./portal-landing/PortalLanding";
 import {
   BenchmarkReadinessSchema,
   CorporateActionReadinessSchema,
@@ -2004,5 +2005,5 @@ export function MarketHealthDashboard() {
 }
 
 export default function Home() {
-  return <MarketHealthDashboard />;
+  return <PortalLanding />;
 }

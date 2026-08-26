@@ -13,27 +13,34 @@ async function render(pathname) {
   );
 }
 
-test("the root source is the preserved Market Health entry, not the portal", async () => {
-  const [page, dashboardPage, shell] = await Promise.all([
+test("the root source is the approved portal landing behind the loading sequence", async () => {
+  const [page, dashboardPage, shell, landing] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/dashboard/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/experience-shell.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/portal-landing/PortalLanding.tsx", import.meta.url), "utf8"),
   ]);
 
-  assert.match(page, /export default function Home\(\) \{\s*return <MarketHealthDashboard \/>;/);
-  assert.doesNotMatch(page, /LandingPortal/);
+  assert.match(page, /export default function Home\(\) \{\s*return <PortalLanding \/>;/);
   assert.match(dashboardPage, /MarketHealthDashboard/);
   assert.match(shell, /LoadingOverlay/);
+  // the WebGL scene is lazy-loaded and gated: never evaluated in the Worker,
+  // never mounted for reduced-motion users
+  assert.match(landing, /lazy\(\(\) => import\("\.\/Scene"\)\)/);
+  assert.match(landing, /prefers-reduced-motion/);
 });
 
-test("the packaged Worker serves the preserved entry at the root", async () => {
+test("the packaged Worker serves the portal landing at the root", async () => {
   const response = await render("/");
   assert.equal(response.status, 200);
   const html = await response.text();
-  assert.match(html, /Market Health/);
-  assert.match(html, /See the market whole/);
+  // server HTML carries the landing shell; the scene itself is client-only
+  assert.match(html, /initializing system/i);
+  // the legacy CSS portal must not resurface
   assert.doesNotMatch(html, /data-portal-sun/);
   assert.doesNotMatch(html, /Enter the Akribeia intelligence system/);
+  // no three.js payload inlined into the served document
+  assert.doesNotMatch(html, /ACESFilmicToneMapping/);
 });
 
 test("Market Health remains navigable at the dashboard route", async () => {
