@@ -62,3 +62,9 @@ const prospective = JSON.parse(
   ),
 );
 export const prospectiveProgress = prospective.progress;
+
+const maturity = JSON.parse(
+  await readFile(new URL("../app/generated/active-maturity.json", import.meta.url), "utf8"),
+);
+/** immutable daily builds under the active model version, per the assessment. */
+export const maturityDailyBuilds = maturity.observations.immutableDailyBuilds;

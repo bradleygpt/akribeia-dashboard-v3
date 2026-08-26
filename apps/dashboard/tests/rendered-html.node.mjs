@@ -8,6 +8,7 @@ import {
   floor0Sha256 as FLOOR0_SHA,
 } from "./governed-universe.node.mjs";
 import {
+  maturityDailyBuilds as MATURITY_BUILDS,
   prospectiveProgress as PROSPECTIVE_PROGRESS,
   filingCoverage as FILING_COVERAGE,
   filingUnmatched as FILING_UNMATCHED,
@@ -203,7 +204,7 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /cannot yet support a point-in-time backtest/);
   assert.match(html, /Working product\. Research-preview evidence/);
   assert.match(html, /validation candidate/);
-  assert.match(html, /1<!-- --> \/<!-- --> <!-- -->30/);
+  assert.match(html, new RegExp(`${MATURITY_BUILDS}<!-- --> /<!-- --> <!-- -->30`));
   assert.match(html, /4<!-- --> \/<!-- --> <!-- -->8/);
   assert.match(html, /Production cutover: (?:<!-- -->)?not authorized/);
   assert.match(html, /not investment advice/i);
@@ -599,7 +600,7 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   assert.equal(maturity.buildId, activeEvidence.build.buildId);
   assert.equal(maturity.currentLevel, "research-preview");
   assert.equal(maturity.releaseEligible, false);
-  assert.equal(maturity.observations.immutableDailyBuilds, 1);
+  assert.equal(maturity.observations.immutableDailyBuilds, MATURITY_BUILDS);
   assert.equal(maturity.cutover.status, "not-authorized");
   const historicalReadiness = JSON.parse(packagedHistoricalReadiness);
   const versionedHistoricalReadiness = await readFile(
