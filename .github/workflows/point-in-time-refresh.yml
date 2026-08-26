@@ -111,7 +111,7 @@ jobs:
         if: steps.ingest.outputs.unchanged == 'false'
         run: |
           npm run ci
-          npm audit --audit-level=high
+          npm run security:audit
           git diff --check
 
       - name: Open a reviewable refresh pull request
