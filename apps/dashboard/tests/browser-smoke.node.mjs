@@ -139,6 +139,16 @@ async function startDashboardServer({ marketHealthResponder } = {}) {
 }
 
 async function renderInChrome(browser, url, profileDirectory) {
+  // A cold Chrome launch on a fresh CI runner occasionally times out and dumps
+  // nothing. Retry the RENDER once (never the assertions) on an empty dump.
+  for (let attempt = 1; attempt <= 2; attempt += 1) {
+    const stdout = await renderOnce(browser, url, profileDirectory);
+    if (stdout.trim().length > 0 || attempt === 2) return stdout;
+  }
+  return "";
+}
+
+async function renderOnce(browser, url, profileDirectory) {
   const { stdout } = await execFileAsync(
     browser,
     [
