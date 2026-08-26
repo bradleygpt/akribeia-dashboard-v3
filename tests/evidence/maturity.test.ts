@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -7,6 +7,27 @@ import { MATURITY_LEVELS, MaturityAssessmentSchema } from "@akribeia/contracts";
 import { generateMaturityAssessment } from "@akribeia/evidence";
 
 const temporaryDirectories: string[] = [];
+
+// Count immutable daily builds the same way the assessment does: unique build
+// ids among ledger records that share the ACTIVE model version.
+const dailyRoot = resolve("data/evidence/daily");
+const ACTIVE_MODEL_VERSION = (
+  JSON.parse(readFileSync(resolve("apps/dashboard/public/data/evidence/active.json"), "utf8")) as {
+    build: { modelVersion: string };
+  }
+).build.modelVersion;
+const LEDGER_MODEL_BUILDS = new Set(
+  readdirSync(dailyRoot)
+    .filter((name) => /^\d{4}-\d{2}-\d{2}$/.test(name))
+    .flatMap((date) =>
+      readdirSync(resolve(dailyRoot, date)).filter((buildId) => {
+        const record = JSON.parse(
+          readFileSync(resolve(dailyRoot, date, buildId, "evidence.json"), "utf8"),
+        ) as { build: { modelVersion: string } };
+        return record.build.modelVersion === ACTIVE_MODEL_VERSION;
+      }),
+    ),
+).size;
 
 const activeDaily = JSON.parse(
   readFileSync(resolve("apps/dashboard/public/data/evidence/active.json"), "utf8"),
@@ -71,7 +92,7 @@ describe("evidence maturity assessment", () => {
       "blocked",
     ]);
     expect(assessment.observations).toEqual({
-      immutableDailyBuilds: 1,
+      immutableDailyBuilds: LEDGER_MODEL_BUILDS,
       requiredDailyBuilds: 30,
       qualityStatus: "pass",
       driftStatus: "insufficient-history",
