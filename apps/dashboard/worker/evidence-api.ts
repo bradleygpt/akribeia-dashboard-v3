@@ -17,6 +17,8 @@ export interface AssetFetcher {
 
 export interface EvidenceApiEnv {
   ASSETS: AssetFetcher;
+  /** optional THESIS engine credential; presence alone configures the engine. */
+  THESIS_GEMINI_API_KEY?: string;
 }
 
 export interface RateLimitResult {
@@ -324,6 +326,97 @@ function securityResponse(evidence: ActiveEvidence, security: PublishedScoredSec
   };
 }
 
+const THESIS_MODEL = "gemini-2.0-flash";
+const THESIS_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${THESIS_MODEL}:generateContent`;
+const THESIS_TIMEOUT_MS = 8_000;
+const THESIS_MAX_CHARS = 1_600;
+
+function thesisConfigured(env: EvidenceApiEnv): boolean {
+  return typeof env.THESIS_GEMINI_API_KEY === "string" && env.THESIS_GEMINI_API_KEY.length > 0;
+}
+
+function thesisPrompt(
+  security: PublishedScoredSecurity,
+  position: PublishedPortfolioArtifact["portfolio"]["positions"][number] | null,
+): string {
+  const contributions = security.contributions
+    .map((contribution) =>
+      contribution.status === "available"
+        ? `${contribution.pillar}: weighted ${contribution.weightedValue.toFixed(2)}`
+        : `${contribution.pillar}: unavailable`,
+    )
+    .join("; ");
+  const portfolioFact =
+    position === null
+      ? "It is not in the constrained published portfolio."
+      : `Constrained portfolio weight ${(position.weight * 100).toFixed(2)}% against a ${(position.maxWeight * 100).toFixed(2)}% cap.`;
+
+  return [
+    "You are the THESIS engine for Akribeia, a quantitative research preview.",
+    "Write a short research note (at most two paragraphs) for the security below.",
+    "Use ONLY the published figures provided here. Do not introduce any other",
+    "numbers, price targets, forecasts, or market data. Do not give investment",
+    "advice or recommendations. Plain prose, no headers, no lists.",
+    "",
+    `Ticker: ${security.ticker}`,
+    `Eligible: ${security.eligible}`,
+    `Composite score: ${security.score === null ? "null" : security.score.toFixed(2)}`,
+    `Factor coverage: ${(security.coverage * 100).toFixed(0)}%`,
+    `Factor contributions: ${contributions}`,
+    portfolioFact,
+  ].join("\n");
+}
+
+interface ThesisResult {
+  text: string | null;
+  unavailableReason: string | null;
+}
+
+async function generateThesis(
+  env: EvidenceApiEnv,
+  security: PublishedScoredSecurity,
+  position: PublishedPortfolioArtifact["portfolio"]["positions"][number] | null,
+): Promise<ThesisResult> {
+  if (!thesisConfigured(env)) {
+    return { text: null, unavailableReason: "external model not configured" };
+  }
+
+  try {
+    const response = await fetch(THESIS_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-goog-api-key": env.THESIS_GEMINI_API_KEY as string,
+      },
+      body: JSON.stringify({
+        contents: [{ role: "user", parts: [{ text: thesisPrompt(security, position) }] }],
+        generationConfig: { temperature: 0.2, maxOutputTokens: 512 },
+      }),
+      signal: AbortSignal.timeout(THESIS_TIMEOUT_MS),
+    });
+
+    if (!response.ok) {
+      return { text: null, unavailableReason: `external model returned HTTP ${response.status}` };
+    }
+
+    const payload = (await response.json()) as {
+      candidates?: { content?: { parts?: { text?: string }[] } }[];
+    };
+    const text = (payload.candidates?.[0]?.content?.parts ?? [])
+      .map((part) => part.text ?? "")
+      .join("")
+      .trim();
+
+    if (text.length === 0 || !text.includes(security.ticker)) {
+      return { text: null, unavailableReason: "external model returned an unusable response" };
+    }
+
+    return { text: text.slice(0, THESIS_MAX_CHARS), unavailableReason: null };
+  } catch {
+    return { text: null, unavailableReason: "external model call failed or timed out" };
+  }
+}
+
 function explanationText(
   security: PublishedScoredSecurity,
   position: PublishedPortfolioArtifact["portfolio"]["positions"][number] | null,
@@ -456,6 +549,46 @@ async function routeProtectedRequest(
       }
 
       const base = securityResponse(evidence, security);
+      const deterministicFocus = input.data.focus === "thesis" ? "summary" : input.data.focus;
+      const citations = [
+        "scores.json:security.contributions",
+        base.position === null ? "portfolio.json:not-selected" : "portfolio.json:position",
+      ];
+
+      if (input.data.focus === "thesis") {
+        const thesis = await generateThesis(env, security, base.position);
+
+        return jsonResponse(
+          EvidenceExplanationResponseSchema.parse(
+            thesis.text !== null
+              ? {
+                  buildId: base.buildId,
+                  modelVersion: base.modelVersion,
+                  mode: "llm-thesis",
+                  externalModelUsed: true,
+                  focus: input.data.focus,
+                  ticker: security.ticker,
+                  explanation: thesis.text,
+                  citations: [...citations, `external-model:${THESIS_MODEL}`],
+                  notice: base.notice,
+                }
+              : {
+                  buildId: base.buildId,
+                  modelVersion: base.modelVersion,
+                  mode: "deterministic-evidence",
+                  externalModelUsed: false,
+                  focus: input.data.focus,
+                  ticker: security.ticker,
+                  explanation: explanationText(security, base.position, deterministicFocus),
+                  citations,
+                  notice: base.notice,
+                  thesisUnavailableReason: thesis.unavailableReason ?? "external model unavailable",
+                },
+          ),
+          200,
+          rateHeaders,
+        );
+      }
 
       return jsonResponse(
         EvidenceExplanationResponseSchema.parse({
@@ -465,11 +598,8 @@ async function routeProtectedRequest(
           externalModelUsed: false,
           focus: input.data.focus,
           ticker: security.ticker,
-          explanation: explanationText(security, base.position, input.data.focus),
-          citations: [
-            "scores.json:security.contributions",
-            base.position === null ? "portfolio.json:not-selected" : "portfolio.json:position",
-          ],
+          explanation: explanationText(security, base.position, deterministicFocus),
+          citations,
           notice: base.notice,
         }),
         200,
@@ -521,7 +651,7 @@ export async function handleEvidenceApi(
           lineage: "pass",
         },
         aiMode: "deterministic-evidence",
-        externalModelConfigured: false,
+        externalModelConfigured: thesisConfigured(env),
       });
     } catch {
       return jsonResponse(

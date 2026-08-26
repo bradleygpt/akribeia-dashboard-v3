@@ -39,7 +39,7 @@ export const EvidenceSecurityRequestSchema = z
 export type EvidenceSecurityRequest = z.infer<typeof EvidenceSecurityRequestSchema>;
 
 export const EvidenceExplanationRequestSchema = EvidenceSecurityRequestSchema.extend({
-  focus: z.enum(["summary", "factor-contributions", "portfolio"]).default("summary"),
+  focus: z.enum(["summary", "factor-contributions", "portfolio", "thesis"]).default("summary"),
 }).strict();
 export type EvidenceExplanationRequest = z.infer<typeof EvidenceExplanationRequestSchema>;
 
@@ -47,15 +47,26 @@ export const EvidenceExplanationResponseSchema = z
   .object({
     buildId: SafeBuildIdSchema,
     modelVersion: z.string().min(1),
-    mode: z.literal("deterministic-evidence"),
-    externalModelUsed: z.literal(false),
-    focus: z.enum(["summary", "factor-contributions", "portfolio"]),
+    mode: z.enum(["deterministic-evidence", "llm-thesis"]),
+    externalModelUsed: z.boolean(),
+    focus: z.enum(["summary", "factor-contributions", "portfolio", "thesis"]),
     ticker: z.string().regex(/^[A-Z][A-Z0-9.-]{0,9}$/),
     explanation: z.string().min(1),
     citations: z.array(z.string().min(1)).min(1),
     notice: z.string().min(1),
+    thesisUnavailableReason: z.string().min(1).optional(),
   })
-  .strict();
+  .strict()
+  .refine(
+    (value) =>
+      value.mode === "llm-thesis"
+        ? value.externalModelUsed && value.thesisUnavailableReason === undefined
+        : !value.externalModelUsed,
+    {
+      message:
+        "externalModelUsed and thesisUnavailableReason must truthfully match the response mode",
+    },
+  );
 export type EvidenceExplanationResponse = z.infer<typeof EvidenceExplanationResponseSchema>;
 
 export const DataStatusSchema = z.enum([
