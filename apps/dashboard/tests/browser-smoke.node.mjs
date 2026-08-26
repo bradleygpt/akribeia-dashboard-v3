@@ -9,6 +9,7 @@ import { promisify } from "node:util";
 import test from "node:test";
 import { governedTotalFormatted as GOVERNED_TOTAL } from "./governed-universe.node.mjs";
 import {
+  maturityDailyBuilds as MATURITY_BUILDS,
   activeBuildId as ACTIVE_BUILD_ID,
   matchedRegistrants as REG_MATCHED,
   scoredTotal as SCORED_TOTAL,
@@ -262,7 +263,7 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
     assert.match(stdout, /10<!-- --> controls unresolved/);
     assert.match(stdout, /No performance claim/);
     assert.match(stdout, /Working product\. Research-preview evidence/);
-    assert.match(stdout, /1<!-- --> \/<!-- --> <!-- -->30/);
+    assert.match(stdout, new RegExp(`${MATURITY_BUILDS}<!-- --> /<!-- --> <!-- -->30`));
     assert.match(stdout, /Production cutover: (?:<!-- -->)?not authorized/);
     assert.match(stdout, /Ask the published build/);
     assert.match(stdout, /Explain evidence/);
