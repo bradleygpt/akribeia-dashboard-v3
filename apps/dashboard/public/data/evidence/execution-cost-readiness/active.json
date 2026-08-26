@@ -1,9 +1,9 @@
 {
   "reportSchemaVersion": "1.0.0",
-  "buildId": "preview-20260825-pipeline-v5-f7d093b626d6",
+  "buildId": "preview-20260826-pipeline-v5-a263a98e352c",
   "modelVersion": "3.0.0",
-  "generatedAt": "2026-08-26T01:56:31Z",
-  "decisionObservedAt": "2026-08-25T16:21:08Z",
+  "generatedAt": "2026-08-26T13:07:26Z",
+  "decisionObservedAt": "2026-08-26T05:08:51Z",
   "status": "blocked-no-execution-economics",
   "executionRecorded": false,
   "netPerformanceEligible": false,

@@ -1,9 +1,9 @@
 {
   "reportSchemaVersion": "1.0.0",
-  "buildId": "preview-20260825-pipeline-v5-f7d093b626d6",
+  "buildId": "preview-20260826-pipeline-v5-a263a98e352c",
   "modelVersion": "3.0.0",
   "generatedAt": "2026-08-26T02:07:17.429Z",
-  "decisionCutoffAt": "2026-08-25T16:21:08Z",
+  "decisionCutoffAt": "2026-08-26T05:08:51Z",
   "status": "partial-retrospective-metadata",
   "historicalValidationEligible": false,
   "sourceReceipt": {
@@ -187,7 +187,7 @@
         "availabilityBasis": "edgar-acceptance-time",
         "eligibleAtCutoff": true
       },
-      "filingsAfterCutoffExcluded": 1
+      "filingsAfterCutoffExcluded": 0
     },
     {
       "ticker": "HAS",
@@ -271,7 +271,7 @@
         "availabilityBasis": "edgar-acceptance-time",
         "eligibleAtCutoff": true
       },
-      "filingsAfterCutoffExcluded": 1
+      "filingsAfterCutoffExcluded": 0
     },
     {
       "ticker": "NEM",
@@ -365,7 +365,7 @@
     "tickerVerifiedCount": 12,
     "periodicFilingAvailableCount": 12,
     "currentFilingAvailableCount": 12,
-    "excludedPostCutoffFilingCount": 2,
+    "excludedPostCutoffFilingCount": 0,
     "submissionCoverage": 1
   },
   "limitations": [
