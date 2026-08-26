@@ -104,7 +104,11 @@ describe("evidence maturity assessment", () => {
     expect(assessment.blockers).toContain(
       "The security master has no permanent identifiers or ticker-reuse protection.",
     );
-    expect(assessment.blockers).toContain("1 of 30 required immutable daily build is available.");
+    expect(assessment.blockers).toContain(
+      `${LEDGER_MODEL_BUILDS} of 30 required immutable daily ${
+        LEDGER_MODEL_BUILDS === 1 ? "build is" : "builds are"
+      } available.`,
+    );
     expect(assessment.cutover).toMatchObject({
       authorized: false,
       status: "not-authorized",
