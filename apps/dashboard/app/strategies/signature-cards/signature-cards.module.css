@@ -1,0 +1,98 @@
+/* Card chrome transplanted from the owner-approved standalone signature art
+   files (akribeia_*_v*.html, 2026-08): same palette, spacing and type ramp.
+   Fonts degrade to the declared fallbacks if Google Fonts fails to load. */
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 16px 18px 12px;
+  border: 1px solid #22304a;
+  border-radius: 10px;
+  color: #d7dee9;
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.name {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.greek {
+  color: #93a0b4;
+  font-family: "EB Garamond", serif;
+  font-size: 16px;
+  font-style: italic;
+}
+
+.tag {
+  color: #5e6b80;
+  font-family: "EB Garamond", serif;
+  font-size: 13px;
+  font-style: italic;
+}
+
+.stats {
+  margin-left: auto;
+  color: #93a0b4;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.statsSharpe {
+  color: #5e6b80;
+}
+
+.chip {
+  padding: 3px 9px;
+  border: 1.5px solid #3a4a63;
+  border-radius: 4px;
+  background: rgba(90, 105, 130, 0.14);
+  color: #93a0b4;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+}
+
+.chipLive {
+  border-color: #e8b54d;
+  background: rgba(232, 181, 77, 0.12);
+  color: #e8b54d;
+}
+
+.canvas {
+  display: block;
+  width: 100%;
+  border-radius: 6px;
+}
+
+.foot {
+  color: #5e6b80;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+
+.ph {
+  color: #8a6e2f;
+}
