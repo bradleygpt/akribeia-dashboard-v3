@@ -326,9 +326,9 @@ function securityResponse(evidence: ActiveEvidence, security: PublishedScoredSec
   };
 }
 
-const THESIS_MODEL = "gemini-3.7-flash";
+const THESIS_MODEL = "gemini-3.5-flash-lite";
 const THESIS_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${THESIS_MODEL}:generateContent`;
-const THESIS_TIMEOUT_MS = 8_000;
+const THESIS_TIMEOUT_MS = 12_000;
 const THESIS_MAX_CHARS = 1_600;
 
 function thesisConfigured(env: EvidenceApiEnv): boolean {
