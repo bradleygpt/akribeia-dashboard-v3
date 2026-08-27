@@ -348,7 +348,7 @@ describe("protected evidence API", () => {
         focus: "thesis",
       });
       expect(payload.thesisUnavailableReason).toBeUndefined();
-      expect(payload.citations).toContain("external-model:gemini-2.0-flash");
+      expect(payload.citations).toContain("external-model:gemini-3.7-flash");
       // grounded prompt: published figures in, credential out of the URL
       expect(calls).toHaveLength(1);
       expect(calls[0].url).toContain("generativelanguage.googleapis.com");
