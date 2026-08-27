@@ -1,0 +1,608 @@
+/* Strategies visuals — hand-written CSS for the ported V2 charts, adapted to
+   the V3 research aesthetic (paper surface, monospace labels, acid accents).
+   The dark-canvas visuals (network, signatures, treemap) deliberately keep
+   V2's deep-space look inside their cards. */
+
+/* ── reference states ──────────────────────────────────────────────────── */
+
+.refLoading,
+.refUnavailable {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border: 1px dashed var(--line);
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 11px;
+}
+
+.refUnavailable {
+  border-color: #b0693f;
+  color: #8a4f2c;
+}
+
+/* ── shared card copy ──────────────────────────────────────────────────── */
+
+.vizSub {
+  max-width: 860px;
+  margin: 10px 0 14px;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.vizFootnote {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 10.5px;
+  line-height: 1.6;
+}
+
+.panelTitle {
+  margin: 0 0 4px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+/* ── book-type pills (truth-in-labeling) ───────────────────────────────── */
+
+.pillLive,
+.pillPaper {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.pillLive {
+  border: 1px solid rgb(138 87 17 / 45%);
+  background: rgb(186 117 23 / 12%);
+  color: #8a5711;
+}
+
+.pillPaper {
+  border: 1px solid rgb(104 116 108 / 40%);
+  background: rgb(104 116 108 / 10%);
+  color: #5d6a62;
+}
+
+.liveTag {
+  color: #8a5711;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.paperTag {
+  color: #5d6a62;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.retiredTag {
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+/* ── regime ribbon ─────────────────────────────────────────────────────── */
+
+.ribbonSlot {
+  margin-top: 4px;
+}
+
+.ribbonTrack {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  border-radius: 2px;
+  background: var(--paper);
+}
+
+.ribbonSeg {
+  position: absolute;
+  top: 0;
+  height: 100%;
+}
+
+.ribbonLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-top: 5px;
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 9.5px;
+}
+
+.ribbonLegendItem {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.ribbonSwatch {
+  display: inline-block;
+  width: 12px;
+  height: 6px;
+  border-radius: 2px;
+}
+
+.ribbonUnavailable {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 10px;
+}
+
+/* ── treemap card ──────────────────────────────────────────────────────── */
+
+.toggleRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 0 0 10px;
+}
+
+.toggle {
+  padding: 5px 12px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.toggle:hover {
+  border-color: var(--acid-dark);
+  color: var(--ink);
+}
+
+.toggleActive {
+  border-color: var(--night);
+  background: var(--night);
+  color: var(--acid);
+}
+
+.toggleNote {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+/* V2's dark chart surface — the gain alphas and white cell labels were
+   designed against it. */
+.darkPanel {
+  overflow: hidden;
+  padding: 8px;
+  border: 1px solid var(--night);
+  background: #121723;
+}
+
+/* ── correlation network ───────────────────────────────────────────────── */
+
+.networkGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: 18px;
+}
+
+@media (width <= 900px) {
+  .networkGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.networkWrap {
+  overflow: hidden;
+  border: 1px solid var(--night);
+  background: #03060c;
+}
+
+.networkSide {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  font-size: 11px;
+}
+
+.howToRead {
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  background: rgb(255 255 255 / 55%);
+}
+
+.howToReadTitle {
+  margin-bottom: 6px;
+  color: var(--acid-dark);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.howToRead ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  color: var(--muted);
+  font-size: 10.5px;
+  line-height: 1.55;
+  list-style: none;
+}
+
+.howToRead strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.sideLabel {
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.legendCol {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.legendRow {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  color: var(--ink);
+  font-size: 11px;
+}
+
+.legendDot {
+  display: inline-block;
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+}
+
+.sideFine {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+/* ── hub: heatmap + books ──────────────────────────────────────────────── */
+
+.hubGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 42px);
+}
+
+@media (width <= 900px) {
+  .hubGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.corrTable {
+  border-collapse: collapse;
+  text-align: center;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 10px;
+}
+
+/* narrow matrix labels — opt out of the global td:first-child 230px floor */
+.corrTable td:first-child {
+  min-width: 0;
+}
+
+.corrTable th {
+  padding: 4px 6px;
+  border: 0;
+  background: transparent;
+  font-weight: 700;
+}
+
+.corrRowLabel {
+  padding: 4px 6px;
+  font-weight: 700;
+  text-align: right;
+}
+
+.corrCell {
+  min-width: 44px;
+  padding: 7px 6px;
+  border: 1px solid var(--paper);
+  color: var(--ink);
+}
+
+.corrDiag {
+  min-width: 44px;
+  padding: 7px 6px;
+  border: 1px solid var(--paper);
+  background: rgb(16 25 20 / 6%);
+  color: var(--muted);
+}
+
+.bookStack {
+  display: grid;
+  gap: 8px;
+}
+
+.bookRow {
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  background: rgb(255 255 255 / 55%);
+}
+
+.bookRowDeEmph {
+  opacity: 0.82;
+}
+
+.bookRowHead {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.bookLabel {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.bookMeta {
+  margin-left: auto;
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 9.5px;
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: flex-start;
+  margin-top: 6px;
+}
+
+.tickerChip {
+  padding: 1px 6px;
+  border: 1px solid var(--line);
+  background: rgb(255 255 255 / 65%);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 10px;
+}
+
+.paperGroupLabel {
+  padding-top: 4px;
+  color: #5d6a62;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.scouts {
+  padding-top: 4px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.scouts summary {
+  cursor: pointer;
+}
+
+/* ── total basket hero ─────────────────────────────────────────────────── */
+
+.basketHero {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding: 18px 20px;
+  border: 1px solid #9db486;
+  background: rgb(183 237 90 / 12%);
+}
+
+.basketTitle {
+  color: var(--acid-dark);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.basketNote {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.basketKpis {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 26px;
+}
+
+.kpiLabel {
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.kpiValue {
+  margin-top: 2px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 27px;
+}
+
+.kpiPos {
+  color: var(--acid-dark);
+}
+
+.kpiNeg {
+  color: #a04338;
+}
+
+.kpiSub {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+/* ── summary metrics table ─────────────────────────────────────────────── */
+
+.summaryTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: right;
+  font-size: 12px;
+}
+
+/* strategy names are short — opt out of the global td:first-child 230px floor */
+.summaryTable td:first-child {
+  min-width: 0;
+}
+
+.summaryTable th {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.summaryTable td {
+  padding: 10px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.thLeft,
+.tdLeft {
+  text-align: left;
+}
+
+.rowEngine {
+  font-weight: 700;
+}
+
+.rowFactor {
+  margin-left: 7px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.numStrong {
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-weight: 700;
+}
+
+.numPos {
+  color: var(--acid-dark);
+  font-family: "SFMono-Regular", Consolas, monospace;
+}
+
+.numNeg {
+  color: #a04338;
+  font-family: "SFMono-Regular", Consolas, monospace;
+}
+
+.schedCell {
+  text-align: right;
+}
+
+.schedDate {
+  font-family: "SFMono-Regular", Consolas, monospace;
+}
+
+.schedMeta {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+/* ── strategy signatures (dark cards, V2 look) ─────────────────────────── */
+
+.sigGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.sigCard {
+  overflow: hidden;
+  padding: 12px 14px;
+  border: 1px solid;
+  background: #0c0f16;
+}
+
+.sigHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.sigName {
+  color: #e6e9ef;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.sigGreek {
+  margin-left: 4px;
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.sigMeaning {
+  font-size: 10px;
+}
+
+.sigMetrics {
+  text-align: right;
+}
+
+.sigCagr {
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.sigSharpe {
+  color: #7c879b;
+  font-size: 10px;
+}
+
+.sigCanvasWrap {
+  width: 100%;
+  margin-top: 4px;
+}

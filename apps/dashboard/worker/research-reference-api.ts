@@ -1,5 +1,5 @@
 const REFERENCE_PATH = "/api/v3/research-reference";
-const V2_APP_COMMIT = "b477349a8691fdc5000641a6ae2893dbbfae2de6";
+const V2_APP_COMMIT = "538ec29b41172d7b44c96e67a7346f96c41ebede";
 const RAW_BASE = `https://raw.githubusercontent.com/bradleygpt/quant-dashboard-pro-v2/${V2_APP_COMMIT}/public/data`;
 const USER_AGENT = "Mozilla/5.0 (compatible; Akribeia/3.0; +https://akribeia.com)";
 
@@ -16,6 +16,16 @@ const DATASETS = {
   "macro-rotation": "macro_rotation.json",
   "strategies-holdings-performance": "strategies_holdings_perf.json",
   "strategy-rationale": "strategy_rationale.json",
+  "system-status": "system_status.json",
+  "basket-summary": "basket_summary.json",
+  "strategies-correlation": "strategies_correlation.json",
+  "rebalance-schedule": "rebalance_schedule.json",
+  "regime-timeseries": "regime_timeseries.json",
+  c78q: "c78q.json",
+  "auxo-strategy": "auxo_strategy.json",
+  "statera-strategy": "statera_strategy.json",
+  "pronoia-strategy": "pronoia_strategy.json",
+  "kairos-strategy": "kairos_strategy.json",
 } as const;
 
 type Dataset = keyof typeof DATASETS;

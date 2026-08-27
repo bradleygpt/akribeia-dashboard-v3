@@ -3377,10 +3377,17 @@ td {
   font-size: 11px;
 }
 
+/* The first column must stay a real table-cell: flexing the td detaches its
+   bottom border from border-collapse (row dividers stop lining up across
+   columns) and re-rows stacked ticker/name children with no gap. */
 td:first-child {
-  display: flex;
-  align-items: center;
   min-width: 230px;
+  vertical-align: middle;
+}
+
+td:first-child > strong:first-child,
+td:first-child > a:first-child {
+  margin-right: 8px;
 }
 
 .rank {

@@ -8,6 +8,10 @@ import {
   isRetiredStrategyName,
   strategyFactorLabel,
 } from "./strategy-status";
+import { useStrategyStatus } from "./strategy-books";
+import { StrategySummaryTable, TotalBasketHero } from "./strategies-summary";
+import StrategySignatures from "./strategy-signatures";
+import StrategiesViz from "./strategies-viz";
 
 type Direction = "ascending" | "descending";
 type SortKey = "strategy" | "book" | "entry" | "ticker" | "daily" | "rebalance" | "alltime";
@@ -66,6 +70,9 @@ function performance(value: number | null): string {
 // though the pinned V2 snapshot predates their retirement.
 
 export function StrategiesWorkbench() {
+  // system_status book-type map — the first rung of the truth-in-labeling
+  // resolution order shared by the summary table, pills and every visual.
+  const statusMap = useStrategyStatus();
   const [holdingsEnvelope, setHoldingsEnvelope] = useState<Envelope | null>(null);
   const [rationaleEnvelope, setRationaleEnvelope] = useState<Envelope | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "partial" | "error">("loading");
@@ -177,6 +184,17 @@ export function StrategiesWorkbench() {
                 : "Loading pinned strategy records…"}
         </span>
       </section>
+
+      {/* Approved V2 visuals, adapted to the governed roster: basket hero,
+          animated signatures, per-sleeve summary metrics, then the hub /
+          treemap / correlation network. All data is fetched client-side from
+          the pinned reference API; each card degrades to an explicit
+          unavailable state. The pre-existing roster / definitions / holdings
+          sections stay below. */}
+      <TotalBasketHero />
+      <StrategySignatures />
+      <StrategySummaryTable statusMap={statusMap} />
+      <StrategiesViz statusMap={statusMap} />
 
       <section className="parity-section" aria-labelledby="roster-heading">
         <div className="research-subheading">

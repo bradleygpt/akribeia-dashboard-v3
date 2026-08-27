@@ -16,26 +16,6 @@ const EXPIRES = "2026-09-30T23:59:59Z";
 
 const HIGH_EXCEPTIONS = [
   {
-    // Pre-existing exception (2026-08-06): nested Miniflare undici awaiting
-    // upstream workers-sdk releases.
-    name: "undici",
-    node: "node_modules/miniflare/node_modules/undici",
-    version: "7.28.0",
-    advisories: [
-      "GHSA-8xcm-r25x-g524",
-      "GHSA-4cwx-7wf7-3272",
-      "GHSA-m8rv-5g2x-5cg5",
-      "GHSA-jr45-8vmc-qm54",
-      "GHSA-v3r7-h72x-cjcm",
-    ],
-    reason:
-      "Dev-only toolchain path (wrangler > miniflare > undici); absent from --omit=dev audit; fix ships via workers-sdk (undici >=7.29.0).",
-    tracking: [
-      "https://github.com/cloudflare/workers-sdk/issues/15007",
-      "https://github.com/cloudflare/workers-sdk/issues/15042",
-    ],
-  },
-  {
     // Registry drift observed 2026-08-18 against the unchanged lockfile:
     // ICNS/JXL/HEIF infinite-loop DoS advisories published for image-size.
     name: "image-size",
@@ -44,16 +24,6 @@ const HIGH_EXCEPTIONS = [
     advisories: ["GHSA-5p2g-fcmc-qvqq", "GHSA-w3rx-r6r6-pgpr"],
     reason:
       "Dev-only build-tool path (@akribeia/dashboard > vinext > image-size); absent from --omit=dev audit; upstream fix requires the semver-major vinext 1.0.0-beta line — deferred to dependency-hygiene work.",
-    tracking: [],
-  },
-  {
-    // Registry drift observed 2026-08-18: nanoid zero-size generator loop.
-    name: "nanoid",
-    node: "node_modules/nanoid",
-    version: "3.3.16",
-    advisories: ["GHSA-2v37-7h3g-55p8"],
-    reason:
-      "Dev-only build-tool path (vite > postcss > nanoid); absent from --omit=dev audit; fixed upstream in nanoid 3.3.18 — deferred to dependency-hygiene work.",
     tracking: [],
   },
   {
@@ -128,8 +98,20 @@ if (unexpectedHigh.length > 0)
     `unenumerated high findings: ${JSON.stringify(unexpectedHigh.map(({ name }) => name))}`,
   );
 
-if (lock.packages?.["node_modules/undici"])
-  throw new Error("direct undici lock entry must remain absent");
+// The 2026-08 undici exception was remediated (2026-08-27) by upgrading
+// wrangler/@cloudflare/vite-plugin to the miniflare 5 line, which hoists the
+// fixed undici. Guard the remediation: any undici in the tree must be on the
+// fixed line, and a direct pin/override stays forbidden (package.json check
+// below).
+for (const [node, entry] of Object.entries(lock.packages ?? {})) {
+  if ((node === "node_modules/undici" || node.endsWith("/node_modules/undici")) && entry.version) {
+    const [major, minor] = entry.version.split(".").map(Number);
+    if (major < 7 || (major === 7 && minor < 29))
+      throw new Error(`undici regression at ${node}: ${entry.version} < 7.29.0`);
+  }
+}
+if (lock.packages?.["node_modules/nanoid"]?.version === "3.3.16")
+  throw new Error("nanoid remediation missing");
 if (lock.packages?.["node_modules/brace-expansion"]?.version !== "5.0.9")
   throw new Error("brace-expansion remediation missing");
 if (lock.packages?.["node_modules/fast-uri"]?.version !== "3.1.5")

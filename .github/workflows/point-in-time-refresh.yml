@@ -26,11 +26,11 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -106,6 +106,9 @@ jobs:
           npm run walk-forward-readiness:generate
           npm run prospective-readiness:generate
           npm run maturity:generate
+          # Bank the day's immutable alpha-decay rank vintage from the freshly
+          # published active build (duplicate dates are a clean no-op).
+          npm run alpha-decay:collect
 
       - name: Validate the refreshed build
         if: steps.ingest.outputs.unchanged == 'false'
