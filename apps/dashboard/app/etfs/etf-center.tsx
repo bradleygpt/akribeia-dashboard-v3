@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ResearchRow } from "../research-data";
 import { formatMarketCap, formatMoney, formatPercent } from "../research-format";
-import { hasCompleteStockModelEvidence } from "./stock-model-evidence";
 import {
   buildEtfDirectory,
   formatEtfPercent,
@@ -214,12 +213,8 @@ function directoryValue(row: EtfDirectoryRow, key: DirectorySortKey): number | s
   const local = row.local;
   const reference = row.reference;
   if (key === "ticker") return row.ticker;
-  if (key === "score") {
-    return local !== null && hasCompleteStockModelEvidence(local) ? local.composite : null;
-  }
-  if (key === "rating") {
-    return local !== null && hasCompleteStockModelEvidence(local) ? local.rating : null;
-  }
+  if (key === "score") return local?.composite ?? null;
+  if (key === "rating") return local?.rating ?? null;
   if (key === "price") {
     return local?.price ?? row.lookthrough?.price ?? reference?.currentPrice ?? null;
   }
@@ -404,6 +399,15 @@ export function EtfCenter({
   const [normalizedHoldings, setNormalizedHoldings] = useState<NormalizedHoldingsReference | null>(
     null,
   );
+  const [runtimeDictionary, setRuntimeDictionary] = useState<Record<
+    string,
+    {
+      holdingsStatus: string;
+      holdingsSource: string | null;
+      holdingsAsOf: string | null;
+      numberHoldings: number | null;
+    }
+  > | null>(null);
   const [datasetErrors, setDatasetErrors] = useState<Partial<Record<EtfDataset, string>>>({});
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<string[]>(rows.slice(0, 3).map(({ ticker }) => ticker));
@@ -524,7 +528,29 @@ export function EtfCenter({
         const summary = payloads[0];
         const index = payloads[1];
         const tickerDictionary = payloads[2].tickers as string[];
-        const etfDictionary = payloads[3].etfs as Array<{ id: number; ticker: string }>;
+        const etfDictionary = payloads[3].etfs as Array<{
+          id: number;
+          ticker: string;
+          holdingsStatus?: string;
+          holdingsSource?: string | null;
+          holdingsAsOf?: string | null;
+          numberHoldings?: number | null;
+        }>;
+        if (!controller.signal.aborted) {
+          setRuntimeDictionary(
+            Object.fromEntries(
+              etfDictionary.map((entry) => [
+                entry.ticker,
+                {
+                  holdingsStatus: entry.holdingsStatus ?? "unavailable",
+                  holdingsSource: entry.holdingsSource ?? null,
+                  holdingsAsOf: entry.holdingsAsOf ?? null,
+                  numberHoldings: entry.numberHoldings ?? null,
+                },
+              ]),
+            ),
+          );
+        }
         const rows = payloads.slice(4).flatMap((shard) =>
           Object.entries(shard.portfolios).flatMap(([id, holdings]) =>
             (holdings as Array<any>).map((row) => ({
@@ -582,9 +608,28 @@ export function EtfCenter({
         reference?.etfs,
         lookthrough?.etfs,
         descriptions?.descriptions,
-        Object.fromEntries((expandedUniverse?.etfs ?? []).map((item) => [item.ticker, item])),
+        Object.fromEntries(
+          (expandedUniverse?.etfs ?? []).map((item) => {
+            // The symbol-directory generator hard-codes holdings as unavailable;
+            // the runtime holdings dictionary knows which funds actually carry
+            // captured holdings, so its status wins when it has one.
+            const runtime = runtimeDictionary?.[item.ticker];
+            return [
+              item.ticker,
+              runtime !== undefined && runtime.holdingsStatus !== "unavailable"
+                ? {
+                    ...item,
+                    holdingsStatus: runtime.holdingsStatus as typeof item.holdingsStatus,
+                    holdingsSource: runtime.holdingsSource ?? item.holdingsSource,
+                    holdingsAsOf: runtime.holdingsAsOf ?? item.holdingsAsOf,
+                    numberHoldings: runtime.numberHoldings ?? item.numberHoldings,
+                  }
+                : item,
+            ];
+          }),
+        ),
       ),
-    [descriptions, expandedUniverse, lookthrough, reference, rows],
+    [descriptions, expandedUniverse, lookthrough, reference, rows, runtimeDictionary],
   );
   const directoryRows = useMemo(() => {
     const needle = directoryQuery.trim().toLowerCase();
@@ -844,22 +889,10 @@ export function EtfCenter({
                               : "")}
                         </small>
                       </td>
-                      <td className="research-number">
-                        {row !== null && hasCompleteStockModelEvidence(row)
-                          ? (row.composite?.toFixed(2) ?? "—")
-                          : "—"}
-                      </td>
+                      <td className="research-number">{row?.composite?.toFixed(2) ?? "—"}</td>
                       <td>
-                        <span
-                          className={ratingClass(
-                            row !== null && hasCompleteStockModelEvidence(row)
-                              ? row.rating
-                              : "Unavailable",
-                          )}
-                        >
-                          {row !== null && hasCompleteStockModelEvidence(row)
-                            ? row.rating
-                            : "Unavailable"}
+                        <span className={ratingClass(row?.rating ?? "Unavailable")}>
+                          {row?.rating ?? "Unavailable"}
                         </span>
                       </td>
                       <td className="research-number">{formatMoney(price)}</td>
@@ -912,7 +945,10 @@ export function EtfCenter({
                             : "Reference-only"}
                         </span>
                         <small>
-                          Holdings: {directoryRow.expanded?.holdingsStatus ?? "partial reference"}
+                          Holdings:{" "}
+                          {directoryRow.expanded?.holdingsStatus ??
+                            runtimeDictionary?.[directoryRow.ticker]?.holdingsStatus ??
+                            "unavailable"}
                         </small>
                       </td>
                     </tr>
@@ -1273,21 +1309,11 @@ export function EtfCenter({
                 {[
                   ["Name", (ticker: string) => byTicker.get(ticker)?.name ?? "Unavailable"],
                   [
-                    "Stock-model score",
-                    (ticker: string) => {
-                      const row = byTicker.get(ticker);
-                      return row && hasCompleteStockModelEvidence(row)
-                        ? (row.composite?.toFixed(2) ?? "Unavailable")
-                        : "Unavailable";
-                    },
+                    "Composite score",
+                    (ticker: string) =>
+                      byTicker.get(ticker)?.composite?.toFixed(2) ?? "Unavailable",
                   ],
-                  [
-                    "Rating",
-                    (ticker: string) => {
-                      const row = byTicker.get(ticker);
-                      return row && hasCompleteStockModelEvidence(row) ? row.rating : "Unavailable";
-                    },
-                  ],
+                  ["Rating", (ticker: string) => byTicker.get(ticker)?.rating ?? "Unavailable"],
                   [
                     "Expense ratio",
                     (ticker: string) => {
@@ -1576,13 +1602,15 @@ export function EtfCenter({
                       {reverseMatch.n} reference {reverseMatch.n === 1 ? "fund" : "funds"} report{" "}
                       <strong>{reverseTicker}</strong> among captured top holdings.
                     </p>
-                    {reverseMatch.etfs.map((match) => (
-                      <article key={match.etf}>
-                        <EtfLink ticker={match.etf} available={available} />
-                        <span>Captured weight</span>
-                        <strong>{(match.w * 100).toFixed(2)}%</strong>
-                      </article>
-                    ))}
+                    {reverseMatch.etfs
+                      .toSorted((a, b) => b.w - a.w || a.etf.localeCompare(b.etf))
+                      .map((match) => (
+                        <article key={match.etf}>
+                          <EtfLink ticker={match.etf} available={available} />
+                          <span>Captured weight</span>
+                          <strong>{(match.w * 100).toFixed(2)}%</strong>
+                        </article>
+                      ))}
                   </div>
                 )}
                 <p className="etf-disclaimer">

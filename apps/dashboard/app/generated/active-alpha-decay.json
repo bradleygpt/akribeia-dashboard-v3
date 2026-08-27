@@ -1,6 +1,6 @@
 {
   "reportSchemaVersion": "1.0.0",
-  "generatedAt": "2026-08-18T15:22:23.808Z",
+  "generatedAt": "2026-08-27T17:43:50.641Z",
   "signalId": "akribeia-composite-v3",
   "methodology": "spearman-rank-ic-prospective-only: statistics use contemporaneously captured immutable vintages and receipted forward prices; no hindsight reconstruction",
   "policy": {
@@ -17,11 +17,12 @@
     ]
   },
   "ledger": {
-    "vintageCount": 1,
+    "vintageCount": 2,
     "firstObservationDate": "2026-07-28",
-    "latestObservationDate": "2026-07-28",
+    "latestObservationDate": "2026-08-26",
     "observationDates": [
-      "2026-07-28"
+      "2026-07-28",
+      "2026-08-26"
     ]
   },
   "overallState": "insufficient-history",
@@ -34,7 +35,7 @@
       "meanRankIc": null,
       "hitRate": null,
       "topMinusBottomQuintileSpread": null,
-      "excludedForMissingForwardWindow": 1
+      "excludedForMissingForwardWindow": 2
     },
     {
       "horizonTradingDays": 10,
@@ -44,7 +45,7 @@
       "meanRankIc": null,
       "hitRate": null,
       "topMinusBottomQuintileSpread": null,
-      "excludedForMissingForwardWindow": 1
+      "excludedForMissingForwardWindow": 2
     },
     {
       "horizonTradingDays": 21,
@@ -54,7 +55,7 @@
       "meanRankIc": null,
       "hitRate": null,
       "topMinusBottomQuintileSpread": null,
-      "excludedForMissingForwardWindow": 1
+      "excludedForMissingForwardWindow": 2
     },
     {
       "horizonTradingDays": 42,
@@ -64,7 +65,7 @@
       "meanRankIc": null,
       "hitRate": null,
       "topMinusBottomQuintileSpread": null,
-      "excludedForMissingForwardWindow": 1
+      "excludedForMissingForwardWindow": 2
     },
     {
       "horizonTradingDays": 63,
@@ -74,7 +75,7 @@
       "meanRankIc": null,
       "hitRate": null,
       "topMinusBottomQuintileSpread": null,
-      "excludedForMissingForwardWindow": 1
+      "excludedForMissingForwardWindow": 2
     },
     {
       "horizonTradingDays": 126,
@@ -84,7 +85,7 @@
       "meanRankIc": null,
       "hitRate": null,
       "topMinusBottomQuintileSpread": null,
-      "excludedForMissingForwardWindow": 1
+      "excludedForMissingForwardWindow": 2
     }
   ],
   "rankPersistence": {

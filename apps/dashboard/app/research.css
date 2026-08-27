@@ -495,18 +495,21 @@
   font-size: 10px;
 }
 
+/* Keep the td a real table-cell so its row divider stays collapsed with the
+   rest of the row; space the star/checkbox inline instead. */
 .research-track-cell {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  min-width: 0;
+  white-space: nowrap;
 }
 
 .research-track-cell button {
   padding: 0;
   border: 0;
+  margin-right: 8px;
   background: none;
   color: #778178;
   font-size: 20px;
+  vertical-align: middle;
   cursor: pointer;
 }
 
@@ -517,10 +520,12 @@
 .research-track-cell input {
   width: 15px;
   height: 15px;
+  vertical-align: middle;
   accent-color: var(--acid-dark);
 }
 
-.research-security-cell a {
+.research-security-cell a,
+.research-security-cell > strong {
   display: inline-block;
   min-width: 54px;
   margin-right: 8px;
@@ -1653,6 +1658,74 @@
 .etf-reverse-search {
   max-width: 380px;
   margin-bottom: 24px;
+}
+
+.etf-multi-stock-input {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.etf-multi-stock-input input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.etf-multi-stock-input button {
+  flex: 0 0 auto;
+  padding: 0 14px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper, #fff);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.etf-multi-stock-input button:last-child {
+  border-color: var(--line);
+  background: transparent;
+  color: var(--muted);
+}
+
+.etf-multi-stock-input button:hover {
+  border-color: var(--acid-dark);
+  color: var(--acid-dark);
+  background: transparent;
+}
+
+.etf-selected-tickers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.etf-selected-tickers strong {
+  margin-right: 4px;
+  color: var(--muted);
+  font-size: 9px;
+  letter-spacing: 0.07em;
+}
+
+.etf-selected-tickers button {
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.etf-selected-tickers button:hover {
+  border-color: #b3261e;
+  color: #b3261e;
 }
 
 .etf-reverse-results {

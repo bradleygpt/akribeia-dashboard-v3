@@ -262,6 +262,12 @@
   font-size: 12px;
 }
 
+/* The first column here is the narrow numeric rank, not a ticker/name cell —
+   opt out of the global td:first-child 230px floor. */
+.table td:first-child {
+  min-width: 0;
+}
+
 .table tbody tr:hover {
   background: #f1f4ea;
 }
@@ -324,6 +330,292 @@
   border-color: #d0a8a2;
   background: #f7eae7;
   color: var(--danger);
+}
+
+.subTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 18px 4vw;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.pill {
+  padding: 9px 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: white;
+  color: var(--ink);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.pill[aria-pressed="true"] {
+  border-color: var(--night);
+  background: var(--night);
+  color: var(--acid);
+}
+
+.noteLine {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.mute {
+  color: var(--muted);
+}
+
+.posText {
+  color: #3f681e;
+}
+
+.negText {
+  color: var(--danger);
+}
+
+.warnText {
+  color: #8a6410;
+}
+
+.posterior {
+  font-weight: 700;
+}
+
+.tickerLink {
+  color: var(--acid-dark);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.tickerLink:hover {
+  text-decoration: underline;
+}
+
+.pctValue {
+  font-weight: 700;
+}
+
+.pctUnit {
+  margin-left: 4px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.pctBadge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 5px;
+  border: 1px solid #91aa75;
+  background: #edf4df;
+  color: #3f681e;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.toggleRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 22px;
+  font-size: 12px;
+}
+
+.card {
+  margin-bottom: 26px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  background: white;
+}
+
+.card h3 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.cardSub {
+  margin: 8px 0 16px;
+  max-width: 860px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.miniTableWrap {
+  overflow: auto;
+  border: 1px solid var(--line);
+}
+
+.miniTable {
+  width: 100%;
+  min-width: 780px;
+  border-collapse: collapse;
+}
+
+.miniTable th,
+.miniTable td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #dce1d8;
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.miniTable th {
+  position: sticky;
+  z-index: 2;
+  top: 0;
+  background: var(--night);
+  color: #b9c4bc;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 9px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.miniTable td {
+  font-size: 12px;
+}
+
+/* The first column is a narrow ordinal — opt out of the global 230px floor. */
+.miniTable td:first-child {
+  min-width: 0;
+}
+
+.miniTable tbody tr:hover {
+  background: #f1f4ea;
+}
+
+.priceTag {
+  margin-left: 5px;
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.streamId {
+  color: var(--acid-dark);
+  font-weight: 700;
+}
+
+.screenerBar {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 22px;
+}
+
+.lightControl {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.lightControl input,
+.lightControl select {
+  min-height: 38px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: white;
+  color: var(--ink);
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+  font-size: 13px;
+  text-transform: none;
+}
+
+.lightControl input[type="range"] {
+  min-height: auto;
+  width: 180px;
+  padding: 0;
+  border: 0;
+  accent-color: var(--acid-dark);
+}
+
+.matchMetric {
+  display: grid;
+  gap: 4px;
+}
+
+.matchMetric span {
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.matchMetric strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 26px;
+  font-weight: 400;
+}
+
+.tickerPicker {
+  margin-bottom: 18px;
+  max-width: 240px;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 16px;
+}
+
+.tilesFour {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 16px 0 0;
+}
+
+.tile {
+  padding: 14px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.tile dt {
+  margin: 0;
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tile dd {
+  margin: 8px 0 0;
+  font-size: 17px;
+  font-variant-numeric: tabular-nums;
+}
+
+.tile dd small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 10px;
 }
 
 .more {
@@ -399,6 +691,10 @@
   .check {
     align-self: stretch;
   }
+
+  .tiles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 720px) {
@@ -432,5 +728,10 @@
 
   .quoteStatus {
     text-align: left;
+  }
+
+  .tiles,
+  .tilesFour {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

@@ -19,10 +19,11 @@
     "postprocessing": "6.37.8",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "recharts": "2.15.4",
     "three": "0.180.0"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "1.48.0",
+    "@cloudflare/vite-plugin": "^1.54.1",
     "@tailwindcss/postcss": "4.3.3",
     "@types/node": "22.19.19",
     "@types/react": "19.2.14",
@@ -35,7 +36,7 @@
     "typescript": "5.9.3",
     "vinext": "0.0.50",
     "vite": "8.1.5",
-    "wrangler": "4.115.0"
+    "wrangler": "4.127.0"
   },
   "type": "module"
 }

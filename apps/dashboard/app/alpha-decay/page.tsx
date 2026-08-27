@@ -75,8 +75,9 @@ export default function AlphaDecayPage() {
           {report.overallState === "insufficient-history" ? (
             <p className="alpha-decay-honesty">
               Nothing below renders a statistic yet — deliberately. The collection clock started
-              with the first vintage; every quarter-end that passes makes the eventual curves more
-              defensible than any reconstruction could be.
+              with the first vintage; every trading day banked makes the eventual curves more
+              defensible than any reconstruction could be. Short-horizon statistics need roughly two
+              to three months of daily vintages; the full six-horizon picture needs about eight.
             </p>
           ) : null}
         </section>

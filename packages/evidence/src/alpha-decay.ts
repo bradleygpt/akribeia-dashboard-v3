@@ -301,7 +301,10 @@ export async function generateAlphaDecayReport(
         const distance = calendarDaysBetween(fromVintage.observationDate, candidate);
         return (
           distance >= targetCalendarDays - CALENDAR_TOLERANCE_DAYS &&
-          distance <= targetCalendarDays + CALENDAR_TOLERANCE_DAYS
+          distance <= targetCalendarDays + CALENDAR_TOLERANCE_DAYS &&
+          // A decay pair mixes rank cross-sections; both ends must come from
+          // the same model version or the IC is comparing different signals.
+          (byDate.get(candidate) as AlphaDecayVintage).modelVersion === fromVintage.modelVersion
         );
       });
       if (match === undefined) {
@@ -352,6 +355,7 @@ export async function generateAlphaDecayReport(
   for (let index = 0; index + 1 < vintages.length; index += 1) {
     const current = vintages[index];
     const next = vintages[index + 1];
+    if (next.modelVersion !== current.modelVersion) continue;
     const nextRanks = new Map(next.securities.map(({ ticker, rank }) => [ticker, rank]));
     const pairs = current.securities
       .filter(({ ticker }) => nextRanks.has(ticker))
