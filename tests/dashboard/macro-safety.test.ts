@@ -46,7 +46,10 @@ describe("macro contract safety", () => {
     const fetchTargets = [...workbenchSource.matchAll(/fetch\((?:\s*)["']([^"']+)["']/g)].map(
       (match) => match[1],
     );
-    expect(fetchTargets).toEqual(["/api/v3/research-reference?dataset=macro-forecasts"]);
+    expect(fetchTargets).toEqual([
+      "/api/v3/research-reference?dataset=macro-forecasts",
+      "/api/v3/research-reference?dataset=macro-rotation",
+    ]);
     expect(workbenchSource).not.toMatch(/cme|ism|bls|fedwatch|https?:\/\//i);
   });
 

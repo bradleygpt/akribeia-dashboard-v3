@@ -998,7 +998,9 @@ export function EtfCenter({
                         {match.matched.length}/{basketTickers.length} matched
                       </strong>
                     </header>
-                    <p>{match.name}</p>
+                    <p title={directoryByTicker.get(match.ticker)?.description || undefined}>
+                      {match.name}
+                    </p>
                     <span>
                       {(match.matchedWeight * 100).toFixed(1)}% captured basket weight · source
                       coverage {(match.coverage * 100).toFixed(0)}%
@@ -1120,7 +1122,11 @@ export function EtfCenter({
                           <tr key={match.etfTicker}>
                             <td className="research-security-cell">
                               <EtfLink ticker={match.etfTicker} available={available} />
-                              <span>
+                              <span
+                                title={
+                                  directoryByTicker.get(match.etfTicker)?.description || undefined
+                                }
+                              >
                                 {directoryByTicker.get(match.etfTicker)?.name ?? match.etfTicker}
                               </span>
                             </td>

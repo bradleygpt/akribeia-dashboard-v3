@@ -14,7 +14,9 @@ type ExplorerState =
 
 export function EvidenceExplorer() {
   const [ticker, setTicker] = useState("MU");
-  const [focus, setFocus] = useState<"summary" | "factor-contributions" | "portfolio">("summary");
+  const [focus, setFocus] = useState<"summary" | "factor-contributions" | "portfolio" | "thesis">(
+    "summary",
+  );
   const [state, setState] = useState<ExplorerState>({ kind: "idle" });
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -63,8 +65,10 @@ export function EvidenceExplorer() {
         <h2 id="explorer-heading">Ask the published build</h2>
         <p>
           Select a ticker and focus. The server verifies immutable score and portfolio artifacts,
-          then produces a deterministic explanation with evidence citations. No external model,
-          browser secret, or performance forecast is used.
+          then produces a deterministic explanation with evidence citations. Only the
+          &ldquo;Grounded thesis&rdquo; focus calls an external model, grounded in the same verified
+          evidence; every other focus uses no external model. No browser secret or performance
+          forecast is used.
         </p>
       </div>
       <div className="explorer-workspace">
@@ -87,12 +91,15 @@ export function EvidenceExplorer() {
               name="focus"
               value={focus}
               onChange={(event) =>
-                setFocus(event.target.value as "summary" | "factor-contributions" | "portfolio")
+                setFocus(
+                  event.target.value as "summary" | "factor-contributions" | "portfolio" | "thesis",
+                )
               }
             >
               <option value="summary">Summary</option>
               <option value="factor-contributions">Factor contributions</option>
               <option value="portfolio">Portfolio selection</option>
+              <option value="thesis">Grounded thesis (external model)</option>
             </select>
           </label>
           <button type="submit" disabled={state.kind === "loading"}>
@@ -119,7 +126,19 @@ export function EvidenceExplorer() {
               <div>
                 <span>{state.result.ticker}</span>
                 <span>{state.result.mode}</span>
+                <span>
+                  {state.result.externalModelUsed
+                    ? "External model used"
+                    : "No external model used"}
+                </span>
               </div>
+              {state.result.thesisUnavailableReason !== undefined ? (
+                <p role="alert">
+                  <strong>Grounded thesis unavailable.</strong>{" "}
+                  {state.result.thesisUnavailableReason} The deterministic evidence explanation
+                  below is shown instead.
+                </p>
+              ) : null}
               <p>{state.result.explanation}</p>
               <small>
                 Evidence: {state.result.citations.join(" · ")} · Model {state.result.modelVersion}

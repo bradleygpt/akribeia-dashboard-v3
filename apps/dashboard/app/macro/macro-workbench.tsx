@@ -71,10 +71,19 @@ function SortButton<K extends string>({
   );
 }
 
+interface RotationReference {
+  generated_at?: string;
+  model?: string;
+  rotation?: string;
+}
+
 export function MacroWorkbench() {
   const [forecast, setForecast] = useState<ReferenceEnvelope | null>(null);
   const [state, setState] = useState<"loading" | "ready" | "partial" | "error">("loading");
   const [message, setMessage] = useState("Loading approved forecast consensus…");
+  const [rotation, setRotation] = useState<RotationReference | null>(null);
+  const [rotationState, setRotationState] = useState<"loading" | "ready" | "error">("loading");
+  const [rotationAttempt, setRotationAttempt] = useState(0);
   const [forecastMetric, setForecastMetric] = useState("gdp");
   const [forecastSort, setForecastSort] = useState<{ key: ForecastSortKey; direction: Direction }>({
     key: "name",
@@ -110,6 +119,34 @@ export function MacroWorkbench() {
       });
     return () => controller.abort();
   }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    setRotationState("loading");
+    fetch("/api/v3/research-reference?dataset=macro-rotation", {
+      signal: controller.signal,
+      headers: { accept: "application/json" },
+    })
+      .then(async (response) => {
+        const body = (await response.json()) as ReferenceEnvelope;
+        if (!response.ok || !body.ok || body.payload === undefined || body.payload === null) {
+          throw new Error(body.error?.message ?? "Rotation source unavailable.");
+        }
+        if (controller.signal.aborted) return;
+        setRotation(body.payload as RotationReference);
+        setRotationState("ready");
+      })
+      .catch(() => {
+        if (controller.signal.aborted) return;
+        setRotationState("error");
+      });
+    return () => controller.abort();
+  }, [rotationAttempt]);
+
+  const rotationText =
+    typeof rotation?.rotation === "string" && rotation.rotation.trim().length > 0
+      ? rotation.rotation
+      : null;
 
   const consensus =
     forecast?.payload && typeof forecast.payload === "object"
@@ -313,6 +350,52 @@ export function MacroWorkbench() {
             Consensus source unavailable. No substitute forecast is displayed.
           </p>
         )}
+      </section>
+
+      <section className="parity-section parity-section-alt" aria-labelledby="rotation-heading">
+        <div className="research-subheading">
+          <div>
+            <p className="mono-label">PINNED AI NARRATIVE / DATED</p>
+            <h2 id="rotation-heading">AI Sector Rotation — pinned read</h2>
+          </div>
+          <span>Synthesized over the already-sourced risk radar and consensus forecasts</span>
+        </div>
+        {rotationState === "loading" ? (
+          <p className="parity-source-note" role="status">
+            Loading the pinned V2 sector-rotation narrative…
+          </p>
+        ) : null}
+        {rotationState === "error" ? (
+          <>
+            <p className="parity-unavailable" role="status">
+              The pinned AI sector-rotation read is unavailable. No substitute narrative is shown.
+            </p>
+            <button
+              type="button"
+              className="research-load-more"
+              onClick={() => setRotationAttempt((current) => current + 1)}
+            >
+              Retry pinned source
+            </button>
+          </>
+        ) : null}
+        {rotationState === "ready" ? (
+          rotationText !== null ? (
+            <>
+              <p>{rotationText}</p>
+              <p className="parity-source-note">
+                Pinned · as of {rotation?.generated_at ?? "unavailable"} · model{" "}
+                {rotation?.model ?? "unavailable"}. This dated AI narrative describes which sectors
+                the macro setup favors or pressures; it is not a recommendation.
+              </p>
+            </>
+          ) : (
+            <p className="parity-unavailable" role="status">
+              The pinned source responded without a rotation narrative. Nothing is synthesized in
+              its place.
+            </p>
+          )
+        ) : null}
       </section>
     </>
   );

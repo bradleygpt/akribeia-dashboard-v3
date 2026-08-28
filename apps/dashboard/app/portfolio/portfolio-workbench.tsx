@@ -18,6 +18,12 @@ import {
 
 type SortKey = "ticker" | "sector" | "shares" | "price" | "value" | "weight" | "gain" | "rating";
 
+type AdvisorState =
+  | { kind: "idle" }
+  | { kind: "loading" }
+  | { kind: "unavailable"; reason: string }
+  | { kind: "ready"; text: string; citations: string[]; model: string | null };
+
 const money = (value: number | null, digits = 2) =>
   value === null
     ? "Unavailable"
@@ -40,6 +46,7 @@ export function PortfolioWorkbench({ rows, asOf }: { rows: ResearchRow[]; asOf: 
     key: "value",
     direction: "descending",
   });
+  const [advisor, setAdvisor] = useState<AdvisorState>({ kind: "idle" });
   const [simulations, setSimulations] = useState(5000);
   const [horizonDays, setHorizonDays] = useState(252);
   const [scenario, setScenario] = useState<Scenario>("Blended");
@@ -106,6 +113,65 @@ export function PortfolioWorkbench({ rows, asOf }: { rows: ResearchRow[]; asOf: 
     };
     reader.readAsText(file);
   };
+  const requestAdvisor = async () => {
+    if (advisor.kind === "loading") return;
+    setAdvisor({ kind: "loading" });
+    try {
+      // Only the kind marker is sent; holdings never leave this browser.
+      const response = await fetch("/api/v3/ai/assist", {
+        method: "POST",
+        cache: "no-store",
+        headers: {
+          "content-type": "application/json",
+          "x-akribeia-client": "dashboard-v3",
+        },
+        body: JSON.stringify({ kind: "portfolio" }),
+      });
+      let body: Record<string, unknown> = {};
+      try {
+        body = (await response.json()) as Record<string, unknown>;
+      } catch {
+        body = {};
+      }
+      const unavailableReason =
+        typeof body.unavailableReason === "string" ? body.unavailableReason : null;
+      const errorMessage =
+        body.error !== null && typeof body.error === "object"
+          ? (body.error as { message?: unknown }).message
+          : undefined;
+      const responseText = typeof body.text === "string" && body.text.trim() ? body.text : null;
+      if (
+        !response.ok ||
+        body.ok === false ||
+        unavailableReason !== null ||
+        responseText === null
+      ) {
+        setAdvisor({
+          kind: "unavailable",
+          reason:
+            unavailableReason ??
+            (typeof errorMessage === "string"
+              ? errorMessage
+              : "The external-model portfolio read is unavailable. No substitute narrative is shown."),
+        });
+        return;
+      }
+      setAdvisor({
+        kind: "ready",
+        text: responseText,
+        citations: Array.isArray(body.citations)
+          ? body.citations.filter((item): item is string => typeof item === "string")
+          : [],
+        model: typeof body.model === "string" && body.model.trim() ? body.model : null,
+      });
+    } catch {
+      setAdvisor({
+        kind: "unavailable",
+        reason: "The portfolio assist request failed. No substitute narrative is shown.",
+      });
+    }
+  };
+
   const exportCsv = () => {
     const url = URL.createObjectURL(
       new Blob([holdingsToCsv(holdings)], { type: "text/csv;charset=utf-8" }),
@@ -464,6 +530,53 @@ export function PortfolioWorkbench({ rows, asOf }: { rows: ResearchRow[]; asOf: 
             simulated output is shown otherwise.
           </p>
         )}
+      </section>
+      <section
+        className="parity-section parity-section-alt"
+        aria-labelledby="portfolio-advisor-heading"
+      >
+        <div className="research-subheading">
+          <div>
+            <p className="mono-label">EXTERNAL MODEL / ON REQUEST ONLY</p>
+            <h2 id="portfolio-advisor-heading">AI portfolio advisor</h2>
+          </div>
+          <span>Runs only when you press the button · fails closed</span>
+        </div>
+        <p className="parity-source-note">
+          The protected assist route asks an external model for a rebalance read grounded in the
+          published build&rsquo;s evidence. Your saved holdings never leave this browser — only the
+          request kind is sent. This dated narrative is not a recommendation.
+        </p>
+        <div className="parity-controls">
+          <button
+            type="button"
+            onClick={() => void requestAdvisor()}
+            disabled={advisor.kind === "loading"}
+          >
+            {advisor.kind === "loading"
+              ? "Requesting external model…"
+              : "AI rebalance read (external model)"}
+          </button>
+        </div>
+        <div aria-live="polite">
+          {advisor.kind === "unavailable" ? (
+            <p className="parity-unavailable" role="alert">
+              <strong>AI rebalance read unavailable.</strong> {advisor.reason}
+            </p>
+          ) : null}
+          {advisor.kind === "ready" ? (
+            <>
+              <p>{advisor.text}</p>
+              <p className="parity-source-note">
+                {advisor.citations.length > 0
+                  ? `Evidence: ${advisor.citations.join(" · ")} · `
+                  : ""}
+                Model {advisor.model ?? "unavailable"} · external model used on request · not a
+                recommendation.
+              </p>
+            </>
+          ) : null}
+        </div>
       </section>
     </>
   );

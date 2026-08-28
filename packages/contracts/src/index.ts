@@ -69,6 +69,69 @@ export const EvidenceExplanationResponseSchema = z
   );
 export type EvidenceExplanationResponse = z.infer<typeof EvidenceExplanationResponseSchema>;
 
+export const AiAssistRequestSchema = z.discriminatedUnion("kind", [
+  z
+    .object({
+      kind: z.literal("screener"),
+      query: z.string().trim().min(1).max(300),
+    })
+    .strict(),
+  z
+    .object({
+      kind: z.literal("portfolio"),
+    })
+    .strict(),
+]);
+export type AiAssistRequest = z.infer<typeof AiAssistRequestSchema>;
+
+export const ScreenerRatingSchema = z.enum(["Strong Buy", "Buy", "Hold", "Sell"]);
+export type ScreenerRating = z.infer<typeof ScreenerRatingSchema>;
+
+export const ScreenerFilterSpecSchema = z
+  .object({
+    sectors: z.array(z.string().trim().min(1)).max(20).optional(),
+    minScore: z.number().finite().optional(),
+    maxScore: z.number().finite().optional(),
+    rating: ScreenerRatingSchema.optional(),
+    minMarketCapB: z.number().finite().nonnegative().optional(),
+    maxMarketCapB: z.number().finite().nonnegative().optional(),
+    maxCount: z.number().int().positive().max(200).optional(),
+    sort: z.enum(["score-desc", "score-asc", "marketcap-desc"]).optional(),
+  })
+  .strict();
+export type ScreenerFilterSpec = z.infer<typeof ScreenerFilterSpecSchema>;
+
+export const AiAssistResponseSchema = z.union([
+  z
+    .object({
+      ok: z.literal(true),
+      kind: z.literal("screener"),
+      filters: ScreenerFilterSpecSchema,
+      externalModelUsed: z.literal(true),
+      model: z.string().min(1),
+    })
+    .strict(),
+  z
+    .object({
+      ok: z.literal(true),
+      kind: z.literal("portfolio"),
+      text: z.string().min(1),
+      citations: z.array(z.string().min(1)).min(1),
+      externalModelUsed: z.literal(true),
+      model: z.string().min(1),
+    })
+    .strict(),
+  z
+    .object({
+      ok: z.literal(false),
+      kind: z.enum(["screener", "portfolio"]),
+      unavailableReason: z.string().min(1),
+      externalModelUsed: z.literal(false),
+    })
+    .strict(),
+]);
+export type AiAssistResponse = z.infer<typeof AiAssistResponseSchema>;
+
 export const DataStatusSchema = z.enum([
   "current",
   "delayed",

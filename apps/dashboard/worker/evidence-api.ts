@@ -1,14 +1,18 @@
 import {
   ActiveBuildPointerSchema,
+  AiAssistRequestSchema,
+  AiAssistResponseSchema,
   BuildManifestSchema,
   EvidenceExplanationRequestSchema,
   EvidenceExplanationResponseSchema,
   EvidenceSecurityRequestSchema,
   PublishedPortfolioArtifactSchema,
   PublishedScoresArtifactSchema,
+  ScreenerFilterSpecSchema,
   type PublishedPortfolioArtifact,
   type PublishedScoredSecurity,
   type PublishedScoresArtifact,
+  type ScreenerFilterSpec,
 } from "@akribeia/contracts";
 
 export interface AssetFetcher {
@@ -327,12 +331,116 @@ function securityResponse(evidence: ActiveEvidence, security: PublishedScoredSec
 }
 
 const THESIS_MODEL = "gemini-3.5-flash-lite";
-const THESIS_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${THESIS_MODEL}:generateContent`;
+const THESIS_FALLBACK_MODEL = "gemini-3.5-flash";
 const THESIS_TIMEOUT_MS = 12_000;
 const THESIS_MAX_CHARS = 1_600;
+const THESIS_MIN_RELIABLE_CHARS = 200;
+/** transient upstream statuses worth retrying before failing closed. */
+const TRANSIENT_MODEL_STATUSES = new Set([429, 500, 502, 503, 504]);
+/** a bracketed fragment carrying instruction words means the model echoed a template skeleton. */
+const BRACKET_LEAK =
+  /\[[^\]]*?(bullet|sentence|disclosed|e\.g\.|insert|specific number|one of\s*:|if known|if given|X\.X|Y%|placeholder|most important|net effect)[^\]]*?\]/i;
+/** leftover numeric placeholders such as "X.X" or "Y%" mark an ungrounded generation. */
+const PLACEHOLDER_LEAK = /\$?X\.X{1,2}\b|\bY%/i;
+
+function thesisEndpoint(model: string): string {
+  return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 function thesisConfigured(env: EvidenceApiEnv): boolean {
   return typeof env.THESIS_GEMINI_API_KEY === "string" && env.THESIS_GEMINI_API_KEY.length > 0;
+}
+
+/** strips any line that leaks bracketed template instructions out of a generation. */
+function scrubBracketLeaks(text: string): string {
+  return text
+    .split("\n")
+    .filter((line) => !BRACKET_LEAK.test(line.trim()))
+    .join("\n")
+    .trim();
+}
+
+/**
+ * Refuses sketchy generations: too short to be a grounded narrative, missing the
+ * required grounding token, or still carrying placeholder/template leaks.
+ */
+function reliableNarrative(text: string, requiredToken: string | null): boolean {
+  if (text.length < THESIS_MIN_RELIABLE_CHARS) {
+    return false;
+  }
+
+  if (requiredToken !== null && !text.includes(requiredToken)) {
+    return false;
+  }
+
+  return !BRACKET_LEAK.test(text) && !PLACEHOLDER_LEAK.test(text);
+}
+
+type ExternalModelCall =
+  | { text: string; model: string; unavailableReason: null }
+  | { text: null; model: null; unavailableReason: string };
+
+/**
+ * Retry ladder ported from the V2 AI endpoint: up to three attempts on the lite
+ * model with 400/800/1200ms backoff after transient failures (429/5xx/timeout),
+ * then one attempt on the bigger flash model before failing closed.
+ */
+async function callExternalModel(
+  apiKey: string,
+  prompt: string,
+  generationConfig: { temperature: number; maxOutputTokens: number },
+): Promise<ExternalModelCall> {
+  const attempts = [THESIS_MODEL, THESIS_MODEL, THESIS_MODEL, THESIS_FALLBACK_MODEL];
+  let unavailableReason = "external model call failed or timed out";
+
+  for (let attempt = 0; attempt < attempts.length; attempt += 1) {
+    const model = attempts[attempt] as string;
+
+    try {
+      const response = await fetch(thesisEndpoint(model), {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-goog-api-key": apiKey,
+        },
+        body: JSON.stringify({
+          contents: [{ role: "user", parts: [{ text: prompt }] }],
+          generationConfig,
+        }),
+        signal: AbortSignal.timeout(THESIS_TIMEOUT_MS),
+      });
+
+      if (response.ok) {
+        const payload = (await response.json()) as {
+          candidates?: { content?: { parts?: { text?: string }[] } }[];
+        };
+        const text = (payload.candidates?.[0]?.content?.parts ?? [])
+          .map((part) => part.text ?? "")
+          .join("")
+          .trim();
+
+        return { text, model, unavailableReason: null };
+      }
+
+      unavailableReason = `external model returned HTTP ${response.status}`;
+
+      if (!TRANSIENT_MODEL_STATUSES.has(response.status)) {
+        return { text: null, model: null, unavailableReason };
+      }
+    } catch {
+      unavailableReason = "external model call failed or timed out";
+    }
+
+    if (attempt < attempts.length - 1) {
+      await sleep(400 * (attempt + 1));
+    }
+  }
+
+  return { text: null, model: null, unavailableReason };
 }
 
 function thesisPrompt(
@@ -359,6 +467,9 @@ function thesisPrompt(
     "advice or recommendations. Plain prose, no headers, no lists.",
     "",
     `Ticker: ${security.ticker}`,
+    `Sector: ${security.sector}`,
+    `Published price: $${security.price.toFixed(2)}`,
+    `Market cap: $${security.marketCapB.toFixed(1)}B`,
     `Eligible: ${security.eligible}`,
     `Composite score: ${security.score === null ? "null" : security.score.toFixed(2)}`,
     `Factor coverage: ${(security.coverage * 100).toFixed(0)}%`,
@@ -369,6 +480,7 @@ function thesisPrompt(
 
 interface ThesisResult {
   text: string | null;
+  model: string | null;
   unavailableReason: string | null;
 }
 
@@ -378,43 +490,238 @@ async function generateThesis(
   position: PublishedPortfolioArtifact["portfolio"]["positions"][number] | null,
 ): Promise<ThesisResult> {
   if (!thesisConfigured(env)) {
-    return { text: null, unavailableReason: "external model not configured" };
+    return { text: null, model: null, unavailableReason: "external model not configured" };
   }
+
+  const call = await callExternalModel(
+    env.THESIS_GEMINI_API_KEY as string,
+    thesisPrompt(security, position),
+    { temperature: 0.2, maxOutputTokens: 512 },
+  );
+
+  if (call.text === null) {
+    return { text: null, model: null, unavailableReason: call.unavailableReason };
+  }
+
+  const scrubbed = scrubBracketLeaks(call.text);
+
+  if (!reliableNarrative(scrubbed, security.ticker)) {
+    return {
+      text: null,
+      model: null,
+      unavailableReason: "external model returned an unusable response",
+    };
+  }
+
+  return { text: scrubbed.slice(0, THESIS_MAX_CHARS), model: call.model, unavailableReason: null };
+}
+
+function screenerPrompt(query: string, sectors: readonly string[]): string {
+  return [
+    "Convert a plain-English stock screen into a filter specification for a",
+    "quantitative research preview.",
+    `User query: ${JSON.stringify(query)}`,
+    `Valid sector names: ${sectors.join(", ")}.`,
+    "Return ONLY strict JSON — no prose, no markdown, no code fences — as a",
+    "single object using ONLY these optional keys:",
+    '{"sectors": string[] (exact valid sector names), "minScore": number,',
+    '"maxScore": number, "rating": "Strong Buy"|"Buy"|"Hold"|"Sell",',
+    '"minMarketCapB": number, "maxMarketCapB": number,',
+    '"maxCount": number (at most 200),',
+    '"sort": "score-desc"|"score-asc"|"marketcap-desc"}',
+    "Omit every key the query does not imply. Never invent constraints.",
+  ].join("\n");
+}
+
+/**
+ * Parses a screener generation into a validated filter spec. Raw model text is
+ * never passed through: anything that is not strict JSON matching the contract
+ * fails closed to null.
+ */
+function parseScreenerFilters(text: string): ScreenerFilterSpec | null {
+  const cleaned = text
+    .trim()
+    .replace(/^```(?:json)?\s*/i, "")
+    .replace(/\s*```$/, "")
+    .trim();
+
+  let value: unknown;
 
   try {
-    const response = await fetch(THESIS_ENDPOINT, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-goog-api-key": env.THESIS_GEMINI_API_KEY as string,
-      },
-      body: JSON.stringify({
-        contents: [{ role: "user", parts: [{ text: thesisPrompt(security, position) }] }],
-        generationConfig: { temperature: 0.2, maxOutputTokens: 512 },
-      }),
-      signal: AbortSignal.timeout(THESIS_TIMEOUT_MS),
+    value = JSON.parse(cleaned) as unknown;
+  } catch {
+    return null;
+  }
+
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return null;
+  }
+
+  const withoutNulls = Object.fromEntries(
+    Object.entries(value as Record<string, unknown>).filter(([, entry]) => entry !== null),
+  );
+  const filters = ScreenerFilterSpecSchema.safeParse(withoutNulls);
+
+  return filters.success ? filters.data : null;
+}
+
+interface PortfolioFactBlock {
+  facts: string;
+  citations: string[];
+}
+
+/**
+ * Builds the portfolio fact block entirely server-side from the verified
+ * portfolio.json and scores.json artifacts. No client-supplied data enters it.
+ */
+function portfolioFactBlock(evidence: ActiveEvidence): PortfolioFactBlock {
+  const { positions, sectorWeights, constraints } = evidence.portfolio.portfolio;
+  const topPositions = [...positions]
+    .sort((left, right) => right.weight - left.weight || left.ticker.localeCompare(right.ticker))
+    .slice(0, 5)
+    .map((position) => `${position.ticker} ${(position.weight * 100).toFixed(2)}%`)
+    .join(", ");
+  const sectorTotals = Object.entries(sectorWeights)
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([sector, weight]) => `${sector} ${(weight * 100).toFixed(2)}%`)
+    .join(", ");
+  const scoreByTicker = new Map(
+    evidence.scores.securities.map((security) => [security.ticker, security.score]),
+  );
+  let scoredWeight = 0;
+  let weightedScoreSum = 0;
+
+  for (const position of positions) {
+    const score = scoreByTicker.get(position.ticker);
+
+    if (typeof score === "number") {
+      scoredWeight += position.weight;
+      weightedScoreSum += position.weight * score;
+    }
+  }
+
+  const weightedAverageScore =
+    scoredWeight > 0 ? (weightedScoreSum / scoredWeight).toFixed(2) : "unavailable";
+
+  return {
+    facts: [
+      `Position count: ${positions.length}`,
+      `Top positions by weight: ${topPositions}`,
+      `Exact position cap: ${(constraints.maxPositionWeight * 100).toFixed(2)}%`,
+      `Sector weights against a ${(constraints.maxSectorWeight * 100).toFixed(2)}% sector cap: ${sectorTotals}`,
+      `Weighted average composite score: ${weightedAverageScore}`,
+    ].join("\n"),
+    citations: [
+      "portfolio.json:positions",
+      "portfolio.json:sectorWeights",
+      "scores.json:securities",
+    ],
+  };
+}
+
+function portfolioAssistPrompt(facts: string): string {
+  return [
+    "You are the THESIS engine for Akribeia, a quantitative research preview.",
+    "In two to three sentences, give rebalance reasoning for the constrained",
+    "research portfolio below: where the book is concentrated, which sector",
+    "weights sit close to their caps, and how the weighted average score reads.",
+    "Use ONLY the published figures provided here. Never invent figures,",
+    "tickers, or market data. Do not give investment advice or recommendations.",
+    "Plain prose, no headers, no lists.",
+    "",
+    facts,
+  ].join("\n");
+}
+
+async function handleAiAssist(
+  env: EvidenceApiEnv,
+  request: Request,
+  input: { kind: "screener"; query: string } | { kind: "portfolio" },
+): Promise<unknown> {
+  if (!thesisConfigured(env)) {
+    return {
+      ok: false,
+      kind: input.kind,
+      unavailableReason: "external model not configured",
+      externalModelUsed: false,
+    };
+  }
+
+  const apiKey = env.THESIS_GEMINI_API_KEY as string;
+  const evidence = await loadActiveEvidence(env, request);
+
+  if (input.kind === "screener") {
+    const sectors = [
+      ...new Set(evidence.scores.securities.map((security) => security.sector)),
+    ].sort((left, right) => left.localeCompare(right));
+    const call = await callExternalModel(apiKey, screenerPrompt(input.query, sectors), {
+      temperature: 0.1,
+      maxOutputTokens: 512,
     });
 
-    if (!response.ok) {
-      return { text: null, unavailableReason: `external model returned HTTP ${response.status}` };
+    if (call.text === null) {
+      return {
+        ok: false,
+        kind: input.kind,
+        unavailableReason: call.unavailableReason,
+        externalModelUsed: false,
+      };
     }
 
-    const payload = (await response.json()) as {
-      candidates?: { content?: { parts?: { text?: string }[] } }[];
+    const filters = parseScreenerFilters(call.text);
+
+    if (filters === null) {
+      return {
+        ok: false,
+        kind: input.kind,
+        unavailableReason: "external model returned an invalid filter specification",
+        externalModelUsed: false,
+      };
+    }
+
+    return {
+      ok: true,
+      kind: input.kind,
+      filters,
+      externalModelUsed: true,
+      model: call.model,
     };
-    const text = (payload.candidates?.[0]?.content?.parts ?? [])
-      .map((part) => part.text ?? "")
-      .join("")
-      .trim();
-
-    if (text.length === 0 || !text.includes(security.ticker)) {
-      return { text: null, unavailableReason: "external model returned an unusable response" };
-    }
-
-    return { text: text.slice(0, THESIS_MAX_CHARS), unavailableReason: null };
-  } catch {
-    return { text: null, unavailableReason: "external model call failed or timed out" };
   }
+
+  const { facts, citations } = portfolioFactBlock(evidence);
+  const call = await callExternalModel(apiKey, portfolioAssistPrompt(facts), {
+    temperature: 0.2,
+    maxOutputTokens: 512,
+  });
+
+  if (call.text === null) {
+    return {
+      ok: false,
+      kind: input.kind,
+      unavailableReason: call.unavailableReason,
+      externalModelUsed: false,
+    };
+  }
+
+  const scrubbed = scrubBracketLeaks(call.text);
+
+  if (!reliableNarrative(scrubbed, null)) {
+    return {
+      ok: false,
+      kind: input.kind,
+      unavailableReason: "external model returned an unusable response",
+      externalModelUsed: false,
+    };
+  }
+
+  return {
+    ok: true,
+    kind: input.kind,
+    text: scrubbed.slice(0, THESIS_MAX_CHARS),
+    citations: [...citations, `external-model:${call.model}`],
+    externalModelUsed: true,
+    model: call.model,
+  };
 }
 
 function explanationText(
@@ -468,7 +775,11 @@ async function routeProtectedRequest(
 
   const pathname = new URL(request.url).pathname;
 
-  if (pathname !== `${API_PREFIX}evidence/security` && pathname !== `${API_PREFIX}ai/explain`) {
+  if (
+    pathname !== `${API_PREFIX}evidence/security` &&
+    pathname !== `${API_PREFIX}ai/explain` &&
+    pathname !== `${API_PREFIX}ai/assist`
+  ) {
     return errorResponse(404, "not_found", "API route not found.");
   }
 
@@ -569,7 +880,7 @@ async function routeProtectedRequest(
                   focus: input.data.focus,
                   ticker: security.ticker,
                   explanation: thesis.text,
-                  citations: [...citations, `external-model:${THESIS_MODEL}`],
+                  citations: [...citations, `external-model:${thesis.model ?? THESIS_MODEL}`],
                   notice: base.notice,
                 }
               : {
@@ -602,6 +913,25 @@ async function routeProtectedRequest(
           citations,
           notice: base.notice,
         }),
+        200,
+        rateHeaders,
+      );
+    }
+
+    if (pathname === `${API_PREFIX}ai/assist`) {
+      const input = AiAssistRequestSchema.safeParse(body);
+
+      if (!input.success) {
+        return errorResponse(
+          400,
+          "invalid_request",
+          "Assist kind and query must follow the request contract.",
+          rateHeaders,
+        );
+      }
+
+      return jsonResponse(
+        AiAssistResponseSchema.parse(await handleAiAssist(env, request, input.data)),
         200,
         rateHeaders,
       );

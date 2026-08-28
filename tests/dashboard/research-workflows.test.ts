@@ -513,6 +513,10 @@ describe("Wave 2 bounded API adapters", () => {
       ["macro-rotation", "macro_rotation.json"],
       ["strategies-holdings-performance", "strategies_holdings_perf.json"],
       ["strategy-rationale", "strategy_rationale.json"],
+      ["universe-summary", "universe_summary.json"],
+      ["anomalies", "anomalies.json"],
+      ["ai-theme", "ai_theme.json"],
+      ["pundits", "pundits.json"],
     ] as const) {
       const response = await handleResearchReferenceApi(
         new Request(`https://akribeia.test/api/v3/research-reference?dataset=${dataset}`),

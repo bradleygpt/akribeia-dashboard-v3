@@ -113,7 +113,9 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /NVDA/);
   assert.match(html, /Sector exposure/);
   assert.match(html, /Ask the published build/);
-  assert.match(html, /No external model, browser secret, or performance forecast is used/);
+  assert.match(html, /focus calls an external model, grounded in the same verified/);
+  assert.match(html, /every other focus uses no external model/);
+  assert.match(html, /Grounded thesis \(external model\)/);
   assert.match(html, /name="ticker" value="MU"/);
   assert.match(html, /Explain evidence/);
   assert.match(html, /Composite score ranking table/);

@@ -2946,3 +2946,239 @@
     grid-template-columns: repeat(auto-fit, minmax(54px, 1fr));
   }
 }
+
+/* AI Intel — pinned narrative cards (/intel) */
+.intel-pinned-banner {
+  margin: 1.1rem 0 1.2rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--acid-dark);
+  border-left-width: 4px;
+  background: rgb(183 237 90 / 16%);
+  color: var(--ink);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.intel-pinned-banner strong {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.intel-pundit-section {
+  margin-top: 1.4rem;
+}
+
+.intel-pundit-section h3 {
+  margin: 0 0 0.5rem;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--acid-dark);
+}
+
+.intel-pundit-synthesis {
+  margin: 0 0 0.6rem;
+  max-width: 72ch;
+}
+
+.intel-theme-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 0.9rem;
+  padding: 0;
+  list-style: none;
+}
+
+.intel-theme-list li {
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.intel-commentator-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+  gap: 0.85rem;
+}
+
+.intel-commentator-grid article {
+  min-width: 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  font-size: 0.84rem;
+}
+
+.intel-commentator-grid header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.45rem;
+}
+
+.intel-commentator-grid h4 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.intel-commentator-grid header small {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.intel-commentator-grid header span {
+  flex-shrink: 0;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--line);
+  color: var(--acid-dark);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.intel-commentator-grid blockquote {
+  margin: 0 0 0.5rem;
+  padding-left: 0.7rem;
+  border-left: 2px solid var(--acid-dark);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.intel-commentator-grid blockquote cite {
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-style: normal;
+}
+
+.intel-commentator-grid p {
+  margin: 0 0 0.35rem;
+  font-size: 0.78rem;
+}
+
+.intel-commentator-grid ul {
+  margin: 0.4rem 0 0;
+  padding-left: 1.1rem;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+.intel-anomaly-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.intel-anomaly-list li {
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--line);
+  background: var(--paper);
+}
+
+.intel-anomaly-list li div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.intel-anomaly-list li div a {
+  font-weight: 700;
+}
+
+.intel-anomaly-list li div span {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.intel-anomaly-list li div small {
+  color: var(--acid-dark);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+}
+
+.intel-anomaly-list li p {
+  margin: 0.4rem 0 0;
+  max-width: 82ch;
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+/* Ask the screener — NL assist box on /research */
+.research-assist {
+  margin: 1.1rem 0 0.4rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  background: var(--paper);
+}
+
+.research-assist-note {
+  margin: 0.35rem 0 0.7rem;
+  max-width: 78ch;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.research-assist-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.research-assist-form input {
+  flex: 1 1 20rem;
+  min-width: 0;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  font-size: 0.86rem;
+}
+
+.research-assist-form input:focus-visible {
+  outline: 2px solid var(--acid-dark);
+  outline-offset: 1px;
+}
+
+.research-assist-form button {
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--acid-dark);
+  background: var(--acid);
+  color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.research-assist-form button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.research-assist-result p {
+  margin: 0.65rem 0 0;
+  font-size: 0.8rem;
+}
+
+.research-assist-result span {
+  color: var(--muted);
+}

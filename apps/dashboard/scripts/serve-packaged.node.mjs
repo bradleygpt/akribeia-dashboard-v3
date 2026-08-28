@@ -4,6 +4,7 @@
 // Usage: node scripts/serve-packaged.mjs [port]
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
+import { Readable } from "node:stream";
 import { extname, isAbsolute, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -62,9 +63,14 @@ const server = createServer(async (incoming, outgoing) => {
   try {
     const origin = `http://127.0.0.1:${port}`;
     const requestUrl = new URL(incoming.url ?? "/", origin);
+    const method = incoming.method ?? "GET";
     const request = new Request(requestUrl, {
       headers: incoming.headers,
-      method: incoming.method,
+      method,
+      // Forward POST bodies so the protected AI routes are testable locally.
+      ...(method === "GET" || method === "HEAD"
+        ? {}
+        : { body: Readable.toWeb(incoming), duplex: "half" }),
     });
     let response = await assetResponse(request);
     if (response.status === 404) {

@@ -49,6 +49,152 @@ const initialFilters: ResearchFilters = {
   sort: "score-desc",
 };
 
+const ASSIST_SORT_ALIASES: Record<string, ResearchSort> = {
+  score: "score-desc",
+  "score-desc": "score-desc",
+  "score-asc": "score-asc",
+  "market-cap": "market-cap-desc",
+  market_cap: "market-cap-desc",
+  marketcap: "market-cap-desc",
+  "market-cap-desc": "market-cap-desc",
+  "market-cap-asc": "market-cap-asc",
+  valuation: "valuation-asc",
+  "valuation-asc": "valuation-asc",
+  "valuation-desc": "valuation-desc",
+  "buy-point": "buy-point-asc",
+  buy_point: "buy-point-asc",
+  "buy-point-asc": "buy-point-asc",
+  ticker: "ticker-asc",
+  "ticker-asc": "ticker-asc",
+  "ticker-desc": "ticker-desc",
+};
+
+interface AssistMapping {
+  patch: Partial<ResearchFilters>;
+  visibleCap: number | null;
+  applied: string[];
+  ignored: string[];
+}
+
+function assistNumber(value: unknown): number | null {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value === "string" && value.trim() !== "" && Number.isFinite(Number(value))) {
+    return Number(value);
+  }
+  return null;
+}
+
+/**
+ * Maps the assist route's screener filter specification onto the filter state
+ * this workbench actually supports. Every unsupported or unrecognized key is
+ * reported back so the user sees exactly what was and was not applied.
+ */
+export function mapAssistScreenerFilters(
+  raw: Record<string, unknown>,
+  knownSectors: readonly string[],
+): AssistMapping {
+  const patch: Partial<ResearchFilters> = {};
+  const applied: string[] = [];
+  const ignored: string[] = [];
+  let visibleCap: number | null = null;
+
+  for (const [key, value] of Object.entries(raw)) {
+    if (key === "sectors") {
+      const requested = (Array.isArray(value) ? value : [value]).filter(
+        (item): item is string => typeof item === "string",
+      );
+      const matched: string[] = [];
+      for (const item of requested) {
+        const canonical = knownSectors.find(
+          (sector) => sector.toLowerCase() === item.trim().toLowerCase(),
+        );
+        if (canonical !== undefined && !matched.includes(canonical)) matched.push(canonical);
+        else if (canonical === undefined) ignored.push(`sector "${item}" (not in the universe)`);
+      }
+      if (matched.length > 0) {
+        patch.sectors = matched;
+        applied.push(`sector=${matched.join("+")}`);
+      }
+    } else if (key === "minScore") {
+      const parsed = assistNumber(value);
+      if (parsed === null) ignored.push("minScore (not a number)");
+      else {
+        patch.minimumScore = Math.min(12, Math.max(0, parsed));
+        applied.push(`min score ${patch.minimumScore}`);
+      }
+    } else if (key === "rating") {
+      const requested = (Array.isArray(value) ? value : [value]).filter(
+        (item): item is string => typeof item === "string",
+      );
+      if (requested.length === 1 && !Array.isArray(value)) {
+        const index = RATINGS.findIndex(
+          (rating) => rating.toLowerCase() === requested[0].trim().toLowerCase(),
+        );
+        if (index === -1) ignored.push(`rating "${requested[0]}" (unknown rating)`);
+        else {
+          patch.ratings = RATINGS.slice(0, index + 1);
+          applied.push(`rating ${RATINGS[index]} or better`);
+        }
+      } else {
+        const matched = requested
+          .map((item) =>
+            RATINGS.find((rating) => rating.toLowerCase() === item.trim().toLowerCase()),
+          )
+          .filter((rating): rating is string => rating !== undefined);
+        if (matched.length > 0) {
+          patch.ratings = matched;
+          applied.push(`rating=${matched.join("+")}`);
+        } else if (requested.length > 0) {
+          ignored.push("rating (no recognized rating values)");
+        }
+      }
+    } else if (key === "minMarketCapB") {
+      const parsed = assistNumber(value);
+      if (parsed === null) ignored.push("minMarketCapB (not a number)");
+      else {
+        patch.minimumMarketCapB = Math.max(0, parsed);
+        applied.push(`market cap ≥ $${patch.minimumMarketCapB}B`);
+      }
+    } else if (key === "maxMarketCapB") {
+      const parsed = assistNumber(value);
+      if (parsed === null) ignored.push("maxMarketCapB (not a number)");
+      else {
+        const minimum = assistNumber(raw.minMarketCapB) ?? 0;
+        patch.metricRanges = {
+          ...patch.metricRanges,
+          marketCapB: [Math.max(0, minimum), parsed],
+        };
+        applied.push(`market cap ≤ $${parsed}B`);
+      }
+    } else if (key === "sort") {
+      const alias =
+        typeof value === "string" ? ASSIST_SORT_ALIASES[value.trim().toLowerCase()] : undefined;
+      if (alias === undefined) ignored.push(`sort "${String(value)}" (unsupported)`);
+      else {
+        patch.sort = alias;
+        applied.push(`sort ${alias}`);
+      }
+    } else if (key === "maxCount") {
+      const parsed = assistNumber(value);
+      if (parsed === null || parsed < 1) ignored.push("maxCount (not a positive number)");
+      else {
+        visibleCap = Math.floor(parsed);
+        applied.push(`showing first ${visibleCap}`);
+      }
+    } else {
+      ignored.push(key);
+    }
+  }
+
+  return { patch, visibleCap, applied, ignored };
+}
+
+type AssistScreenerState =
+  | { kind: "idle" }
+  | { kind: "loading" }
+  | { kind: "unavailable"; reason: string }
+  | { kind: "applied"; applied: string[]; ignored: string[] };
+
 function ratingClass(rating: string): string {
   if (rating.includes("Buy")) return "research-rating research-rating-positive";
   if (rating.includes("Sell")) return "research-rating research-rating-negative";
@@ -183,6 +329,8 @@ export function ResearchWorkbench({ rows, sectors }: { rows: ResearchRow[]; sect
   const [watchlist, setWatchlist] = useState<Set<string>>(new Set());
   const [comparison, setComparison] = useState<string[]>([]);
   const [v2Preset, setV2Preset] = useState("Custom");
+  const [assistQuery, setAssistQuery] = useState("");
+  const [assistState, setAssistState] = useState<AssistScreenerState>({ kind: "idle" });
 
   useEffect(() => {
     try {
@@ -291,6 +439,69 @@ export function ResearchWorkbench({ rows, sectors }: { rows: ResearchRow[]; sect
     setComparison((current) => toggleComparisonTicker(current, ticker));
   }
 
+  async function askScreener() {
+    const query = assistQuery.trim();
+    if (query.length === 0 || assistState.kind === "loading") return;
+    setAssistState({ kind: "loading" });
+    try {
+      // Only the query string leaves the browser — never the universe payload.
+      const response = await fetch("/api/v3/ai/assist", {
+        method: "POST",
+        cache: "no-store",
+        headers: {
+          "content-type": "application/json",
+          "x-akribeia-client": "dashboard-v3",
+        },
+        body: JSON.stringify({ kind: "screener", query }),
+      });
+      let body: Record<string, unknown> = {};
+      try {
+        body = (await response.json()) as Record<string, unknown>;
+      } catch {
+        body = {};
+      }
+      const unavailableReason =
+        typeof body.unavailableReason === "string" ? body.unavailableReason : null;
+      const errorMessage =
+        body.error !== null && typeof body.error === "object"
+          ? ((body.error as { message?: unknown }).message as string | undefined)
+          : undefined;
+      if (!response.ok || body.ok === false || unavailableReason !== null) {
+        setAssistState({
+          kind: "unavailable",
+          reason:
+            unavailableReason ??
+            (typeof errorMessage === "string"
+              ? errorMessage
+              : "The screener assist is unavailable. Your filters were not changed."),
+        });
+        return;
+      }
+      const rawFilters =
+        body.filters !== null && typeof body.filters === "object" && !Array.isArray(body.filters)
+          ? (body.filters as Record<string, unknown>)
+          : null;
+      if (rawFilters === null) {
+        setAssistState({
+          kind: "unavailable",
+          reason:
+            "The assist response carried no filter specification. Your filters were not changed.",
+        });
+        return;
+      }
+      const mapping = mapAssistScreenerFilters(rawFilters, sectors);
+      setFilters({ ...initialFilters, ...mapping.patch });
+      setV2Preset("Custom");
+      setVisible(mapping.visibleCap ?? PAGE_SIZE);
+      setAssistState({ kind: "applied", applied: mapping.applied, ignored: mapping.ignored });
+    } catch {
+      setAssistState({
+        kind: "unavailable",
+        reason: "The screener assist request failed. Your filters were not changed.",
+      });
+    }
+  }
+
   return (
     <>
       <section className="research-control-deck" aria-labelledby="screener-controls-heading">
@@ -302,6 +513,58 @@ export function ResearchWorkbench({ rows, sectors }: { rows: ResearchRow[]; sect
           <button type="button" onClick={resetFilters}>
             Reset all controls
           </button>
+        </div>
+
+        <div className="research-assist" aria-labelledby="research-assist-heading">
+          <div>
+            <p className="mono-label" id="research-assist-heading">
+              ASK THE SCREENER / EXTERNAL MODEL PARSES INTENT ONLY
+            </p>
+            <p className="research-assist-note">
+              A plain-English query is sent to the protected assist route, where an external model
+              maps it to screener filters. Only your query string is sent — never the universe — and
+              the filters are applied to the same client-side screen below.
+            </p>
+          </div>
+          <form
+            className="research-assist-form"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void askScreener();
+            }}
+          >
+            <input
+              type="text"
+              value={assistQuery}
+              onChange={(event) => setAssistQuery(event.target.value)}
+              placeholder="e.g. cheap profitable technology stocks with momentum, top 20"
+              aria-label="Plain-English screener query"
+              autoComplete="off"
+            />
+            <button type="submit" disabled={assistState.kind === "loading"}>
+              {assistState.kind === "loading" ? "Mapping…" : "Ask the screener"}
+            </button>
+          </form>
+          <div className="research-assist-result" aria-live="polite">
+            {assistState.kind === "unavailable" ? (
+              <p className="parity-unavailable" role="alert">
+                <strong>Screener assist unavailable.</strong> {assistState.reason}
+              </p>
+            ) : null}
+            {assistState.kind === "applied" ? (
+              <p>
+                <strong>
+                  Applied:{" "}
+                  {assistState.applied.length > 0
+                    ? assistState.applied.join(", ")
+                    : "no supported filters (screen reset to defaults)"}
+                </strong>
+                {assistState.ignored.length > 0 ? (
+                  <span> · ignored: {assistState.ignored.join(", ")}</span>
+                ) : null}
+              </p>
+            ) : null}
+          </div>
         </div>
 
         <div className="research-preset-list" aria-label="Quick research screens">
