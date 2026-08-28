@@ -190,8 +190,12 @@ describe("protected AI assist research kind", () => {
       expect(calls[0].body).toContain("Ticker: MU");
       expect(calls[0].body).toContain("Fair value $1306.61");
       expect(calls[0].body).toContain("verdict Undervalued");
-      expect(calls[0].body).toContain("gross 0.7257");
-      expect(calls[0].body).toContain("operating 0.8037");
+      // Ratios reach the model pre-formatted as percentages — the LLM never
+      // converts units itself (the V2 endpoint's no-arithmetic rule).
+      expect(calls[0].body).toContain("gross margin 72.6%");
+      expect(calls[0].body).toContain("operating margin 80.4%");
+      expect(calls[0].body).toContain("revenue +345.7% YoY");
+      expect(calls[0].body).toContain("12M +667.0%");
       expect(calls[0].body).toContain("Factor contributions:");
       expect(calls[0].body).toContain("Do not give investment advice");
       expect(calls[0].body).toContain('"temperature":0.45');

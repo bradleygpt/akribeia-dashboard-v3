@@ -385,6 +385,48 @@ type ExternalModelCall =
   | { text: null; model: null; unavailableReason: string };
 
 /**
+ * One narrative generation with a single quality retry: a response the
+ * reliability gate refuses triggers exactly one regeneration at a cooler
+ * temperature before failing closed — transient sloppiness is common enough
+ * that the gate should not make the user click twice, while a second refusal
+ * still fails closed rather than rendering junk.
+ */
+async function generateReliableNarrative(
+  apiKey: string,
+  prompt: string,
+  options: { temperature: number; maxOutputTokens: number; requiredToken: string | null },
+): Promise<ExternalModelCall> {
+  for (const temperature of [options.temperature, Math.max(0.1, options.temperature - 0.15)]) {
+    const call = await callExternalModel(apiKey, prompt, {
+      temperature,
+      maxOutputTokens: options.maxOutputTokens,
+    });
+    if (call.text === null) {
+      return call;
+    }
+    const scrubbed = scrubBracketLeaks(call.text);
+    if (reliableNarrative(scrubbed, options.requiredToken)) {
+      return { text: scrubbed, model: call.model, unavailableReason: null };
+    }
+  }
+  return {
+    text: null,
+    model: null,
+    unavailableReason: "external model returned an unusable response",
+  };
+}
+
+/** Caps a narrative without cutting mid-word: prefer the last sentence end, else the last word break. */
+function capAtSentence(text: string, max: number): string {
+  if (text.length <= max) return text;
+  const window = text.slice(0, max);
+  const sentenceEnd = window.lastIndexOf(".");
+  if (sentenceEnd > max * 0.6) return window.slice(0, sentenceEnd + 1);
+  const wordEnd = window.lastIndexOf(" ");
+  return `${window.slice(0, wordEnd > 0 ? wordEnd : max).trimEnd()}…`;
+}
+
+/**
  * Retry ladder ported from the V2 AI endpoint: up to three attempts on the lite
  * model with 400/800/1200ms backoff after transient failures (429/5xx/timeout),
  * then one attempt on the bigger flash model before failing closed.
@@ -493,27 +535,21 @@ async function generateThesis(
     return { text: null, model: null, unavailableReason: "external model not configured" };
   }
 
-  const call = await callExternalModel(
+  const call = await generateReliableNarrative(
     env.THESIS_GEMINI_API_KEY as string,
     thesisPrompt(security, position),
-    { temperature: 0.2, maxOutputTokens: 512 },
+    { temperature: 0.2, maxOutputTokens: 512, requiredToken: security.ticker },
   );
 
   if (call.text === null) {
     return { text: null, model: null, unavailableReason: call.unavailableReason };
   }
 
-  const scrubbed = scrubBracketLeaks(call.text);
-
-  if (!reliableNarrative(scrubbed, security.ticker)) {
-    return {
-      text: null,
-      model: null,
-      unavailableReason: "external model returned an unusable response",
-    };
-  }
-
-  return { text: scrubbed.slice(0, THESIS_MAX_CHARS), model: call.model, unavailableReason: null };
+  return {
+    text: capAtSentence(call.text, THESIS_MAX_CHARS),
+    model: call.model,
+    unavailableReason: null,
+  };
 }
 
 function screenerPrompt(query: string, sectors: readonly string[]): string {
@@ -570,8 +606,11 @@ interface PortfolioFactBlock {
   citations: string[];
 }
 
-/** research kind: the LLM narrative may run to four paragraphs (~320 words). */
-const RESEARCH_MAX_CHARS = 2_800;
+/**
+ * research kind: four paragraphs at ~320 words is ~2,200 chars; the cap exists
+ * only as a backstop and is trimmed at a sentence boundary, never mid-word.
+ */
+const RESEARCH_MAX_CHARS = 4_000;
 
 /** shape of one entry in the generated /data/ai-fundamentals.json artifact. */
 interface AiFundamentalsSecurity {
@@ -618,6 +657,17 @@ function figure(value: number | undefined, digits = 2): string {
 }
 
 /**
+ * Pre-formats a 0-1 (or ±) ratio as a percentage so the model never converts
+ * units itself — the V2 endpoint's hard-won rule that the LLM does no
+ * arithmetic. `signed` prefixes gains with "+" for growth/momentum figures.
+ */
+function pctFigure(value: number | undefined, signed = false, digits = 1): string {
+  if (typeof value !== "number" || !Number.isFinite(value)) return "—";
+  const pct = value * 100;
+  return `${signed && pct >= 0 ? "+" : ""}${pct.toFixed(digits)}%`;
+}
+
+/**
  * Builds the research fact block entirely server-side from the verified
  * scores.json row and the served ai-fundamentals.json entry. No client-supplied
  * data enters it — the request contributes only the validated ticker.
@@ -653,9 +703,9 @@ function researchFactBlock(
       ? `Quant buy point $${fundamentals.qbp.toFixed(2)}: signal ${fundamentals.qbpSignal ?? "?"}, distance ${figure(fundamentals.qbpDistance, 1)}%.`
       : "",
     `Valuation — fwd P/E ${figure(raw.forwardPE)}, trailing P/E ${figure(raw.trailingPE)}, PEG ${figure(raw.pegRatio)}, P/S ${figure(raw.priceToSalesTrailing12Months)}`,
-    `Profitability — gross ${figure(raw.grossMargins, 4)}, operating ${figure(raw.operatingMargins, 4)}, net ${figure(raw.profitMargins, 4)}, ROE ${figure(raw.returnOnEquity, 4)}`,
-    `Growth — revenue ${figure(raw.revenueGrowth)} YoY, earnings ${figure(raw.earningsGrowth)} YoY`,
-    `Momentum — 3M ${figure(raw.momentum_3m, 4)}, 12M ${figure(raw.momentum_12m, 4)}; analyst mean-target upside ${figure(raw.analyst_mean_target_upside, 4)}`,
+    `Profitability — gross margin ${pctFigure(raw.grossMargins)}, operating margin ${pctFigure(raw.operatingMargins)}, net margin ${pctFigure(raw.profitMargins)}, ROE ${pctFigure(raw.returnOnEquity)}`,
+    `Growth — revenue ${pctFigure(raw.revenueGrowth, true)} YoY, earnings ${pctFigure(raw.earningsGrowth, true)} YoY`,
+    `Momentum — 3M ${pctFigure(raw.momentum_3m, true)}, 12M ${pctFigure(raw.momentum_12m, true)}; analyst mean-target upside ${pctFigure(raw.analyst_mean_target_upside, true)}`,
     typeof raw.earnings_surprise_pct === "number"
       ? `Latest analyst earnings surprise: ${raw.earnings_surprise_pct.toFixed(2)}%.`
       : "",
@@ -691,10 +741,12 @@ function researchPrompt(ticker: string, facts: string): string {
     "3) Valuation — is the price justified? Use the stated fair-value premium",
     "or discount and verdict verbatim; do NOT recompute or restate raw prices.",
     "4) Bottom line — how the published evidence reads on balance.",
-    "~320 words, professional analyst voice, not marketing copy. Every claim",
-    "must trace to the DATA above. Do not give investment advice or",
-    "recommendations to buy or sell. Never output square brackets or",
-    "placeholder text.",
+    "~320 words and never more than 340, professional analyst voice, not",
+    "marketing copy. Finish the final sentence — do not stop mid-thought.",
+    "Quote percentage figures exactly as given above; never convert, rescale,",
+    "or re-derive any number. Every claim must trace to the DATA above.",
+    "Do not give investment advice or recommendations to buy or sell.",
+    "Never output square brackets or placeholder text.",
   ].join("\n");
 }
 
@@ -843,9 +895,10 @@ async function handleAiAssist(
     }
 
     const { facts, citations } = researchFactBlock(security, fundamentals);
-    const call = await callExternalModel(apiKey, researchPrompt(security.ticker, facts), {
+    const call = await generateReliableNarrative(apiKey, researchPrompt(security.ticker, facts), {
       temperature: 0.45,
-      maxOutputTokens: 900,
+      maxOutputTokens: 1_100,
+      requiredToken: security.ticker,
     });
 
     if (call.text === null) {
@@ -857,22 +910,11 @@ async function handleAiAssist(
       };
     }
 
-    const scrubbedNote = scrubBracketLeaks(call.text);
-
-    if (!reliableNarrative(scrubbedNote, security.ticker)) {
-      return {
-        ok: false,
-        kind: input.kind,
-        unavailableReason: "external model returned an unusable response",
-        externalModelUsed: false,
-      };
-    }
-
     return {
       ok: true,
       kind: input.kind,
       ticker: security.ticker,
-      text: scrubbedNote.slice(0, RESEARCH_MAX_CHARS),
+      text: capAtSentence(call.text, RESEARCH_MAX_CHARS),
       citations: [...citations, `external-model:${call.model}`],
       externalModelUsed: true,
       model: call.model,
@@ -880,9 +922,10 @@ async function handleAiAssist(
   }
 
   const { facts, citations } = portfolioFactBlock(evidence);
-  const call = await callExternalModel(apiKey, portfolioAssistPrompt(facts), {
+  const call = await generateReliableNarrative(apiKey, portfolioAssistPrompt(facts), {
     temperature: 0.2,
     maxOutputTokens: 512,
+    requiredToken: null,
   });
 
   if (call.text === null) {
@@ -894,21 +937,10 @@ async function handleAiAssist(
     };
   }
 
-  const scrubbed = scrubBracketLeaks(call.text);
-
-  if (!reliableNarrative(scrubbed, null)) {
-    return {
-      ok: false,
-      kind: input.kind,
-      unavailableReason: "external model returned an unusable response",
-      externalModelUsed: false,
-    };
-  }
-
   return {
     ok: true,
     kind: input.kind,
-    text: scrubbed.slice(0, THESIS_MAX_CHARS),
+    text: capAtSentence(call.text, THESIS_MAX_CHARS),
     citations: [...citations, `external-model:${call.model}`],
     externalModelUsed: true,
     model: call.model,
