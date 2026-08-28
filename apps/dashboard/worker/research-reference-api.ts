@@ -207,7 +207,12 @@ export async function handleResearchReferenceApi(
 
   const sourceUrl = `${RAW_BASE}/${DATASETS[dataset]}`;
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), dependencies.timeoutMs ?? 7_000);
+  // The ~6 MB earnings corpus regularly needs more than the standard budget to
+  // stream from the raw host; everything else keeps the tight 7s bound.
+  const timer = setTimeout(
+    () => controller.abort(),
+    dependencies.timeoutMs ?? (EARNINGS_DATASETS.has(dataset) ? 25_000 : 7_000),
+  );
 
   try {
     const response = await (dependencies.fetcher ?? fetch)(sourceUrl, {
