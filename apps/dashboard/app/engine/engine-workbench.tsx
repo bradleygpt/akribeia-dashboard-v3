@@ -98,6 +98,7 @@ export function EngineWorkbench() {
       const response = await fetch("/api/v3/engine/health", {
         cache: "no-store",
         headers: { accept: "application/json" },
+        signal: AbortSignal.timeout(10_000),
       });
       let body: Record<string, unknown> = {};
       try {
@@ -145,11 +146,19 @@ export function EngineWorkbench() {
 
   const startPolling = useCallback((jobId: string) => {
     if (pollRef.current !== null) window.clearInterval(pollRef.current);
+    // One poll in flight at a time, each with a hard timeout: a busy engine
+    // answers slower than the poll interval, and unguarded ticks would stack
+    // requests until the browser's per-host connection pool is exhausted
+    // (which stalls every other fetch on the page).
+    let inFlight = false;
     pollRef.current = window.setInterval(async () => {
+      if (inFlight) return;
+      inFlight = true;
       try {
         const response = await fetch(`/api/v3/engine/result?job=${encodeURIComponent(jobId)}`, {
           cache: "no-store",
           headers: { accept: "application/json", "x-akribeia-client": "dashboard-v3" },
+          signal: AbortSignal.timeout(15_000),
         });
         if (!response.ok) return; // transient — the job persists server-side by id
         const body = (await response.json()) as {
@@ -182,6 +191,8 @@ export function EngineWorkbench() {
       } catch {
         // transient poll failure: keep polling; the next tick re-reads the full
         // event log (reconnect-by-job-id semantics).
+      } finally {
+        inFlight = false;
       }
     }, RESULT_POLL_MS);
   }, []);
