@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { handleResearchReferenceApi } from "../../apps/dashboard/worker/research-reference-api.js";
 
-const V2_APP_COMMIT = "538ec29b41172d7b44c96e67a7346f96c41ebede";
+// The earnings corpus was untracked from the V2 app repo by its data-slim
+// migration; the proxy fetches it from the pinned bulk-data commit instead.
+const EARNINGS_BULK_COMMIT = "9f2d2322fc52847e435dbb6a83137712788f5b52";
 
 function referenceRequest(dataset: string, ticker?: string): Request {
   const query = ticker === undefined ? "" : `&ticker=${encodeURIComponent(ticker)}`;
@@ -62,7 +64,9 @@ describe("baked earnings reviews via the pinned V2 proxy", () => {
       now: new Date("2026-08-27T12:00:00Z"),
     });
 
-    expect(requestedUrl).toContain(`${V2_APP_COMMIT}/public/data/earnings_reviews.json`);
+    expect(requestedUrl).toContain(
+      `akribeia-data/${EARNINGS_BULK_COMMIT}/data/earnings_reviews.json`,
+    );
     expect(requestedUrl).toContain("raw.githubusercontent.com");
     expect(response?.status).toBe(200);
     const body = (await response?.json()) as {

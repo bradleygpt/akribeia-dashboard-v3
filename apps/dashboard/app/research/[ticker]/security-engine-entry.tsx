@@ -68,7 +68,9 @@ export function SecurityEngineEntry({ ticker }: { ticker: string }) {
       .then(async (response) => {
         let body: {
           ok?: boolean;
-          payload?: AnchorEntry | null;
+          // The worker narrows the map to { ticker, entry }; tolerate a bare
+          // entry payload as well so either proxy shape works.
+          payload?: AnchorEntry | { ticker?: string; entry?: AnchorEntry | null } | null;
           error?: { message?: string };
         } = {};
         try {
@@ -80,7 +82,10 @@ export function SecurityEngineEntry({ ticker }: { ticker: string }) {
           throw new Error(body.error?.message ?? "The anchor map is unavailable.");
         }
         if (controller.signal.aborted) return;
-        const entry = body.payload;
+        const entry: AnchorEntry | null =
+          body.payload !== null && typeof body.payload === "object" && "entry" in body.payload
+            ? (body.payload.entry ?? null)
+            : ((body.payload as AnchorEntry | null) ?? null);
         if (
           entry === null ||
           entry.mapping_kind === "none" ||
