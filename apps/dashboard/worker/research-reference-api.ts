@@ -45,7 +45,13 @@ type Fetcher = typeof fetch;
  * source is fetched from raw.githubusercontent (jsDelivr may reject payloads this
  * large) with a raised cap, and the response is always narrowed server-side to a
  * single required ticker so clients never receive the whole corpus.
+ *
+ * These two files were deliberately untracked from the V2 app repo ("data-slim"
+ * commit 3bd451f6a) and live in the bulk data repo instead — the same pinned
+ * commit the quarterly proxy uses. They are absent from the pinned V2 commit.
  */
+const EARNINGS_BULK_COMMIT = "9f2d2322fc52847e435dbb6a83137712788f5b52";
+const EARNINGS_RAW_BASE = `https://raw.githubusercontent.com/bradleygpt/akribeia-data/${EARNINGS_BULK_COMMIT}/data`;
 const EARNINGS_DATASETS = new Set<Dataset>(["earnings-reviews", "earnings-quality"]);
 const EARNINGS_SOURCE_LIMIT = 7_000_000;
 const DEFAULT_SOURCE_LIMIT = 2_000_000;
@@ -205,7 +211,9 @@ export async function handleResearchReferenceApi(
     );
   }
 
-  const sourceUrl = `${RAW_BASE}/${DATASETS[dataset]}`;
+  const sourceUrl = EARNINGS_DATASETS.has(dataset)
+    ? `${EARNINGS_RAW_BASE}/${DATASETS[dataset]}`
+    : `${RAW_BASE}/${DATASETS[dataset]}`;
   const controller = new AbortController();
   // The ~6 MB earnings corpus regularly needs more than the standard budget to
   // stream from the raw host; everything else keeps the tight 7s bound.
