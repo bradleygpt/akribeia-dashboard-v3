@@ -81,6 +81,16 @@ export const AiAssistRequestSchema = z.discriminatedUnion("kind", [
       kind: z.literal("portfolio"),
     })
     .strict(),
+  z
+    .object({
+      kind: z.literal("research"),
+      ticker: z
+        .string()
+        .trim()
+        .toUpperCase()
+        .regex(/^[A-Z][A-Z0-9.-]{0,9}$/),
+    })
+    .strict(),
 ]);
 export type AiAssistRequest = z.infer<typeof AiAssistRequestSchema>;
 
@@ -123,8 +133,19 @@ export const AiAssistResponseSchema = z.union([
     .strict(),
   z
     .object({
+      ok: z.literal(true),
+      kind: z.literal("research"),
+      ticker: z.string().regex(/^[A-Z][A-Z0-9.-]{0,9}$/),
+      text: z.string().min(1),
+      citations: z.array(z.string().min(1)).min(1),
+      externalModelUsed: z.literal(true),
+      model: z.string().min(1),
+    })
+    .strict(),
+  z
+    .object({
       ok: z.literal(false),
-      kind: z.enum(["screener", "portfolio"]),
+      kind: z.enum(["screener", "portfolio", "research"]),
       unavailableReason: z.string().min(1),
       externalModelUsed: z.literal(false),
     })

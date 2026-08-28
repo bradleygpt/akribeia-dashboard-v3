@@ -6,6 +6,7 @@ export function ResearchHeader({
     | "prolepsis"
     | "risk"
     | "intel"
+    | "engine"
     | "sectors"
     | "etfs"
     | "macro"
@@ -47,6 +48,9 @@ export function ResearchHeader({
           </a>
           <a href="/intel" aria-current={active === "intel" ? "page" : undefined}>
             AI Intel
+          </a>
+          <a href="/engine" aria-current={active === "engine" ? "page" : undefined}>
+            Thesis Engine
           </a>
           <a href="/sectors" aria-current={active === "sectors" ? "page" : undefined}>
             Sectors

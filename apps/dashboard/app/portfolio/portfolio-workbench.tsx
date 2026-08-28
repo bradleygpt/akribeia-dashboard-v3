@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, lazy, useEffect, useMemo, useState } from "react";
 import type { ResearchRow } from "../research-data";
 import { compareNullable, type SortDirection } from "../product-parity";
-import { runMonteCarlo, type Scenario } from "./monte-carlo";
+import { runMonteCarlo, type McHoldingInput, type Scenario } from "./monte-carlo";
 import {
   PORTFOLIO_SOURCE_COMMIT,
   PORTFOLIO_STORAGE_KEY,
@@ -23,6 +23,20 @@ type AdvisorState =
   | { kind: "loading" }
   | { kind: "unavailable"; reason: string }
   | { kind: "ready"; text: string; citations: string[]; model: string | null };
+
+type CloseSeriesState =
+  | { status: "idle" }
+  | { status: "loading"; tickers: string[] }
+  | { status: "ready"; closes: Map<string, number[]>; missing: string[]; capped: string[] };
+
+// The V2 Monte Carlo derives per-holding momentum from 1y daily closes. At most
+// this many held tickers are fetched; anything beyond the cap uses the honest
+// vol-floor fallback and is disclosed as such.
+const CLOSE_FETCH_CAP = 25;
+
+// Lazy recharts cone (strategies-hub-chart pattern): the module only loads
+// after a client-side simulation exists, so Worker SSR never evaluates recharts.
+const MonteCarloFanChart = lazy(() => import("./monte-carlo-fan-chart"));
 
 const money = (value: number | null, digits = 2) =>
   value === null
@@ -77,16 +91,81 @@ export function PortfolioWorkbench({ rows, asOf }: { rows: ResearchRow[]; asOf: 
         left.ticker.localeCompare(right.ticker),
     );
   }, [analysis.positions, sort]);
-  const simulation = useMemo(
+  const [closeSeries, setCloseSeries] = useState<CloseSeriesState>({ status: "idle" });
+
+  // Held tickers by descending market value; the fetch list is capped so a very
+  // large book cannot fan out into an unbounded number of quote requests.
+  const heldTickers = useMemo(
     () =>
-      runMonteCarlo(analysis.positions, analysis.totalValue, {
-        simulations,
-        horizonDays,
-        scenario,
-        seed: 42,
-      }),
-    [analysis, horizonDays, scenario, simulations],
+      analysis.positions
+        .filter((position) => position.weight !== null && position.weight > 0)
+        .toSorted((left, right) => (right.marketValue ?? 0) - (left.marketValue ?? 0))
+        .map((position) => position.ticker),
+    [analysis.positions],
   );
+
+  useEffect(() => {
+    if (heldTickers.length === 0) {
+      setCloseSeries({ status: "idle" });
+      return;
+    }
+    const fetchList = heldTickers.slice(0, CLOSE_FETCH_CAP);
+    const capped = heldTickers.slice(CLOSE_FETCH_CAP);
+    const controller = new AbortController();
+    setCloseSeries({ status: "loading", tickers: fetchList });
+    Promise.all(
+      fetchList.map(async (symbol) => {
+        // Same quote adapter the security detail page uses; any failure or
+        // absent history fails closed to the vol-floor fallback for that ticker.
+        try {
+          const response = await fetch(
+            `/api/v3/quote?ticker=${encodeURIComponent(symbol)}&range=1y`,
+            { signal: controller.signal, headers: { accept: "application/json" } },
+          );
+          const body = (await response.json()) as {
+            ok?: boolean;
+            history?: { close?: unknown } | null;
+          };
+          const close = body.history?.close;
+          if (!response.ok || body.ok !== true || !Array.isArray(close)) {
+            return [symbol, null] as const;
+          }
+          const closes = close.filter(
+            (value): value is number => typeof value === "number" && Number.isFinite(value),
+          );
+          return [symbol, closes.length >= 2 ? closes : null] as const;
+        } catch {
+          return [symbol, null] as const;
+        }
+      }),
+    ).then((entries) => {
+      if (controller.signal.aborted) return;
+      const closes = new Map<string, number[]>();
+      const missing: string[] = [];
+      for (const [symbol, series] of entries) {
+        if (series === null) missing.push(symbol);
+        else closes.set(symbol, series);
+      }
+      setCloseSeries({ status: "ready", closes, missing, capped });
+    });
+    return () => controller.abort();
+  }, [heldTickers]);
+
+  const simulation = useMemo(() => {
+    if (closeSeries.status !== "ready") return null;
+    const inputs: McHoldingInput[] = analysis.positions.map((position) => ({
+      ticker: position.ticker,
+      weight: position.weight,
+      marketCapB: position.marketCapB,
+      isEtf: position.isEtf,
+      closes: closeSeries.closes.get(position.ticker) ?? null,
+    }));
+    return runMonteCarlo(inputs, analysis.totalValue, {
+      sims: simulations,
+      horizonDays,
+      scenario,
+    });
+  }, [analysis, closeSeries, horizonDays, scenario, simulations]);
 
   const add = () => {
     const holding = normalizeHolding({
@@ -463,73 +542,193 @@ export function PortfolioWorkbench({ rows, asOf }: { rows: ResearchRow[]; asOf: 
             </select>
           </label>
         </div>
+        <p className="parity-source-note">
+          Bull +8% drift · Base neutral · Bear −12% · Blended 25/50/25. Research simulation under
+          visible assumptions — not a forecast, recommendation, or guarantee. Draws are
+          deterministic (mulberry32 seed 42), so identical inputs always reproduce this output.
+        </p>
+        {closeSeries.status === "loading" ? (
+          <p className="parity-source-note" role="status" aria-live="polite">
+            Fetching 1-year daily closes for {closeSeries.tickers.length} held ticker
+            {closeSeries.tickers.length === 1 ? "" : "s"}… Per-holding momentum inputs come from
+            these series; nothing is simulated until the fetch settles.
+          </p>
+        ) : null}
+        {closeSeries.status === "ready" && closeSeries.missing.length > 0 ? (
+          <p className="parity-unavailable" role="status">
+            Close series unavailable for {closeSeries.missing.join(", ")}. Those holdings use the V2
+            volatility-floor fallback (long-term premium return, floor volatility by market-cap
+            class); no price history was substituted.
+          </p>
+        ) : null}
+        {closeSeries.status === "ready" && closeSeries.capped.length > 0 ? (
+          <p className="parity-unavailable" role="status">
+            Series fetch is capped at {CLOSE_FETCH_CAP} tickers; {closeSeries.capped.join(", ")}{" "}
+            also use the volatility-floor fallback.
+          </p>
+        ) : null}
         {simulation ? (
           <>
             <dl className="parity-summary-grid portfolio-summary">
               <div>
                 <dt>Expected return</dt>
-                <dd>{percent(simulation.expectedReturnPercent)}</dd>
+                <dd>{percent(simulation.expReturnPct)}</dd>
+                <small>annualized</small>
               </div>
               <div>
                 <dt>Volatility</dt>
-                <dd>{percent(simulation.volatilityPercent)}</dd>
+                <dd>{percent(simulation.volPct)}</dd>
+                <small>annualized</small>
               </div>
               <div>
                 <dt>P(gain)</dt>
-                <dd>{percent(simulation.probabilityGain)}</dd>
+                <dd>{percent(simulation.pPositive)}</dd>
               </div>
               <div>
                 <dt>P(loss &gt;20%)</dt>
-                <dd>{percent(simulation.probabilityLoss20)}</dd>
+                <dd>{percent(simulation.pLoss20)}</dd>
+              </div>
+              <div>
+                <dt>Scenario</dt>
+                <dd>{simulation.scenario}</dd>
               </div>
             </dl>
-            <div className="research-table-scroll parity-table-scroll">
-              <table className="parity-table portfolio-percentiles">
-                <caption>
-                  Terminal portfolio-value percentiles; deterministic acceptance seed 42
-                </caption>
-                <thead>
-                  <tr>
-                    <th scope="col">5th</th>
-                    <th scope="col">25th</th>
-                    <th scope="col">50th</th>
-                    <th scope="col">75th</th>
-                    <th scope="col">95th</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    {(["p5", "p25", "p50", "p75", "p95"] as const).map((key) => (
-                      <td key={key}>{money(simulation.percentiles[key], 0)}</td>
+            <div className="portfolio-mc-chart">
+              <Suspense
+                fallback={
+                  <p className="parity-source-note" role="status">
+                    Loading the percentile-cone chart…
+                  </p>
+                }
+              >
+                <MonteCarloFanChart
+                  fan={simulation.fan}
+                  horizonDays={simulation.horizonDays}
+                  totalValue={simulation.totalValue}
+                />
+              </Suspense>
+              <p className="parity-source-note">
+                Shaded = 5th–95th and 25th–75th percentile cone; line = median simulated portfolio
+                value over time.
+              </p>
+            </div>
+            <div className="portfolio-mc-tables">
+              <div className="research-table-scroll parity-table-scroll">
+                <table className="parity-table portfolio-mc-table">
+                  <caption>
+                    Outcome probabilities across {simulation.sims.toLocaleString()} simulated paths
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Outcome</th>
+                      <th scope="col">Probability</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(
+                      [
+                        ["Gain 50%+", simulation.pGain50],
+                        ["Gain 20%+", simulation.pGain20],
+                        ["Any gain", simulation.pPositive],
+                        [
+                          "Loss < 10%",
+                          Math.max(0, 100 - simulation.pPositive - simulation.pLoss10),
+                        ],
+                        ["Loss 10–20%", Math.max(0, simulation.pLoss10 - simulation.pLoss20)],
+                        ["Loss > 20%", simulation.pLoss20],
+                      ] as const
+                    ).map(([label, value]) => (
+                      <tr key={label}>
+                        <td>{label}</td>
+                        <td>{value.toFixed(1)}%</td>
+                      </tr>
                     ))}
-                  </tr>
-                </tbody>
-              </table>
+                  </tbody>
+                </table>
+              </div>
+              <div className="research-table-scroll parity-table-scroll">
+                <table className="parity-table portfolio-mc-table">
+                  <caption>Terminal portfolio-value percentiles; deterministic seed 42</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Percentile</th>
+                      <th scope="col">Value</th>
+                      <th scope="col">Return</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(
+                      [
+                        ["5th (worst)", simulation.percentiles.p5],
+                        ["25th", simulation.percentiles.p25],
+                        ["50th (median)", simulation.percentiles.p50],
+                        ["75th", simulation.percentiles.p75],
+                        ["95th (best)", simulation.percentiles.p95],
+                      ] as const
+                    ).map(([label, value]) => (
+                      <tr key={label}>
+                        <td>{label}</td>
+                        <td>{money(value, 0)}</td>
+                        <td className={value >= simulation.totalValue ? "research-positive" : ""}>
+                          {percent((value / simulation.totalValue - 1) * 100)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
             <details className="portfolio-assumptions">
               <summary>Model assumptions and per-holding inputs</summary>
               <p>
-                60% long-term premium / 40% trailing approved momentum; per-holding return capped at
-                −30% to +40%; volatility floors by asset/market-cap class; average cross-correlation
-                0.45; Bull +8%, Base 0%, Bear −12%, Blended 25/50/25. No covariance matrix or
-                forecast is invented.
+                60% long-term premium / 40% trailing momentum from each holding&rsquo;s fetched 1y
+                close series (1m/3m/6m/12m); per-holding return capped at −30% to +40%; volatility
+                floors by asset/market-cap class; average cross-correlation 0.45; Bull +8%, Base 0%,
+                Bear −12%, Blended 25/50/25. No covariance matrix or forecast is invented.
               </p>
-              <ul>
-                {simulation.assumptions.map((item) => (
-                  <li key={item.ticker}>
-                    {item.ticker}: return {percent(item.expectedReturnPercent)}, volatility{" "}
-                    {percent(item.volatilityPercent)}, weight {percent(item.weightPercent)}
-                  </li>
-                ))}
-              </ul>
+              <div className="research-table-scroll parity-table-scroll">
+                <table className="parity-table portfolio-mc-table">
+                  <caption>Per-holding simulation inputs</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Ticker</th>
+                      <th scope="col">Exp. return</th>
+                      <th scope="col">Est. volatility</th>
+                      <th scope="col">Weight</th>
+                      <th scope="col">Input series</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {simulation.holdingDetails.map((item) => (
+                      <tr key={item.ticker}>
+                        <td>{item.ticker}</td>
+                        <td>{percent(item.expReturnPct)}</td>
+                        <td>{percent(item.volPct)}</td>
+                        <td>{percent(item.weightPct)}</td>
+                        <td>{item.seriesUsed ? "1y daily closes" : "vol-floor fallback"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="parity-source-note">
+                Mean reversion {(simulation.modelParams.meanReversionWeight * 100).toFixed(0)}%
+                long-term / {((1 - simulation.modelParams.meanReversionWeight) * 100).toFixed(0)}%
+                trailing · return cap {(simulation.modelParams.maxAnnualReturnCap * 100).toFixed(0)}
+                % · long-term equity premium{" "}
+                {(simulation.modelParams.longTermPremium * 100).toFixed(0)}% · average
+                cross-correlation {simulation.modelParams.avgCorrelation.toFixed(2)} · scenario
+                adjustment {simulation.modelParams.scenarioAdjustmentPct >= 0 ? "+" : ""}
+                {simulation.modelParams.scenarioAdjustmentPct.toFixed(1)}%.
+              </p>
             </details>
           </>
-        ) : (
+        ) : closeSeries.status !== "loading" ? (
           <p className="parity-unavailable">
             At least one matched holding with an approved finite as-of price is required. No
             simulated output is shown otherwise.
           </p>
-        )}
+        ) : null}
       </section>
       <section
         className="parity-section parity-section-alt"

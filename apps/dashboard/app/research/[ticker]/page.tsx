@@ -5,6 +5,8 @@ import { formatMarketCap, formatMoney, formatPercent, formatRatio } from "../../
 import { SecurityLivePanel } from "./security-live-panel";
 import { SecurityRadar } from "./security-radar";
 import { SecurityDeepReference } from "./security-deep-reference";
+import { SecurityAiAnalysis } from "./security-ai-analysis";
+import { SecurityEngineEntry } from "./security-engine-entry";
 import { SecurityInstitutional } from "./security-institutional";
 import EtfDetailPage from "../../etfs/[ticker]/page";
 
@@ -218,6 +220,10 @@ export default async function SecurityDetailPage({ params }: PageProps) {
           snapshotAsOf={universe.source.publishedAt.slice(0, 10)}
         />
         <SecurityDeepReference ticker={security.ticker} />
+
+        <SecurityAiAnalysis ticker={security.ticker} />
+
+        <SecurityEngineEntry ticker={security.ticker} />
 
         <SecurityInstitutional ticker={security.ticker} />
 

@@ -37,6 +37,7 @@
     "validate": "npm run typecheck && npm run lint && npm run build && npm run test:ci",
     "ci": "npm run format:check && npm run validate",
     "security:audit": "node scripts/security-audit.mjs",
+    "ai-fundamentals:generate": "node apps/dashboard/scripts/build-ai-fundamentals.node.mjs",
     "thirteenf:fetch": "npm run typecheck && node packages/evidence/dist/thirteenf-source-cli.js",
     "institutional:generate": "npm run typecheck && node packages/evidence/dist/institutional-cli.js",
     "alpha-decay:collect": "npm run typecheck && node packages/evidence/dist/alpha-decay-cli.js capture-and-report",
