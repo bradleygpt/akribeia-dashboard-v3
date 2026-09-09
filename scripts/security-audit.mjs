@@ -114,8 +114,25 @@ if (lock.packages?.["node_modules/nanoid"]?.version === "3.3.16")
   throw new Error("nanoid remediation missing");
 if (lock.packages?.["node_modules/brace-expansion"]?.version !== "5.0.9")
   throw new Error("brace-expansion remediation missing");
-if (lock.packages?.["node_modules/fast-uri"]?.version !== "3.1.5")
+// fast-uri: the 2026-08 remediation pinned 3.1.5, which four advisories published
+// 2026-09 (CVE-2026-75931 / -75975 / -75899 / -76172, host confusion + SSRF) then
+// made vulnerable in its own right. Floor raised to 3.1.7 (2026-09-09); ajv wants
+// ^3.0.1 so the root pin hoists cleanly to every consumer.
+if (lock.packages?.["node_modules/fast-uri"]?.version !== "3.1.7")
   throw new Error("fast-uri remediation missing");
+// sharp: GHSA-rgj7-g3m4-5g8c (bundled libheif) hits sharp <0.35.4, reached through
+// miniflare -> wrangler / @cloudflare/vite-plugin. Upstream has not moved (the
+// 2026-09-08 miniflare alpha still pins 0.35.2 exactly), so a root override forces
+// the fixed line. Guard it, and guard that no nested copy reintroduces the old one.
+if (lock.packages?.["node_modules/sharp"]?.version !== "0.35.4")
+  throw new Error("sharp remediation missing");
+for (const [node, entry] of Object.entries(lock.packages ?? {})) {
+  if (node.endsWith("/node_modules/sharp") && entry.version) {
+    const [major, minor, patch] = entry.version.split(".").map(Number);
+    if (major === 0 && (minor < 35 || (minor === 35 && patch < 4)))
+      throw new Error(`sharp regression at ${node}: ${entry.version} < 0.35.4`);
+  }
+}
 const packageJson = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
 if (packageJson.devDependencies?.undici || packageJson.overrides?.undici)
   throw new Error("direct undici pin/override must remain absent");
