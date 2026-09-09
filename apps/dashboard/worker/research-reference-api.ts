@@ -1,5 +1,5 @@
 const REFERENCE_PATH = "/api/v3/research-reference";
-const V2_APP_COMMIT = "538ec29b41172d7b44c96e67a7346f96c41ebede";
+const V2_APP_COMMIT = "7446fead6fa0c16b75106343d6000051af187742";
 const RAW_BASE = `https://raw.githubusercontent.com/bradleygpt/quant-dashboard-pro-v2/${V2_APP_COMMIT}/public/data`;
 const USER_AGENT = "Mozilla/5.0 (compatible; Akribeia/3.0; +https://akribeia.com)";
 const TICKER_PATTERN = /^[A-Z][A-Z0-9.-]{0,9}$/;
