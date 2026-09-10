@@ -1,16 +1,16 @@
 {
   "reportSchemaVersion": "1.0.0",
-  "buildId": "preview-20260909-pipeline-v5-3c8aaa5b9a7b",
+  "buildId": "preview-20260910-pipeline-v5-3c8aaa5b9a7b",
   "modelVersion": "3.0.0",
-  "generatedAt": "2026-09-09T17:37:55.805Z",
-  "decisionCutoffAt": "2026-09-09T09:09:01Z",
+  "generatedAt": "2026-09-10T10:02:14.739Z",
+  "decisionCutoffAt": "2026-09-10T09:07:37Z",
   "status": "partial-retrospective-metadata",
   "historicalValidationEligible": false,
   "sourceReceipt": {
-    "path": "data/reference/sec/filing-submissions/2026-09-09/receipt.json",
-    "sha256": "7c0972896041cef86fb798788b6a75cc8ca12ded930bd65da6ab6f1c8f43ec95",
-    "snapshotId": "2026-09-09",
-    "retrievedAt": "2026-09-09T17:37:55.805Z"
+    "path": "data/reference/sec/filing-submissions/2026-09-10/receipt.json",
+    "sha256": "b05bbeaca4189d6e997345ca52acd1bd616e688d13b8042e2403460d35fe03e3",
+    "snapshotId": "2026-09-10",
+    "retrievedAt": "2026-09-10T10:02:14.739Z"
   },
   "selection": {
     "policy": "dashboard-top-scores-and-active-portfolio",

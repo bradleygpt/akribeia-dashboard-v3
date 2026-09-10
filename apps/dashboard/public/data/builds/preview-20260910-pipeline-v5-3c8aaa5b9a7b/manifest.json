@@ -1,0 +1,93 @@
+{
+  "buildId": "preview-20260910-pipeline-v5-3c8aaa5b9a7b",
+  "schemaVersion": "3.0.0",
+  "modelVersion": "3.0.0",
+  "generatedAt": "2026-09-10T10:02:06Z",
+  "publishedAt": "2026-09-10T10:02:06Z",
+  "status": "healthy",
+  "publication": {
+    "decision": "publish",
+    "evaluatedAt": "2026-09-10T10:02:06Z",
+    "reasons": []
+  },
+  "files": {
+    "dashboard": {
+      "path": "dashboard.json",
+      "sha256": "025412dbac6e2316219d0cc52126cae64e54b5d762c398321c410071936137ba",
+      "byteSize": 13474,
+      "rowCount": 1,
+      "status": "current",
+      "freshness": {
+        "status": "current",
+        "observedAt": "2026-09-10T09:07:37Z",
+        "retrievedAt": "2026-09-10T09:07:37Z",
+        "evaluatedAt": "2026-09-10T10:02:06Z",
+        "ageSeconds": 3269,
+        "maxAgeSeconds": 604800,
+        "reason": null
+      },
+      "provenance": [
+        {
+          "sourceId": "v2-baseline-universe-floor10",
+          "sourceType": "first-party",
+          "retrievedAt": "2026-09-10T09:07:37Z",
+          "sourceVersion": "4bc33ed",
+          "sourceUri": "data/observations/current/universe_floor10.json",
+          "contentSha256": "3c8aaa5b9a7bd474c6a774ca55c1871fbd72680e50f47be127cb782943944bef"
+        }
+      ]
+    },
+    "portfolio": {
+      "path": "portfolio.json",
+      "sha256": "abf2e3f175d8a5797e73b71b7fd7cd5c321f699fe2ab439ebb8b2fee1caacafd",
+      "byteSize": 9512,
+      "rowCount": 9,
+      "status": "current",
+      "freshness": {
+        "status": "current",
+        "observedAt": "2026-09-10T09:07:37Z",
+        "retrievedAt": "2026-09-10T09:07:37Z",
+        "evaluatedAt": "2026-09-10T10:02:06Z",
+        "ageSeconds": 3269,
+        "maxAgeSeconds": 604800,
+        "reason": null
+      },
+      "provenance": [
+        {
+          "sourceId": "v2-baseline-universe-floor10",
+          "sourceType": "first-party",
+          "retrievedAt": "2026-09-10T09:07:37Z",
+          "sourceVersion": "4bc33ed",
+          "sourceUri": "data/observations/current/universe_floor10.json",
+          "contentSha256": "3c8aaa5b9a7bd474c6a774ca55c1871fbd72680e50f47be127cb782943944bef"
+        }
+      ]
+    },
+    "scores": {
+      "path": "scores.json",
+      "sha256": "fdbd865059deff563f235f6b2069515f14458b02acfbcf28c6070ca990c782b9",
+      "byteSize": 891454,
+      "rowCount": 654,
+      "status": "current",
+      "freshness": {
+        "status": "current",
+        "observedAt": "2026-09-10T09:07:37Z",
+        "retrievedAt": "2026-09-10T09:07:37Z",
+        "evaluatedAt": "2026-09-10T10:02:06Z",
+        "ageSeconds": 3269,
+        "maxAgeSeconds": 604800,
+        "reason": null
+      },
+      "provenance": [
+        {
+          "sourceId": "v2-baseline-universe-floor10",
+          "sourceType": "first-party",
+          "retrievedAt": "2026-09-10T09:07:37Z",
+          "sourceVersion": "4bc33ed",
+          "sourceUri": "data/observations/current/universe_floor10.json",
+          "contentSha256": "3c8aaa5b9a7bd474c6a774ca55c1871fbd72680e50f47be127cb782943944bef"
+        }
+      ]
+    }
+  }
+}
