@@ -1,16 +1,16 @@
 {
   "reportSchemaVersion": "1.0.0",
-  "buildId": "preview-20260909-pipeline-v5-3c8aaa5b9a7b",
+  "buildId": "preview-20260912-pipeline-v5-3c8aaa5b9a7b",
   "modelVersion": "3.0.0",
-  "generatedAt": "2026-09-09T17:37:55.805Z",
-  "decisionCutoffAt": "2026-09-09T09:09:01Z",
+  "generatedAt": "2026-09-12T09:34:44.419Z",
+  "decisionCutoffAt": "2026-09-12T08:50:09Z",
   "status": "partial-retrospective-metadata",
   "historicalValidationEligible": false,
   "sourceReceipt": {
-    "path": "data/reference/sec/filing-submissions/2026-09-09/receipt.json",
-    "sha256": "7c0972896041cef86fb798788b6a75cc8ca12ded930bd65da6ab6f1c8f43ec95",
-    "snapshotId": "2026-09-09",
-    "retrievedAt": "2026-09-09T17:37:55.805Z"
+    "path": "data/reference/sec/filing-submissions/2026-09-12/receipt.json",
+    "sha256": "7f0bb198fcebb8441d1342fc3293fe17313bc16665124a01c8bc53afefc34b48",
+    "snapshotId": "2026-09-12",
+    "retrievedAt": "2026-09-12T09:34:44.419Z"
   },
   "selection": {
     "policy": "dashboard-top-scores-and-active-portfolio",
@@ -346,12 +346,12 @@
         "eligibleAtCutoff": true
       },
       "latestCurrent": {
-        "accessionNumber": "0001628280-26-053346",
+        "accessionNumber": "0001193125-26-389293",
         "form": "8-K",
-        "filingDate": "2026-08-05",
-        "reportDate": "2026-08-05",
-        "acceptedAt": "2026-08-05T20:09:06.000Z",
-        "primaryDocument": "sndk-20260805.htm",
+        "filingDate": "2026-09-11",
+        "reportDate": "2026-09-09",
+        "acceptedAt": "2026-09-11T20:15:07.000Z",
+        "primaryDocument": "d138343d8k.htm",
         "availabilityBasis": "edgar-acceptance-time",
         "eligibleAtCutoff": true
       },
