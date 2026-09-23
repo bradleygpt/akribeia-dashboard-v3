@@ -1,12 +1,12 @@
 {
   "kind": "v2-point-in-time-observation",
-  "retrieved_at": "2026-09-09T17:37:47.484Z",
-  "observed_at": "2026-09-09T09:09:01.000Z",
+  "retrieved_at": "2026-09-23T10:16:45.337Z",
+  "observed_at": "2026-09-23T09:31:10.000Z",
   "bulk_data_repository": "bradleygpt/akribeia-data",
   "bulk_data_commit": "3c07a323bf46d653683e28cba2044752ad4d64d6",
   "delivery": "commit-pinned jsDelivr",
   "meta_url": "https://quant-dashboard-pro-v2.vercel.app/data/meta.json",
-  "v2_source_commit": "e23a84b",
+  "v2_source_commit": "92cb081",
   "files": {
     "universe_floor0.json": {
       "sha256": "6513a7ef6455a14895ff41741adaf899fe1e64887070eaa869aecdfdd58ef454",
@@ -34,7 +34,7 @@
     }
   },
   "meta": {
-    "sha256": "c03b4271c21f0f54cfee3ff5f529ccd21408946d555b7d668f306f81c193f1a4",
-    "bytes": 19593
+    "sha256": "c9756833615ea9b2e629a283647e87c69db7e9c3d0180c83f0840fb870662ae4",
+    "bytes": 19556
   }
 }
