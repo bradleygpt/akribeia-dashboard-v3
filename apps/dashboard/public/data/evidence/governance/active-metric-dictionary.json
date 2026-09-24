@@ -3,8 +3,8 @@
   "modelVersion": "3.0.0",
   "source": {
     "repositoryPath": "data/observations/current/meta.json",
-    "sourceCommit": "e23a84b",
-    "contentSha256": "c03b4271c21f0f54cfee3ff5f529ccd21408946d555b7d668f306f81c193f1a4"
+    "sourceCommit": "e191d4d",
+    "contentSha256": "22684ba577fad0bfb1679602fe4002df8398b2f982aaace4b1ce4a853d04f7e0"
   },
   "methodologyStatus": "component-list-preserved-transform-formulas-unavailable",
   "pillars": [
