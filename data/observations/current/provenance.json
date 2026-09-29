@@ -1,40 +1,40 @@
 {
   "kind": "v2-point-in-time-observation",
-  "retrieved_at": "2026-09-09T17:37:47.484Z",
-  "observed_at": "2026-09-09T09:09:01.000Z",
+  "retrieved_at": "2026-09-29T11:34:16.749Z",
+  "observed_at": "2026-09-29T10:54:16.000Z",
   "bulk_data_repository": "bradleygpt/akribeia-data",
-  "bulk_data_commit": "3c07a323bf46d653683e28cba2044752ad4d64d6",
+  "bulk_data_commit": "4eb73943439d3c5e66f71137466344d9024784c2",
   "delivery": "commit-pinned jsDelivr",
   "meta_url": "https://quant-dashboard-pro-v2.vercel.app/data/meta.json",
-  "v2_source_commit": "e23a84b",
+  "v2_source_commit": "aebcdb7",
   "files": {
     "universe_floor0.json": {
-      "sha256": "6513a7ef6455a14895ff41741adaf899fe1e64887070eaa869aecdfdd58ef454",
-      "bytes": 1807859,
+      "sha256": "7ed9fa9d00d2c91b1d5ad678b3d32eaa6200ffdbaf18b2b13b60edcb287bc598",
+      "bytes": 1807852,
       "rows": 1362,
       "stocks": 1292,
       "etfs": 70,
-      "url": "https://cdn.jsdelivr.net/gh/bradleygpt/akribeia-data@3c07a323bf46d653683e28cba2044752ad4d64d6/data/universe_floor0.json"
+      "url": "https://cdn.jsdelivr.net/gh/bradleygpt/akribeia-data@4eb73943439d3c5e66f71137466344d9024784c2/data/universe_floor0.json"
     },
     "universe_floor1.json": {
-      "sha256": "7224a7d372cdda2d40ba4020b0b2c063af895f31ca91ff9225c793b8f0f70cec",
-      "bytes": 1711422,
+      "sha256": "6c867b2727107be59a3852838dd5cabce7fa33ff82f096dcaf231f32fc204071",
+      "bytes": 1711421,
       "rows": 1289,
       "stocks": 1224,
       "etfs": 65,
-      "url": "https://cdn.jsdelivr.net/gh/bradleygpt/akribeia-data@3c07a323bf46d653683e28cba2044752ad4d64d6/data/universe_floor1.json"
+      "url": "https://cdn.jsdelivr.net/gh/bradleygpt/akribeia-data@4eb73943439d3c5e66f71137466344d9024784c2/data/universe_floor1.json"
     },
     "universe_floor10.json": {
-      "sha256": "3c8aaa5b9a7bd474c6a774ca55c1871fbd72680e50f47be127cb782943944bef",
-      "bytes": 878526,
+      "sha256": "2745e9990537f27af5efdf52b92dd5c145f2a1176b00e1811465f4a89fec5bde",
+      "bytes": 878508,
       "rows": 654,
       "stocks": 599,
       "etfs": 55,
-      "url": "https://cdn.jsdelivr.net/gh/bradleygpt/akribeia-data@3c07a323bf46d653683e28cba2044752ad4d64d6/data/universe_floor10.json"
+      "url": "https://cdn.jsdelivr.net/gh/bradleygpt/akribeia-data@4eb73943439d3c5e66f71137466344d9024784c2/data/universe_floor10.json"
     }
   },
   "meta": {
-    "sha256": "c03b4271c21f0f54cfee3ff5f529ccd21408946d555b7d668f306f81c193f1a4",
-    "bytes": 19593
+    "sha256": "70866ee77ce846056809dec84d2e52b342fb52641f43d59abe4c19d572d33f57",
+    "bytes": 19556
   }
 }
