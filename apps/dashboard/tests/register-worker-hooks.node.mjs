@@ -5,4 +5,4 @@
  */
 import { register } from "node:module";
 
-register(new URL("./worker-runtime-hooks.mjs", import.meta.url));
+register(new URL("./worker-runtime-hooks.node.mjs", import.meta.url));
