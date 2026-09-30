@@ -12,36 +12,22 @@ const run = promisify(exec);
 // packages: it is an enumeration of specific already-reviewed advisories on
 // an unchanged dependency tree, each awaiting dependency-hygiene remediation
 // rather than being hidden permanently.
-const EXPIRES = "2026-09-30T23:59:59Z";
+// Set when HIGH_EXCEPTIONS is non-empty: the review deadline for the entries below.
+// null while there are no exceptions — an empty list has nothing to expire.
+const EXPIRES = null;
 
-const HIGH_EXCEPTIONS = [
-  {
-    // Registry drift observed 2026-08-18 against the unchanged lockfile:
-    // ICNS/JXL/HEIF infinite-loop DoS advisories published for image-size.
-    name: "image-size",
-    node: "node_modules/image-size",
-    version: "2.0.2",
-    advisories: ["GHSA-5p2g-fcmc-qvqq", "GHSA-w3rx-r6r6-pgpr"],
-    reason:
-      "Dev-only build-tool path (@akribeia/dashboard > vinext > image-size); absent from --omit=dev audit; upstream fix requires the semver-major vinext 1.0.0-beta line — deferred to dependency-hygiene work.",
-    tracking: [],
-  },
-  {
-    // vinext itself carries no advisory; npm marks it high purely because it
-    // depends on the excepted image-size above. Tolerated only as that exact
-    // transitive shadow.
-    name: "vinext",
-    node: "node_modules/vinext",
-    version: "0.0.50",
-    advisories: [],
-    transitiveOf: "image-size",
-    reason:
-      "No advisory of its own; flagged transitively through the enumerated image-size advisories only.",
-    tracking: [],
-  },
-];
+// EMPTY AS OF 2026-09-30, and that is the point. The image-size + vinext pair
+// enumerated here was remediated at the ROOT rather than re-excepted: vinext 1.0.0
+// left beta and dropped its image-size dependency entirely, so the advisories are
+// not tolerated, they are absent from the tree (guarded below). With the list empty
+// the count assertion below reads `high === 0`, which is strictly stronger than the
+// bounded exception it replaces.
+const HIGH_EXCEPTIONS = [];
 
-if (Date.now() > Date.parse(EXPIRES)) throw new Error(`temporary exception expired: ${EXPIRES}`);
+if (EXPIRES !== null && Date.now() > Date.parse(EXPIRES))
+  throw new Error(`temporary exception expired: ${EXPIRES}`);
+if (HIGH_EXCEPTIONS.length > 0 && EXPIRES === null)
+  throw new Error("HIGH_EXCEPTIONS requires a review deadline: set EXPIRES");
 const [{ stdout: auditJson }, { stdout: productionAuditJson }, lockText] = await Promise.all([
   run("npm audit --json", { maxBuffer: 10 * 1024 * 1024, shell: true }).catch((error) => ({
     stdout: error.stdout,
@@ -105,15 +91,32 @@ if (unexpectedHigh.length > 0)
 // below).
 for (const [node, entry] of Object.entries(lock.packages ?? {})) {
   if ((node === "node_modules/undici" || node.endsWith("/node_modules/undici")) && entry.version) {
-    const [major, minor] = entry.version.split(".").map(Number);
-    if (major < 7 || (major === 7 && minor < 29))
-      throw new Error(`undici regression at ${node}: ${entry.version} < 7.29.0`);
+    // FLOOR RAISED 2026-09-30: 7.29.0 was the fixed line in 2026-08, then ten advisories
+    // (GHSA-3wwx-pv8p-q78v and nine more) published a range of 7.0.0 - 7.29.0 INCLUSIVE,
+    // making the exact version this guard enforced vulnerable in its own right — the same
+    // trap as fast-uri 3.1.5 below. miniflare 5.20260926.1-alpha pins 7.29.1, reached by
+    // upgrading wrangler + @cloudflare/vite-plugin together (the plugin pins wrangler
+    // exactly, so bumping one alone duplicates the tree). A direct pin stays forbidden.
+    const [major, minor, patch] = entry.version.split(".").map(Number);
+    if (major < 7 || (major === 7 && (minor < 29 || (minor === 29 && patch < 1))))
+      throw new Error(`undici regression at ${node}: ${entry.version} < 7.29.1`);
   }
 }
 if (lock.packages?.["node_modules/nanoid"]?.version === "3.3.16")
   throw new Error("nanoid remediation missing");
-if (lock.packages?.["node_modules/brace-expansion"]?.version !== "5.0.9")
+// brace-expansion: the pinned 5.0.9 was itself brought into range by three advisories
+// (GHSA-q2hr-2g5m-vwhr / -qhr7-859c-m2p7 / -6j4f-fj2g-mc7p, range 4.0.0 - 5.0.11
+// inclusive). Root override raised to 5.0.12, the first version above that ceiling.
+if (lock.packages?.["node_modules/brace-expansion"]?.version !== "5.0.12")
   throw new Error("brace-expansion remediation missing");
+// image-size must stay ABSENT. Its two DoS advisories were remediated by vinext 1.0.0
+// dropping the dependency, not by tolerating them, so any reappearance (a vinext
+// downgrade, or a new consumer) is a regression and must fail closed rather than
+// silently re-enter as an unenumerated high.
+for (const node of Object.keys(lock.packages ?? {})) {
+  if (node === "node_modules/image-size" || node.endsWith("/node_modules/image-size"))
+    throw new Error(`image-size reintroduced at ${node}: vinext 1.0.0 dropped it`);
+}
 // fast-uri: the 2026-08 remediation pinned 3.1.5, which four advisories published
 // 2026-09 (CVE-2026-75931 / -75975 / -75899 / -76172, host confusion + SSRF) then
 // made vulnerable in its own right. Floor raised to 3.1.7 (2026-09-09); ajv wants

@@ -18,6 +18,11 @@ apps/dashboard/public/data/**
 # Generated application and deployment workspaces.
 **/.next/**
 **/.vinext/**
+# Framework-generated and gitignored; it declares "This file should not be edited", and
+# vinext rewrites it on every build with platform-native line endings (CRLF on Windows),
+# so formatting it is both futile and a false failure. Absent on a clean CI checkout at
+# format:check time, which is why this only ever failed locally.
+apps/dashboard/next-env.d.ts
 **/.wrangler/**
 .sites/**
 .dashboard-dev*.log
