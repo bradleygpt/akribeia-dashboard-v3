@@ -1,0 +1,123 @@
+{
+  "receiptSchemaVersion": "1.0.0",
+  "snapshotId": "2026-09-30",
+  "retrievedAt": "2026-09-30T12:52:01.957Z",
+  "sourcePolicy": {
+    "provider": "U.S. Securities and Exchange Commission",
+    "api": "EDGAR Submissions",
+    "access": "public-no-api-key",
+    "declaredUserAgent": true,
+    "maxRequestsPerSecond": 10,
+    "updateSchedule": "real-time-as-disseminated"
+  },
+  "sources": [
+    {
+      "cik": "0000046080",
+      "uri": "https://data.sec.gov/submissions/CIK0000046080.json",
+      "path": "data/reference/sec/filing-submissions/2026-09-30/CIK0000046080.json",
+      "retrievedAt": "2026-09-30T12:52:01.957Z",
+      "sha256": "4e2d466880d12bd5bbfd7d698e3a86a7589a352ca5dd459eeb9144b7afa824a5",
+      "byteSize": 163908,
+      "recentFilingCount": 1001
+    },
+    {
+      "cik": "0000723125",
+      "uri": "https://data.sec.gov/submissions/CIK0000723125.json",
+      "path": "data/reference/sec/filing-submissions/2026-09-30/CIK0000723125.json",
+      "retrievedAt": "2026-09-30T12:52:01.957Z",
+      "sha256": "1792d677ccb061981e1d9c868502c9e2d05fd0ec583bc1dfec8b8be377518aae",
+      "byteSize": 164728,
+      "recentFilingCount": 1001
+    },
+    {
+      "cik": "0000827052",
+      "uri": "https://data.sec.gov/submissions/CIK0000827052.json",
+      "path": "data/reference/sec/filing-submissions/2026-09-30/CIK0000827052.json",
+      "retrievedAt": "2026-09-30T12:52:01.957Z",
+      "sha256": "a64fa441abc62bb11b3265520a943660d9f7c4b36901854c644091b4f0ab24ce",
+      "byteSize": 167425,
+      "recentFilingCount": 1000
+    },
+    {
+      "cik": "0000899051",
+      "uri": "https://data.sec.gov/submissions/CIK0000899051.json",
+      "path": "data/reference/sec/filing-submissions/2026-09-30/CIK0000899051.json",
+      "retrievedAt": "2026-09-30T12:52:01.957Z",
+      "sha256": "44980d19a5027b969979be44db8301b9a0bfecdb9c972eaf3dd0203f1205671a",
+      "byteSize": 162800,
+      "recentFilingCount": 1012
+    },
+    {
+      "cik": "0000916540",
+      "uri": "https://data.sec.gov/submissions/CIK0000916540.json",
+      "path": "data/reference/sec/filing-submissions/2026-09-30/CIK0000916540.json",
+      "retrievedAt": "2026-09-30T12:52:01.957Z",
+      "sha256": "63dace5324f5635c6ddfcdb635b6d5e600047e3e671e98496edd3afd548205d2",
+      "byteSize": 153016,
+      "recentFilingCount": 1000
+    },
+    {
+      "cik": "0000927628",
+      "uri": "https://data.sec.gov/submissions/CIK0000927628.json",
+      "path": "data/reference/sec/filing-submissions/2026-09-30/CIK0000927628.json",
+      "retrievedAt": "2026-09-30T12:52:01.957Z",
+      "sha256": "6ac602b0dc84ecce9eb70f32b0c519add5dbce4f5e7c7c82b292ff22f1e6a157",
+      "byteSize": 161512,
+      "recentFilingCount": 1000
+    },
+    {
+      "cik": "0001004980",
+      "uri": "https://data.sec.gov/submissions/CIK0001004980.json",
+      "path": "data/reference/sec/filing-submissions/2026-09-30/CIK0001004980.json",
+      "retrievedAt": "2026-09-30T12:52:01.957Z",
+      "sha256": "58f9b24adf719f6f989aa1ed0b8f0b5832115b3fb1566f266a3fa1a545589870",
+      "byteSize": 165409,
+      "recentFilingCount": 1001
+    },
+    {
+      "cik": "0001037976",
+      "uri": "https://data.sec.gov/submissions/CIK0001037976.json",
+      "path": "data/reference/sec/filing-submissions/2026-09-30/CIK0001037976.json",
+      "retrievedAt": "2026-09-30T12:52:01.957Z",
+      "sha256": "9139b17fff409c77d7805303913ba0c0330ebee8466789b664299f6670dae0ab",
+      "byteSize": 157673,
+      "recentFilingCount": 1001
+    },
+    {
+      "cik": "0001075531",
+      "uri": "https://data.sec.gov/submissions/CIK0001075531.json",
+      "path": "data/reference/sec/filing-submissions/2026-09-30/CIK0001075531.json",
+      "retrievedAt": "2026-09-30T12:52:01.957Z",
+      "sha256": "7ba4480835eb264d20dbc3611c24e0401eb9b0a75a98c497f9a4812051be3b79",
+      "byteSize": 158567,
+      "recentFilingCount": 1002
+    },
+    {
+      "cik": "0001164727",
+      "uri": "https://data.sec.gov/submissions/CIK0001164727.json",
+      "path": "data/reference/sec/filing-submissions/2026-09-30/CIK0001164727.json",
+      "retrievedAt": "2026-09-30T12:52:01.957Z",
+      "sha256": "3975431f6c64489d2394198cfc5dedd47bf0bb5f2f29e055e59fc8f6ae4e5161",
+      "byteSize": 173726,
+      "recentFilingCount": 1001
+    },
+    {
+      "cik": "0001324424",
+      "uri": "https://data.sec.gov/submissions/CIK0001324424.json",
+      "path": "data/reference/sec/filing-submissions/2026-09-30/CIK0001324424.json",
+      "retrievedAt": "2026-09-30T12:52:01.957Z",
+      "sha256": "5eefbdd1ebf236181150fd8afc0fe28081a0fa2251b6f14dbcab698e2cd7e879",
+      "byteSize": 147429,
+      "recentFilingCount": 1001
+    },
+    {
+      "cik": "0002023554",
+      "uri": "https://data.sec.gov/submissions/CIK0002023554.json",
+      "path": "data/reference/sec/filing-submissions/2026-09-30/CIK0002023554.json",
+      "retrievedAt": "2026-09-30T12:52:01.957Z",
+      "sha256": "9e85dc8802b57c9f33d204a1da699182e3bf0af2de70059f20daafc68c896c2c",
+      "byteSize": 38876,
+      "recentFilingCount": 238
+    }
+  ]
+}
