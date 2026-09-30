@@ -117,6 +117,26 @@ jobs:
           npm run security:audit
           git diff --check
 
+      # THESE PRs REQUIRE MANUAL MERGE, AND CANNOT BE AUTO-MERGED ON GREEN YET.
+      #
+      # `gh pr create` below authenticates with GITHUB_TOKEN. GitHub's recursive-workflow
+      # prevention means a PR opened with that token does NOT trigger `on: pull_request`
+      # workflows: CI and CodeQL are recorded against the head SHA as `action_required`,
+      # awaiting a maintainer's approval, and the PR's own check rollup stays EMPTY. The
+      # PR therefore reports mergeable=MERGEABLE with mergeStateStatus=UNSTABLE and zero
+      # check runs, which is not "green" -- it is "never tested". Observed across all 14
+      # PRs open on 2026-09-30 (#55-#68): 0 check runs on every head SHA.
+      #
+      # Consequence: auto-merge-on-green can never fire here, because nothing ever turns
+      # green on its own. Worse, adding CI to branch protection as a required check would
+      # make every refresh PR permanently unmergeable rather than merely unverified.
+      #
+      # UNBLOCKING IT needs a REFRESH_PR_TOKEN repo secret -- a fine-grained PAT (or a
+      # GitHub App token) scoped to this repository with Contents: RW and Pull requests:
+      # RW, and deliberately NOT Workflows. Swap it in for GH_TOKEN on this step, confirm
+      # CI actually runs on the next bot PR, then enable auto-merge. That secret does not
+      # exist yet (2026-09-30: the repo holds only SEC_USER_AGENT), so until it does,
+      # every PR this workflow opens must be reviewed and merged by hand.
       - name: Open a reviewable refresh pull request
         if: steps.ingest.outputs.unchanged == 'false'
         shell: bash
