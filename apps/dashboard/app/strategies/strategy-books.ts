@@ -10,7 +10,11 @@
 import { useEffect, useState } from "react";
 import { loadReference } from "./reference-client";
 
-export type BookType = "live" | "paper";
+// "model" = a rebalance after Bradley stopped trading (2026-09-21): what the model would hold,
+// no order placed. Neither live (no broker position) nor paper (the sleeve was real money).
+export type BookType = "live" | "paper" | "model";
+export const isBookType = (v: unknown): v is BookType =>
+  v === "live" || v === "paper" || v === "model";
 
 export interface StratStatus {
   book_type?: BookType;
@@ -31,10 +35,8 @@ export function resolveBookType(
   statusEntry: StratStatus | undefined,
   jsonBookType: unknown,
 ): BookType {
-  if (statusEntry?.book_type === "live" || statusEntry?.book_type === "paper") {
-    return statusEntry.book_type;
-  }
-  if (jsonBookType === "live" || jsonBookType === "paper") return jsonBookType;
+  if (isBookType(statusEntry?.book_type)) return statusEntry.book_type;
+  if (isBookType(jsonBookType)) return jsonBookType;
   return "paper";
 }
 

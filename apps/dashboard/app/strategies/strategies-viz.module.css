@@ -48,7 +48,8 @@
 /* ── book-type pills (truth-in-labeling) ───────────────────────────────── */
 
 .pillLive,
-.pillPaper {
+.pillPaper,
+.pillModel {
   display: inline-block;
   padding: 2px 9px;
   border-radius: 999px;
@@ -69,6 +70,21 @@
   border: 1px solid rgb(104 116 108 / 40%);
   background: rgb(104 116 108 / 10%);
   color: #5d6a62;
+}
+
+/* MODEL: a rebalance after trading stopped (2026-09-21), no order placed. Dashed, so it
+   reads as "not a position" at a glance and never borrows the live brass. */
+.pillModel {
+  border: 1px dashed rgb(90 100 119 / 55%);
+  background: rgb(90 100 119 / 8%);
+  color: #4f5a6c;
+}
+
+.modelTag {
+  color: #4f5a6c;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 10px;
+  font-weight: 700;
 }
 
 .liveTag {

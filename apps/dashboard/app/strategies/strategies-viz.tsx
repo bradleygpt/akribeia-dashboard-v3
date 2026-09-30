@@ -122,7 +122,8 @@ function HoldingsTreemap({ statusMap }: { statusMap?: StratStatusMap }) {
       .map((s) => {
         const bt = bookTypeOf(s.slug, statusMap, s.book_type);
         return {
-          name: bt === "paper" ? `${s.label} · PAPER` : `${s.label} · LIVE`,
+          // Named for what it is -- never LIVE by elimination.
+          name: `${s.label} · ${bt.toUpperCase()}`,
           stratColor: entityColor(s.slug),
           children: (s.holdings ?? []).map((h) => ({
             name: h.ticker,
@@ -624,8 +625,16 @@ function CorrelationNetwork({ statusMap }: { statusMap?: StratStatusMap }) {
                         {retired ? (
                           <span className={styles.retiredTag}>RETIRED</span>
                         ) : (
-                          <span className={bt === "live" ? styles.liveTag : styles.paperTag}>
-                            {bt === "live" ? "● LIVE" : "◌ PAPER"}
+                          <span
+                            className={
+                              bt === "live"
+                                ? styles.liveTag
+                                : bt === "model"
+                                  ? styles.modelTag
+                                  : styles.paperTag
+                            }
+                          >
+                            {bt === "live" ? "● LIVE" : bt === "model" ? "◇ MODEL" : "◌ PAPER"}
                           </span>
                         )}
                       </span>
@@ -924,6 +933,8 @@ function CurrentBooks({ books, statusMap }: { books: HubBook[]; statusMap?: Stra
   const resolved = books.map((b) => ({ b, bt: bookTypeOf(b.slug, statusMap, b.jsonBookType) }));
   const live = resolved.filter((x) => x.bt === "live");
   const paper = resolved.filter((x) => x.bt === "paper");
+  // Its own group: a two-way live/paper split would silently DROP a model book from the panel.
+  const model = resolved.filter((x) => x.bt === "model");
   const scouts = Object.entries(statusMap ?? {})
     .filter(([, v]) => (v.status ?? "").includes("research-scout"))
     .map(([k, v]) => ({ name: k.charAt(0).toUpperCase() + k.slice(1), asOf: v.as_of }));
@@ -932,12 +943,22 @@ function CurrentBooks({ books, statusMap }: { books: HubBook[]; statusMap?: Stra
       <h3 className={styles.panelTitle}>Current books</h3>
       <p className={styles.vizSub}>
         What each strategy holds right now. LIVE = broker-confirmed money; PAPER = signal-derived
-        research book.
+        research book; MODEL = a rebalance after trading stopped (2026-09-21), no order placed.
       </p>
       <div className={styles.bookStack}>
         {live.map(({ b, bt }) => (
           <BookRow key={b.slug} book={b} bookType={bt} />
         ))}
+        {model.length > 0 && (
+          <>
+            <div className={styles.paperGroupLabel}>
+              ◇ Model — rebalances after trading stopped, no orders
+            </div>
+            {model.map(({ b, bt }) => (
+              <BookRow key={b.slug} book={b} bookType={bt} deEmph />
+            ))}
+          </>
+        )}
         {paper.length > 0 && (
           <>
             <div className={styles.paperGroupLabel}>◌ Paper — research books</div>
@@ -1039,9 +1060,10 @@ function StrategiesHub({ statusMap }: { statusMap?: StratStatusMap }) {
     const bt = bookTypeOf(s.slug, statusMap, book?.jsonBookType);
     return {
       slug: s.slug,
-      name: `${s.label}${bt === "paper" ? " · paper" : " · live"}`,
+      // Solid only for live; every non-live series is dashed and named for what it is.
+      name: `${s.label} · ${bt}`,
       color: entityColor(s.slug),
-      dashed: bt === "paper",
+      dashed: bt !== "live",
     };
   });
 

@@ -306,7 +306,7 @@ export function StrategySummaryTable({ statusMap }: { statusMap: StratStatusMap 
                                 className={r.nextBookType === "live" ? styles.numPos : undefined}
                               >
                                 {" · "}
-                                {r.nextBookType === "live" ? "live" : "paper"}
+                                {r.nextBookType}
                               </span>
                             )}
                           </div>
