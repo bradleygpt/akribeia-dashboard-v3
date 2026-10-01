@@ -1,16 +1,16 @@
 {
   "reportSchemaVersion": "1.0.0",
-  "buildId": "preview-20260930-pipeline-v5-9d3647f72c94",
+  "buildId": "preview-20261001-pipeline-v5-47090bdd37fe",
   "modelVersion": "3.0.0",
-  "generatedAt": "2026-09-30T12:52:01.957Z",
-  "decisionCutoffAt": "2026-09-30T10:43:08Z",
+  "generatedAt": "2026-10-01T11:48:24.616Z",
+  "decisionCutoffAt": "2026-10-01T11:11:14Z",
   "status": "partial-retrospective-metadata",
   "historicalValidationEligible": false,
   "sourceReceipt": {
-    "path": "data/reference/sec/filing-submissions/2026-09-30/receipt.json",
-    "sha256": "3ce9f0325c326b7d9e46c6377d6596b9e79e8cb99a49d2a078747ad89b3cebf6",
-    "snapshotId": "2026-09-30",
-    "retrievedAt": "2026-09-30T12:52:01.957Z"
+    "path": "data/reference/sec/filing-submissions/2026-10-01/receipt.json",
+    "sha256": "8be189faf5c0f94862141ee7e1d043de2a1607ee5d8cfd0cf85c8002b9ad0417",
+    "snapshotId": "2026-10-01",
+    "retrievedAt": "2026-10-01T11:48:24.616Z"
   },
   "selection": {
     "policy": "dashboard-top-scores-and-active-portfolio",
@@ -234,12 +234,12 @@
         "eligibleAtCutoff": true
       },
       "latestCurrent": {
-        "accessionNumber": "0001037976-26-000167",
+        "accessionNumber": "0001037976-26-000173",
         "form": "8-K",
-        "filingDate": "2026-09-16",
-        "reportDate": "2026-09-16",
-        "acceptedAt": "2026-09-16T12:25:09.000Z",
-        "primaryDocument": "jll-20260916.htm",
+        "filingDate": "2026-09-30",
+        "reportDate": "2026-09-28",
+        "acceptedAt": "2026-09-30T20:45:55.000Z",
+        "primaryDocument": "jll-20260928.htm",
         "availabilityBasis": "edgar-acceptance-time",
         "eligibleAtCutoff": true
       },
@@ -262,12 +262,12 @@
         "eligibleAtCutoff": true
       },
       "latestCurrent": {
-        "accessionNumber": "0001104659-26-101067",
+        "accessionNumber": "0000723125-26-000018",
         "form": "8-K",
-        "filingDate": "2026-08-26",
-        "reportDate": "2026-08-24",
-        "acceptedAt": "2026-08-26T12:06:55.000Z",
-        "primaryDocument": "tm2624017d1_8k.htm",
+        "filingDate": "2026-09-30",
+        "reportDate": "2026-09-30",
+        "acceptedAt": "2026-09-30T20:02:22.000Z",
+        "primaryDocument": "mu-20260930.htm",
         "availabilityBasis": "edgar-acceptance-time",
         "eligibleAtCutoff": true
       },
