@@ -1,12 +1,12 @@
 {
   "maturitySchemaVersion": "1.0.0",
-  "buildId": "preview-20260930-pipeline-v5-9d3647f72c94",
+  "buildId": "preview-20261002-pipeline-v5-8e87dd6a4a17",
   "modelVersion": "3.0.0",
-  "assessedAt": "2026-09-30T12:51:49Z",
+  "assessedAt": "2026-10-02T11:20:58Z",
   "currentLevel": "research-preview",
   "releaseEligible": false,
   "observations": {
-    "immutableDailyBuilds": 5,
+    "immutableDailyBuilds": 6,
     "requiredDailyBuilds": 30,
     "qualityStatus": "pass",
     "driftStatus": "insufficient-history",
@@ -77,7 +77,7 @@
           "status": "blocked",
           "detail": "No point-in-time benchmark observation or validated comparison is available.",
           "evidence": [
-            "daily/2026-09-30/preview-20260930-pipeline-v5-9d3647f72c94/evidence.json"
+            "daily/2026-10-02/preview-20261002-pipeline-v5-8e87dd6a4a17/evidence.json"
           ]
         },
         {
@@ -121,7 +121,7 @@
         {
           "key": "prospective-history",
           "status": "blocked",
-          "detail": "5 of 30 required immutable daily builds are available.",
+          "detail": "6 of 30 required immutable daily builds are available.",
           "evidence": [
             "data/evidence/daily",
             "MIGRATION.md"
@@ -176,7 +176,7 @@
     "The security master has no permanent identifiers or ticker-reuse protection.",
     "Only one comparable model observation exists, so temporal drift is not evaluated.",
     "4 of 8 model validation gates pass.",
-    "5 of 30 required immutable daily builds are available.",
+    "6 of 30 required immutable daily builds are available.",
     "The versioned model card explicitly records releaseEligible: false.",
     "A final security certification has not been recorded.",
     "Final recovery, accessibility, and clean-environment certification is incomplete.",

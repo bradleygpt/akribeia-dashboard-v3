@@ -1,8 +1,8 @@
 {
   "reportSchemaVersion": "1.0.0",
-  "buildId": "preview-20260930-pipeline-v5-9d3647f72c94",
+  "buildId": "preview-20261002-pipeline-v5-8e87dd6a4a17",
   "modelVersion": "3.0.0",
-  "recordedAt": "2026-09-30T12:51:49Z",
+  "recordedAt": "2026-10-02T11:20:58Z",
   "quality": {
     "status": "pass",
     "rowCount": 654,
