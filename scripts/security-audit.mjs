@@ -123,18 +123,60 @@ for (const node of Object.keys(lock.packages ?? {})) {
 // ^3.0.1 so the root pin hoists cleanly to every consumer.
 if (lock.packages?.["node_modules/fast-uri"]?.version !== "3.1.7")
   throw new Error("fast-uri remediation missing");
-// sharp: GHSA-rgj7-g3m4-5g8c (bundled libheif) hits sharp <0.35.4, reached through
-// miniflare -> wrangler / @cloudflare/vite-plugin. Upstream has not moved (the
-// 2026-09-08 miniflare alpha still pins 0.35.2 exactly), so a root override forces
-// the fixed line. Guard it, and guard that no nested copy reintroduces the old one.
-if (lock.packages?.["node_modules/sharp"]?.version !== "0.35.4")
+// sharp: GHSA-rgj7-g3m4-5g8c (bundled libheif) hit sharp <0.35.4, reached through
+// miniflare -> wrangler / @cloudflare/vite-plugin; a root override forced the fixed line.
+// FLOOR RAISED 2026-10-07: GHSA-wq5f-xc86-pv6w (librsvg, published 2026-10-06) made 0.35.4
+// itself vulnerable (<0.35.5) -- the third time a pinned remediation went stale (fast-uri,
+// undici, now sharp). miniflare still pins 0.35.4 exactly, so the override is what lifts it;
+// the nested-copy guard below matters, because npm kept a stale nested 0.35.4 under
+// miniflare until that lockfile node was removed and re-resolved through the override.
+if (lock.packages?.["node_modules/sharp"]?.version !== "0.35.5")
   throw new Error("sharp remediation missing");
 for (const [node, entry] of Object.entries(lock.packages ?? {})) {
   if (node.endsWith("/node_modules/sharp") && entry.version) {
     const [major, minor, patch] = entry.version.split(".").map(Number);
-    if (major === 0 && (minor < 35 || (minor === 35 && patch < 4)))
-      throw new Error(`sharp regression at ${node}: ${entry.version} < 0.35.4`);
+    if (major === 0 && (minor < 35 || (minor === 35 && patch < 5)))
+      throw new Error(`sharp regression at ${node}: ${entry.version} < 0.35.5`);
   }
+}
+// source-map-js: GHSA-68fv-2mgg-jv7q (event-loop DoS via indexed source-map section
+// offsets) hits >=1.0.0 <1.2.2; reached through @tailwindcss/node, postcss and magicast,
+// all of which accept ^1.2.1. Root override to 1.2.2; every copy must be on it or later.
+for (const [node, entry] of Object.entries(lock.packages ?? {})) {
+  if (
+    (node === "node_modules/source-map-js" || node.endsWith("/node_modules/source-map-js")) &&
+    entry.version
+  ) {
+    const [major, minor, patch] = entry.version.split(".").map(Number);
+    if (major === 1 && (minor < 2 || (minor === 2 && patch < 2)))
+      throw new Error(`source-map-js regression at ${node}: ${entry.version} < 1.2.2`);
+  }
+}
+// braces: GHSA-vfj7-8cjw-p6xm (stack-exhaustion DoS via deeply nested patterns) covers
+// every version <=3.0.3 with NO upstream fix. Remediated at the root, not excepted: braces
+// is VENDORED as a workspace with a nesting-depth limit (vendor/braces/AKRIBEIA_PATCH.md).
+// npm audit does not see the vendored copy, so this guard is what keeps the fix honest --
+// it fails closed if node_modules/braces stops resolving to the vendor workspace, or if the
+// vendored parser loses its depth check.
+{
+  const braces = lock.packages?.["node_modules/braces"];
+  if (!braces || braces.link !== true || braces.resolved !== "vendor/braces")
+    throw new Error(
+      `braces must resolve to the patched vendor/braces workspace, got ${JSON.stringify(braces)}`,
+    );
+  const parseSrc = await readFile(
+    new URL("../vendor/braces/lib/parse.js", import.meta.url),
+    "utf8",
+  );
+  const constSrc = await readFile(
+    new URL("../vendor/braces/lib/constants.js", import.meta.url),
+    "utf8",
+  );
+  if (!/MAX_DEPTH:\s*128\b/.test(constSrc) || !/depth > maxDepth/.test(parseSrc))
+    throw new Error("vendored braces has lost its GHSA-vfj7-8cjw-p6xm nesting-depth limit");
+  for (const node of Object.keys(lock.packages ?? {}))
+    if (node.endsWith("/node_modules/braces"))
+      throw new Error(`unpatched nested braces at ${node}: only vendor/braces may satisfy braces`);
 }
 const packageJson = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
 if (packageJson.devDependencies?.undici || packageJson.overrides?.undici)

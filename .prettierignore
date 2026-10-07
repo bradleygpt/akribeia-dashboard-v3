@@ -15,6 +15,10 @@ data/evidence/**
 apps/dashboard/app/generated/**
 apps/dashboard/public/data/**
 
+# Vendored third-party code: kept byte-close to upstream so its security patch stays
+# reviewable against the original (vendor/braces/AKRIBEIA_PATCH.md). Never reformat it.
+vendor/**
+
 # Generated application and deployment workspaces.
 **/.next/**
 **/.vinext/**
