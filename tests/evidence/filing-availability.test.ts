@@ -134,8 +134,26 @@ describe("SEC submission source capture", () => {
 
 describe("filing availability evidence", () => {
   it("filters selected filings at the model cutoff and exposes incomplete coverage", async () => {
+    // Compare like with like: regenerate from the SEC snapshot the committed report was
+    // generated from. Each refresh captures its own snapshot, and a filing accepted
+    // between the cutoff and that capture is in one snapshot but not another, so a fixed
+    // snapshot made the coverage comparison fail on the 2026-10-20 refresh (1 vs 0
+    // excluded post-cutoff filings) with nothing wrong in the data.
+    const committed = JSON.parse(
+      readFileSync(
+        resolvePath("apps/dashboard/app/generated/active-filing-availability.json"),
+        "utf8",
+      ),
+    ) as {
+      selection: unknown;
+      coverage: unknown;
+      unmatched: unknown;
+      sourceReceipt: { path: string };
+    };
     const root = await temporaryRoot();
-    const result = await generateFilingAvailability(generatorOptions(root));
+    const result = await generateFilingAvailability(
+      generatorOptions(root, { sourceReceiptPath: resolve(committed.sourceReceipt.path) }),
+    );
     const payload = await readFile(result.reportPath, "utf8");
     const report = FilingAvailabilityReportSchema.parse(JSON.parse(payload));
     const micron = report.entries.find(({ ticker }) => ticker === "MU");
@@ -143,12 +161,6 @@ describe("filing availability evidence", () => {
     expect(report.status).toBe("partial-retrospective-metadata");
     expect(report.historicalValidationEligible).toBe(false);
     expect(report.decisionCutoffAt).toBe(activeCutoffAt);
-    const committed = JSON.parse(
-      readFileSync(
-        resolvePath("apps/dashboard/app/generated/active-filing-availability.json"),
-        "utf8",
-      ),
-    ) as { selection: unknown; coverage: unknown; unmatched: unknown };
     expect(report.selection).toEqual(committed.selection);
     expect(report.coverage).toEqual(committed.coverage);
     expect(report.unmatched).toEqual(committed.unmatched);
