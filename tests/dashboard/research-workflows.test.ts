@@ -1,5 +1,9 @@
 import { GOVERNED_TOTAL, GOVERNED_STOCKS, floor0Row } from "../observation-fixture";
 import { describe, expect, it } from "vitest";
+import observationProvenance from "../../data/observations/current/provenance.json";
+
+// Security-reference shards are read at the active observation's bulk-data commit.
+const ACTIVE_BULK_COMMIT = observationProvenance.bulk_data_commit;
 import {
   buildSectorResearch,
   loadResearchUniverse,
@@ -60,6 +64,20 @@ describe("Wave 2 research universe", () => {
     expect(universe.stocks).toBe(GOVERNED_STOCKS);
     expect(universe.etfs).toBe(70);
     expect(new Set(universe.rows.map(({ ticker }) => ticker)).size).toBe(GOVERNED_TOTAL);
+  });
+
+  it("lists exactly the stocks priced at or below their displayed buy point", () => {
+    // The preset used V2's buyPointDistance, which disagrees with the displayed price on most
+    // rows: it listed names priced above the buy point and dropped ones below it (audit B2).
+    const universe = loadResearchUniverse();
+    const listed = universe.rows.filter((row) => matchesResearchPreset(row, "buyPoint"));
+    const expected = universe.rows.filter(
+      (row) =>
+        !row.isEtf && row.price !== null && row.buyPoint !== null && row.price <= row.buyPoint,
+    );
+
+    expect(listed.map(({ ticker }) => ticker)).toEqual(expected.map(({ ticker }) => ticker));
+    expect(listed.length).toBeGreaterThan(0);
   });
 
   it("fails closed for SPY stock-model grades while preserving an evidenced equity", () => {
@@ -413,7 +431,7 @@ describe("Wave 2 bounded API adapters", () => {
       {
         fetcher: async (input) => {
           expect(String(input)).toContain(
-            "akribeia-data@9f2d2322fc52847e435dbb6a83137712788f5b52/data/detail/floor0/AAPL.json",
+            `akribeia-data@${ACTIVE_BULK_COMMIT}/data/detail/floor0/AAPL.json`,
           );
           return new Response(JSON.stringify({ pillar_detail: {} }), { status: 200 });
         },
@@ -423,14 +441,14 @@ describe("Wave 2 bounded API adapters", () => {
     expect(response?.status).toBe(200);
     const body = (await response?.json()) as { ok: boolean; source: { bulkDataCommit: string } };
     expect(body.ok).toBe(true);
-    expect(body.source.bulkDataCommit).toBe("9f2d2322fc52847e435dbb6a83137712788f5b52");
+    expect(body.source.bulkDataCommit).toBe(ACTIVE_BULK_COMMIT);
 
     const quarterly = await handleSecurityReferenceApi(
       new Request("https://akribeia.test/api/v3/security-reference?ticker=AAPL&kind=quarterly"),
       {
         fetcher: async (input) => {
           expect(String(input)).toContain(
-            "raw.githubusercontent.com/bradleygpt/akribeia-data/9f2d2322fc52847e435dbb6a83137712788f5b52/data/quarterly.json",
+            `raw.githubusercontent.com/bradleygpt/akribeia-data/${ACTIVE_BULK_COMMIT}/data/quarterly.json`,
           );
           return new Response(
             JSON.stringify({

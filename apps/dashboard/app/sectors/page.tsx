@@ -180,7 +180,10 @@ export default function SectorAnalyticsPage() {
         </section>
 
         <footer className="research-route-footer">
-          <span>Derived from all 1,290 stocks · ETFs excluded from sector aggregates</span>
+          <span>
+            Derived from all {universe.stocks.toLocaleString("en-US")} stocks · ETFs excluded from
+            sector aggregates
+          </span>
           <span>Research only · not investment advice</span>
         </footer>
       </main>

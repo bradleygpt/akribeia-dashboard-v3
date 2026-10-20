@@ -15,6 +15,7 @@ import {
   scoredTotal as SCORED_TOTAL,
   topScoreTicker as TOP_TICKER,
   firstUnresolvedRegistrant as UNRESOLVED_TICKER,
+  prospectiveProgress as PROSPECTIVE_PROGRESS,
 } from "./active-build.node.mjs";
 
 const execFileAsync = promisify(execFile);
@@ -264,7 +265,12 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
     assert.match(stdout, /No zero-cost shortcut/);
     assert.match(stdout, /Eight candidates\. No benchmark return/);
     assert.match(stdout, /Price change is not return/);
-    assert.match(stdout, /One day recorded\. Twenty-nine still must happen/);
+    assert.match(
+      stdout.replaceAll("<!-- -->", ""),
+      new RegExp(
+        `${PROSPECTIVE_PROGRESS.uniqueObservationDayCount} days? recorded\\. ${PROSPECTIVE_PROGRESS.remainingObservationDayCount} still must happen`,
+      ),
+    );
     assert.match(stdout, /Immutable observation days/);
     assert.match(stdout, /Executable portfolios/);
     assert.match(stdout, /Costed returns/);

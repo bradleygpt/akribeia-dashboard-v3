@@ -94,7 +94,11 @@ export function matchesResearchPreset(row: ResearchRow, preset: ResearchPreset):
       (row.pillars.Momentum ?? Number.NEGATIVE_INFINITY) >= 8
     );
   }
-  return row.buyPointDistance !== null && row.buyPointDistance <= 0;
+  // "At / below buy point" means the displayed price is at or below the displayed buy point,
+  // the same test as the under-buy-point filter. V2's buyPointDistance disagrees with its own
+  // price on most rows (audit 2026-10-20, B2/B9): filtering on it listed 365 names, only 116
+  // of which were at or below their buy point, and dropped 159 that were.
+  return row.price !== null && row.buyPoint !== null && row.price <= row.buyPoint;
 }
 
 export function metricValue(row: ResearchRow, key: string): number | null {

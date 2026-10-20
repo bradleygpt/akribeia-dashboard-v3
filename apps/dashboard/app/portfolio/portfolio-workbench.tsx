@@ -425,7 +425,8 @@ export function PortfolioWorkbench({ rows, asOf }: { rows: ResearchRow[]; asOf: 
                     <td>
                       {money(position.price)}
                       <small>
-                        {position.priceSource} · {asOf}
+                        {position.priceSource === "as_of" ? "research snapshot" : "unavailable"} ·{" "}
+                        {asOf}
                       </small>
                     </td>
                     <td>{money(position.marketValue, 0)}</td>
@@ -488,7 +489,11 @@ export function PortfolioWorkbench({ rows, asOf }: { rows: ResearchRow[]; asOf: 
           <div>
             <dt>Concentration</dt>
             <dd>{analysis.concentrationLabel}</dd>
-            <small>HHI {analysis.concentrationHhi.toFixed(3)}</small>
+            <small>
+              {analysis.positions.length === 0
+                ? "HHI —"
+                : `HHI ${analysis.concentrationHhi.toFixed(3)}`}
+            </small>
           </div>
           <div>
             <dt>ETF treatment</dt>

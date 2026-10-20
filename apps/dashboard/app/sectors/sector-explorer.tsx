@@ -152,7 +152,10 @@ export function SectorExplorer({ rows, sectors }: { rows: ResearchRow[]; sectors
           <p className="mono-label">CONSTITUENT DRILL-DOWN</p>
           <h2 id="sector-explorer-heading">Inspect the companies behind the aggregate</h2>
         </div>
-        <span>All 1,290 stocks reconcile here, including explicit Unclassified records.</span>
+        <span>
+          All {rows.length.toLocaleString("en-US")} stocks reconcile here, including explicit
+          Unclassified records.
+        </span>
       </div>
       <div className="sector-explorer-controls">
         <label>

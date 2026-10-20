@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { governedTotalFormatted as GOVERNED_TOTAL } from "./governed-universe.node.mjs";
+import {
+  governedTotalFormatted as GOVERNED_TOTAL,
+  governedStocksFormatted as GOVERNED_STOCKS,
+} from "./governed-universe.node.mjs";
 
 async function render(pathname) {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
@@ -65,7 +68,7 @@ test("server-renders sector analytics", async () => {
   assert.match(html, /Inspect the companies behind the aggregate/);
   assert.match(html, /Loading pinned V2 sector narrative/);
   assert.match(html, /Technology/);
-  assert.match(html, /1,290 stocks/);
+  assert.match(html, new RegExp(`${GOVERNED_STOCKS}(?:<!-- -->)? stocks`));
 });
 
 test("server-renders the ETF Center", async () => {

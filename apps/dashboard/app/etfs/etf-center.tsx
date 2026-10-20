@@ -213,8 +213,8 @@ function directoryValue(row: EtfDirectoryRow, key: DirectorySortKey): number | s
   const local = row.local;
   const reference = row.reference;
   if (key === "ticker") return row.ticker;
-  if (key === "score") return local?.composite ?? null;
-  if (key === "rating") return local?.rating ?? null;
+  // ETFs carry no stock-model grade; sorting by the neutral-fill composite would rank by it.
+  if (key === "score" || key === "rating") return null;
   if (key === "price") {
     return local?.price ?? row.lookthrough?.price ?? reference?.currentPrice ?? null;
   }
@@ -855,10 +855,12 @@ export function EtfCenter({
                               : "")}
                         </small>
                       </td>
-                      <td className="research-number">{row?.composite?.toFixed(2) ?? "—"}</td>
+                      {/* ETFs carry no stock-model grade (V2 ETF contract): the generic shard's
+                          neutral-fill composite is not shown as one (audit 2026-10-20, B1). */}
+                      <td className="research-number">{row === null ? "—" : "N/A"}</td>
                       <td>
-                        <span className={ratingClass(row?.rating ?? "Unavailable")}>
-                          {row?.rating ?? "Unavailable"}
+                        <span className={ratingClass("Unavailable")}>
+                          {row === null ? "Unavailable" : "Not applicable (ETF)"}
                         </span>
                       </td>
                       <td className="research-number">{formatMoney(price)}</td>
@@ -1225,10 +1227,13 @@ export function EtfCenter({
                   ["Name", (ticker: string) => byTicker.get(ticker)?.name ?? "Unavailable"],
                   [
                     "Composite score",
-                    (ticker: string) =>
-                      byTicker.get(ticker)?.composite?.toFixed(2) ?? "Unavailable",
+                    (ticker: string) => (byTicker.has(ticker) ? "N/A" : "Unavailable"),
                   ],
-                  ["Rating", (ticker: string) => byTicker.get(ticker)?.rating ?? "Unavailable"],
+                  [
+                    "Rating",
+                    (ticker: string) =>
+                      byTicker.has(ticker) ? "Not applicable (ETF)" : "Unavailable",
+                  ],
                   [
                     "Expense ratio",
                     (ticker: string) => {

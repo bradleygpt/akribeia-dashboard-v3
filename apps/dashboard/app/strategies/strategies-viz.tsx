@@ -26,6 +26,15 @@ import type { HubRow, HubSeriesDef } from "./strategies-hub-chart";
 import type { TreemapGroup } from "./holdings-treemap-chart";
 import styles from "./strategies-viz.module.css";
 
+function c78qStateCurrent(c: {
+  state?: { next_rebalance?: string | null } | null;
+  target?: { as_of?: string | null } | null;
+}): boolean {
+  const next = c.state?.next_rebalance;
+  const asOf = c.target?.as_of;
+  return !next || !asOf || next >= asOf;
+}
+
 const HubChart = lazy(() => import("./strategies-hub-chart"));
 const TreemapChart = lazy(() => import("./holdings-treemap-chart"));
 
@@ -735,8 +744,11 @@ function useHubData(): HubData | null | "unavailable" {
             jsonBookType: c.target?.book_type,
             tickers: (c.target?.rows ?? []).map((r) => r.ticker),
             asOf: c.target?.as_of,
-            capital: c.state?.capital ?? null,
-            next: c.state?.next_rebalance ?? null,
+            // c78q's broker `state` block can lag its target book (pinned: state next
+            // 2026-08-03 with the July names beside the 2026-09-01 target). Use its capital and
+            // next date only when it is not older than the target (audit 2026-10-20, B8).
+            capital: c78qStateCurrent(c) ? (c.state?.capital ?? null) : null,
+            next: c78qStateCurrent(c) ? (c.state?.next_rebalance ?? null) : null,
           });
         } else {
           const s = j as StrategyPayload;

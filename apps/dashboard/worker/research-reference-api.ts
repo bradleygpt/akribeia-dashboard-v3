@@ -1,3 +1,4 @@
+import { BULK_DATA_COMMIT } from "./bulk-data-pin";
 const REFERENCE_PATH = "/api/v3/research-reference";
 const V2_APP_COMMIT = "5bfbe0190466dfa166c8071e2acca8800cb3cb2f";
 const RAW_BASE = `https://raw.githubusercontent.com/bradleygpt/quant-dashboard-pro-v2/${V2_APP_COMMIT}/public/data`;
@@ -50,7 +51,7 @@ type Fetcher = typeof fetch;
  * commit 3bd451f6a) and live in the bulk data repo instead — the same pinned
  * commit the quarterly proxy uses. They are absent from the pinned V2 commit.
  */
-const EARNINGS_BULK_COMMIT = "9f2d2322fc52847e435dbb6a83137712788f5b52";
+const EARNINGS_BULK_COMMIT = BULK_DATA_COMMIT;
 const EARNINGS_RAW_BASE = `https://raw.githubusercontent.com/bradleygpt/akribeia-data/${EARNINGS_BULK_COMMIT}/data`;
 const EARNINGS_DATASETS = new Set<Dataset>(["earnings-reviews", "earnings-quality"]);
 const EARNINGS_SOURCE_LIMIT = 7_000_000;
@@ -275,10 +276,11 @@ export async function handleResearchReferenceApi(
       dataset,
       ...(tickerRequired || (dataset === "ticker-anchor-map" && tickerProvided) ? { ticker } : {}),
       fetchedAt: (dependencies.now ?? new Date()).toISOString(),
-      source: {
-        v2AppCommit: V2_APP_COMMIT,
-        url: sourceUrl,
-      },
+      // The earnings corpus comes from the bulk data repo, not the V2 app commit; label the
+      // commit it was actually read at (audit 2026-10-20, C9).
+      source: EARNINGS_DATASETS.has(dataset)
+        ? { bulkDataCommit: EARNINGS_BULK_COMMIT, url: sourceUrl }
+        : { v2AppCommit: V2_APP_COMMIT, url: sourceUrl },
       payload,
     });
   } catch {

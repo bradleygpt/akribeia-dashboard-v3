@@ -51,8 +51,11 @@ describe("governed strategy state", () => {
     expect(strategyFactorLabel("NotAStrategy")).toBeNull();
   });
 
-  it("marks Kairos paper-only in its presentation note", () => {
+  it("leaves Kairos' book type to its data-driven chip, not a static note", () => {
+    // The note said "Paper-only sleeve" while the pinned book has been LIVE since 2026-09-01,
+    // so the roster flipped PAPER -> LIVE on hydration (audit 2026-10-20, B7).
     const kairos = ACTIVE_STRATEGIES.find(({ name }) => name === "Kairos");
-    expect(kairos?.note).toContain("Paper-only");
+    expect(kairos?.note).toContain("Replaced Aristeia on 2026-08-11");
+    expect(kairos?.note ?? "").not.toMatch(/paper|live/i);
   });
 });

@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { handleResearchReferenceApi } from "../../apps/dashboard/worker/research-reference-api.js";
 
-// The earnings corpus was untracked from the V2 app repo by its data-slim
-// migration; the proxy fetches it from the pinned bulk-data commit instead.
-const EARNINGS_BULK_COMMIT = "9f2d2322fc52847e435dbb6a83137712788f5b52";
+import observationProvenance from "../../data/observations/current/provenance.json";
+
+// The earnings corpus was untracked from the V2 app repo by its data-slim migration; the
+// proxy fetches it from the bulk-data commit the active observation was ingested from.
+const EARNINGS_BULK_COMMIT = observationProvenance.bulk_data_commit;
 
 function referenceRequest(dataset: string, ticker?: string): Request {
   const query = ticker === undefined ? "" : `&ticker=${encodeURIComponent(ticker)}`;

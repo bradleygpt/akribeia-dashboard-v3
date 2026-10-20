@@ -78,8 +78,10 @@ export default async function SecurityDetailPage({ params }: PageProps) {
     )
     .slice(0, 5);
   const universe = loadResearchUniverse();
+  // Rank among stocks only: ETFs carry no stock-model grade, and their neutral-fill
+  // composites put 54 ETFs above AAPL (audit 2026-10-20, B6).
   const ranked = universe.rows
-    .filter(({ composite }) => composite !== null)
+    .filter(({ composite, isEtf }) => composite !== null && !isEtf)
     .toSorted(
       (left, right) =>
         (right.composite ?? Number.NEGATIVE_INFINITY) -

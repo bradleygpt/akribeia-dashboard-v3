@@ -83,6 +83,13 @@ interface SortState {
   direction: SortDirection;
 }
 
+// mlpred carries raw classifier codes for some rows ("__UNKNOWN__", "SIC_73"); they read as
+// Unclassified rather than leaking to the filter and table (audit 2026-10-20, B12).
+function sectorLabel(sector: string | null | undefined): string {
+  const value = sector?.trim() ?? "";
+  return value === "" || /^__.*__$/.test(value) || /^SIC_\d+$/.test(value) ? "Unclassified" : value;
+}
+
 function finite(value: unknown): value is number {
   return typeof value === "number" && Number.isFinite(value);
 }
@@ -315,8 +322,8 @@ export function ProlepsisWorkbench() {
     () =>
       payload === null
         ? []
-        : [...new Set(payload.rows.map((row) => row.sector?.trim() || "Unclassified"))].sort(
-            (left, right) => left.localeCompare(right),
+        : [...new Set(payload.rows.map((row) => sectorLabel(row.sector)))].sort((left, right) =>
+            left.localeCompare(right),
           ),
     [payload],
   );
@@ -474,7 +481,7 @@ function OverviewBlock({
       ) {
         return false;
       }
-      if (sector !== "all" && (row.sector?.trim() || "Unclassified") !== sector) return false;
+      if (sector !== "all" && sectorLabel(row.sector) !== sector) return false;
       if (row.c78q_post < minimumPosterior) return false;
       if (returnFilter === "available" && !row.return_engine_available) return false;
       if (returnFilter === "unavailable" && row.return_engine_available) return false;
@@ -683,7 +690,7 @@ function OverviewBlock({
                     <td>
                       <TickerLink ticker={row.ticker} />
                     </td>
-                    <td>{row.sector?.trim() || "Unclassified"}</td>
+                    <td>{sectorLabel(row.sector)}</td>
                     <td className={styles.number}>
                       <PosteriorCell post={row.c78q_post} />
                     </td>
@@ -778,7 +785,7 @@ function PredTable({
                 <td>
                   <TickerLink ticker={row.ticker} />
                 </td>
-                <td>{row.sector?.trim() || "Unclassified"}</td>
+                <td>{sectorLabel(row.sector)}</td>
                 <td className={styles.number}>
                   {money(displayedPrice)}
                   {displayedPrice !== null ? (
@@ -873,7 +880,7 @@ function ScreenerBlock({
   const filtered = useMemo(() => {
     return rows
       .filter((row) => row.pred_12m_rank !== null)
-      .filter((row) => sector === "All" || (row.sector?.trim() || "Unclassified") === sector)
+      .filter((row) => sector === "All" || sectorLabel(row.sector) === sector)
       .filter((row) => row.pred_12m_rank! * 100 >= minPct)
       .sort((left, right) => right.pred_12m_rank! - left.pred_12m_rank!);
   }, [minPct, rows, sector]);
