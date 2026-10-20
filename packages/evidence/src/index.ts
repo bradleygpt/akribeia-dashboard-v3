@@ -208,6 +208,35 @@ async function loadActiveObservationCandidate(
   };
 }
 
+/** The ledger's date directories, unverified (listObservationDates verifies them). */
+async function ledgerDateNames(evidenceRootInput: string): Promise<string[]> {
+  try {
+    return (await readdir(join(resolve(evidenceRootInput), "daily"), { withFileTypes: true }))
+      .filter((entry) => entry.isDirectory() && /^\d{4}-\d{2}-\d{2}$/.test(entry.name))
+      .map(({ name }) => name)
+      .sort();
+  } catch (error) {
+    if (hasErrorCode(error, "ENOENT")) return [];
+    throw error;
+  }
+}
+
+/** The scored-source digests recorded by every build of one ledger date. */
+async function ledgerSourceDigests(evidenceRootInput: string, date: string): Promise<Set<string>> {
+  const dateRoot = join(resolve(evidenceRootInput), "daily", date);
+  const builds = (await readdir(dateRoot, { withFileTypes: true })).filter((entry) =>
+    entry.isDirectory(),
+  );
+  const digests = new Set<string>();
+  for (const build of builds) {
+    const path = join(dateRoot, build.name, "evidence.json");
+    digests.add(
+      DailyEvidenceRecordSchema.parse(parseJson(path, await readFile(path))).source.contentSha256,
+    );
+  }
+  return digests;
+}
+
 async function listObservationDates(evidenceRootInput: string): Promise<string[]> {
   const evidenceRoot = resolve(evidenceRootInput);
   const dailyRoot = join(evidenceRoot, "daily");
@@ -424,6 +453,22 @@ export async function generateDailyEvidence(
     maturity: "research-preview",
     notice: dashboard.notice,
   });
+  // No new upstream data is not a new observation day (owner decision 2026-10-20, audit E3):
+  // a new ledger date whose scored source is byte-identical to the latest earlier date's
+  // fails closed. The ingest records such a day as a no-new-upstream-data stall instead,
+  // which adds nothing to the prospective count or the maturity gates. Rebuilding a date
+  // that is already in the ledger (a model change) stays allowed.
+  const ledgerDates = await ledgerDateNames(options.evidenceRoot);
+  const previousDate = ledgerDates.filter((date) => date < record.asOfDate).at(-1);
+  if (
+    !ledgerDates.includes(record.asOfDate) &&
+    previousDate !== undefined &&
+    (await ledgerSourceDigests(options.evidenceRoot, previousDate)).has(record.source.contentSha256)
+  ) {
+    throw new Error(
+      `No new upstream data: the ${record.asOfDate} source (sha256 ${record.source.contentSha256.slice(0, 12)}) is identical to ${previousDate}'s, so it is not a new observation day. Record it as a no-new-upstream-data day instead.`,
+    );
+  }
   const evidencePayload = deterministicJson(record);
   const relativeEvidencePath = join(
     "daily",

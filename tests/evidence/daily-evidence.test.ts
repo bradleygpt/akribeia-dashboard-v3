@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { resolve as resolvePath } from "node:path";
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { cp, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
@@ -9,6 +9,7 @@ import {
   EvidenceReproducibilityReportSchema,
 } from "@akribeia/contracts";
 import { generateDailyEvidence } from "@akribeia/evidence";
+import { runVerticalSlice } from "../../packages/pipeline/src/index.js";
 import { copyPublishedEvidenceInputs } from "./published-data";
 
 const temporaryDirectories: string[] = [];
@@ -169,5 +170,45 @@ describe("immutable daily evidence", () => {
     await expect(generateDailyEvidence(options(root))).rejects.toThrow(
       "Immutable evidence conflict",
     );
+  });
+
+  it("never adds a ledger date whose scored source repeats the latest date's", async () => {
+    // The ledger holds 2026-10-20; a build observed on 2026-10-21 from the same bytes is
+    // not a new observation day (owner decision 2026-10-20), while new bytes are.
+    const publishBuild = async (root: string, sourceDirectory: string, sourceCommit: string) => {
+      await runVerticalSlice({
+        buildId: "preview-20261021-pipeline-v6-guardtest",
+        evaluatedAt: "2026-10-21T11:00:00Z",
+        observedAt: "2026-10-21T10:00:00Z",
+        maxAgeSeconds: 604800,
+        sourcePath: resolve(sourceDirectory, "universe_floor10.json"),
+        metadataPath: resolve(sourceDirectory, "meta.json"),
+        outputRoot: join(root, "published"),
+        projectionPath: join(root, "active-dashboard.json"),
+        sourceCommit,
+        schemaVersion: "3.0.0",
+        modelVersion: "3.1.0",
+      });
+      await cp(resolve("data/evidence/daily/2026-10-20"), join(root, "evidence/daily/2026-10-20"), {
+        recursive: true,
+      });
+      return options(root, join(root, "published"));
+    };
+    const currentMeta = JSON.parse(
+      readFileSync(resolvePath("data/observations/current/meta.json"), "utf8"),
+    ) as { source_commit: string };
+
+    const repeated = await temporaryRoot();
+    await expect(
+      generateDailyEvidence(
+        await publishBuild(repeated, "data/observations/current", currentMeta.source_commit),
+      ),
+    ).rejects.toThrow("No new upstream data");
+
+    const fresh = await temporaryRoot();
+    const result = await generateDailyEvidence(
+      await publishBuild(fresh, "data/reference/v2-baseline/fixtures", "0de8cd6"),
+    );
+    expect(result.asOfDate).toBe("2026-10-21");
   });
 });

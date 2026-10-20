@@ -3,7 +3,8 @@ name: Point-in-time observation refresh
 # Ingest the newest V2 point-in-time observation (nightly bake published to the
 # commit-pinned bulk data repository), rebuild the evidence chain against it,
 # and open a reviewable pull request only when the full repository gate passes.
-# Fail-closed: an unchanged source is a successful no-op; any fetch, receipt,
+# Fail-closed: an already-observed bake is a successful no-op, and byte-identical upstream
+# data on a later bake date is recorded as a no-new-upstream-data day (no build); any fetch, receipt,
 # generation, or validation failure blocks the refresh without a commit.
 
 on:
@@ -57,41 +58,95 @@ jobs:
       - name: Ingest the current observation
         id: ingest
         shell: bash
+        # The ingest states its disposition on stdout (owner decision 2026-10-20, audit E3):
+        #   ingested             new upstream data: rebuild the chain and open a refresh PR
+        #   no-new-upstream-data a later bake date over byte-identical universe files: no
+        #                        build; a visible stall record that adds nothing to the
+        #                        prospective count or maturity gates, in its own small PR
+        #   already-observed     the same bake again: a no-op
+        # In September, 11 refresh PRs carried identical data as new observation dates.
         run: |
           before_build=$(node -p 'JSON.parse(require("node:fs").readFileSync("data/preview/vertical-slice-build.json","utf8")).buildId')
-          node scripts/ingest-v2-observation.node.mjs --v2-commit "${{ steps.source.outputs.v2_commit }}"
+          node scripts/ingest-v2-observation.node.mjs --v2-commit "${{ steps.source.outputs.v2_commit }}" | tee "$RUNNER_TEMP/ingest.json"
+          disposition=$(node -p 'JSON.parse(require("node:fs").readFileSync(process.argv[1],"utf8")).disposition' "$RUNNER_TEMP/ingest.json")
           after_build=$(node -p 'JSON.parse(require("node:fs").readFileSync("data/preview/vertical-slice-build.json","utf8")).buildId')
           echo "before_build=$before_build" >> "$GITHUB_OUTPUT"
           echo "after_build=$after_build" >> "$GITHUB_OUTPUT"
-          if [[ "$before_build" == "$after_build" ]]; then
-            echo "unchanged=true" >> "$GITHUB_OUTPUT"
-            git checkout -- data/preview/vertical-slice-build.json data/observations
-            git clean -fd data/observations
-          else
-            echo "unchanged=false" >> "$GITHUB_OUTPUT"
-            # The build id carries the observation (run) date, so it changes daily even when
-            # upstream published nothing new; in September 11 refresh PRs carried identical
-            # data (audit E3). Say so loudly; whether such a day still counts as an
-            # observation is an open ruling, so this warns rather than stops.
-            sha_of() { node -p "JSON.parse(require('node:fs').readFileSync(0,'utf8')).files['universe_floor10.json'].sha256" ; }
-            before_sha=$(git show HEAD:data/observations/current/provenance.json | sha_of)
-            after_sha=$(sha_of < data/observations/current/provenance.json)
-            if [[ "$before_sha" == "$after_sha" ]]; then
-              echo "::warning::Upstream universe data is unchanged (floor10 sha256 ${after_sha:0:12}); this refresh is a new observation date over the same data."
-              echo "Upstream universe data unchanged since the active build (floor10 sha256 ${after_sha:0:12})." >> "$GITHUB_STEP_SUMMARY"
-            fi
-          fi
+          echo "disposition=$disposition" >> "$GITHUB_OUTPUT"
+          case "$disposition" in
+            ingested) ;;
+            no-new-upstream-data)
+              echo "::notice::No new upstream data: every universe partition is byte-identical to the active observation ($before_build). Recorded as a no-new-upstream-data day; it adds nothing to the prospective count." ;;
+            already-observed) ;;
+            *) echo "Unknown ingest disposition: $disposition" >&2; exit 1 ;;
+          esac
 
       - name: Stop on an unchanged observation
-        if: steps.ingest.outputs.unchanged == 'true'
+        if: steps.ingest.outputs.disposition == 'already-observed'
         shell: bash
         run: |
           echo "## Point-in-time refresh" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "No new observation: the source build is unchanged (no-op)." >> "$GITHUB_STEP_SUMMARY"
+          echo "No new observation: this bake is already observed (no-op)." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Validate the no-new-upstream-data record
+        if: steps.ingest.outputs.disposition == 'no-new-upstream-data'
+        run: |
+          npm run ci
+          git diff --check
+
+      # Same token caveat as the refresh PR below: until REFRESH_PR_TOKEN is set, this PR's
+      # checks wait for manual approval.
+      - name: Open a no-new-upstream-data pull request
+        if: steps.ingest.outputs.disposition == 'no-new-upstream-data'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.REFRESH_PR_TOKEN || github.token }}
+        run: |
+          observation_date=$(node -p 'JSON.parse(require("node:fs").readFileSync(process.argv[1],"utf8")).observationDate' "$RUNNER_TEMP/ingest.json")
+          echo "## Point-in-time refresh" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "No new upstream data on ${observation_date}: not an observation day." >> "$GITHUB_STEP_SUMMARY"
+          if [[ -z "$(git status --porcelain)" ]]; then
+            echo "The ${observation_date} stall is already recorded on main."
+            exit 0
+          fi
+          branch="automation/no-new-upstream-data-${observation_date}"
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null; then
+            echo "A pull request branch for the ${observation_date} stall already exists."
+            exit 0
+          fi
+
+          git config user.name "akribeia-observation-bot"
+          git config user.email "akribeia-observation-bot@users.noreply.github.com"
+          git switch -c "$branch"
+          git add --all
+          git diff --cached --check
+          git commit -m "data: no new upstream data ${observation_date}"
+          git push --set-upstream origin "$branch"
+
+          pr_body="$RUNNER_TEMP/no-new-upstream-data-pr-body.md"
+          cat > "$pr_body" <<'BODY'
+          ## Summary
+
+          - V2 baked on a new date, but every universe partition is byte-identical to the active observation's
+          - records a visible no-new-upstream-data day under data/evidence/upstream-stalls/ and its dashboard projection
+          - publishes no build and adds nothing to the prospective count or the maturity gates
+
+          ## Validation
+
+          - full repository CI passed
+          - whitespace validation passed
+          BODY
+
+          gh pr create \
+            --base main \
+            --head "$branch" \
+            --title "data: no new upstream data ${observation_date}" \
+            --body-file "$pr_body"
 
       - name: Capture the SEC submissions snapshot
-        if: steps.ingest.outputs.unchanged == 'false'
+        if: steps.ingest.outputs.disposition == 'ingested'
         shell: bash
         run: |
           if [[ -z "$SEC_USER_AGENT" ]]; then
@@ -110,7 +165,7 @@ jobs:
           SEC_SNAPSHOT_ID="$snapshot_id" npm run filing-sources:fetch
 
       - name: Regenerate the dependent evidence chain
-        if: steps.ingest.outputs.unchanged == 'false'
+        if: steps.ingest.outputs.disposition == 'ingested'
         shell: bash
         run: |
           SEC_SNAPSHOT_ID="$SEC_SNAPSHOT_ID" npm run filing-availability:generate
@@ -128,7 +183,7 @@ jobs:
           npm run alpha-decay:collect
 
       - name: Validate the refreshed build
-        if: steps.ingest.outputs.unchanged == 'false'
+        if: steps.ingest.outputs.disposition == 'ingested'
         run: |
           npm run ci
           npm run security:audit
@@ -156,7 +211,7 @@ jobs:
       # 2026-10-20 the secret is still absent from this repo (only SEC_USER_AGENT), so
       # every PR this workflow opens must be reviewed and merged by hand until it is set.
       - name: Open a reviewable refresh pull request
-        if: steps.ingest.outputs.unchanged == 'false'
+        if: steps.ingest.outputs.disposition == 'ingested'
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.REFRESH_PR_TOKEN || github.token }}
