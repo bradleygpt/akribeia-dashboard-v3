@@ -63,8 +63,8 @@ Set `AKRIBEIA_COLLECTION_RECEIPT_PATH` to write the machine-readable attempt rec
 records the candidate lineage, all pre-existing observation dates, before/after counts, any generated
 paths, and the exact disposition reason.
 
-The `Prospective observation collection` GitHub workflow runs on demand and on a weekday schedule.
-Every run uploads its receipt as a retained workflow artifact. A no-op creates no repository branch.
-A genuinely new date must pass full CI, dependency audit, and whitespace checks before the workflow
-opens a feature-branch pull request. The workflow never pushes directly to `main` and never creates
-or backfills market observations.
+New observation days arrive through the point-in-time refresh workflow, which writes the day's
+daily evidence and opens a reviewed pull request. The separate `Prospective observation
+collection` workflow was deleted on 2026-10-20 (audit E4): it could only ever see a date the refresh
+had already recorded. The collector command above remains for manual checks; it never creates or
+backfills market observations.
