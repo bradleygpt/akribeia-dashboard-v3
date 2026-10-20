@@ -51,7 +51,10 @@ describe("visible vertical-slice pipeline", () => {
     expect(result.publicationDisposition).toBe("published");
     expect(verified).toEqual(result.dashboard);
     expect(verified.source.rowCount).toBe(643);
-    expect(verified.scoring.eligibleSecurities).toBeGreaterThan(600);
+    // 588 stocks + 55 ETFs; ETFs carry no stock-model pillars and are never scored (3.1.0).
+    expect(verified.scoring.notApplicableSecurities).toBe(55);
+    expect(verified.scoring.eligibleSecurities).toBeGreaterThan(550);
+    expect(verified.scoring.eligibleSecurities).toBeLessThanOrEqual(588);
     expect(verified.scoring.missingDataPolicy).toBe("require-complete");
     expect(verified.scoring.eligibleNormalization).toBe("total-weight");
     expect(verified.scoring.factorCoverage).toHaveLength(5);
@@ -61,7 +64,8 @@ describe("visible vertical-slice pipeline", () => {
     expect(verified.portfolio.construction).toMatchObject({
       method: "ranked-greedy-integer-units-v1",
       weightScale: 1_000_000_000,
-      candidateCount: 643,
+      // candidates are the eligible stocks; ETFs are never portfolio candidates (3.1.0)
+      candidateCount: verified.scoring.eligibleSecurities,
     });
     expect(
       Math.max(...verified.portfolio.positions.map((position) => position.weightUnits)),
@@ -158,13 +162,15 @@ describe("visible vertical-slice pipeline", () => {
     const growthCoverage = scores.scoring.factorCoverage.find(({ pillar }) => pillar === "growth");
     const excluded = scores.securities.find(({ ticker }) => ticker === excludedTicker);
 
-    expect(scores.scoring.eligibleSecurities).toBe(642);
-    expect(scores.scoring.excludedSecurities).toBe(1);
+    // 588 stocks (55 ETFs are not applicable and sit outside the coverage population).
+    expect(scores.scoring.eligibleSecurities).toBe(587);
+    expect(scores.scoring.excludedSecurities).toBe(1 + 55);
+    expect(scores.scoring.notApplicableSecurities).toBe(55);
     expect(growthCoverage).toMatchObject({
       sourceField: "pillars.Growth",
-      availableSecurities: 642,
+      availableSecurities: 587,
       missingSecurities: 1,
-      coverage: 642 / 643,
+      coverage: 587 / 588,
     });
     expect(excluded).toMatchObject({
       score: null,
@@ -184,6 +190,30 @@ describe("visible vertical-slice pipeline", () => {
     }
     eligibleSecurity.score = (eligibleSecurity.score ?? 0) + 1;
     expect(PublishedScoresArtifactSchema.safeParse(tampered).success).toBe(false);
+  });
+
+  it("never scores or ranks an ETF on its placeholder pillars", async () => {
+    const result = await runVerticalSlice({ ...recipe(), buildId: "preview-etf-not-applicable" });
+    const scores = PublishedScoresArtifactSchema.parse(
+      JSON.parse(await readFile(join(result.buildDirectory, "scores.json"), "utf8")) as unknown,
+    );
+    const etfs = scores.securities.filter(({ sector }) => sector === "ETF");
+
+    expect(etfs).toHaveLength(55);
+    for (const etf of etfs) {
+      expect(etf).toMatchObject({
+        score: null,
+        eligible: false,
+        coverage: 0,
+        exclusionReasons: ["not-applicable-etf"],
+        normalization: "not-scored",
+      });
+      expect(
+        etf.contributions.every(({ status, value }) => status === "missing" && value === null),
+      ).toBe(true);
+    }
+    expect(result.dashboard.topScores.some(({ sector }) => sector === "ETF")).toBe(false);
+    expect(result.dashboard.portfolio.positions.some(({ sector }) => sector === "ETF")).toBe(false);
   });
 
   it("ages the source from its data date and records it beside the observation", async () => {

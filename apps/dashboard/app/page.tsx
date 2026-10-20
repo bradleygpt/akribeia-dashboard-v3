@@ -246,8 +246,8 @@ export function MarketHealthDashboard() {
               <span>02</span>
               <strong>Full Universe</strong>
               <small>
-                {v2Universe.total.toLocaleString("en-US")} scored securities without a hidden cap
-                floor
+                {v2Universe.total.toLocaleString("en-US")} securities without a hidden cap floor ·
+                ETFs not stock-model scored
               </small>
             </a>
             <a href="#scores">
@@ -314,7 +314,14 @@ export function MarketHealthDashboard() {
           <article>
             <p>Eligible scores</p>
             <strong>{dashboard.scoring.eligibleSecurities}</strong>
-            <span>{dashboard.scoring.excludedSecurities} excluded by coverage</span>
+            <span>
+              {dashboard.scoring.excludedSecurities -
+                (dashboard.scoring.notApplicableSecurities ?? 0)}{" "}
+              excluded by coverage
+              {dashboard.scoring.notApplicableSecurities
+                ? ` · ${dashboard.scoring.notApplicableSecurities} ETFs not applicable`
+                : ""}
+            </span>
           </article>
           <article>
             <p>Average coverage</p>

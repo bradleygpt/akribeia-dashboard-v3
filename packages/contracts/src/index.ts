@@ -549,6 +549,8 @@ export const ScoreExclusionReasonSchema = z.enum([
   "below-minimum-coverage",
   "missing-required-pillar",
   "no-observed-weight",
+  // ETFs carry no stock-model pillars (model 3.1.0): V2's neutral placeholders are not scored.
+  "not-applicable-etf",
 ]);
 export type ScoreExclusionReason = z.infer<typeof ScoreExclusionReasonSchema>;
 
@@ -707,6 +709,8 @@ const ScoringSummarySchema = z
     eligibleNormalization: z.enum(["total-weight", "available-weight"]),
     eligibleSecurities: z.number().int().nonnegative(),
     excludedSecurities: z.number().int().nonnegative(),
+    /** ETFs among the excluded: outside the stock model, not failures of coverage. */
+    notApplicableSecurities: z.number().int().nonnegative().optional(),
     averageCoverage: z.number().min(0).max(1),
     factorCoverage: z.array(FactorCoverageSchema).length(SCORING_PILLARS.length),
   })
@@ -789,13 +793,21 @@ export const PublishedScoresArtifactSchema = z
     }
 
     const eligible = value.securities.filter(({ eligible }) => eligible).length;
+    // The model population excludes securities the stock model does not apply to (ETFs,
+    // model 3.1.0); coverage is reported over that population. Builds before 3.1.0 have none,
+    // so their formulas are unchanged.
+    const modelPopulation = value.securities.filter(
+      ({ exclusionReasons }) => !exclusionReasons.includes("not-applicable-etf"),
+    );
+    const notApplicable = value.securities.length - modelPopulation.length;
     const averageCoverage =
-      value.securities.reduce((sum, security) => sum + security.coverage, 0) /
-      value.securities.length;
+      modelPopulation.reduce((sum, security) => sum + security.coverage, 0) /
+      Math.max(1, modelPopulation.length);
 
     if (
       eligible !== value.scoring.eligibleSecurities ||
       value.securities.length - eligible !== value.scoring.excludedSecurities ||
+      notApplicable !== (value.scoring.notApplicableSecurities ?? 0) ||
       Math.abs(averageCoverage - value.scoring.averageCoverage) > 1e-12
     ) {
       context.addIssue({
@@ -805,10 +817,11 @@ export const PublishedScoresArtifactSchema = z
       });
     }
 
+    const populationSize = value.source.rowCount - notApplicable;
     value.scoring.factorCoverage.forEach((factor, index) => {
       if (
-        factor.availableSecurities + factor.missingSecurities !== value.source.rowCount ||
-        Math.abs(factor.coverage - factor.availableSecurities / value.source.rowCount) > 1e-12
+        factor.availableSecurities + factor.missingSecurities !== populationSize ||
+        Math.abs(factor.coverage - factor.availableSecurities / populationSize) > 1e-12
       ) {
         context.addIssue({
           code: z.ZodIssueCode.custom,
