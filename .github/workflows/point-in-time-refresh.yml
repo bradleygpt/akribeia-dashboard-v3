@@ -37,23 +37,27 @@ jobs:
 
       - run: npm ci
 
-      - name: Resolve the newest bulk data commit
+      # The newest V2 bake commit carries meta.json plus the akribeia-data commit (and
+      # per-file digests) V2 serves, so the ingest reads everything pinned to it. The
+      # deployed V2 app is not a source: it answers HTTP 402 DEPLOYMENT_DISABLED since
+      # 2026-10-14, which failed every run until this step stopped depending on it.
+      - name: Resolve the newest V2 bake commit
         id: source
         shell: bash
         run: |
-          data_commit=$(git ls-remote https://github.com/bradleygpt/akribeia-data.git HEAD | cut -f1)
-          if [[ ! "$data_commit" =~ ^[0-9a-f]{40}$ ]]; then
-            echo "Could not resolve the bulk data HEAD commit." >&2
+          v2_commit=$(git ls-remote https://github.com/bradleygpt/quant-dashboard-pro-v2.git HEAD | cut -f1)
+          if [[ ! "$v2_commit" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "Could not resolve the V2 HEAD commit." >&2
             exit 1
           fi
-          echo "data_commit=$data_commit" >> "$GITHUB_OUTPUT"
+          echo "v2_commit=$v2_commit" >> "$GITHUB_OUTPUT"
 
       - name: Ingest the current observation
         id: ingest
         shell: bash
         run: |
           before_build=$(node -p 'JSON.parse(require("node:fs").readFileSync("data/preview/vertical-slice-build.json","utf8")).buildId')
-          node scripts/ingest-v2-observation.node.mjs "${{ steps.source.outputs.data_commit }}"
+          node scripts/ingest-v2-observation.node.mjs --v2-commit "${{ steps.source.outputs.v2_commit }}"
           after_build=$(node -p 'JSON.parse(require("node:fs").readFileSync("data/preview/vertical-slice-build.json","utf8")).buildId')
           echo "before_build=$before_build" >> "$GITHUB_OUTPUT"
           echo "after_build=$after_build" >> "$GITHUB_OUTPUT"

@@ -40,6 +40,13 @@ keeps runtime deps only (`fill-range`); the upstream dev tooling (mocha, gulp-fo
 is stripped so it does not enter the tree. `scripts/security-audit.mjs` fails closed if the
 link or the patch is ever lost.
 
+**npm versions differ on it.** npm 11 skips the linked workspace in `npm audit`; npm 10 (the
+Node 22 line CI uses) audits it by version, reports braces 3.0.3 as a high production finding,
+and marks everything that reaches it (micromatch, fast-glob, vinext, ...) high as well. Once the
+guard has verified the link and the patch, the audit script discounts exactly that advisory on
+exactly `node_modules/braces` + `vendor/braces` and recomputes the dependents' severity through
+`via`, so both npm versions gate the same tree the same way.
+
 **Remove this** when braces publishes a release that fixes `GHSA-vfj7-8cjw-p6xm`: drop the
 workspace entry and this directory, let npm resolve braces from the registry, and replace the
 vendored-braces guard in `scripts/security-audit.mjs` with a version floor.

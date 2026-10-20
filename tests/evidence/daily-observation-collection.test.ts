@@ -6,6 +6,7 @@ import { join, resolve } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { DailyObservationCollectionReceiptSchema } from "@akribeia/contracts";
 import { classifyDailyObservationDate, collectDailyObservation } from "@akribeia/evidence";
+import { copyPublishedEvidenceInputs } from "./published-data";
 
 const directories: string[] = [];
 const attemptedAt = "2026-07-30T16:50:00.000Z";
@@ -145,7 +146,7 @@ describe("daily prospective observation collection", () => {
   it("fails before collection when the active dashboard no longer matches its receipt", async () => {
     const value = await temporaryRoot();
     const publishedDataRoot = join(value, "published-data");
-    await cp(resolve("apps/dashboard/public/data"), publishedDataRoot, { recursive: true });
+    await copyPublishedEvidenceInputs(publishedDataRoot);
     const pointer = JSON.parse(
       await readFile(join(publishedDataRoot, "active-build.json"), "utf8"),
     ) as { activeBuildId: string };
