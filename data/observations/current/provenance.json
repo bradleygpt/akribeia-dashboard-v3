@@ -1,40 +1,48 @@
 {
   "kind": "v2-point-in-time-observation",
-  "retrieved_at": "2026-10-02T11:20:58.621Z",
-  "observed_at": "2026-10-02T10:42:30.000Z",
+  "retrieved_at": "2026-10-20T14:52:54.346Z",
+  "observed_at": "2026-10-20T10:52:57.000Z",
   "bulk_data_repository": "bradleygpt/akribeia-data",
-  "bulk_data_commit": "27ec9e82d53ad7ae841395b7b04051bc000c5446",
+  "bulk_data_commit": "64e722ebb4cc20ee8c655b5026c21b641f8d74d6",
   "delivery": "commit-pinned jsDelivr",
-  "meta_url": "https://quant-dashboard-pro-v2.vercel.app/data/meta.json",
-  "v2_source_commit": "56b183d",
+  "meta_url": "https://raw.githubusercontent.com/bradleygpt/quant-dashboard-pro-v2/2ac4c6586980709c9118f58546d0b5a85ae3cc8b/public/data/meta.json",
+  "v2_source_commit": "abb0079",
+  "data_as_of": "2026-10-20T00:00:00Z",
+  "v2_repository": "bradleygpt/quant-dashboard-pro-v2",
+  "v2_commit": "2ac4c6586980709c9118f58546d0b5a85ae3cc8b",
+  "v2_blob_version": "20261020T145354Z",
+  "v2_blob_published_at": "2026-10-20T14:54:05+00:00",
   "files": {
     "universe_floor0.json": {
-      "sha256": "126bc5858b48fe2ffa04c0cf53eedd1a6a6289909029dc5fc86a93b04466711a",
-      "bytes": 1807856,
+      "sha256": "a98603c9c7792470d940a2558963a54904784b677900e25a088b28b3d0298edd",
+      "bytes": 1807884,
       "rows": 1362,
       "stocks": 1292,
       "etfs": 70,
-      "url": "https://cdn.jsdelivr.net/gh/bradleygpt/akribeia-data@27ec9e82d53ad7ae841395b7b04051bc000c5446/data/universe_floor0.json"
+      "url": "https://cdn.jsdelivr.net/gh/bradleygpt/akribeia-data@64e722ebb4cc20ee8c655b5026c21b641f8d74d6/data/universe_floor0.json",
+      "as_of": "2026-10-20"
     },
     "universe_floor1.json": {
-      "sha256": "3a334df9fd61c6ce833a32c8af4f9afeb40d6b6eb8b0605a1d897f94817236b9",
-      "bytes": 1711437,
+      "sha256": "7d2b4c4f2f98ac4a08772eb3ed426d38916b1f9546a6532107001c2fe2cbcf10",
+      "bytes": 1711459,
       "rows": 1289,
       "stocks": 1224,
       "etfs": 65,
-      "url": "https://cdn.jsdelivr.net/gh/bradleygpt/akribeia-data@27ec9e82d53ad7ae841395b7b04051bc000c5446/data/universe_floor1.json"
+      "url": "https://cdn.jsdelivr.net/gh/bradleygpt/akribeia-data@64e722ebb4cc20ee8c655b5026c21b641f8d74d6/data/universe_floor1.json",
+      "as_of": "2026-10-20"
     },
     "universe_floor10.json": {
-      "sha256": "8e87dd6a4a173a51bcadeec34d653aa433607b46ae4daa407dfd86eab8e876cc",
-      "bytes": 878528,
+      "sha256": "f88d3b9d1b6fa785c968ece715c7cde9d03decc77b7be2ed16288c77f6aacaba",
+      "bytes": 878531,
       "rows": 654,
       "stocks": 599,
       "etfs": 55,
-      "url": "https://cdn.jsdelivr.net/gh/bradleygpt/akribeia-data@27ec9e82d53ad7ae841395b7b04051bc000c5446/data/universe_floor10.json"
+      "url": "https://cdn.jsdelivr.net/gh/bradleygpt/akribeia-data@64e722ebb4cc20ee8c655b5026c21b641f8d74d6/data/universe_floor10.json",
+      "as_of": "2026-10-20"
     }
   },
   "meta": {
-    "sha256": "cbea3aa89128314617f0633d7750e773ce1f947498c2366c8855735f690eb3aa",
-    "bytes": 19556
+    "sha256": "24cf35a634426a6c591c4031b94fe0e42c56d31a99f330cd761bb9902f4911d9",
+    "bytes": 19554
   }
 }
