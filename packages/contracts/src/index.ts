@@ -111,6 +111,17 @@ export const ScreenerFilterSpecSchema = z
   .strict();
 export type ScreenerFilterSpec = z.infer<typeof ScreenerFilterSpecSchema>;
 
+// Every AI result names the build it was grounded in and when it was generated (README
+// principle 2; audit 2026-10-20, C5) -- the assist routes returned neither.
+const AiProvenanceSchema = z
+  .object({
+    buildId: z.string().min(1),
+    schemaVersion: z.string().min(1),
+    modelVersion: z.string().min(1),
+    generatedAt: IsoDateTimeSchema,
+  })
+  .strict();
+
 export const AiAssistResponseSchema = z.union([
   z
     .object({
@@ -119,6 +130,7 @@ export const AiAssistResponseSchema = z.union([
       filters: ScreenerFilterSpecSchema,
       externalModelUsed: z.literal(true),
       model: z.string().min(1),
+      provenance: AiProvenanceSchema,
     })
     .strict(),
   z
@@ -129,6 +141,7 @@ export const AiAssistResponseSchema = z.union([
       citations: z.array(z.string().min(1)).min(1),
       externalModelUsed: z.literal(true),
       model: z.string().min(1),
+      provenance: AiProvenanceSchema,
     })
     .strict(),
   z
@@ -140,6 +153,7 @@ export const AiAssistResponseSchema = z.union([
       citations: z.array(z.string().min(1)).min(1),
       externalModelUsed: z.literal(true),
       model: z.string().min(1),
+      provenance: AiProvenanceSchema,
     })
     .strict(),
   z

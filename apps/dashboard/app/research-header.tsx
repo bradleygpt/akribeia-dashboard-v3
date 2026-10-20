@@ -1,3 +1,11 @@
+import activeMaturity from "./generated/active-maturity.json";
+
+// Every research route shows the active build's maturity, so V2 composites and ratings are
+// never read as validated output (README principle 5; audit 2026-10-20, C10).
+const MATURITY_LABEL = activeMaturity.releaseEligible
+  ? "Release-eligible build"
+  : `Maturity: ${activeMaturity.currentLevel.replaceAll("-", " ")} · not release-eligible`;
+
 export function ResearchHeader({
   active,
 }: {
@@ -82,6 +90,7 @@ export function ResearchHeader({
       <div className="research-context-bar">
         <span>Wave 2 / Core research parity</span>
         <span>Preserved no-floor universe · live data fails closed</span>
+        <span data-maturity={activeMaturity.currentLevel}>{MATURITY_LABEL}</span>
       </div>
     </>
   );

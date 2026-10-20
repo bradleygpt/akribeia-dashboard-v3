@@ -623,6 +623,13 @@ describe("protected AI assist route", () => {
         filters: { sectors: ["Technology"], minScore: 8, maxCount: 25, sort: "score-desc" },
         externalModelUsed: true,
         model: "gemini-3.5-flash-lite",
+        // every AI result names its build, versions and generation time (audit C5)
+        provenance: {
+          buildId: ACTIVE_BUILD_ID,
+          schemaVersion: "3.0.0",
+          modelVersion: "3.0.0",
+          generatedAt: expect.stringMatching(/^\d{4}-\d{2}-\d{2}T/),
+        },
       });
       // the prompt grounds the mapping in the user query and the published sector vocabulary
       expect(calls).toHaveLength(1);

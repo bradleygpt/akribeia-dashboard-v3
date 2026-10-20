@@ -835,6 +835,15 @@ function portfolioAssistPrompt(facts: string): string {
   ].join("\n");
 }
 
+function assistProvenance(evidence: ActiveEvidence) {
+  return {
+    buildId: evidence.buildId,
+    schemaVersion: evidence.scores.schemaVersion,
+    modelVersion: evidence.scores.modelVersion,
+    generatedAt: new Date().toISOString(),
+  };
+}
+
 async function handleAiAssist(
   env: EvidenceApiEnv,
   request: Request,
@@ -890,6 +899,7 @@ async function handleAiAssist(
       filters,
       externalModelUsed: true,
       model: call.model,
+      provenance: assistProvenance(evidence),
     };
   }
 
@@ -940,6 +950,7 @@ async function handleAiAssist(
       citations: [...citations, `external-model:${call.model}`],
       externalModelUsed: true,
       model: call.model,
+      provenance: assistProvenance(evidence),
     };
   }
 
@@ -966,6 +977,7 @@ async function handleAiAssist(
     citations: [...citations, `external-model:${call.model}`],
     externalModelUsed: true,
     model: call.model,
+    provenance: assistProvenance(evidence),
   };
 }
 
