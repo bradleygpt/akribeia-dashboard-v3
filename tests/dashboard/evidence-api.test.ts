@@ -81,6 +81,20 @@ const ACTIVE_PORTFOLIO = (
   }
 ).portfolio;
 
+// Health ages the active build's data, so "healthy" is only true inside its window. Pin
+// the clock to an hour after the build's data date (or after the window for staleness).
+const ACTIVE_SOURCE = (
+  JSON.parse(
+    readFileSync(
+      resolvePath(`apps/dashboard/public/data/builds/${ACTIVE_BUILD_ID}/scores.json`),
+      "utf8",
+    ),
+  ) as { source: { observedAt: string; dataAsOf?: string; maxAgeSeconds: number } }
+).source;
+const ACTIVE_DATA_TIME = Date.parse(ACTIVE_SOURCE.dataAsOf ?? ACTIVE_SOURCE.observedAt);
+const FRESH_CLOCK = () => new Date(ACTIVE_DATA_TIME + 3_600_000);
+const STALE_CLOCK = () => new Date(ACTIVE_DATA_TIME + (ACTIVE_SOURCE.maxAgeSeconds + 1) * 1000);
+
 const RELIABLE_THESIS_TEXT =
   "MU carries the published composite score with complete factor coverage across all five " +
   "pillars, and its strongest weighted contributions come from the published momentum and " +
@@ -115,6 +129,7 @@ describe("protected evidence API", () => {
       new Request("https://akribeia.example/api/v3/health"),
       env(),
       limiter(),
+      FRESH_CLOCK,
     );
 
     expect(response?.status).toBe(200);
@@ -129,6 +144,44 @@ describe("protected evidence API", () => {
       },
       aiMode: "deterministic-evidence",
       externalModelConfigured: false,
+    });
+  });
+
+  it("degrades health when the active build's data is past its freshness window", async () => {
+    const response = await handleEvidenceApi(
+      new Request("https://akribeia.example/api/v3/health"),
+      env(),
+      limiter(),
+      STALE_CLOCK,
+    );
+
+    expect(response?.status).toBe(200);
+    await expect(response?.json()).resolves.toMatchObject({
+      status: "degraded",
+      buildId: ACTIVE_BUILD_ID,
+      checks: { lineage: "pass", freshness: "stale" },
+      freshness: {
+        status: "stale",
+        dataAsOf: ACTIVE_SOURCE.dataAsOf ?? ACTIVE_SOURCE.observedAt,
+        observedAt: ACTIVE_SOURCE.observedAt,
+        ageSeconds: ACTIVE_SOURCE.maxAgeSeconds + 1,
+        maxAgeSeconds: ACTIVE_SOURCE.maxAgeSeconds,
+      },
+    });
+  });
+
+  it("reports a fresh build's data date and age in health", async () => {
+    const response = await handleEvidenceApi(
+      new Request("https://akribeia.example/api/v3/health"),
+      env(),
+      limiter(),
+      FRESH_CLOCK,
+    );
+
+    await expect(response?.json()).resolves.toMatchObject({
+      status: "healthy",
+      checks: { freshness: "pass" },
+      freshness: { status: "current", ageSeconds: 3600 },
     });
   });
 
@@ -420,6 +473,7 @@ describe("protected evidence API", () => {
       new Request("https://akribeia.example/api/v3/health"),
       { ...env(), THESIS_GEMINI_API_KEY: "test-key" },
       limiter(),
+      FRESH_CLOCK,
     );
 
     await expect(response?.json()).resolves.toMatchObject({

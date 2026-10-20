@@ -1170,10 +1170,28 @@ async function routeProtectedRequest(
   }
 }
 
+// Health ages the active build's DATA against its own freshness window: the source
+// files' data date when the build records one, else the observation date. Stale data
+// that still passes every integrity check is "degraded" (HTTP 200: the evidence is
+// verified, just old); an integrity failure stays "unavailable" (HTTP 503).
+function activeFreshness(source: PublishedScoresArtifact["source"], now: Date) {
+  const dataAsOf = source.dataAsOf ?? source.observedAt;
+  const ageSeconds = Math.max(0, Math.floor((now.getTime() - Date.parse(dataAsOf)) / 1000));
+  return {
+    status: ageSeconds > source.maxAgeSeconds ? ("stale" as const) : ("current" as const),
+    dataAsOf,
+    dataAsOfRecorded: source.dataAsOf !== undefined,
+    observedAt: source.observedAt,
+    ageSeconds,
+    maxAgeSeconds: source.maxAgeSeconds,
+  };
+}
+
 export async function handleEvidenceApi(
   request: Request,
   env: EvidenceApiEnv,
   rateLimiter: RateLimiter = defaultRateLimiter,
+  clock: () => Date = () => new Date(),
 ): Promise<Response | null> {
   const pathname = new URL(request.url).pathname;
 
@@ -1188,9 +1206,10 @@ export async function handleEvidenceApi(
 
     try {
       const evidence = await loadActiveEvidence(env, request);
+      const freshness = activeFreshness(evidence.scores.source, clock());
 
       return jsonResponse({
-        status: "healthy",
+        status: freshness.status === "stale" ? "degraded" : "healthy",
         service: "akribeia-v3-evidence-api",
         buildId: evidence.buildId,
         schemaVersion: evidence.scores.schemaVersion,
@@ -1202,7 +1221,9 @@ export async function handleEvidenceApi(
           portfolioArtifact: "sha256-and-byte-size-pass",
           schemas: "pass",
           lineage: "pass",
+          freshness: freshness.status === "stale" ? "stale" : "pass",
         },
+        freshness,
         aiMode: "deterministic-evidence",
         externalModelConfigured: thesisConfigured(env),
       });
