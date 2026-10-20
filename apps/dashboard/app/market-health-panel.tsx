@@ -176,6 +176,7 @@ export function MarketHealthPanel({
     const macroData = staticData?.macro_data;
     const signals = staticData?.macro_signals?.signals ?? [];
     const realCurve = signal(signals, "T10Y2Y");
+    const realCurveDate = signals.find((candidate) => candidate.id === "T10Y2Y")?.date ?? null;
     const hyOas = signal(signals, "BAMLH0A0HYM2");
     const liveCurve = response?.live.yields.ok ? (response.live.yields.spread ?? null) : null;
     const macro = macroData ? computeMacroHealth(macroData, realCurve ?? liveCurve, hyOas) : null;
@@ -211,6 +212,7 @@ export function MarketHealthPanel({
       macroData,
       signals,
       realCurve,
+      realCurveDate,
       hyOas,
       macro,
       overall,
@@ -441,7 +443,12 @@ export function MarketHealthPanel({
         </article>
       </div>
 
-      <LiveGauges response={view.response} hyOas={view.hyOas} realCurve={view.realCurve} />
+      <LiveGauges
+        response={view.response}
+        hyOas={view.hyOas}
+        realCurve={view.realCurve}
+        realCurveDate={view.realCurveDate}
+      />
       <SupportingMarketHealth response={view.response} signals={view.signals} />
 
       <div className="market-health-provenance">
@@ -463,10 +470,12 @@ function LiveGauges({
   response,
   hyOas,
   realCurve,
+  realCurveDate,
 }: {
   response: MarketHealthApiResponse | null;
   hyOas: number | null;
   realCurve: number | null;
+  realCurveDate: string | null;
 }) {
   const [indexSort, setIndexSort] = useState<IndexSort>({
     key: "name",
@@ -490,7 +499,9 @@ function LiveGauges({
       value: live?.yields.ok ? percentage(live.yields.y10, 2) : "Unavailable",
       note:
         realCurve !== null
-          ? `10Y–2Y ${percentage(realCurve, 2, true)}`
+          ? // The spread is FRED's baked T10Y2Y, not live: date it beside the live yield
+            // (audit 2026-10-20, B13).
+            `10Y–2Y ${percentage(realCurve, 2, true)}${realCurveDate ? ` (FRED, ${realCurveDate})` : ""}`
           : live?.yields.ok
             ? `V2 fallback spread ${percentage(live.yields.spread, 2, true)}`
             : "Curve unavailable",

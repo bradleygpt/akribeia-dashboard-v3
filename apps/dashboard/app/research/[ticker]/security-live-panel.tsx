@@ -258,7 +258,7 @@ export function SecurityLivePanel({
         <div className="security-live-state" aria-live="polite" role="status">
           <strong>Loading the live quote and daily history…</strong>
           <span>
-            Price source: {snapshotPrice === null ? "unavailable" : "as_of"} ·{" "}
+            Price source: {snapshotPrice === null ? "unavailable" : "research snapshot"} ·{" "}
             {formatMoney(snapshotPrice)} · {snapshotAsOf}
           </span>
         </div>

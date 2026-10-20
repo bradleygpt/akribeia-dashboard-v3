@@ -164,9 +164,17 @@ export function FullUniverseExplorer({
                       <span>{row.industry}</span>
                     </td>
                     <td>{marketCap(row.marketCapB)}</td>
-                    <td>{row.composite === null ? "Unavailable" : row.composite.toFixed(2)}</td>
                     <td>
-                      <span className="universe-rating">{row.rating}</span>
+                      {row.isEtf
+                        ? "N/A"
+                        : row.composite === null
+                          ? "Unavailable"
+                          : row.composite.toFixed(2)}
+                    </td>
+                    <td>
+                      <span className="universe-rating">
+                        {row.isEtf ? "Not applicable (ETF)" : row.rating}
+                      </span>
                     </td>
                   </tr>
                 ))}

@@ -1,6 +1,7 @@
 import { ResearchHeader } from "../research-header";
 import { loadResearchUniverse } from "../research-data";
 import { ResearchWorkbench } from "./research-workbench";
+import { GOVERNED_SECURITY_EXCLUSIONS } from "../security-exclusions";
 
 export const metadata = {
   title: "Core Research Workbench — Akribeia",
@@ -41,7 +42,7 @@ export default function ResearchPage() {
             </div>
             <div>
               <dt>Product exclusions</dt>
-              <dd>0</dd>
+              <dd>{GOVERNED_SECURITY_EXCLUSIONS.length}</dd>
             </div>
           </dl>
         </section>

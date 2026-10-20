@@ -26,7 +26,9 @@ export const ACTIVE_STRATEGIES: readonly ActiveStrategy[] = [
   {
     name: "Kairos",
     factor: "Event momentum",
-    note: "Paper-only sleeve; replaced Aristeia on 2026-08-11.",
+    // Not "paper-only": its pinned book has been LIVE since 2026-09-01; the book chip states
+    // the current book type (audit 2026-10-20, B7).
+    note: "Replaced Aristeia on 2026-08-11.",
   },
 ] as const;
 

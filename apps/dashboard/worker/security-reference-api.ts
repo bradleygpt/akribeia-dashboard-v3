@@ -1,5 +1,6 @@
+import { BULK_DATA_COMMIT } from "./bulk-data-pin";
+
 const SECURITY_REFERENCE_PATH = "/api/v3/security-reference";
-const BULK_DATA_COMMIT = "9f2d2322fc52847e435dbb6a83137712788f5b52";
 const DATA_BASE = `https://cdn.jsdelivr.net/gh/bradleygpt/akribeia-data@${BULK_DATA_COMMIT}/data`;
 const RAW_DATA_BASE = `https://raw.githubusercontent.com/bradleygpt/akribeia-data/${BULK_DATA_COMMIT}/data`;
 const TICKER_PATTERN = /^[A-Z0-9][A-Z0-9.-]{0,14}$/;

@@ -383,7 +383,12 @@ export function MarketHealthDashboard() {
             <div>
               <p className="mono-label">PROSPECTIVE VALIDATION / LIVE CLOCK</p>
               <h2 id="prospective-readiness-heading">
-                One day recorded. Twenty-nine still must happen.
+                {/* Counted from the ledger: the heading said "One day recorded" at 9 / 30
+                    (audit 2026-10-20, B4). */}
+                {prospectiveReadiness.progress.uniqueObservationDayCount}{" "}
+                {prospectiveReadiness.progress.uniqueObservationDayCount === 1 ? "day" : "days"}{" "}
+                recorded. {prospectiveReadiness.progress.remainingObservationDayCount} still must
+                happen.
               </h2>
               <p>
                 The repository can receipt a daily research build, but elapsed calendar evidence

@@ -196,7 +196,12 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /Eight candidates\. No benchmark return/);
   assert.match(html, /SPLG and SPY remain unmatched/);
   assert.match(html, /Price change is not return/);
-  assert.match(html, /One day recorded\. Twenty-nine still must happen/);
+  assert.match(
+    html.replaceAll("<!-- -->", ""),
+    new RegExp(
+      `${PROSPECTIVE_PROGRESS.uniqueObservationDayCount} days? recorded\\. ${PROSPECTIVE_PROGRESS.remainingObservationDayCount} still must happen`,
+    ),
+  );
   assert.match(html, /Immutable observation days/);
   assert.match(html, /Executable portfolios/);
   assert.match(html, /Costed returns/);
