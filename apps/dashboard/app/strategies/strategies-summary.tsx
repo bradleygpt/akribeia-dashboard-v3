@@ -51,7 +51,10 @@ interface Row {
   cagr: number;
   sharpe: number;
   maxdd: number;
-  spy: number;
+  /** What the CAGR/Sharpe measure: c78q's net backtest, the quant sleeves' in-sample run. */
+  basis: string;
+  /** The sleeve's own pinned caveats (V2 strategy JSON caveats[] / c78q data_caveat). */
+  caveats: string[];
   tickers: string[];
   next: string;
   bookType: BookType;
@@ -96,7 +99,8 @@ function summaryRow(
       cagr: (bt.net_cagr ?? NaN) * 100,
       sharpe: bt.sharpe ?? NaN,
       maxdd: (bt.max_drawdown ?? NaN) * 100,
-      spy: (bt.spy_cagr ?? NaN) * 100,
+      basis: "net backtest",
+      caveats: typeof d.data_caveat === "string" ? [d.data_caveat] : [],
       tickers,
       ...schedOf(sched, statusEntry, d.state?.next_rebalance),
       bookType: resolveBookType(statusEntry, d.target?.book_type),
@@ -118,7 +122,10 @@ function summaryRow(
     cagr: m.cagr ?? NaN,
     sharpe: m.sharpe ?? NaN,
     maxdd: m.max_dd ?? NaN,
-    spy: d.metrics?.spy_cagr ?? NaN,
+    basis: "in-sample",
+    caveats: Array.isArray(d.caveats)
+      ? d.caveats.filter((c: unknown): c is string => typeof c === "string")
+      : [],
     tickers,
     ...schedOf(sched, statusEntry, d.next_rebalance),
     bookType: resolveBookType(statusEntry, ch?.book_type),
@@ -130,8 +137,8 @@ function summaryRow(
 interface Basket {
   full: { cagr: number; sharpe: number; max_dd: number };
   deployable: { cagr: number; sharpe: number; max_dd: number };
-  spy_cagr: number;
   n: number;
+  strategies?: string[];
 }
 
 export function TotalBasketHero() {
@@ -143,7 +150,7 @@ export function TotalBasketHero() {
           <p className="mono-label">TOTAL BASKET / EQUAL-WEIGHT POOLED</p>
           <h2 id="basket-heading">Consolidated basket record</h2>
         </div>
-        <span>Backtest research record, not a forward guarantee</span>
+        <span>Backtest research record: a survivor-biased upper bound, not an achieved return</span>
       </div>
       {basket === null ? (
         <p className={styles.refLoading} role="status">
@@ -157,7 +164,9 @@ export function TotalBasketHero() {
         <div className={styles.basketHero}>
           <div>
             <div className={styles.basketTitle}>
-              ▣ Total basket — all {basket.n} strategies, equal-weight pooled
+              ▣ Total basket —{" "}
+              {basket.strategies?.length ? basket.strategies.join(", ") : `${basket.n} strategies`},
+              equal-weight pooled
             </div>
             <div className={styles.basketNote}>
               The consolidated book (2011–2026 backtest). Deployable = excluding &gt;10% SPY
@@ -170,7 +179,7 @@ export function TotalBasketHero() {
               <div className={`${styles.kpiValue} ${styles.kpiPos}`}>
                 {basket.full.cagr.toFixed(1)}%
               </div>
-              <div className={styles.kpiSub}>vs SPY {basket.spy_cagr.toFixed(1)}%</div>
+              <div className={styles.kpiSub}>backtest · survivor-biased upper bound</div>
             </div>
             <div>
               <div className={styles.kpiLabel}>Sharpe</div>
@@ -228,7 +237,10 @@ export function StrategySummaryTable({ statusMap }: { statusMap: StratStatusMap 
           <p className="mono-label">SUMMARY METRICS / PER SLEEVE</p>
           <h2 id="summary-heading">Strategy summary</h2>
         </div>
-        <span>Backtest CAGRs are research records, not forward guarantees</span>
+        <span>
+          Backtest and in-sample records on survivors-only free data: upper bounds, never achieved
+          or expected returns, and no claim to beat the market
+        </span>
       </div>
       {rows === null ? (
         <p className={styles.refLoading} role="status">
@@ -251,7 +263,7 @@ export function StrategySummaryTable({ statusMap }: { statusMap: StratStatusMap 
                     Book
                   </th>
                   <th scope="col">Backtest CAGR</th>
-                  <th scope="col">vs SPY</th>
+                  <th scope="col">Basis</th>
                   <th scope="col">Sharpe</th>
                   <th scope="col">Max DD</th>
                   <th scope="col" className={styles.thLeft}>
@@ -262,7 +274,6 @@ export function StrategySummaryTable({ statusMap }: { statusMap: StratStatusMap 
               </thead>
               <tbody>
                 {rows.map((r) => {
-                  const excess = r.cagr - r.spy;
                   const factor = strategyFactorLabel(r.def.label);
                   return (
                     <tr key={r.def.key}>
@@ -276,13 +287,7 @@ export function StrategySummaryTable({ statusMap }: { statusMap: StratStatusMap 
                       <td className={styles.numStrong}>
                         {isNaN(r.cagr) ? "—" : `${r.cagr.toFixed(1)}%`}
                       </td>
-                      <td
-                        className={
-                          isNaN(excess) ? undefined : excess >= 0 ? styles.numPos : styles.numNeg
-                        }
-                      >
-                        {isNaN(excess) ? "—" : `${excess >= 0 ? "+" : ""}${excess.toFixed(1)}%`}
-                      </td>
+                      <td>{r.basis}</td>
                       <td>{isNaN(r.sharpe) ? "—" : r.sharpe.toFixed(2)}</td>
                       <td className={styles.numNeg}>
                         {isNaN(r.maxdd) ? "—" : `${r.maxdd.toFixed(0)}%`}
@@ -324,8 +329,8 @@ export function StrategySummaryTable({ statusMap }: { statusMap: StratStatusMap 
           <p className={styles.vizFootnote}>
             <span className={styles.liveTag}>● LIVE</span> = broker-confirmed positions;{" "}
             <span className={styles.paperTag}>◌ PAPER</span> = signal-derived research book, never
-            held at a broker. Quant strategies rebalance every fixed hold-window; live sleeves
-            rebalance the first trading day of each month.
+            held at a broker. Each sleeve&apos;s next rebalance and model come from the pinned
+            rebalance schedule (right column).
             {scouts.length > 0 && (
               <>
                 {" "}
@@ -334,6 +339,21 @@ export function StrategySummaryTable({ statusMap }: { statusMap: StratStatusMap 
               </>
             )}
           </p>
+          <details className={styles.vizFootnote}>
+            <summary>Each sleeve&apos;s own caveats (from its pinned strategy file)</summary>
+            {rows.map((r) =>
+              r.caveats.length ? (
+                <div key={r.def.key}>
+                  <strong>{r.engine}</strong>
+                  <ul>
+                    {r.caveats.map((caveat) => (
+                      <li key={caveat}>{caveat}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null,
+            )}
+          </details>
         </>
       )}
     </section>

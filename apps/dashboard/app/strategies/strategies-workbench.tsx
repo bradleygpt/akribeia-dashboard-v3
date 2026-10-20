@@ -378,7 +378,7 @@ export function StrategiesWorkbench() {
                               ticker: "Security",
                               daily: "Daily",
                               rebalance: "Since rebalance",
-                              alltime: "All time",
+                              alltime: "Full backtest window",
                             }[key]
                           }
                           <span aria-hidden="true">{direction === "descending" ? "↓" : "↑"}</span>

@@ -351,6 +351,16 @@ const BRACKET_LEAK =
   /\[[^\]]*?(bullet|sentence|disclosed|e\.g\.|insert|specific number|one of\s*:|if known|if given|X\.X|Y%|placeholder|most important|net effect)[^\]]*?\]/i;
 /** leftover numeric placeholders such as "X.X" or "Y%" mark an ungrounded generation. */
 const PLACEHOLDER_LEAK = /\$?X\.X{1,2}\b|\bY%/i;
+/**
+ * Performance claims are never publishable: the evidence is survivor-biased free data, so no
+ * surface may say the model, a strategy or a security beat or will beat anything (audit
+ * 2026-10-20, D8). A generation that makes one fails closed to the deterministic text.
+ */
+const PERFORMANCE_CLAIM =
+  /\b(?:outperform\w*|underperform\w*|beat(?:s|ing)?\s+(?:the\s+)?(?:market|index|benchmark|s&p|spy)|market-beating|generat\w*\s+alpha|alpha\s+of|cagr|annuali[sz]ed\s+return|guarantee\w*)\b/i;
+const PERFORMANCE_BAN =
+  "Never state or imply that this security, the model, a strategy or the portfolio has " +
+  "achieved, will achieve, or beats any return, index or benchmark.";
 
 function thesisEndpoint(model: string): string {
   return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
@@ -386,7 +396,7 @@ function reliableNarrative(text: string, requiredToken: string | null): boolean 
     return false;
   }
 
-  return !BRACKET_LEAK.test(text) && !PLACEHOLDER_LEAK.test(text);
+  return !BRACKET_LEAK.test(text) && !PLACEHOLDER_LEAK.test(text) && !PERFORMANCE_CLAIM.test(text);
 }
 
 type ExternalModelCall =
@@ -516,6 +526,7 @@ function thesisPrompt(
     "Use ONLY the published figures provided here. Do not introduce any other",
     "numbers, price targets, forecasts, or market data. Do not give investment",
     "advice or recommendations. Plain prose, no headers, no lists.",
+    PERFORMANCE_BAN,
     "",
     `Ticker: ${security.ticker}`,
     `Sector: ${security.sector}`,
@@ -755,6 +766,7 @@ function researchPrompt(ticker: string, facts: string): string {
     "Quote percentage figures exactly as given above; never convert, rescale,",
     "or re-derive any number. Every claim must trace to the DATA above.",
     "Do not give investment advice or recommendations to buy or sell.",
+    PERFORMANCE_BAN,
     "Never output square brackets or placeholder text.",
   ].join("\n");
 }
@@ -816,6 +828,7 @@ function portfolioAssistPrompt(facts: string): string {
     "weights sit close to their caps, and how the weighted average score reads.",
     "Use ONLY the published figures provided here. Never invent figures,",
     "tickers, or market data. Do not give investment advice or recommendations.",
+    PERFORMANCE_BAN,
     "Plain prose, no headers, no lists.",
     "",
     facts,

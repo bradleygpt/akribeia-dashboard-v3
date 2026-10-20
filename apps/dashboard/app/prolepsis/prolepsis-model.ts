@@ -9,8 +9,9 @@
 export const RANKING_EXPLAINER =
   "Relative-attractiveness ranking, not an expected return. The ensemble's raw return " +
   "outputs are mechanically conservative (regression toward the mean compresses the " +
-  "range), so magnitudes are not meaningful — the cross-sectional ranking is what the " +
-  "model validates on.";
+  "range), so magnitudes are not meaningful — the cross-sectional ranking is what V2 " +
+  "evaluates the model on. It is an experimental research output that V3 governance has " +
+  "not validated.";
 
 // "0.948" -> "95th"; "0.998" -> "99.8th" (one decimal only when it changes the story)
 export function fmtPercentile(rank: number): string {

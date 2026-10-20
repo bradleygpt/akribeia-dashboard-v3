@@ -783,6 +783,12 @@ describe("protected AI assist route", () => {
         "caps, with the weighted average composite score at X.X for the constrained portfolio, " +
         "which suggests rebalancing toward the under-weighted published sectors over time.",
     ],
+    [
+      "a reply claiming performance",
+      "The book is concentrated in its largest holdings and the sector weights run near their " +
+        "caps; on the published composite scores this constrained portfolio should outperform " +
+        "the market, which supports keeping the current weights through the next rebalance.",
+    ],
   ])("rejects %s through the reliability gate", async (_case, reply) => {
     vi.stubGlobal(
       "fetch",

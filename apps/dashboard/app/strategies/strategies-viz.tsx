@@ -1084,8 +1084,9 @@ function StrategiesHub({ statusMap }: { statusMap?: StratStatusMap }) {
       <VizSection eyebrow="STRATEGIES HUB / GROWTH OF 100" title="Strategies hub" note={winLabel}>
         <p className={styles.vizSub}>
           Every curve re-indexes to 100 at the brushed window&apos;s start ({winLabel}) on ONE log
-          axis. Solid = LIVE broker book today; dashed = PAPER research book. SPY = gray reference.
-          Drag the brush to scope the ribbon + heatmap below.
+          axis. Every curve is the sleeve&apos;s backtest history (a survivor-biased upper bound),
+          not live performance; solid only marks a sleeve whose book is LIVE today, dashed a PAPER
+          book. SPY = gray reference. Drag the brush to scope the ribbon + heatmap below.
         </p>
         <Suspense fallback={chartLoading}>
           <HubChart

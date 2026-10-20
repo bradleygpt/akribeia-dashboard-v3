@@ -64,9 +64,13 @@ export function SignatureCard({
         <span className={styles.name}>{name}</span>
         <span className={styles.greek}>{greek}</span>
         {tag ? <span className={styles.tag}>{tag}</span> : null}
-        <span className={styles.stats}>
-          CAGR {stats ? stats.cagr : "—"} ·{" "}
-          <span className={styles.statsSharpe}>Sharpe {stats ? stats.sharpe : "—"}</span>
+        <span
+          className={styles.stats}
+          title="Backtest figures on a survivors-only universe: an upper bound, not an achieved return"
+        >
+          Backtest CAGR {stats ? stats.cagr : "—"} ·{" "}
+          <span className={styles.statsSharpe}>Sharpe {stats ? stats.sharpe : "—"}</span> ·
+          survivor-biased
         </span>
         <span className={chipLive ? `${styles.chip} ${styles.chipLive}` : styles.chip}>
           {chipLabel}

@@ -365,8 +365,9 @@ export function ProlepsisWorkbench() {
             The 12-month score is a percentile ranking of relative attractiveness across the
             universe — not an expected return or price target. The ensemble's raw return outputs are
             mechanically conservative, so magnitudes carry no information; the cross-sectional
-            ranking is the validated output. P(beat) is the separate binary classifier's probability
-            of outperforming over 12 months.
+            ranking is the output V2 evaluates — an experimental research output, not validated by
+            V3 governance (research preview). P(beat) is the separate binary classifier's
+            probability of outperforming over 12 months.
           </p>
         </div>
         <dl>
