@@ -41,7 +41,11 @@ interface Fixture {
 }
 
 function fixture(
-  options: { asOf?: Record<number, string | undefined>; corruptDigest?: number } = {},
+  options: {
+    asOf?: Record<number, string | undefined>;
+    corruptDigest?: number;
+    generatedAt?: string;
+  } = {},
 ): Fixture {
   const root = mkdtempSync(join(tmpdir(), "akribeia-ingest-"));
   roots.push(root);
@@ -56,8 +60,9 @@ function fixture(
       ...(asOf === undefined ? {} : { as_of: asOf }),
     };
   }
-  // V2 bake stamps are UTC without a zone; one hour old keeps the 48 h run check green.
-  const generatedAt = new Date(Date.now() - 3_600_000).toISOString().slice(0, 19);
+  // The bake stamps UTC with a Z (since 2026-10-20); one hour old keeps the 48 h check green.
+  const generatedAt =
+    options.generatedAt ?? `${new Date(Date.now() - 3_600_000).toISOString().slice(0, 19)}Z`;
   files[`${RAW}/meta.json`] = JSON.stringify({
     generated_at: generatedAt,
     source_commit: "abc1234",
@@ -145,6 +150,34 @@ describe("V2 observation ingest", () => {
     expect(readFileSync(join(root, "data/preview/vertical-slice-build.json"), "utf8")).toBe(
       recipeBefore,
     );
+  });
+
+  it("records a legacy zone-less stamp at the bake host's Eastern instant", () => {
+    // An older bake's naive Eastern wall time for one hour ago.
+    const instant = new Date(Math.floor((Date.now() - 3_600_000) / 1000) * 1000);
+    const parts = Object.fromEntries(
+      new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/New_York",
+        hourCycle: "h23",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      })
+        .formatToParts(instant)
+        .map(({ type, value }) => [type, value]),
+    );
+    const wall = `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}:${parts.second}`;
+    const { root, run } = fixture({ generatedAt: wall });
+    const result = run();
+
+    expect(result.status, String(result.stderr)).toBe(0);
+    const provenance = JSON.parse(
+      readFileSync(join(root, "data/observations/current/provenance.json"), "utf8"),
+    );
+    expect(provenance.observed_at).toBe(instant.toISOString());
   });
 
   it("refuses a pin without a data date", () => {
