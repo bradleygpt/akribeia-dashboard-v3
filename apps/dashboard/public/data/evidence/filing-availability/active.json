@@ -1,16 +1,16 @@
 {
   "reportSchemaVersion": "1.0.0",
-  "buildId": "preview-20261001-pipeline-v5-47090bdd37fe",
+  "buildId": "preview-20261002-pipeline-v5-8e87dd6a4a17",
   "modelVersion": "3.0.0",
-  "generatedAt": "2026-10-01T11:48:24.616Z",
-  "decisionCutoffAt": "2026-10-01T11:11:14Z",
+  "generatedAt": "2026-10-02T11:21:12.617Z",
+  "decisionCutoffAt": "2026-10-02T10:42:30Z",
   "status": "partial-retrospective-metadata",
   "historicalValidationEligible": false,
   "sourceReceipt": {
-    "path": "data/reference/sec/filing-submissions/2026-10-01/receipt.json",
-    "sha256": "8be189faf5c0f94862141ee7e1d043de2a1607ee5d8cfd0cf85c8002b9ad0417",
-    "snapshotId": "2026-10-01",
-    "retrievedAt": "2026-10-01T11:48:24.616Z"
+    "path": "data/reference/sec/filing-submissions/2026-10-02/receipt.json",
+    "sha256": "c9c51217d807cd6f21112f42ebaa37985630b162759f1e0c301e06cef450cfc1",
+    "snapshotId": "2026-10-02",
+    "retrievedAt": "2026-10-02T11:21:12.617Z"
   },
   "selection": {
     "policy": "dashboard-top-scores-and-active-portfolio",
@@ -284,7 +284,7 @@
         "form": "10-Q",
         "filingDate": "2026-07-23",
         "reportDate": "2026-06-30",
-        "acceptedAt": "2026-07-23T20:46:06.000Z",
+        "acceptedAt": "2026-07-24T00:46:06.000Z",
         "primaryDocument": "nem-20260630.htm",
         "availabilityBasis": "edgar-acceptance-time",
         "eligibleAtCutoff": true
@@ -294,7 +294,7 @@
         "form": "8-K",
         "filingDate": "2026-08-20",
         "reportDate": "2026-08-20",
-        "acceptedAt": "2026-08-20T20:17:00.000Z",
+        "acceptedAt": "2026-08-21T00:17:00.000Z",
         "primaryDocument": "tm2623668d1_8k.htm",
         "availabilityBasis": "edgar-acceptance-time",
         "eligibleAtCutoff": true
@@ -312,7 +312,7 @@
         "form": "10-Q",
         "filingDate": "2026-07-23",
         "reportDate": "2026-06-30",
-        "acceptedAt": "2026-07-23T00:25:25.000Z",
+        "acceptedAt": "2026-07-23T04:25:25.000Z",
         "primaryDocument": "pcg-20260630.htm",
         "availabilityBasis": "edgar-acceptance-time",
         "eligibleAtCutoff": true
@@ -322,7 +322,7 @@
         "form": "8-K",
         "filingDate": "2026-08-31",
         "reportDate": "2026-08-31",
-        "acceptedAt": "2026-08-31T12:00:27.000Z",
+        "acceptedAt": "2026-08-31T16:00:27.000Z",
         "primaryDocument": "pcg-8k_083126.htm",
         "availabilityBasis": "edgar-acceptance-time",
         "eligibleAtCutoff": true
