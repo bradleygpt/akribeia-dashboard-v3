@@ -84,7 +84,9 @@ export async function handleSecurityReferenceApi(
       400,
     );
   }
-  if (!(requestedKind in KINDS)) {
+  // Own keys only: `in` also accepts inherited names (__proto__, constructor, toString),
+  // and KINDS["__proto__"](ticker) threw outside the try below.
+  if (!Object.hasOwn(KINDS, requestedKind)) {
     return json(
       { ok: false, error: { code: "invalid_kind", message: "Reference kind is invalid." } },
       400,

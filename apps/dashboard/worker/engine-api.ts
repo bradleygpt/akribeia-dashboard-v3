@@ -152,7 +152,13 @@ async function proxyUpstream(
   let upstream: Response;
 
   try {
-    upstream = await fetcher(url, { ...init, signal: AbortSignal.timeout(timeoutMs) });
+    // Never follow a redirect: the request carries the engine bearer token, and a
+    // redirect to another origin would take it along. A 3xx is an invalid reply.
+    upstream = await fetcher(url, {
+      ...init,
+      redirect: "manual",
+      signal: AbortSignal.timeout(timeoutMs),
+    });
   } catch {
     return jsonResponse(
       {
@@ -160,6 +166,19 @@ async function proxyUpstream(
         error: { code: "engine_unreachable", message: "The markets engine did not respond." },
       },
       503,
+    );
+  }
+
+  if (upstream.status >= 300 && upstream.status < 400) {
+    return jsonResponse(
+      {
+        ok: false,
+        error: {
+          code: "engine_invalid_response",
+          message: `The markets engine answered with a redirect (HTTP ${upstream.status}).`,
+        },
+      },
+      502,
     );
   }
 

@@ -287,6 +287,28 @@ describe("markets engine proxy", () => {
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 
+  it("never follows an upstream redirect carrying the bearer credential", async () => {
+    const inits: RequestInit[] = [];
+    const response = await handleEngineApi(resultRequest("job-1"), CONFIGURED, {
+      fetcher: (async (_input: RequestInfo | URL, init?: RequestInit) => {
+        inits.push(init ?? {});
+        return new Response(null, {
+          status: 302,
+          headers: { location: "https://elsewhere.example/steal" },
+        });
+      }) as typeof fetch,
+      rateLimiter: limiter(),
+    });
+
+    expect(inits).toHaveLength(1);
+    expect(inits[0].redirect).toBe("manual");
+    expect(response?.status).toBe(502);
+    await expect(response?.json()).resolves.toMatchObject({
+      ok: false,
+      error: { code: "engine_invalid_response" },
+    });
+  });
+
   it("fails closed as unreachable when upstream errors or returns non-JSON", async () => {
     const failing = await handleEngineApi(resultRequest("job-1"), CONFIGURED, {
       fetcher: (async () => {
