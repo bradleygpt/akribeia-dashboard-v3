@@ -97,6 +97,14 @@ test("server-renders a dedicated ETF detail route", async () => {
   assert.match(html, /Loading pinned ETF holdings and classification/);
 });
 
+test("names the requested fund, not SPY, in the ETF factor contract", async () => {
+  const response = await render("/etfs/QQQ");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  assert.match(html, /presented as a corrected <!-- -->QQQ<!-- --> grade/);
+  assert.doesNotMatch(html, /corrected SPY grade/);
+});
+
 test("routes direct Research ETF details through the fail-closed ETF experience", async () => {
   const response = await render("/research/SPY");
   assert.equal(response.status, 200);
@@ -170,4 +178,7 @@ test("server-renders the recovered device-local Portfolio and Monte Carlo route"
   assert.match(html, /DETERMINISTIC V2 METHOD/);
   assert.match(html, /not a forecast or guarantee/i);
   assert.match(html, /href="\/portfolio" aria-current="page"/);
+  // The as-of date is the observation date, never a blank or a serialized undefined.
+  assert.match(html, /values from <!-- -->\d{4}-\d{2}-\d{2}<!-- -->;/);
+  assert.doesNotMatch(html, /\\"asOf\\":\\"\$undefined\\"/);
 });

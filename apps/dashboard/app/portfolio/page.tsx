@@ -26,7 +26,7 @@ export default function PortfolioPage() {
             guarantee.
           </p>
         </section>
-        <PortfolioWorkbench rows={universe.rows} asOf={universe.source.asOf} />
+        <PortfolioWorkbench rows={universe.rows} asOf={universe.source.publishedAt.slice(0, 10)} />
         <footer className="research-route-footer">
           <span>Device-local inputs · approved V2 displayed artifact</span>
           <span>No upload · no source/model mutation · not investment advice</span>

@@ -104,7 +104,7 @@ export default async function EtfDetailPage({ params }: PageProps) {
               <span>
                 The approved V2 source states that ETFs do not receive 5-pillar factor grades.
                 Generic-shard neutral values and grades are suppressed rather than presented as a
-                corrected SPY grade. Source commit b477349a8691; snapshot {snapshotAsOf}.
+                corrected {fund.ticker} grade. Source commit b477349a8691; snapshot {snapshotAsOf}.
               </span>
             </div>
           </section>
