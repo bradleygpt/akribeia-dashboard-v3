@@ -12,7 +12,10 @@ export const PILLARS: readonly Pillar[] = [
 
 export type MissingDataPolicy = "require-complete" | "renormalize-explicitly";
 export type ScoreExclusionReason =
-  "below-minimum-coverage" | "missing-required-pillar" | "no-observed-weight";
+  | "below-minimum-coverage"
+  | "missing-required-pillar"
+  | "no-observed-weight"
+  | "not-applicable-etf";
 
 export interface PillarContribution {
   pillar: Pillar;

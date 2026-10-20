@@ -37,6 +37,17 @@ const SCORE_WEIGHTS: PillarWeights = {
   momentum: 0.2,
   revisions: 0.2,
 };
+// ETFs carry no stock-model pillars; the V2 shard fills them with neutral placeholders
+// (7.0 across the board), which must never become a score or a rank (model 3.1.0, owner
+// decision 2026-10-20).
+const ETF_SECTOR = "ETF";
+const NO_PILLAR_VALUES: PillarValues = {
+  valuation: null,
+  growth: null,
+  profitability: null,
+  momentum: null,
+  revisions: null,
+};
 const MAX_POSITION_WEIGHT = 0.12;
 const MAX_SECTOR_WEIGHT = 0.3;
 const NOTICE =
@@ -303,6 +314,22 @@ export async function runVerticalSlice(
 
   const sourceHash = sha256(sourcePayload);
   const scored: ScoredSecurity[] = snapshot.rows.map((row) => {
+    if (row.sector === ETF_SECTOR) {
+      const result = calculateCoverageAwareComposite(NO_PILLAR_VALUES, SCORE_WEIGHTS, {
+        minimumCoverage: 1,
+        missingDataPolicy: "require-complete",
+      });
+      return {
+        ticker: row.ticker,
+        name: row.name,
+        sector: row.sector,
+        industry: row.industry,
+        ...result,
+        exclusionReasons: ["not-applicable-etf" as const],
+        price: row.price,
+        marketCapB: row.marketCapB,
+      };
+    }
     const values: PillarValues = {
       valuation: row.pillars.Valuation,
       growth: row.pillars.Growth,
@@ -350,7 +377,9 @@ export async function runVerticalSlice(
   const eligibleByTicker = new Map(
     eligible.map((security) => [security.ticker, security] as const),
   );
-  const factorCoverage = calculateFactorCoverage(scored);
+  // Coverage describes the stock model's population; ETFs are outside it.
+  const stocks = scored.filter((security) => security.sector !== ETF_SECTOR);
+  const factorCoverage = calculateFactorCoverage(stocks);
   const scoring = {
     method: "weighted-five-pillar" as const,
     weights: SCORE_WEIGHTS,
@@ -359,7 +388,8 @@ export async function runVerticalSlice(
     eligibleNormalization: "total-weight" as const,
     eligibleSecurities: eligible.length,
     excludedSecurities: scored.length - eligible.length,
-    averageCoverage: scored.reduce((sum, security) => sum + security.coverage, 0) / scored.length,
+    notApplicableSecurities: scored.length - stocks.length,
+    averageCoverage: stocks.reduce((sum, security) => sum + security.coverage, 0) / stocks.length,
     factorCoverage,
   };
   const dashboard = VerticalSliceDashboardSchema.parse({

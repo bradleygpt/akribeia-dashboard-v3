@@ -35,17 +35,22 @@ function positivePercent(values: readonly (number | null)[]): number {
 }
 
 export function computeMarketBreadth(rows: readonly UniverseDisplayRow[]): MarketBreadth {
-  const count = rows.length || 1;
   const above50 = positivePercent(rows.map(({ above50Sma }) => above50Sma));
   const above200 = positivePercent(rows.map(({ above200Sma }) => above200Sma));
   const positive1m = positivePercent(rows.map(({ momentum1m }) => momentum1m));
   const positive3m = positivePercent(rows.map(({ momentum3m }) => momentum3m));
+  // Rating tiers are stock-model (pillar) grades: ETFs carry none, so they are outside both
+  // tiers and their denominator (model 3.1.0, owner decision 2026-10-20). Price-based breadth
+  // above still covers every row.
+  const rated = rows.filter(({ isEtf }) => !isEtf);
+  const ratedCount = rated.length || 1;
   const buy =
-    (rows.filter(({ rating }) => ["Strong Buy+", "Strong Buy", "Buy"].includes(rating)).length /
-      count) *
+    (rated.filter(({ rating }) => ["Strong Buy+", "Strong Buy", "Buy"].includes(rating)).length /
+      ratedCount) *
     100;
   const sell =
-    (rows.filter(({ rating }) => ["Sell", "Strong Sell"].includes(rating)).length / count) * 100;
+    (rated.filter(({ rating }) => ["Sell", "Strong Sell"].includes(rating)).length / ratedCount) *
+    100;
 
   return {
     pctAbove50Sma: above50,

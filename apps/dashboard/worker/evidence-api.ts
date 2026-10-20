@@ -987,6 +987,9 @@ function explanationText(
   focus: "summary" | "factor-contributions" | "portfolio",
 ): string {
   if (!security.eligible || security.score === null) {
+    if (security.exclusionReasons.includes("not-applicable-etf")) {
+      return `${security.ticker} is an ETF: stock-model pillar scores and ranks are not applicable, so it has no composite score.`;
+    }
     return `${security.ticker} is not eligible for a composite score. Recorded reasons: ${security.exclusionReasons.join("; ") || "coverage requirements were not met"}.`;
   }
 
