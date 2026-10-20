@@ -39,7 +39,7 @@ unchanged source do not create commits.
 
 ## Automation
 
-`.github/workflows/prospective-observation.yml` supports manual and scheduled collection. It uses a
-single concurrency group, uploads every receipt, fails closed on backdated or command errors, and
-opens a pull request only after a new observation passes all repository gates. It does not deploy
-production, alter V2, select a benchmark, infer transaction costs, or calculate performance.
+There is no scheduled collection workflow. `prospective-observation.yml` was deleted on 2026-10-20
+(audit E4): the point-in-time refresh already writes each new day's daily evidence, so the separate
+collector only ever found a duplicate date -- 63 runs, all green, none of them collecting anything.
+The collector remains available as `npm run prospective-observation:collect` for manual checks.
