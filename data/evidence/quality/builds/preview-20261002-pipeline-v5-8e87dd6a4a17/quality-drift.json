@@ -1,0 +1,80 @@
+{
+  "reportSchemaVersion": "1.0.0",
+  "buildId": "preview-20261002-pipeline-v5-8e87dd6a4a17",
+  "modelVersion": "3.0.0",
+  "recordedAt": "2026-10-02T11:20:58Z",
+  "quality": {
+    "status": "pass",
+    "rowCount": 654,
+    "uniqueTickerCount": 654,
+    "duplicateTickers": [],
+    "invalidPriceCount": 0,
+    "invalidMarketCapCount": 0,
+    "eligibleSecurities": 654,
+    "excludedSecurities": 0,
+    "factorCoverage": [
+      {
+        "pillar": "valuation",
+        "sourceField": "pillars.Valuation",
+        "weight": 0.2,
+        "availableSecurities": 654,
+        "missingSecurities": 0,
+        "coverage": 1
+      },
+      {
+        "pillar": "growth",
+        "sourceField": "pillars.Growth",
+        "weight": 0.2,
+        "availableSecurities": 654,
+        "missingSecurities": 0,
+        "coverage": 1
+      },
+      {
+        "pillar": "profitability",
+        "sourceField": "pillars.Profitability",
+        "weight": 0.2,
+        "availableSecurities": 654,
+        "missingSecurities": 0,
+        "coverage": 1
+      },
+      {
+        "pillar": "momentum",
+        "sourceField": "pillars.Momentum",
+        "weight": 0.2,
+        "availableSecurities": 654,
+        "missingSecurities": 0,
+        "coverage": 1
+      },
+      {
+        "pillar": "revisions",
+        "sourceField": "pillars.EPS Revisions",
+        "weight": 0.2,
+        "availableSecurities": 654,
+        "missingSecurities": 0,
+        "coverage": 1
+      }
+    ],
+    "scoreDistribution": {
+      "count": 654,
+      "minimum": 3.5533333333333337,
+      "maximum": 9.85047619047619,
+      "mean": 6.953369739333047,
+      "median": 6.979047619047619
+    },
+    "portfolio": {
+      "positionCount": 9,
+      "totalWeightUnits": 1000000000,
+      "weightScale": 1000000000,
+      "reconciled": true
+    }
+  },
+  "drift": {
+    "status": "insufficient-history",
+    "availableBuilds": 1,
+    "requiredBuilds": 2,
+    "baselineBuildId": null,
+    "comparisons": [],
+    "reason": "Only one immutable model observation exists; temporal drift requires at least two comparable builds."
+  },
+  "notice": "Research preview only. Scores and model weights are evidence artifacts, not investment advice or a promise of future performance."
+}
