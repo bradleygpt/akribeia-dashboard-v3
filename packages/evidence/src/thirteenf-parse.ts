@@ -45,11 +45,29 @@ function parseRequiredNumber(raw: string | null, field: string, entry: string): 
   return value;
 }
 
+// Linear scan for <infoTable>…</infoTable> entries. The single lazy regex this replaces
+// (`<…infoTable…>[\s\S]*?<\/…infoTable>`) rescanned to the end of the document for every
+// opening tag without a close -- quadratic on hostile XML (CodeQL js/polynomial-redos,
+// open since 2026-08-19). The closing tag must carry the opening tag's namespace prefix.
+const INFO_TABLE_OPEN = /<((?:[A-Za-z0-9]+:)?)infoTable(?:\s[^<>]*)?>/g;
+
+function infoTableEntries(xml: string): string[] {
+  const entries: string[] = [];
+  INFO_TABLE_OPEN.lastIndex = 0;
+  let open: RegExpExecArray | null;
+  while ((open = INFO_TABLE_OPEN.exec(xml)) !== null) {
+    const close = `</${open[1]}infoTable>`;
+    const end = xml.indexOf(close, INFO_TABLE_OPEN.lastIndex);
+    if (end === -1) break;
+    entries.push(xml.slice(open.index, end + close.length));
+    INFO_TABLE_OPEN.lastIndex = end + close.length;
+  }
+  return entries;
+}
+
 export function parseInfoTableXml(xml: string): ParsedInfoTable {
-  const entries = xml.match(
-    /<(?:[A-Za-z0-9]+:)?infoTable(?:\s[^>]*)?>[\s\S]*?<\/(?:[A-Za-z0-9]+:)?infoTable>/g,
-  );
-  if (entries === null) {
+  const entries = infoTableEntries(xml);
+  if (entries.length === 0) {
     throw new Error("13F information table XML contains no infoTable entries.");
   }
 

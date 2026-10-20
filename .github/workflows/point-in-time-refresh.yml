@@ -22,8 +22,10 @@ permissions:
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
+    # No job-wide GH_TOKEN (audit 2026-10-20, E7): only the PR step needs a token for gh, and
+    # it sets its own. npm ci and the test suite no longer run with one in their environment.
     env:
-      GH_TOKEN: ${{ github.token }}
       SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
     steps:
       - uses: actions/checkout@v7
@@ -63,10 +65,21 @@ jobs:
           echo "after_build=$after_build" >> "$GITHUB_OUTPUT"
           if [[ "$before_build" == "$after_build" ]]; then
             echo "unchanged=true" >> "$GITHUB_OUTPUT"
-            git checkout -- data/preview/vertical-slice-build.json data/observations || true
-            git clean -fd data/observations || true
+            git checkout -- data/preview/vertical-slice-build.json data/observations
+            git clean -fd data/observations
           else
             echo "unchanged=false" >> "$GITHUB_OUTPUT"
+            # The build id carries the observation (run) date, so it changes daily even when
+            # upstream published nothing new; in September 11 refresh PRs carried identical
+            # data (audit E3). Say so loudly; whether such a day still counts as an
+            # observation is an open ruling, so this warns rather than stops.
+            sha_of() { node -p "JSON.parse(require('node:fs').readFileSync(0,'utf8')).files['universe_floor10.json'].sha256" ; }
+            before_sha=$(git show HEAD:data/observations/current/provenance.json | sha_of)
+            after_sha=$(sha_of < data/observations/current/provenance.json)
+            if [[ "$before_sha" == "$after_sha" ]]; then
+              echo "::warning::Upstream universe data is unchanged (floor10 sha256 ${after_sha:0:12}); this refresh is a new observation date over the same data."
+              echo "Upstream universe data unchanged since the active build (floor10 sha256 ${after_sha:0:12})." >> "$GITHUB_STEP_SUMMARY"
+            fi
           fi
 
       - name: Stop on an unchanged observation
@@ -147,7 +160,11 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.REFRESH_PR_TOKEN || github.token }}
+          HAS_REFRESH_PR_TOKEN: ${{ secrets.REFRESH_PR_TOKEN != '' }}
         run: |
+          if [[ "$HAS_REFRESH_PR_TOKEN" != "true" ]]; then
+            echo "::warning::REFRESH_PR_TOKEN is not set: this PR is opened with github.token, so CI and CodeQL will wait for manual approval."
+          fi
           build_id='${{ steps.ingest.outputs.after_build }}'
           observation_date=$(node -p 'JSON.parse(require("node:fs").readFileSync("data/observations/current/provenance.json","utf8")).observed_at.slice(0,10)')
           branch="automation/point-in-time-refresh-${observation_date}-${GITHUB_RUN_ID}"

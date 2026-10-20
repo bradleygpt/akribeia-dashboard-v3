@@ -1,0 +1,79 @@
+name: Data freshness dead-man
+
+# Alerts when the ACTIVE build's data on main is past its own freshness window, or a
+# point-in-time refresh PR has waited more than 36 hours. Before this workflow (audit
+# 2026-10-20, findings E1/E2) nothing alerted: main's data sat past its 7-day window for
+# about 33 of 54 days, 14 of them with every run green, and refresh PRs waited up to 19
+# days unmerged. A failure opens one issue, or comments on the open one.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 15 * * *"
+
+concurrency:
+  group: data-freshness
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Check the active build and waiting refresh PRs
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          problems="$RUNNER_TEMP/freshness-problems.md"
+          : > "$problems"
+          if ! verdict=$(node scripts/data-freshness.node.mjs); then
+            echo "- $verdict" >> "$problems"
+          fi
+          echo "$verdict" >> "$GITHUB_STEP_SUMMARY"
+          waiting=$(gh pr list --repo "$GITHUB_REPOSITORY" --state open --limit 100 \
+            --json number,headRefName,createdAt \
+            --jq '[.[] | select(.headRefName | startswith("automation/point-in-time-refresh-"))
+                   | select((now - (.createdAt | fromdateiso8601)) > 129600)
+                   | "#\(.number) (opened \(.createdAt))"] | join(", ")')
+          if [[ -n "$waiting" ]]; then
+            echo "- Refresh PR(s) waiting more than 36 h: $waiting" >> "$problems"
+          fi
+          if [[ -s "$problems" ]]; then
+            cat "$problems" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+      - name: Open or update the alert issue
+        if: failure()
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="Data freshness alert: stale active build or a waiting refresh PR"
+          body="$RUNNER_TEMP/freshness-issue.md"
+          {
+            echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo
+            cat "$RUNNER_TEMP/freshness-problems.md" 2>/dev/null || echo "- The check step failed before recording a reason; see the run."
+          } > "$body"
+          existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --limit 100 \
+            --json number,title --jq ".[] | select(.title == \"$title\") | .number" | head -1)
+          if [[ -n "$existing" ]]; then
+            gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body-file "$body"
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body-file "$body"
+          fi
