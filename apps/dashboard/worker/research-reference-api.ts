@@ -174,7 +174,8 @@ export async function handleResearchReferenceApi(
   }
 
   const requested = url.searchParams.get("dataset") ?? "";
-  if (!(requested in DATASETS)) {
+  // Own keys only: `in` also accepts inherited names (__proto__, constructor, toString).
+  if (!Object.hasOwn(DATASETS, requested)) {
     return json(
       {
         ok: false,

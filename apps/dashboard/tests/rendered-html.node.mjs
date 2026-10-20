@@ -213,6 +213,21 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Your site is taking shape/i);
 });
 
+test("sends security headers with Worker-rendered pages", async () => {
+  for (const pathname of ["/", "/dashboard", "/research"]) {
+    const response = await render(pathname);
+    assert.equal(response.status, 200, pathname);
+    assert.equal(response.headers.get("x-frame-options"), "SAMEORIGIN", pathname);
+    assert.equal(
+      response.headers.get("content-security-policy"),
+      "frame-ancestors 'self'",
+      pathname,
+    );
+    assert.equal(response.headers.get("referrer-policy"), "same-origin", pathname);
+    assert.equal(response.headers.get("x-content-type-options"), "nosniff", pathname);
+  }
+});
+
 test("ships an integrity-valid immutable active build", async () => {
   const pointer = JSON.parse(
     await readFile(new URL("../public/data/active-build.json", import.meta.url), "utf8"),

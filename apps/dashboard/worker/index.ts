@@ -91,8 +91,26 @@ const worker = {
       );
     }
 
-    return handler.fetch(request, env, ctx);
+    return withSecurityHeaders(await handler.fetch(request, env, ctx));
   },
 };
+
+// Pages rendered by the app carried no security headers (static assets get _headers; the
+// Worker-rendered HTML did not). Framing is limited to this origin, which keeps the
+// same-origin iframe QA probe working while refusing cross-site framing.
+const SECURITY_HEADERS: Record<string, string> = {
+  "Content-Security-Policy": "frame-ancestors 'self'",
+  "X-Frame-Options": "SAMEORIGIN",
+  "Referrer-Policy": "same-origin",
+  "X-Content-Type-Options": "nosniff",
+};
+
+function withSecurityHeaders(response: Response): Response {
+  const secured = new Response(response.body, response);
+  for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
+    if (!secured.headers.has(name)) secured.headers.set(name, value);
+  }
+  return secured;
+}
 
 export default worker;
