@@ -5,6 +5,7 @@ import {
   handleImageOptimization,
 } from "vinext/server/image-optimization";
 import handler from "vinext/server/app-router-entry";
+import { enforceAccess } from "./access-jwt";
 import { handleEngineApi } from "./engine-api";
 import { handleEvidenceApi, type AssetFetcher } from "./evidence-api";
 import { handleMarketHealthApi } from "./market-health-api";
@@ -14,6 +15,9 @@ import { handleSecurityReferenceApi } from "./security-reference-api";
 
 interface Env {
   ASSETS: AssetFetcher;
+  /** Cloudflare Access team domain and application audience; deployed config vars. */
+  ACCESS_TEAM_DOMAIN?: string;
+  ACCESS_AUD?: string;
   /** optional Markets engine origin (no trailing slash); secret, set via wrangler. */
   MARKETS_ENGINE_URL?: string;
   /** optional Markets engine bearer credential; secret, never logged or echoed. */
@@ -40,6 +44,10 @@ interface ExecutionContext {
 
 const worker = {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+    // Every request the Worker handles -- pages and /api alike -- must carry a valid
+    // Cloudflare Access assertion before any route runs.
+    const denied = await enforceAccess(request, env);
+    if (denied !== null) return withSecurityHeaders(denied);
     const url = new URL(request.url);
     const marketHealthResponse = await handleMarketHealthApi(request);
 
