@@ -55,7 +55,20 @@ interface PreservedScreenerConfig {
   preset_screens: Record<string, ScreenerPreset>;
 }
 
-export const V2_SCREENER_CONFIG = preservedMeta.screener as PreservedScreenerConfig;
+// The JSON import types `type` as string; check it against the two kinds the screener
+// renders instead of asserting it, so a new kind from V2 fails loudly at load.
+function screenerConfig(raw: typeof preservedMeta.screener): PreservedScreenerConfig {
+  for (const metrics of Object.values(raw.filterable_metrics)) {
+    for (const metric of metrics) {
+      if (metric.type !== "range" && metric.type !== "pct_range") {
+        throw new Error(`Unsupported V2 screener metric type "${metric.type}" for ${metric.key}`);
+      }
+    }
+  }
+  return raw as unknown as PreservedScreenerConfig;
+}
+
+export const V2_SCREENER_CONFIG = screenerConfig(preservedMeta.screener);
 export const V2_SCREENER_METRICS = Object.entries(V2_SCREENER_CONFIG.filterable_metrics).flatMap(
   ([category, metrics]) => metrics.map((metric) => ({ category, metric })),
 );

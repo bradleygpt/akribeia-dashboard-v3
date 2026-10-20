@@ -425,7 +425,6 @@ export function EtfCenter({
     key: "marketCap",
     direction: "descending",
   });
-  const [basket, setBasket] = useState(defaultBasket.tickers.join(", "));
   // D4 governing rule: the finder's default basket is the current
   // Buy-or-better Growth Momentum names, up to 25 — never hard-coded tickers
   // and never lower-grade filler when fewer than 25 qualify.
@@ -674,39 +673,6 @@ export function EtfCenter({
   const reverseMatch =
     normalizedReverse?.[reverseTicker.trim().toUpperCase()] ??
     reverse?.stocks[reverseTicker.trim().toUpperCase()];
-  const basketTickers = [
-    ...new Set(
-      basket
-        .split(/[\s,;]+/)
-        .map((ticker) => ticker.trim().toUpperCase())
-        .filter(Boolean),
-    ),
-  ];
-  const basketMatches = useMemo(
-    () =>
-      holdings
-        ? Object.entries(holdings.etfs)
-            .map(([ticker, datum]) => {
-              const matched = (datum.holdings ?? []).filter(({ t }) => basketTickers.includes(t));
-              return {
-                ticker,
-                name: datum.name ?? ticker,
-                matched,
-                matchedWeight: matched.reduce((sum, { w }) => sum + w, 0),
-                coverage: datum.coverage ?? 0,
-                asOf: datum.as_of,
-              };
-            })
-            .filter(({ matched }) => matched.length > 0)
-            .toSorted(
-              (left, right) =>
-                right.matched.length - left.matched.length ||
-                right.matchedWeight - left.matchedWeight ||
-                left.ticker.localeCompare(right.ticker),
-            )
-        : [],
-    [basketTickers, holdings],
-  );
   const exactMatches = useMemo(
     () =>
       normalizedHoldings === null
@@ -957,63 +923,6 @@ export function EtfCenter({
               </tbody>
             </table>
           </div>
-        </section>
-      ) : null}
-
-      {section === "legacy-find" ? (
-        <section className="etf-tool" aria-labelledby="etf-find-heading">
-          <div className="research-subheading">
-            <div>
-              <p className="mono-label">BASKET → REFERENCE FUNDS</p>
-              <h2 id="etf-find-heading">Find your ETF</h2>
-            </div>
-            <span>Ranked by matched holdings, then captured basket weight.</span>
-          </div>
-          <ReferenceState
-            loading={loading}
-            error={referenceError("etf-holdings")}
-            onRetry={() => setAttempt((current) => current + 1)}
-          >
-            <label className="etf-reverse-search">
-              <span>Stock basket (comma, semicolon or space separated)</span>
-              <input
-                type="search"
-                value={basket}
-                onChange={(event) => setBasket(event.target.value.toUpperCase())}
-                placeholder="AAPL, MSFT, NVDA"
-              />
-            </label>
-            {basketTickers.length === 0 || basketMatches.length === 0 ? (
-              <div className="etf-reference-state" role="status">
-                <strong>No captured top-holdings match.</strong>
-                <span>Partial source coverage is not evidence that no ETF owns the basket.</span>
-              </div>
-            ) : (
-              <div className="etf-find-results">
-                {basketMatches.slice(0, 25).map((match) => (
-                  <article key={match.ticker}>
-                    <header>
-                      <a href={`/etfs/${encodeURIComponent(match.ticker)}`}>{match.ticker}</a>
-                      <strong>
-                        {match.matched.length}/{basketTickers.length} matched
-                      </strong>
-                    </header>
-                    <p title={directoryByTicker.get(match.ticker)?.description || undefined}>
-                      {match.name}
-                    </p>
-                    <span>
-                      {(match.matchedWeight * 100).toFixed(1)}% captured basket weight · source
-                      coverage {(match.coverage * 100).toFixed(0)}%
-                    </span>
-                    <small>
-                      {match.matched.map(({ t, w }) => `${t} ${(w * 100).toFixed(1)}%`).join(" · ")}{" "}
-                      · as of {match.asOf ?? "unavailable"}
-                    </small>
-                  </article>
-                ))}
-              </div>
-            )}
-          </ReferenceState>
         </section>
       ) : null}
 

@@ -41,7 +41,7 @@ export default function PostFX({ lightingRef }: Props) {
   return (
     <EffectComposer multisampling={0} enableNormalPass={false}>
       <Bloom
-        ref={(e) => (bloom.current = (e as unknown as BloomEffect) ?? null)}
+        ref={(e: unknown) => (bloom.current = (e as BloomEffect) ?? null)}
         intensity={1.15}
         luminanceThreshold={0.2}
         luminanceSmoothing={0.85}
@@ -50,7 +50,7 @@ export default function PostFX({ lightingRef }: Props) {
       />
       <Vignette eskil={false} offset={0.28} darkness={0.62} />
       <Noise
-        ref={(e) => (noise.current = (e as unknown as NoiseEffect) ?? null)}
+        ref={(e: unknown) => (noise.current = (e as NoiseEffect) ?? null)}
         premultiply
         blendFunction={BlendFunction.SOFT_LIGHT}
       />

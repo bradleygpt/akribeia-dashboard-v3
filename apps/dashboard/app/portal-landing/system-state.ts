@@ -368,7 +368,7 @@ export function buildPlanets(): PlanetDef[] {
   ];
 }
 
-export const PLANETS: PlanetDef[] = buildPlanets(SYSTEM_STATUS);
+export const PLANETS: PlanetDef[] = buildPlanets();
 
 /** Base orbital semi-major axis (world units) for each band. */
 export const BAND_RADIUS: Record<number, number> = { 0: 5.4, 1: 8.2, 2: 11.4, 3: 14.6 };
