@@ -1,5 +1,5 @@
 {
-  "buildId": "preview-20261020-pipeline-v5-f88d3b9d1b6f",
+  "buildId": "preview-20261020-pipeline-v6-f88d3b9d1b6f",
   "evaluatedAt": "2026-10-20T14:52:54Z",
   "observedAt": "2026-10-20T10:52:57Z",
   "maxAgeSeconds": 604800,
@@ -9,6 +9,6 @@
   "projectionPath": "apps/dashboard/app/generated/active-dashboard.json",
   "sourceCommit": "abb0079",
   "schemaVersion": "3.0.0",
-  "modelVersion": "3.0.0",
+  "modelVersion": "3.1.0",
   "dataAsOf": "2026-10-20T00:00:00Z"
 }

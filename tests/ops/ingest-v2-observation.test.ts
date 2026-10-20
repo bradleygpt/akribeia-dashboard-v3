@@ -120,7 +120,7 @@ describe("V2 observation ingest", () => {
     expect(provenance.files["universe_floor1.json"].as_of).toBe("2026-10-17");
     const floor10Sha = provenance.files["universe_floor10.json"].sha256;
     expect(recipe.buildId).toMatch(
-      new RegExp(`^preview-\\d{8}-pipeline-v5-${floor10Sha.slice(0, 12)}$`),
+      new RegExp(`^preview-\\d{8}-pipeline-v6-${floor10Sha.slice(0, 12)}$`),
     );
     expect(recipe.observedAt.slice(0, 10)).toBe(
       recipe.buildId.slice(8, 12) +

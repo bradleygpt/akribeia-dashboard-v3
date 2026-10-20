@@ -47,9 +47,16 @@ describe("prospective readiness", () => {
     expect(report.prospectiveValidationEligible).toBe(false);
     expect(report.certificationEligible).toBe(false);
     expect(report.progress).toEqual(COMMITTED_PROSPECTIVE.progress);
-    expect(report.observations).toHaveLength(
+    // One entry per immutable build; a model change rebuilds a date (2026-10-20 has a 3.0.0
+    // and a 3.1.0 build), which never adds an observation day.
+    expect(new Set(report.observations.map(({ asOfDate }) => asOfDate)).size).toBe(
       COMMITTED_PROSPECTIVE.progress.uniqueObservationDayCount as number,
     );
+    expect(
+      report.observations
+        .filter(({ asOfDate }) => asOfDate === "2026-10-20")
+        .map(({ modelVersion }) => modelVersion),
+    ).toEqual(["3.0.0", "3.1.0"]);
     expect(report.observations[0]).toMatchObject({
       asOfDate: "2026-07-28",
       reproductionVerified: true,

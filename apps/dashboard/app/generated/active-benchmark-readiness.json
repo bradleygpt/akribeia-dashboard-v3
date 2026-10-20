@@ -1,7 +1,7 @@
 {
   "reportSchemaVersion": "1.0.0",
-  "buildId": "preview-20261020-pipeline-v5-f88d3b9d1b6f",
-  "modelVersion": "3.0.0",
+  "buildId": "preview-20261020-pipeline-v6-f88d3b9d1b6f",
+  "modelVersion": "3.1.0",
   "assessedAt": "2026-10-20T14:52:54Z",
   "identityObservedAt": "2026-07-30T06:49:38.889Z",
   "status": "candidate-proxies-not-return-series",

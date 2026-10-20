@@ -627,7 +627,7 @@ describe("protected AI assist route", () => {
         provenance: {
           buildId: ACTIVE_BUILD_ID,
           schemaVersion: "3.0.0",
-          modelVersion: "3.0.0",
+          modelVersion: "3.1.0",
           generatedAt: expect.stringMatching(/^\d{4}-\d{2}-\d{2}T/),
         },
       });

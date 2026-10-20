@@ -1,7 +1,7 @@
 {
   "reportSchemaVersion": "1.0.0",
-  "buildId": "preview-20261020-pipeline-v5-f88d3b9d1b6f",
-  "modelVersion": "3.0.0",
+  "buildId": "preview-20261020-pipeline-v6-f88d3b9d1b6f",
+  "modelVersion": "3.1.0",
   "generatedAt": "2026-10-20T14:53:27.758Z",
   "decisionCutoffAt": "2026-10-20T10:52:57Z",
   "status": "partial-retrospective-metadata",

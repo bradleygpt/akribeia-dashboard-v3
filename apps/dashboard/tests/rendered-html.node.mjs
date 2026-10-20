@@ -95,7 +95,7 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, new RegExp(`>${SCORED_TOTAL}<`));
   assert.match(html, /Missing inputs stay visible/);
   assert.match(html, /pillars\.EPS Revisions/);
-  assert.match(html, /total-weight/);
+  assert.match(html, /available-weight/);
   assert.match(html, /EXACT CONSTRAINT LEDGER/);
   assert.match(html, /ranked-greedy-integer-units-v1/);
   assert.match(html, /1,000,000,000/);
@@ -125,7 +125,7 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /The interface says what it knows/);
   assert.match(html, /Verified history remains visible with a freshness warning/);
   assert.match(html, /Missing or failed evidence is withheld/);
-  assert.match(html, /No renormalization|Input-less pillars dropped and reweighted/);
+  assert.match(html, /Input-less pillars dropped and reweighted/);
   assert.match(html, /A dated receipt, with limits intact/);
   assert.match(html, new RegExp(ACTIVE_AS_OF));
   assert.match(html, /No synthetic comparison/);

@@ -113,6 +113,24 @@ describe("Wave 2 research universe", () => {
     });
   });
 
+  it("withholds the score and grade of a pillar with no observed inputs (model 3.1.0)", () => {
+    const ctra = loadResearchUniverse().rows.find(({ ticker }) => ticker === "CTRA");
+    const source = floor0Row("CTRA") as
+      { pillars?: Record<string, number | null>; grades?: Record<string, string> } | undefined;
+
+    // V2 publishes the top Momentum score for CTRA with every momentum input null.
+    expect(
+      ["momentum_1m", "momentum_3m", "momentum_6m", "momentum_12m"].map((key) => ctra?.raw[key]),
+    ).toEqual([null, null, null, null]);
+    expect(source?.pillars?.Momentum).toBe(12);
+    expect(source?.grades?.Momentum).toBeDefined();
+    expect(ctra?.pillars.Momentum).toBeNull();
+    expect(ctra?.grades.Momentum).toBeUndefined();
+    // the pillars it has inputs for keep V2's values
+    expect(ctra?.pillars.Valuation).toBe(source?.pillars?.Valuation);
+    expect(ctra?.grades.Valuation).toBe(source?.grades?.Valuation);
+  });
+
   it("sorts numeric values numerically, keeps nulls last, and stabilizes ties by ticker", () => {
     const universe = loadResearchUniverse();
     const byPrice = filterResearchRows(
