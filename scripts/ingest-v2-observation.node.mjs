@@ -39,6 +39,7 @@ import { Buffer } from "node:buffer";
 import { createHash } from "node:crypto";
 import { mkdir, readdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import { CLOCK_SKEW_HOURS, parseGeneratedAt } from "./v2-generated-at.mjs";
 
 const FLOORS = [0, 1, 10];
 const RECIPE_PATH = "data/preview/vertical-slice-build.json";
@@ -102,15 +103,6 @@ if (v2Commit !== undefined) {
 const dataCommit = blob?.commit_sha ?? explicitDataCommit;
 const metaUrl = flag("--meta-url") ?? v2RawUrl("public/data/meta.json");
 
-function parseGeneratedAt(meta) {
-  // V2 bake timestamps are UTC without an explicit zone; record them as UTC —
-  // the same convention the preserved baseline documented.
-  const iso = `${meta.generated_at}Z`.replace(/ZZ$/, "Z");
-  const t = Date.parse(iso);
-  if (Number.isNaN(t)) throw new Error(`unparseable generated_at: ${meta.generated_at}`);
-  return new Date(t);
-}
-
 const retrievedAt = new Date();
 const files = {};
 
@@ -120,9 +112,9 @@ const meta = JSON.parse(metaBytes.toString("utf8"));
 if (!meta.generated_at || !meta.source_commit) {
   throw new Error("meta.json missing generated_at/source_commit");
 }
-const observedAt = parseGeneratedAt(meta);
+const observedAt = parseGeneratedAt(meta.generated_at);
 const ageHours = (retrievedAt.getTime() - observedAt.getTime()) / 3_600_000;
-if (ageHours < 0 || ageHours > maxAgeHours) {
+if (ageHours < -CLOCK_SKEW_HOURS || ageHours > maxAgeHours) {
   throw new Error(
     `meta.generated_at ${meta.generated_at} is ${ageHours.toFixed(1)}h old; policy allows ${maxAgeHours}h`,
   );
