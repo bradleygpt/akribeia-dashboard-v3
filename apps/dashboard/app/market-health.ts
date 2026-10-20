@@ -69,26 +69,35 @@ export function computeFearGreed(
   buffettScore: number | null,
   creditScore: number | null = null,
 ): FearGreed {
-  const base: [number, number][] = [
-    [vixScore ?? 50, 0.25],
+  // A missing component is dropped and the remaining weights renormalized -- the way the
+  // credit component was already handled. It used to be filled: a missing Buffett or VIX
+  // score as a neutral 50, a missing S&P distance as 0 (which scores 100, maximum greed),
+  // and the result was shown as measured (README principle 1; audit 2026-10-20, C4).
+  const base: [number | null, number][] = [
+    [vixScore, 0.25],
     [breadth.pctAbove50Sma, 0.2],
     [breadth.pctAbove200Sma, 0.15],
     [breadth.pctPositive1m, 0.15],
-    [clip(100 + (spDistancePct ?? 0) * 3.33), 0.15],
-    [buffettScore ?? 50, 0.1],
+    [spDistancePct === null ? null : clip(100 + spDistancePct * 3.33), 0.15],
+    [buffettScore, 0.1],
   ];
-  const components =
+  const weighted: [number | null, number][] =
     creditScore === null
       ? base
       : [
           ...base.map(
-            ([componentScore, weight]) => [componentScore, weight * 0.88] as [number, number],
+            ([componentScore, weight]) =>
+              [componentScore, weight * 0.88] as [number | null, number],
           ),
-          [creditScore, 0.12] as [number, number],
+          [creditScore, 0.12],
         ];
+  const components = weighted.filter((entry): entry is [number, number] => entry[0] !== null);
+  const presentWeight = components.reduce((sum, [, weight]) => sum + weight, 0);
   const composite =
-    Math.round(clip(components.reduce((sum, [value, weight]) => sum + value * weight, 0)) * 10) /
-    10;
+    Math.round(
+      clip(components.reduce((sum, [value, weight]) => sum + value * weight, 0) / presentWeight) *
+        10,
+    ) / 10;
   const classification =
     composite >= 80
       ? "Extreme Greed"

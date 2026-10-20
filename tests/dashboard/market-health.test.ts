@@ -52,6 +52,25 @@ describe("V2 Market Health calculations", () => {
     });
   });
 
+  it("drops a missing Fear & Greed component instead of filling it", () => {
+    const breadth = {
+      pctAbove50Sma: 50,
+      pctAbove200Sma: 50,
+      pctPositive1m: 75,
+      pctPositive3m: 25,
+      buyPct: 50,
+      sellPct: 25,
+      breadthScore: 50,
+    };
+
+    // All present: unchanged from the V2 composition (see the parity test below).
+    expect(computeFearGreed(80, breadth, -5, 30).score).toBe(64.3);
+    // Buffett missing: the other five reweighted (was a neutral 50 at 0.10 -> 66.3).
+    expect(computeFearGreed(80, breadth, -5, null).score).toBe(68.1);
+    // S&P distance missing: dropped (was scored 100, maximum greed, -> 66.8).
+    expect(computeFearGreed(80, breadth, null, 30).score).toBe(60.9);
+  });
+
   it("preserves the V2 Fear & Greed composition and thresholds", () => {
     const result = computeFearGreed(
       80,

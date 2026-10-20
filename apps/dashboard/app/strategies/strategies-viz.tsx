@@ -232,8 +232,9 @@ type Sim = {
   r: number;
   c: string;
   cur: boolean;
-  bspx: number;
-  bndx: number;
+  /** null = no published beta: no index pull at all, rather than a made-up beta of 1. */
+  bspx: number | null;
+  bndx: number | null;
 };
 type IdxBody = {
   id: string;
@@ -292,8 +293,10 @@ function ForceNetwork({ d }: { d: Corr }) {
       r: 2.6 + Math.min(5.5, Math.sqrt(n.w)),
       c: nodeColor(n.c),
       cur: n.cur,
-      bspx: n.bspx ?? 1,
-      bndx: n.bndx ?? 1,
+      // A missing beta used to be drawn as beta 1 -- a market-driven name -- though position
+      // here encodes beta (README principle 1; audit 2026-10-20, C11).
+      bspx: n.bspx ?? null,
+      bndx: n.bndx ?? null,
     }));
     const edges = d.edges
       .map((e) => ({ i: idx.get(e.a), j: idx.get(e.b), v: e.v }))
@@ -367,6 +370,7 @@ function ForceNetwork({ d }: { d: Corr }) {
         // beta gravity: pull toward each index well ∝ this name's beta to that index
         for (const ix of idxBodies) {
           const b = ix.id === "SPX" ? a.bspx : a.bndx;
+          if (b === null) continue;
           fx += (ix.x - a.x) * 0.0013 * b;
           fy += (ix.y - a.y) * 0.0013 * b;
         }
@@ -603,7 +607,8 @@ function CorrelationNetwork({ statusMap }: { statusMap?: StratStatusMap }) {
                     <strong>The two big spheres are S&amp;P 500 &amp; NASDAQ</strong> — each name is
                     pulled toward them by its <em>beta</em>. High-beta (market-driven) names hug the
                     spheres; low-beta (idiosyncratic) names drift to the rim — systematic vs.
-                    stock-specific at a glance.
+                    stock-specific at a glance. Names with no published beta feel no pull and sit by
+                    correlation alone.
                   </li>
                   <li>
                     <strong>Closeness = correlation.</strong> Two dots sit near each other when

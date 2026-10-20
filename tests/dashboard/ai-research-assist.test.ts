@@ -181,6 +181,13 @@ describe("protected AI assist research kind", () => {
         ],
         externalModelUsed: true,
         model: "gemini-3.5-flash-lite",
+        // every AI result names its build, versions and generation time (audit C5)
+        provenance: {
+          buildId: expect.stringMatching(/^preview-\d{8}-/),
+          schemaVersion: "3.0.0",
+          modelVersion: "3.0.0",
+          generatedAt: expect.stringMatching(/^\d{4}-\d{2}-\d{2}T/),
+        },
       });
 
       // the fact block carries fair value and margins from the served artifact

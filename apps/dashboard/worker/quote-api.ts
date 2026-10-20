@@ -141,8 +141,10 @@ async function buildQuote(ticker: string, range: string, dependencies: QuoteDepe
   const regularMarketTime = finite(meta.regularMarketTime);
   const priceAsOf =
     priceSource === "live"
-      ? regularMarketTime === null
-        ? (dependencies.now ?? new Date()).toISOString()
+      ? // Unknown, not "now": the request time is not when the price was struck (C4-class
+        // fallback; audit 2026-10-20, C8). The panel shows the time as unavailable.
+        regularMarketTime === null
+        ? null
         : new Date(regularMarketTime * 1000).toISOString()
       : priceSource === "as_of"
         ? (history?.dates.at(-1) ?? null)

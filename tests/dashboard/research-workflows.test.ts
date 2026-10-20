@@ -355,6 +355,42 @@ describe("Wave 2 bounded API adapters", () => {
     expect(body.history.close).toHaveLength(40);
   });
 
+  it("reports an unknown live price time as unknown, not as the request time", async () => {
+    const timestamps = Array.from({ length: 40 }, (_, index) => 1_700_000_000 + index * 86_400);
+    const daily = {
+      chart: {
+        result: [
+          {
+            timestamp: timestamps,
+            indicators: {
+              quote: [
+                {
+                  close: timestamps.map((_, index) => 100 + index),
+                  high: timestamps.map((_, index) => 101 + index),
+                  low: timestamps.map((_, index) => 99 + index),
+                  volume: timestamps.map(() => 1000),
+                },
+              ],
+            },
+            // Yahoo omitted regularMarketTime.
+            meta: { regularMarketPrice: 139, chartPreviousClose: 138 },
+          },
+        ],
+      },
+    };
+    const response = await handleQuoteApi(
+      new Request("https://akribeia.test/api/v3/quote?ticker=AAPL&range=1y"),
+      {
+        fetcher: async () => new Response(JSON.stringify(daily), { status: 200 }),
+        now: new Date("2026-07-30T12:00:00Z"),
+      },
+    );
+    const body = (await response?.json()) as { priceSource: string; priceAsOf: string | null };
+
+    expect(body.priceSource).toBe("live");
+    expect(body.priceAsOf).toBeNull();
+  });
+
   it("labels a daily-close quote fallback as as_of rather than live", async () => {
     const timestamp = 1_700_000_000;
     const daily = {

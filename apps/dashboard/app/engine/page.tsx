@@ -27,7 +27,8 @@ export default function EnginePage() {
         <EngineWorkbench />
         <footer className="research-route-footer">
           <span>
-            Engine output is validated before render · withheld output is named as withheld
+            Experimental AI output, format-checked before render · withheld output is named as
+            withheld
           </span>
           <span>Research only · not investment advice</span>
         </footer>
