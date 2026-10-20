@@ -10,8 +10,17 @@ const { d1, r2 } = hostingConfig;
 // macOS Seatbelt blocks FSEvents, so Codex previews need polling for HMR.
 const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === "seatbelt";
 
+// Cloudflare Access application this Worker sits behind. Not secrets: the audience tag is
+// carried in every Access login redirect. The Worker verifies Access JWTs against them
+// (worker/access-jwt.ts); a dashboard test asserts the built config keeps both.
+const ACCESS_VARS = {
+  ACCESS_TEAM_DOMAIN: "https://akribeia-insights.cloudflareaccess.com",
+  ACCESS_AUD: "9313f57c591f6e52ffac93d82ae7c67ece0d2872105c58664516598faf19129a",
+};
+
 const localBindingConfig = {
   main: "./worker/index.ts",
+  vars: ACCESS_VARS,
   compatibility_flags: ["nodejs_compat"],
   preview_urls: false,
   assets: {

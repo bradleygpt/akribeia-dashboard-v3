@@ -225,6 +225,32 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Your site is taking shape/i);
 });
 
+test("ships the Access config and refuses unauthenticated requests on every route", async () => {
+  // The deploy artifact must carry both values: without them the Worker would not verify
+  // Access JWTs (audit F1, owner decision 2026-10-20).
+  const wrangler = JSON.parse(
+    await readFile(new URL("../dist/server/wrangler.json", import.meta.url), "utf8"),
+  );
+  assert.equal(wrangler.vars.ACCESS_TEAM_DOMAIN, "https://akribeia-insights.cloudflareaccess.com");
+  assert.match(wrangler.vars.ACCESS_AUD, /^[0-9a-f]{64}$/);
+
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("access", `${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+  for (const pathname of ["/", "/dashboard", "/api/v3/health", "/api/v3/quote?ticker=NVDA"]) {
+    const response = await worker.fetch(
+      new Request(`https://akribeia-dashboard.akribeia-insights.workers.dev${pathname}`),
+      {
+        ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) },
+        ...wrangler.vars,
+      },
+      { waitUntil() {}, passThroughOnException() {} },
+    );
+    assert.equal(response.status, 403, pathname);
+    assert.match(await response.text(), /missing Access token/, pathname);
+  }
+});
+
 test("sends security headers with Worker-rendered pages", async () => {
   for (const pathname of ["/", "/dashboard", "/research"]) {
     const response = await render(pathname);
