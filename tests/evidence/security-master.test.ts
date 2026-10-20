@@ -43,7 +43,9 @@ const COMMITTED_MASTER = JSON.parse(
   readFileSync(resolvePath("apps/dashboard/app/generated/active-security-master.json"), "utf8"),
 ) as Record<string, unknown>;
 
-describe("provisional security master", () => {
+// These tests copy the published evidence tree (~19 MB, growing with every build); under a
+// full parallel run on a slow disk the copy alone can pass vitest's 5 s default.
+describe("provisional security master", { timeout: 20_000 }, () => {
   it("maps every validated ticker to one deterministic, explicitly provisional identity", async () => {
     const root = await temporaryRoot();
     const result = await generateSecurityMaster(options(root));

@@ -42,7 +42,9 @@ const COMMITTED_QUALITY = JSON.parse(
   readFileSync(resolvePath("apps/dashboard/app/generated/active-quality-report.json"), "utf8"),
 ) as Record<string, unknown>;
 
-describe("data quality and drift report", () => {
+// These tests copy the published evidence tree (~19 MB, growing with every build); under a
+// full parallel run on a slow disk the copy alone can pass vitest's 5 s default.
+describe("data quality and drift report", { timeout: 20_000 }, () => {
   it("reports exact active-build quality and insufficient drift history", async () => {
     const root = await temporaryRoot();
     const result = await generateQualityReport(options(root));

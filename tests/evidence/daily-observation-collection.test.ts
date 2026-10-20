@@ -55,7 +55,9 @@ const ACTIVE_AS_OF = ACTIVE_BUILD_ID.match(/preview-(\d{4})(\d{2})(\d{2})/)!
   .slice(1)
   .join("-");
 
-describe("daily prospective observation collection", () => {
+// These tests copy the published evidence tree (~19 MB, growing with every build); under a
+// full parallel run on a slow disk the copy alone can pass vitest's 5 s default.
+describe("daily prospective observation collection", { timeout: 20_000 }, () => {
   it("collects only when the candidate date advances the ledger", () => {
     expect(classifyDailyObservationDate("2026-07-28", [])).toBe("collect");
     expect(classifyDailyObservationDate("2026-07-29", ["2026-07-28"])).toBe("collect");
