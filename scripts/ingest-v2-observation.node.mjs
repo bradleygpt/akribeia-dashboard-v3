@@ -220,7 +220,8 @@ const previousRecipe = JSON.parse(await readFile(RECIPE_PATH, "utf8"));
 delete previousRecipe.dataAsOf;
 const recipe = {
   ...previousRecipe,
-  buildId: `preview-${stamp}-pipeline-v5-${sourceHash12}`,
+  // v6: model 3.1.0 (ETFs not applicable, input-less pillars dropped), 2026-10-20.
+  buildId: `preview-${stamp}-pipeline-v6-${sourceHash12}`,
   evaluatedAt: retrievedAt.toISOString().replace(/\.\d{3}Z$/, "Z"),
   observedAt: observedAt.toISOString().replace(/\.\d{3}Z$/, "Z"),
   ...(dataAsOf ? { dataAsOf } : {}),

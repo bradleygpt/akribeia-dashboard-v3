@@ -207,9 +207,9 @@ function securityHref(row: Pick<ResearchRow, "isEtf" | "ticker">): string {
 }
 
 function displayedPillarGrade(row: ResearchRow, pillar: string): string {
-  return row.isEtf && !hasCompleteStockModelEvidence(row)
-    ? "Unavailable"
-    : (row.grades[pillar] ?? "—");
+  if (row.isEtf && !hasCompleteStockModelEvidence(row)) return "Not applicable (ETF)";
+  // research-data withholds the grade of a pillar with no observed inputs
+  return row.grades[pillar] ?? "Unavailable";
 }
 
 function SortableResearchHeader({
@@ -1048,7 +1048,7 @@ export function ResearchWorkbench({ rows, sectors }: { rows: ResearchRow[]; sect
                         {["Valuation", "Growth", "Profitability", "Momentum", "EPS Revisions"].map(
                           (pillar) => (
                             <td className="research-grade" key={pillar}>
-                              {row.grades[pillar] ?? "—"}
+                              {displayedPillarGrade(row, pillar)}
                             </td>
                           ),
                         )}

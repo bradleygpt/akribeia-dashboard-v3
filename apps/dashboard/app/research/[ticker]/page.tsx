@@ -196,7 +196,7 @@ export default async function SecurityDetailPage({ params }: PageProps) {
                 <article key={pillar}>
                   <div>
                     <span>{pillar}</span>
-                    <strong>{security.grades[pillar] ?? "—"}</strong>
+                    <strong>{security.grades[pillar] ?? "Unavailable"}</strong>
                   </div>
                   <div
                     className="security-pillar-track"

@@ -1,8 +1,8 @@
 {
-  "buildId": "preview-20261020-pipeline-v5-f88d3b9d1b6f",
+  "buildId": "preview-20261020-pipeline-v6-f88d3b9d1b6f",
   "generatedAt": "2026-10-20T14:52:54Z",
   "schemaVersion": "3.0.0",
-  "modelVersion": "3.0.0",
+  "modelVersion": "3.1.0",
   "status": "healthy",
   "source": {
     "dataset": "V2 production baseline — $10B+ universe",
@@ -25,18 +25,19 @@
       "momentum": 0.2,
       "revisions": 0.2
     },
-    "missingDataPolicy": "require-complete",
-    "minimumCoverage": 1,
-    "eligibleNormalization": "total-weight",
-    "eligibleSecurities": 654,
-    "excludedSecurities": 0,
-    "averageCoverage": 1,
+    "missingDataPolicy": "renormalize-explicitly",
+    "minimumCoverage": 0.6,
+    "eligibleNormalization": "available-weight",
+    "eligibleSecurities": 599,
+    "excludedSecurities": 55,
+    "notApplicableSecurities": 55,
+    "averageCoverage": 0.998330550918197,
     "factorCoverage": [
       {
         "pillar": "valuation",
         "sourceField": "pillars.Valuation",
         "weight": 0.2,
-        "availableSecurities": 654,
+        "availableSecurities": 599,
         "missingSecurities": 0,
         "coverage": 1
       },
@@ -44,31 +45,31 @@
         "pillar": "growth",
         "sourceField": "pillars.Growth",
         "weight": 0.2,
-        "availableSecurities": 654,
-        "missingSecurities": 0,
-        "coverage": 1
+        "availableSecurities": 597,
+        "missingSecurities": 2,
+        "coverage": 0.996661101836394
       },
       {
         "pillar": "profitability",
         "sourceField": "pillars.Profitability",
         "weight": 0.2,
-        "availableSecurities": 654,
-        "missingSecurities": 0,
-        "coverage": 1
+        "availableSecurities": 598,
+        "missingSecurities": 1,
+        "coverage": 0.998330550918197
       },
       {
         "pillar": "momentum",
         "sourceField": "pillars.Momentum",
         "weight": 0.2,
-        "availableSecurities": 654,
-        "missingSecurities": 0,
-        "coverage": 1
+        "availableSecurities": 597,
+        "missingSecurities": 2,
+        "coverage": 0.996661101836394
       },
       {
         "pillar": "revisions",
         "sourceField": "pillars.EPS Revisions",
         "weight": 0.2,
-        "availableSecurities": 654,
+        "availableSecurities": 599,
         "missingSecurities": 0,
         "coverage": 1
       }
@@ -235,10 +236,10 @@
     "construction": {
       "method": "ranked-greedy-integer-units-v1",
       "weightScale": 1000000000,
-      "candidateCount": 654,
-      "sectorCount": 12,
-      "maximumFeasibleWeight": 3.6,
-      "maximumFeasibleWeightUnits": 3600000000,
+      "candidateCount": 599,
+      "sectorCount": 11,
+      "maximumFeasibleWeight": 3.3,
+      "maximumFeasibleWeightUnits": 3300000000,
       "sectorCapacities": [
         {
           "sector": "Basic Materials",
@@ -265,13 +266,6 @@
           "sector": "Consumer Defensive",
           "candidateCapacity": 4.2,
           "candidateCapacityUnits": 4200000000,
-          "cappedCapacity": 0.3,
-          "cappedCapacityUnits": 300000000
-        },
-        {
-          "sector": "ETF",
-          "candidateCapacity": 6.6,
-          "candidateCapacityUnits": 6600000000,
           "cappedCapacity": 0.3,
           "cappedCapacityUnits": 300000000
         },

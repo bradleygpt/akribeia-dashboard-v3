@@ -133,6 +133,36 @@ interface SourceRow {
   byPreset: Record<string, SourceCell>;
 }
 
+// Each pillar's V2 input metrics, from the same bake metadata the scoring pipeline checks.
+const PILLAR_INPUT_KEYS: Record<string, string[]> = Object.fromEntries(
+  Object.entries(
+    (preservedMeta as { pillar_metrics?: Record<string, Array<{ key: string }>> }).pillar_metrics ??
+      {},
+  ).map(([pillar, metrics]) => [pillar, metrics.map(({ key }) => key)]),
+);
+
+/** False when every V2 input of the pillar is missing. */
+export function pillarHasObservedInputs(raw: Record<string, number | null>, pillar: string) {
+  const keys = PILLAR_INPUT_KEYS[pillar];
+  return keys === undefined || keys.some((key) => Number.isFinite(raw[key]));
+}
+
+// Model 3.1.0 (owner decision 2026-10-20): a pillar with no observed input is unavailable.
+// V2 still publishes a score and grade for it (CTRA and BK Momentum 12, the top grade, with
+// every momentum input null); both are withheld here, where every research row is built.
+function observedPillars(row: SourceRow) {
+  const pillars = { ...row.pillars };
+  const grades = { ...row.grades };
+  if (row.sector !== "ETF") {
+    for (const pillar of Object.keys(PILLAR_INPUT_KEYS)) {
+      if (pillarHasObservedInputs(row.raw, pillar)) continue;
+      pillars[pillar] = null;
+      delete grades[pillar];
+    }
+  }
+  return { pillars, grades };
+}
+
 function mapRow(row: SourceRow): ResearchRow {
   const equal = row.byPreset.equal;
   return {
@@ -151,8 +181,7 @@ function mapRow(row: SourceRow): ResearchRow {
     buyPointSignal: row.qbpSignal ?? null,
     composite: equal?.c ?? null,
     rating: equal?.r ?? "Unavailable",
-    pillars: row.pillars ?? {},
-    grades: row.grades ?? {},
+    ...observedPillars(row),
     raw: row.raw,
     presets: Object.fromEntries(
       Object.entries(row.byPreset).map(([key, cell]) => [

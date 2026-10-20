@@ -50,7 +50,7 @@ describe("model governance evidence", () => {
     const dictionary = MetricDictionarySchema.parse(JSON.parse(dictionaryPayload));
 
     expect(result.disposition).toBe("published");
-    expect(card.modelVersion).toBe("3.0.0");
+    expect(card.modelVersion).toBe("3.1.0");
     expect(card.maturity).toBe("research-preview");
     expect(card.releaseEligible).toBe(false);
     expect(card.validation.map(({ gate, status }) => [gate, status])).toEqual([

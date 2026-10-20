@@ -1,7 +1,7 @@
 {
   "reportSchemaVersion": "1.0.0",
-  "buildId": "preview-20261020-pipeline-v5-f88d3b9d1b6f",
-  "modelVersion": "3.0.0",
+  "buildId": "preview-20261020-pipeline-v6-f88d3b9d1b6f",
+  "modelVersion": "3.1.0",
   "assessedAt": "2026-10-20T14:52:54Z",
   "status": "blocked-insufficient-prospective-history",
   "prospectiveValidationEligible": false,
@@ -14,7 +14,7 @@
     "monthlyValidationReports": 1
   },
   "progress": {
-    "immutableDailyEvidenceRecordCount": 9,
+    "immutableDailyEvidenceRecordCount": 10,
     "uniqueObservationDayCount": 9,
     "remainingObservationDayCount": 21,
     "executablePortfolioRecordCount": 0,
@@ -137,6 +137,19 @@
       "evidenceRecordPath": "daily/2026-10-20/preview-20261020-pipeline-v5-f88d3b9d1b6f/evidence.json",
       "evidenceRecordSha256": "bcb5d1a156c491eb6f35b1282939bdf85ab5a9ab55ade0fa015cba1ea21c81c1",
       "reproducibilityReportPath": "daily/2026-10-20/preview-20261020-pipeline-v5-f88d3b9d1b6f/reproducibility.json",
+      "reproductionVerified": true,
+      "executionRecorded": false,
+      "costedReturnComputed": false,
+      "approvedBenchmarkCompared": false
+    },
+    {
+      "asOfDate": "2026-10-20",
+      "buildId": "preview-20261020-pipeline-v6-f88d3b9d1b6f",
+      "modelVersion": "3.1.0",
+      "recordedAt": "2026-10-20T14:52:54Z",
+      "evidenceRecordPath": "daily/2026-10-20/preview-20261020-pipeline-v6-f88d3b9d1b6f/evidence.json",
+      "evidenceRecordSha256": "1db6a96e19c12f89156ea8cf03be7cca41c9c4f68af54f6f21cac8085437b7bf",
+      "reproducibilityReportPath": "daily/2026-10-20/preview-20261020-pipeline-v6-f88d3b9d1b6f/reproducibility.json",
       "reproductionVerified": true,
       "executionRecorded": false,
       "costedReturnComputed": false,
