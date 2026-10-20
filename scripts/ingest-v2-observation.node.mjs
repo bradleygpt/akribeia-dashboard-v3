@@ -17,6 +17,11 @@
 // from the deployed V2 app, which returns HTTP 402 DEPLOYMENT_DISABLED since
 // 2026-10-14 and failed every scheduled refresh from then on.
 //
+// No new upstream data: when all three universe partitions are byte-identical to the
+// active observation's, nothing is ingested. A later bake date gets a "no new upstream data"
+// record under data/evidence/upstream-stalls/ (it adds nothing to the prospective count);
+// the same date again is "already-observed". stdout's JSON names the disposition.
+//
 // Fail-closed: any fetch failure, shape mismatch, commit or digest mismatch
 // between the V2 manifest and the universe files, or stale generated_at aborts
 // without touching the observation directory or the recipe.
@@ -32,13 +37,16 @@
 
 import { Buffer } from "node:buffer";
 import { createHash } from "node:crypto";
-import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const FLOORS = [0, 1, 10];
 const RECIPE_PATH = "data/preview/vertical-slice-build.json";
 const OBS_DIR = "data/observations/current";
 const STAGE_DIR = "data/observations/.staging";
+const STALL_DIR = "data/evidence/upstream-stalls";
+const PUBLIC_STALL_DIR = "apps/dashboard/public/data/evidence/upstream-stalls";
+const STALL_PROJECTION_PATH = "apps/dashboard/app/generated/active-upstream-stalls.json";
 
 const V2_REPOSITORY = "bradleygpt/quant-dashboard-pro-v2";
 const BULK_DATA_REPOSITORY = "bradleygpt/akribeia-data";
@@ -165,6 +173,90 @@ for (const floor of FLOORS) {
 const asOfDates = Object.values(files).map((f) => f.asOf);
 const dataAsOf = blob ? `${asOfDates.toSorted()[0]}T00:00:00Z` : undefined;
 
+// ---- no new upstream data ---------------------------------------------------
+// Owner decision 2026-10-20 (audit E3): when every universe partition is byte-identical
+// to the active observation's, a later bake date is not a new observation. Nothing is
+// ingested; a "no new upstream data" record is written instead so the stall stays visible.
+// It adds nothing to the prospective count or the maturity gates (no build, no ledger date).
+const readJsonIfPresent = async (path) => {
+  try {
+    return JSON.parse(await readFile(path, "utf8"));
+  } catch (error) {
+    if (error?.code === "ENOENT") return null;
+    throw error;
+  }
+};
+const activeProvenance = await readJsonIfPresent(resolve(OBS_DIR, "provenance.json"));
+const universeSha256 = Object.fromEntries(
+  Object.entries(files).map(([name, f]) => [name, sha256(f.bytes)]),
+);
+const upstreamUnchanged =
+  activeProvenance !== null &&
+  Object.entries(universeSha256).every(
+    ([name, digest]) => activeProvenance.files?.[name]?.sha256 === digest,
+  );
+if (upstreamUnchanged) {
+  const observationDate = observedAt.toISOString().slice(0, 10);
+  const activeDate = String(activeProvenance.observed_at).slice(0, 10);
+  if (observationDate <= activeDate) {
+    // the same bake (or an older one) again: already observed, nothing to record
+    process.stdout.write(
+      JSON.stringify({ ingested: false, disposition: "already-observed", observationDate }) + "\n",
+    );
+    process.exit(0);
+  }
+  const activeRecipe = JSON.parse(await readFile(RECIPE_PATH, "utf8"));
+  const record = {
+    recordSchemaVersion: "1.0.0",
+    observationDate,
+    recordedAt: retrievedAt.toISOString(),
+    disposition: "no-new-upstream-data",
+    countsTowardProspectiveHistory: false,
+    v2Commit: v2Commit ?? null,
+    v2SourceCommit: meta.source_commit,
+    v2GeneratedAt: meta.generated_at,
+    bulkDataCommit: dataCommit,
+    dataAsOf: dataAsOf ?? null,
+    universeSha256,
+    unchangedSince: { observationDate: activeDate, buildId: activeRecipe.buildId },
+    reason: `Every V2 universe partition is byte-identical to the ${activeDate} observation's. This date adds nothing to the prospective count or the maturity gates.`,
+  };
+  const stallPaths = [STALL_DIR, PUBLIC_STALL_DIR].map((dir) =>
+    resolve(dir, `${observationDate}.json`),
+  );
+  // One record per date; a re-run on the same date keeps the first record.
+  const existing = await readJsonIfPresent(stallPaths[0]);
+  const stallRecord = existing ?? record;
+  for (const path of stallPaths) {
+    await mkdir(resolve(path, ".."), { recursive: true });
+    await writeFile(path, JSON.stringify(stallRecord, null, 2) + "\n");
+  }
+  const stalls = [];
+  for (const name of (await readdir(STALL_DIR)).filter((n) => n.endsWith(".json")).sort()) {
+    stalls.push(JSON.parse(await readFile(resolve(STALL_DIR, name), "utf8")));
+  }
+  await mkdir(resolve(STALL_PROJECTION_PATH, ".."), { recursive: true });
+  await writeFile(
+    STALL_PROJECTION_PATH,
+    JSON.stringify(
+      { ledgerSchemaVersion: "1.0.0", stallDayCount: stalls.length, stalls },
+      null,
+      2,
+    ) + "\n",
+  );
+  process.stdout.write(
+    JSON.stringify({
+      ingested: false,
+      disposition: "no-new-upstream-data",
+      observationDate,
+      stallRecord: `${STALL_DIR}/${observationDate}.json`,
+      recordDisposition: existing === null ? "recorded" : "already-recorded",
+      unchangedSince: record.unchangedSince,
+    }) + "\n",
+  );
+  process.exit(0);
+}
+
 // ---- stage, then atomically promote ----------------------------------------
 await rm(STAGE_DIR, { recursive: true, force: true });
 await mkdir(STAGE_DIR, { recursive: true });
@@ -235,6 +327,7 @@ process.stdout.write(
   JSON.stringify(
     {
       ingested: true,
+      disposition: "ingested",
       buildId: recipe.buildId,
       observedAt: recipe.observedAt,
       dataAsOf: recipe.dataAsOf ?? null,

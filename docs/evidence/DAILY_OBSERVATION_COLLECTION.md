@@ -20,6 +20,23 @@ The immutable ledger is represented by `data/evidence/daily/<date>/...` director
 - A previously unseen date older than the latest ledger date is blocked as a backfill attempt.
 - Only a date newer than every ledger date can publish a new daily record.
 
+## No new upstream data
+
+A new date over unchanged upstream data is not an observation day (owner decision 2026-10-20,
+audit E3). V2 bakes every night, so in September 11 refresh PRs carried byte-identical data under
+new dates. Two controls now keep such a day out of the count:
+
+- **Ingest.** When all three universe partitions are byte-identical to the active
+  observation's, `scripts/ingest-v2-observation.node.mjs` ingests nothing. A later bake date is
+  written as a `no-new-upstream-data` record under `data/evidence/upstream-stalls/<date>.json`,
+  with a public copy and the projection `apps/dashboard/app/generated/active-upstream-stalls.json`.
+  The record carries `countsTowardProspectiveHistory: false`. The refresh workflow opens it as its
+  own small PR, the dashboard's prospective section lists it, and no build or ledger date is
+  created. The same bake date again is `already-observed`, a no-op.
+- **Daily evidence.** `npm run evidence:generate` refuses a new ledger date whose scored source
+  digest equals the latest earlier date's. Rebuilding a date already in the ledger, after a model
+  change for example, stays allowed.
+
 The collector then runs the existing daily-evidence generator and prospective-readiness generator.
 It requires the ledger to advance by exactly one date and requires the regenerated readiness report
 to reconcile with that count.

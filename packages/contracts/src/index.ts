@@ -3776,3 +3776,59 @@ export const AlphaDecayReportSchema = z
   })
   .strict();
 export type AlphaDecayReport = z.infer<typeof AlphaDecayReportSchema>;
+
+// A "no new upstream data" day (owner decision 2026-10-20, audit E3): V2 baked on a new date
+// but every universe partition is byte-identical to the active observation's. It is recorded
+// so the stall stays visible, and it adds nothing to the prospective count or maturity gates.
+export const UpstreamStallRecordSchema = z
+  .object({
+    recordSchemaVersion: z.literal("1.0.0"),
+    observationDate: z.string().date(),
+    recordedAt: IsoDateTimeSchema,
+    disposition: z.literal("no-new-upstream-data"),
+    countsTowardProspectiveHistory: z.literal(false),
+    v2Commit: z
+      .string()
+      .regex(/^[0-9a-f]{40}$/)
+      .nullable(),
+    v2SourceCommit: z.string().min(1),
+    v2GeneratedAt: z.string().min(1),
+    bulkDataCommit: z.string().min(1),
+    dataAsOf: IsoDateTimeSchema.nullable(),
+    universeSha256: z
+      .object({
+        "universe_floor0.json": Sha256Schema,
+        "universe_floor1.json": Sha256Schema,
+        "universe_floor10.json": Sha256Schema,
+      })
+      .strict(),
+    unchangedSince: z.object({
+      observationDate: z.string().date(),
+      buildId: SafeBuildIdSchema,
+    }),
+    reason: z.string().min(1),
+  })
+  .strict()
+  .refine((value) => value.unchangedSince.observationDate < value.observationDate, {
+    message: "A stall day must follow the observation whose data it repeats.",
+    path: ["unchangedSince", "observationDate"],
+  });
+export type UpstreamStallRecord = z.infer<typeof UpstreamStallRecordSchema>;
+
+export const UpstreamStallLedgerSchema = z
+  .object({
+    ledgerSchemaVersion: z.literal("1.0.0"),
+    stallDayCount: z.number().int().nonnegative(),
+    stalls: z.array(UpstreamStallRecordSchema),
+  })
+  .strict()
+  .refine(
+    (value) =>
+      value.stallDayCount === value.stalls.length &&
+      value.stalls.every(
+        (stall, index) =>
+          index === 0 || (value.stalls[index - 1]?.observationDate ?? "") < stall.observationDate,
+      ),
+    { message: "Stall days must be counted exactly and listed once each, oldest first." },
+  );
+export type UpstreamStallLedger = z.infer<typeof UpstreamStallLedgerSchema>;

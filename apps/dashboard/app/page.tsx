@@ -15,6 +15,7 @@ import {
   SecRegistrantCrosswalkSchema,
   SecurityMasterSchema,
   UniverseMembershipReadinessSchema,
+  UpstreamStallLedgerSchema,
   VerticalSliceDashboardSchema,
   WalkForwardReadinessSchema,
 } from "@akribeia/contracts";
@@ -40,6 +41,7 @@ import activeQualityReport from "./generated/active-quality-report.json";
 import activeSecRegistrants from "./generated/active-sec-registrants.json";
 import activeSecurityMaster from "./generated/active-security-master.json";
 import activeUniverseMembership from "./generated/active-universe-membership.json";
+import activeUpstreamStalls from "./generated/active-upstream-stalls.json";
 import activeWalkForwardReadiness from "./generated/active-walk-forward-readiness.json";
 import { GOVERNED_SECURITY_EXCLUSIONS } from "./security-exclusions";
 
@@ -57,6 +59,9 @@ const metricDictionary = MetricDictionarySchema.parse(activeMetricDictionary);
 const maturity = MaturityAssessmentSchema.parse(activeMaturity);
 const modelCard = ModelCardSchema.parse(activeModelCard);
 const prospectiveReadiness = ProspectiveReadinessSchema.parse(activeProspectiveReadiness);
+// Bake dates that repeated the active observation's bytes: shown, never counted.
+const upstreamStalls = UpstreamStallLedgerSchema.parse(activeUpstreamStalls);
+const latestUpstreamStall = upstreamStalls.stalls.at(-1);
 const qualityReport = DataQualityReportSchema.parse(activeQualityReport);
 const secRegistrants = SecRegistrantCrosswalkSchema.parse(activeSecRegistrants);
 const securityMaster = SecurityMasterSchema.parse(activeSecurityMaster);
@@ -440,7 +445,22 @@ export function MarketHealthDashboard() {
               <strong>{prospectiveReadiness.progress.monthlyValidationReportCount}</strong>
               <p>first 30-day window incomplete</p>
             </article>
+            <article>
+              <span>No new upstream data</span>
+              <strong>{upstreamStalls.stallDayCount}</strong>
+              <p>
+                {latestUpstreamStall === undefined
+                  ? "no bake date has repeated the active data"
+                  : `latest ${latestUpstreamStall.observationDate} repeated ${latestUpstreamStall.unchangedSince.observationDate}'s data · adds nothing to the count`}
+              </p>
+            </article>
           </div>
+          {upstreamStalls.stallDayCount > 0 ? (
+            <p className="prospective-stall-days">
+              No-new-upstream-data days (not observation days):{" "}
+              {upstreamStalls.stalls.map(({ observationDate }) => observationDate).join(", ")}.
+            </p>
+          ) : null}
           <div
             className="table-scroll exit-disposition-table"
             tabIndex={0}

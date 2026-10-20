@@ -5,6 +5,10 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
+import {
+  UpstreamStallLedgerSchema,
+  UpstreamStallRecordSchema,
+} from "../../packages/contracts/src/index.js";
 
 // The ingest gates every scheduled refresh and had no test (audit 2026-10-20, G10). It runs
 // here as a child process in a temp cwd, with fetch replaced by a stub that serves fixtures
@@ -155,5 +159,90 @@ describe("V2 observation ingest", () => {
 
     expect(result.status).not.toBe(0);
     expect(String(result.stderr)).toContain("is not the commit V2");
+  });
+
+  it("records a later bake of byte-identical partitions as a no-new-upstream-data day", () => {
+    const { root, run } = fixture();
+    expect(run().status).toBe(0);
+    // Age the active observation three days: the same bytes now arrive on a later bake date.
+    const provenancePath = join(root, "data/observations/current/provenance.json");
+    const recipePath = join(root, "data/preview/vertical-slice-build.json");
+    const provenance = JSON.parse(readFileSync(provenancePath, "utf8"));
+    const earlier = new Date(Date.parse(provenance.observed_at) - 3 * 86_400_000).toISOString();
+    writeFileSync(provenancePath, JSON.stringify({ ...provenance, observed_at: earlier }));
+    const recipeBefore = readFileSync(recipePath, "utf8");
+    const provenanceBefore = readFileSync(provenancePath, "utf8");
+
+    const result = run();
+    expect(result.status, String(result.stderr)).toBe(0);
+    const summary = JSON.parse(String(result.stdout));
+    expect(summary).toMatchObject({
+      ingested: false,
+      disposition: "no-new-upstream-data",
+      recordDisposition: "recorded",
+    });
+    // nothing is ingested: no new observation, recipe or build
+    expect(readFileSync(recipePath, "utf8")).toBe(recipeBefore);
+    expect(readFileSync(provenancePath, "utf8")).toBe(provenanceBefore);
+
+    const recordText = readFileSync(join(root, summary.stallRecord), "utf8");
+    const record = UpstreamStallRecordSchema.parse(JSON.parse(recordText));
+    expect(record).toMatchObject({
+      observationDate: summary.observationDate,
+      countsTowardProspectiveHistory: false,
+      v2Commit: V2,
+      bulkDataCommit: DATA,
+      unchangedSince: {
+        observationDate: earlier.slice(0, 10),
+        buildId: JSON.parse(recipeBefore).buildId,
+      },
+    });
+    expect(record.universeSha256).toEqual(
+      Object.fromEntries(
+        Object.entries(provenance.files as Record<string, { sha256: string }>).map(
+          ([name, file]) => [name, file.sha256],
+        ),
+      ),
+    );
+    expect(
+      readFileSync(
+        join(
+          root,
+          "apps/dashboard/public/data/evidence/upstream-stalls",
+          `${record.observationDate}.json`,
+        ),
+        "utf8",
+      ),
+    ).toBe(recordText);
+    const ledger = UpstreamStallLedgerSchema.parse(
+      JSON.parse(
+        readFileSync(
+          join(root, "apps/dashboard/app/generated/active-upstream-stalls.json"),
+          "utf8",
+        ),
+      ),
+    );
+    expect(ledger.stalls).toEqual([record]);
+
+    // the same date again keeps the first record
+    const again = run();
+    expect(again.status, String(again.stderr)).toBe(0);
+    expect(JSON.parse(String(again.stdout)).recordDisposition).toBe("already-recorded");
+    expect(readFileSync(join(root, summary.stallRecord), "utf8")).toBe(recordText);
+  });
+
+  it("treats the same bake again as already observed and records nothing", () => {
+    const { root, run } = fixture();
+    expect(run().status).toBe(0);
+    const recipe = readFileSync(join(root, "data/preview/vertical-slice-build.json"), "utf8");
+
+    const result = run();
+    expect(result.status, String(result.stderr)).toBe(0);
+    expect(JSON.parse(String(result.stdout))).toMatchObject({
+      ingested: false,
+      disposition: "already-observed",
+    });
+    expect(readFileSync(join(root, "data/preview/vertical-slice-build.json"), "utf8")).toBe(recipe);
+    expect(existsSync(join(root, "data/evidence/upstream-stalls"))).toBe(false);
   });
 });
