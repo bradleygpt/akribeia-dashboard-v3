@@ -18,6 +18,7 @@ export interface DashboardAvailability {
   action: string;
   buildId?: string;
   observedAt?: string;
+  dataAsOf?: string;
   ageSeconds?: number;
   maxAgeSeconds?: number;
 }
@@ -28,6 +29,8 @@ export interface AvailabilityClassificationInput {
   publicationDecision: BuildManifest["publication"]["decision"];
   artifactStatus: DataStatus;
   observedAt: string;
+  /** The source files' own data date; age is measured from it when the build records one. */
+  dataAsOf?: string;
   maxAgeSeconds: number;
 }
 
@@ -69,16 +72,21 @@ function classifiedStatus(
     kind,
     buildId: input.buildId,
     observedAt: input.observedAt,
+    ...(input.dataAsOf === undefined ? {} : { dataAsOf: input.dataAsOf }),
     ageSeconds,
     maxAgeSeconds: input.maxAgeSeconds,
   };
+  const subject =
+    input.dataAsOf === undefined
+      ? "The source observation"
+      : `The source data (as of ${input.dataAsOf.slice(0, 10)})`;
 
   if (kind === "stale") {
     return {
       ...common,
       label: "Historical snapshot",
       title: "Source freshness window has elapsed",
-      message: `The source observation is ${elapsedLabel(ageSeconds)} old; this build allows ${elapsedLabel(input.maxAgeSeconds)}.`,
+      message: `${subject} is ${elapsedLabel(ageSeconds)} old; this build allows ${elapsedLabel(input.maxAgeSeconds)}.`,
       action:
         "Verified evidence remains available for inspection, but it must not be treated as current market data.",
     };
@@ -110,8 +118,10 @@ export function classifyDashboardAvailability(
   now: Date,
 ): DashboardAvailability {
   const observedAt = Date.parse(input.observedAt);
+  // Freshness ages the data: the files' data date when recorded, else the observation.
+  const agedFrom = Date.parse(input.dataAsOf ?? input.observedAt);
 
-  if (!Number.isFinite(observedAt)) {
+  if (!Number.isFinite(observedAt) || !Number.isFinite(agedFrom)) {
     return {
       kind: "error",
       label: "Error",
@@ -122,7 +132,7 @@ export function classifyDashboardAvailability(
     };
   }
 
-  const ageSeconds = Math.max(0, Math.floor((now.getTime() - observedAt) / 1000));
+  const ageSeconds = Math.max(0, Math.floor((now.getTime() - agedFrom) / 1000));
 
   if (
     input.manifestStatus === "failed" ||
@@ -287,6 +297,7 @@ export async function loadDashboardAvailability({
         publicationDecision: manifest.publication.decision,
         artifactStatus: dashboardArtifact.status,
         observedAt: dashboard.source.observedAt,
+        ...(dashboard.source.dataAsOf === undefined ? {} : { dataAsOf: dashboard.source.dataAsOf }),
         maxAgeSeconds: dashboard.source.maxAgeSeconds,
       },
       now,

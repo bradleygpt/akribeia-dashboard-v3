@@ -79,6 +79,26 @@ describe("dashboard data availability", () => {
     expect(result.action).toContain("must not be treated as current market data");
   });
 
+  it("ages a build from its files' data date, not the later observation run", () => {
+    // Run on day 5 of data dated day 0: inside the window by the run date, but the data
+    // itself is 5 days old, and day 8 of the data is stale whatever the run date says.
+    const dataAsOf = new Date(Date.parse(observedAt) - 5 * 86_400_000).toISOString();
+    const input = { ...healthyInput, dataAsOf };
+    const current = classifyDashboardAvailability(input, new Date(Date.parse(observedAt)));
+    const stale = classifyDashboardAvailability(
+      input,
+      new Date(Date.parse(observedAt) + 3 * 86_400_000),
+    );
+
+    expect(current.kind).toBe("healthy");
+    expect(current.ageSeconds).toBe(5 * 86_400);
+    expect(current.dataAsOf).toBe(dataAsOf);
+    expect(stale.kind).toBe("stale");
+    expect(stale.message).toBe(
+      `The source data (as of ${dataAsOf.slice(0, 10)}) is 8 days old; this build allows 7 days.`,
+    );
+  });
+
   it("reports delayed or fallback evidence as degraded", () => {
     const result = classifyDashboardAvailability(
       {

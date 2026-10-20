@@ -187,6 +187,9 @@ export const FreshnessSchema = z
   .object({
     status: DataStatusSchema,
     observedAt: IsoDateTimeSchema.nullable(),
+    // The source files' own data date when the source records one. observedAt stays the
+    // observation (run) date; ageSeconds is measured from dataAsOf when it is present.
+    dataAsOf: IsoDateTimeSchema.optional(),
     retrievedAt: IsoDateTimeSchema,
     evaluatedAt: IsoDateTimeSchema,
     ageSeconds: z.number().int().nonnegative().nullable(),
@@ -496,6 +499,8 @@ export const VerticalSliceBuildRecipeSchema = z.object({
   buildId: z.string().min(1),
   evaluatedAt: IsoDateTimeSchema,
   observedAt: IsoDateTimeSchema,
+  /** The universe files' data date (V2 manifest as_of); absent on observations that predate it. */
+  dataAsOf: IsoDateTimeSchema.optional(),
   maxAgeSeconds: z.number().int().positive(),
   sourcePath: z.string().min(1),
   metadataPath: z.string().min(1),
@@ -733,6 +738,8 @@ const DashboardSourceSchema = z
     sourceCommit: z.string().min(1),
     contentSha256: Sha256Schema,
     observedAt: IsoDateTimeSchema,
+    /** Data date of the source files; ageSeconds is measured from it when present. */
+    dataAsOf: IsoDateTimeSchema.optional(),
     rowCount: z.number().int().positive(),
     freshnessStatus: z.literal("current"),
     ageSeconds: z.number().int().nonnegative(),
