@@ -31,6 +31,23 @@ describe("recovered V2 portfolio contract", () => {
     expect(parseHoldingsCsv(holdingsToCsv(holdings))).toEqual(holdings);
   });
 
+  it("reads quoted brokerage fields with commas and escaped quotes", () => {
+    // Splitting on every comma read "1,000" as 1 share and dropped or shifted any row with a
+    // quoted description (audit 2026-10-20, G2).
+    expect(
+      parseHoldingsCsv(
+        [
+          "Symbol,Description,Quantity,Cost Basis Per Share",
+          'AAPL,"Apple, Inc.","1,000",150.25',
+          'MSFT,"Microsoft ""MSFT"" Corp",12,"$1,234.50"',
+        ].join("\r\n"),
+      ),
+    ).toEqual([
+      { ticker: "AAPL", shares: 1000, cost_basis: 150.25 },
+      { ticker: "MSFT", shares: 12, cost_basis: 1234.5 },
+    ]);
+  });
+
   it("treats SPY stock grades as not applicable and uses only approved as-of values", () => {
     const analysis = analyzePortfolio(
       [

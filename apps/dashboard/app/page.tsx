@@ -1921,7 +1921,7 @@ export function MarketHealthDashboard() {
           </aside>
         </div>
 
-        <EvidenceExplorer />
+        <EvidenceExplorer defaultTicker={dashboard.topScores[0]?.ticker ?? ""} />
 
         <section className="status-guide" aria-labelledby="status-guide-heading">
           <div>

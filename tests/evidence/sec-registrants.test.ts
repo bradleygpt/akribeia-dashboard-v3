@@ -134,19 +134,9 @@ describe("SEC registrant crosswalk", () => {
     expect(crosswalk.status).toBe("partial-current-snapshot");
     expect(crosswalk.historicalIdentityEligible).toBe(false);
     expect(crosswalk.coverage).toEqual(COMMITTED_REGISTRANTS.coverage);
-    expect(crosswalk.unmatched.map(({ ticker }) => ticker)).toEqual([
-      "BAI",
-      "BK",
-      "CTRA",
-      "DIA",
-      "GLD",
-      "IAU",
-      "IBIT",
-      "MDY",
-      "PSTG",
-      "SPLG",
-      "SPY",
-    ]);
+    // The committed crosswalk is what the refresh regenerates; comparing to it (not a pinned
+    // ticker list) keeps this test green when the universe moves (audit 2026-10-20, G1).
+    expect(crosswalk.unmatched).toEqual(COMMITTED_REGISTRANTS.unmatched);
     expect(micron).toMatchObject({
       provisionalSecurityId: "AKR-TICKER:MU",
       sourceType: "company-ticker",
