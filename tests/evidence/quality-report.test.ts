@@ -1,11 +1,12 @@
 import { readFileSync } from "node:fs";
 import { resolve as resolvePath } from "node:path";
-import { cp, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { DataQualityReportSchema } from "@akribeia/contracts";
 import { generateQualityReport } from "@akribeia/evidence";
+import { copyPublishedEvidenceInputs } from "./published-data";
 
 const temporaryDirectories: string[] = [];
 async function temporaryRoot(): Promise<string> {
@@ -64,7 +65,7 @@ describe("data quality and drift report", () => {
   it("rejects scores that fail their daily receipt", async () => {
     const root = await temporaryRoot();
     const publishedDataRoot = join(root, "published");
-    await cp(resolve("apps/dashboard/public/data"), publishedDataRoot, { recursive: true });
+    await copyPublishedEvidenceInputs(publishedDataRoot);
     const daily = JSON.parse(
       await readFile(resolve("apps/dashboard/public/data/evidence/active.json"), "utf8"),
     );

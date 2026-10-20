@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { resolve as resolvePath } from "node:path";
-import { cp, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
@@ -9,6 +9,7 @@ import {
   EvidenceReproducibilityReportSchema,
 } from "@akribeia/contracts";
 import { generateDailyEvidence } from "@akribeia/evidence";
+import { copyPublishedEvidenceInputs } from "./published-data";
 
 const temporaryDirectories: string[] = [];
 
@@ -146,7 +147,7 @@ describe("immutable daily evidence", () => {
   it("fails closed when an active artifact no longer matches its receipt", async () => {
     const root = await temporaryRoot();
     const publishedDataRoot = join(root, "published-data");
-    await cp(resolve("apps/dashboard/public/data"), publishedDataRoot, { recursive: true });
+    await copyPublishedEvidenceInputs(publishedDataRoot);
     const pointer = JSON.parse(
       await readFile(join(publishedDataRoot, "active-build.json"), "utf8"),
     ) as { activeBuildId: string };
