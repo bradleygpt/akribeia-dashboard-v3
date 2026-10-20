@@ -91,6 +91,20 @@ describe("13F primary document parsing", () => {
   const primaryDoc = (body: string): string =>
     `<?xml version="1.0"?><edgarSubmission><headerData></headerData><formData><coverPage>${body}</coverPage></formData></edgarSubmission>`;
 
+  it("scans unterminated or hostile entries in linear time", () => {
+    // 20,000 opening tags with no close: the old lazy regex rescanned to the end of the
+    // document from every one of them (quadratic; CodeQL js/polynomial-redos).
+    const hostile = "<infoTable>".repeat(20_000) + "x".repeat(10_000);
+    const started = performance.now();
+    expect(() => parseInfoTableXml(hostile)).toThrow("contains no infoTable entries");
+    expect(performance.now() - started).toBeLessThan(500);
+
+    const unclosedAttribute = "<infoTable a".repeat(20_000);
+    const attrStarted = performance.now();
+    expect(() => parseInfoTableXml(unclosedAttribute)).toThrow("contains no infoTable entries");
+    expect(performance.now() - attrStarted).toBeLessThan(500);
+  });
+
   it("reads the reporting period in EDGAR US date format", () => {
     const parsed = parsePrimaryDocXml(
       primaryDoc("<periodOfReport>06-30-2026</periodOfReport><isAmendment>false</isAmendment>"),
