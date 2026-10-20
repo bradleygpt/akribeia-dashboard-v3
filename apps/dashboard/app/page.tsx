@@ -326,7 +326,11 @@ export function MarketHealthDashboard() {
           <article>
             <p>Average coverage</p>
             <strong>{percent(dashboard.scoring.averageCoverage)}</strong>
-            <span>No silent renormalization</span>
+            <span>
+              {dashboard.scoring.missingDataPolicy === "renormalize-explicitly"
+                ? `Input-less pillars dropped and reweighted · ${percent(dashboard.scoring.minimumCoverage)} minimum`
+                : "No renormalization"}
+            </span>
           </article>
           <article>
             <p>Portfolio</p>
@@ -1755,9 +1759,9 @@ export function MarketHealthDashboard() {
             <h2 id="factor-audit-heading">Missing inputs stay visible</h2>
           </div>
           <p className="factor-intro">
-            Each pillar is measured against the full source universe before scoring. Incomplete
-            securities are excluded with a recorded reason; their remaining factors are never
-            silently reweighted.
+            {dashboard.scoring.missingDataPolicy === "renormalize-explicitly"
+              ? `Each pillar is measured against the stock universe before scoring. A pillar with no observed V2 inputs is unavailable: it gets no score, and the security's remaining pillar weights are renormalized, explicitly and on the record. A security needs ${percent(dashboard.scoring.minimumCoverage)} of the pillar weight or it is excluded with a recorded reason.`
+              : "Each pillar is measured against the full source universe before scoring. Incomplete securities are excluded with a recorded reason; their remaining factors are never reweighted."}
           </p>
           <div className="factor-grid">
             {dashboard.scoring.factorCoverage.map((factor) => (

@@ -26,6 +26,7 @@ import {
 } from "@akribeia/publisher";
 import {
   calculateCoverageAwareComposite,
+  type Pillar,
   type PillarValues,
   type PillarWeights,
 } from "@akribeia/scoring";
@@ -47,6 +48,19 @@ const NO_PILLAR_VALUES: PillarValues = {
   profitability: null,
   momentum: null,
   revisions: null,
+};
+// Missing-data policy (model 3.1.0, owner decision 2026-10-20): a pillar whose V2 inputs are
+// ALL missing is unavailable -- V2 still publishes a score for it, e.g. FISV Profitability
+// with all five inputs null -- and is dropped from the composite with the remaining weights
+// renormalized. A security needs at least three of its five pillars.
+const MISSING_DATA_POLICY = "renormalize-explicitly" as const;
+const MINIMUM_COVERAGE = 0.6;
+const PILLAR_METRIC_GROUPS: Record<Pillar, string> = {
+  valuation: "Valuation",
+  growth: "Growth",
+  profitability: "Profitability",
+  momentum: "Momentum",
+  revisions: "EPS Revisions",
 };
 const MAX_POSITION_WEIGHT = 0.12;
 const MAX_SECTOR_WEIGHT = 0.3;
@@ -117,6 +131,25 @@ function sourceAgeSeconds(recipe: VerticalSliceBuildRecipe): number {
   }
 
   return Math.floor((evaluated - observed) / 1000);
+}
+
+/** Each pillar's V2 input metric keys, from the bake metadata's pillar_metrics. */
+function pillarInputKeys(metadata: unknown): Record<Pillar, string[]> {
+  const groups = (metadata as { pillar_metrics?: Record<string, Array<{ key?: unknown }>> })
+    .pillar_metrics;
+  if (groups === undefined) {
+    throw new Error("V2 metadata has no pillar_metrics; pillar inputs cannot be checked.");
+  }
+  const entries = (Object.keys(PILLAR_METRIC_GROUPS) as Pillar[]).map((pillar) => {
+    const keys = (groups[PILLAR_METRIC_GROUPS[pillar]] ?? [])
+      .map(({ key }) => key)
+      .filter((key): key is string => typeof key === "string");
+    if (keys.length === 0) {
+      throw new Error(`V2 metadata lists no input metrics for ${PILLAR_METRIC_GROUPS[pillar]}.`);
+    }
+    return [pillar, keys] as const;
+  });
+  return Object.fromEntries(entries) as Record<Pillar, string[]>;
 }
 
 function publishedSecurity(security: ScoredSecurity & { score: number }) {
@@ -313,11 +346,12 @@ export async function runVerticalSlice(
   }
 
   const sourceHash = sha256(sourcePayload);
+  const inputKeys = pillarInputKeys(sourceMetadata);
   const scored: ScoredSecurity[] = snapshot.rows.map((row) => {
     if (row.sector === ETF_SECTOR) {
       const result = calculateCoverageAwareComposite(NO_PILLAR_VALUES, SCORE_WEIGHTS, {
-        minimumCoverage: 1,
-        missingDataPolicy: "require-complete",
+        minimumCoverage: MINIMUM_COVERAGE,
+        missingDataPolicy: MISSING_DATA_POLICY,
       });
       return {
         ticker: row.ticker,
@@ -330,16 +364,23 @@ export async function runVerticalSlice(
         marketCapB: row.marketCapB,
       };
     }
+    const raw = row.raw;
+    if (raw === undefined) {
+      throw new Error(`Source row "${row.ticker}" carries no raw inputs to check its pillars.`);
+    }
+    // A pillar is used only when at least one of its V2 inputs was observed.
+    const observed = (pillar: Pillar, value: number | null): number | null =>
+      inputKeys[pillar].some((key) => typeof raw[key] === "number") ? value : null;
     const values: PillarValues = {
-      valuation: row.pillars.Valuation,
-      growth: row.pillars.Growth,
-      profitability: row.pillars.Profitability,
-      momentum: row.pillars.Momentum,
-      revisions: row.pillars["EPS Revisions"],
+      valuation: observed("valuation", row.pillars.Valuation),
+      growth: observed("growth", row.pillars.Growth),
+      profitability: observed("profitability", row.pillars.Profitability),
+      momentum: observed("momentum", row.pillars.Momentum),
+      revisions: observed("revisions", row.pillars["EPS Revisions"]),
     };
     const result = calculateCoverageAwareComposite(values, SCORE_WEIGHTS, {
-      minimumCoverage: 1,
-      missingDataPolicy: "require-complete",
+      minimumCoverage: MINIMUM_COVERAGE,
+      missingDataPolicy: MISSING_DATA_POLICY,
     });
 
     return {
@@ -383,9 +424,9 @@ export async function runVerticalSlice(
   const scoring = {
     method: "weighted-five-pillar" as const,
     weights: SCORE_WEIGHTS,
-    missingDataPolicy: "require-complete" as const,
-    minimumCoverage: 1,
-    eligibleNormalization: "total-weight" as const,
+    missingDataPolicy: MISSING_DATA_POLICY,
+    minimumCoverage: MINIMUM_COVERAGE,
+    eligibleNormalization: "available-weight" as const,
     eligibleSecurities: eligible.length,
     excludedSecurities: scored.length - eligible.length,
     notApplicableSecurities: scored.length - stocks.length,

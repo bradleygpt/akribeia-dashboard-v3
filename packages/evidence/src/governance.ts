@@ -228,7 +228,8 @@ export async function generateModelGovernance(
       {
         gate: "scoring-parity",
         status: "pass",
-        summary: "Frozen V2 composite scores and ratings reproduced with zero mismatches.",
+        summary:
+          "Frozen V2 composite scores and ratings reproduced with zero mismatches. Since model 3.1.0 the published score departs from V2 on purpose in two places: ETFs are not scored on placeholder pillars, and a pillar with no observed inputs is dropped rather than scored.",
         evidence: ["data/reference/v2-baseline/V2_VALIDATION_FINDINGS.md"],
       },
       {
@@ -243,7 +244,11 @@ export async function generateModelGovernance(
         status: "pass",
         summary: `${activeRecord.scoring.eligibleSecurities} securities satisfy the explicit ${(
           activeRecord.scoring.minimumCoverage * 100
-        ).toFixed(0)}% coverage gate.`,
+        ).toFixed(0)}% coverage gate.${
+          activeRecord.scoring.missingDataPolicy === "renormalize-explicitly"
+            ? " A pillar with no observed inputs is unavailable and the remaining weights are renormalized explicitly."
+            : ""
+        }`,
         evidence: [relativeRecordPath],
       },
       {

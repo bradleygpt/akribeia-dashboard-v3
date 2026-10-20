@@ -53,12 +53,20 @@ describe("visible vertical-slice pipeline", () => {
     expect(verified.source.rowCount).toBe(643);
     // 588 stocks + 55 ETFs; ETFs carry no stock-model pillars and are never scored (3.1.0).
     expect(verified.scoring.notApplicableSecurities).toBe(55);
-    expect(verified.scoring.eligibleSecurities).toBeGreaterThan(550);
-    expect(verified.scoring.eligibleSecurities).toBeLessThanOrEqual(588);
-    expect(verified.scoring.missingDataPolicy).toBe("require-complete");
-    expect(verified.scoring.eligibleNormalization).toBe("total-weight");
-    expect(verified.scoring.factorCoverage).toHaveLength(5);
-    expect(verified.scoring.factorCoverage.every(({ coverage }) => coverage === 1)).toBe(true);
+    // Five fixture stocks have a pillar with no observed inputs (CTRA, BK Momentum; COF, PSTG
+    // Growth; FISV Growth and Profitability). Each keeps >= 60% of its weight, so all 588 score.
+    expect(verified.scoring.eligibleSecurities).toBe(588);
+    expect(verified.scoring.missingDataPolicy).toBe("renormalize-explicitly");
+    expect(verified.scoring.minimumCoverage).toBe(0.6);
+    expect(verified.scoring.eligibleNormalization).toBe("available-weight");
+    expect(
+      Object.fromEntries(
+        verified.scoring.factorCoverage.map(({ pillar, availableSecurities }) => [
+          pillar,
+          availableSecurities,
+        ]),
+      ),
+    ).toEqual({ valuation: 588, growth: 585, profitability: 587, momentum: 586, revisions: 588 });
     expect(verified.portfolio.totalWeight).toBe(1);
     expect(verified.portfolio.totalWeightUnits).toBe(1_000_000_000);
     expect(verified.portfolio.construction).toMatchObject({
@@ -140,15 +148,32 @@ describe("visible vertical-slice pipeline", () => {
     });
   });
 
-  it("publishes factor-level coverage and explicit exclusions without renormalizing", async () => {
+  it("drops a pillar with no observed inputs and renormalizes the rest explicitly", async () => {
+    type Row = {
+      ticker: string;
+      sector: string;
+      pillars: Record<string, number | null>;
+      raw: Record<string, number | null>;
+    };
     const source = JSON.parse(
       await readFile(resolve("data/reference/v2-baseline/fixtures/universe_floor10.json"), "utf8"),
-    ) as {
-      rows: Array<{ ticker: string; pillars: { Growth: number | null } }>;
+    ) as { rows: Row[] };
+    const meta = JSON.parse(
+      await readFile(resolve("data/reference/v2-baseline/fixtures/meta.json"), "utf8"),
+    ) as { pillar_metrics: Record<string, Array<{ key: string }>> };
+    const clearInputs = (row: Row, group: string) => {
+      for (const { key } of meta.pillar_metrics[group] ?? []) row.raw[key] = null;
     };
-    const excludedTicker = source.rows[0].ticker;
-    source.rows[0].pillars.Growth = null;
-    const sourcePath = join(temporaryDirectory, "universe-with-missing-growth.json");
+    const alreadyAffected = new Set(["CTRA", "COF", "FISV", "BK", "PSTG"]);
+    const [dropped, excludedRow] = source.rows.filter(
+      ({ sector, ticker }) => sector !== "ETF" && !alreadyAffected.has(ticker),
+    );
+    if (dropped === undefined || excludedRow === undefined) throw new Error("fixture rows");
+    // V2 still publishes a Growth score for this row; with no Growth input observed it is unusable.
+    clearInputs(dropped, "Growth");
+    expect(dropped.pillars.Growth).not.toBeNull();
+    for (const group of ["Growth", "Profitability", "Momentum"]) clearInputs(excludedRow, group);
+    const sourcePath = join(temporaryDirectory, "universe-with-inputless-pillars.json");
     await writeFile(sourcePath, `${JSON.stringify(source, null, 2)}\n`);
 
     const result = await runVerticalSlice({
@@ -160,7 +185,11 @@ describe("visible vertical-slice pipeline", () => {
       JSON.parse(await readFile(join(result.buildDirectory, "scores.json"), "utf8")) as unknown,
     );
     const growthCoverage = scores.scoring.factorCoverage.find(({ pillar }) => pillar === "growth");
-    const excluded = scores.securities.find(({ ticker }) => ticker === excludedTicker);
+    const renormalized = scores.securities.find(({ ticker }) => ticker === dropped.ticker);
+    const excluded = scores.securities.find(({ ticker }) => ticker === excludedRow.ticker);
+    const remaining = ["Valuation", "Profitability", "Momentum", "EPS Revisions"].map(
+      (group) => dropped.pillars[group] ?? Number.NaN,
+    );
 
     // 588 stocks (55 ETFs are not applicable and sit outside the coverage population).
     expect(scores.scoring.eligibleSecurities).toBe(587);
@@ -168,16 +197,32 @@ describe("visible vertical-slice pipeline", () => {
     expect(scores.scoring.notApplicableSecurities).toBe(55);
     expect(growthCoverage).toMatchObject({
       sourceField: "pillars.Growth",
-      availableSecurities: 587,
-      missingSecurities: 1,
-      coverage: 587 / 588,
+      availableSecurities: 583,
+      missingSecurities: 5,
+      coverage: 583 / 588,
     });
+    expect(renormalized).toMatchObject({
+      coverage: 0.8,
+      eligible: true,
+      missingPillars: ["growth"],
+      exclusionReasons: [],
+      normalization: "available-weight",
+    });
+    expect(renormalized?.contributions.find(({ pillar }) => pillar === "growth")).toMatchObject({
+      value: null,
+      weightedValue: null,
+      status: "missing",
+    });
+    expect(renormalized?.score).toBeCloseTo(
+      remaining.reduce((sum, value) => sum + value, 0) / remaining.length,
+      12,
+    );
     expect(excluded).toMatchObject({
       score: null,
-      coverage: 0.8,
+      coverage: 0.4,
       eligible: false,
-      missingPillars: ["growth"],
-      exclusionReasons: ["below-minimum-coverage", "missing-required-pillar"],
+      missingPillars: ["growth", "profitability", "momentum"],
+      exclusionReasons: ["below-minimum-coverage"],
       normalization: "not-scored",
     });
 
@@ -214,6 +259,29 @@ describe("visible vertical-slice pipeline", () => {
     }
     expect(result.dashboard.topScores.some(({ sector }) => sector === "ETF")).toBe(false);
     expect(result.dashboard.portfolio.positions.some(({ sector }) => sector === "ETF")).toBe(false);
+  });
+
+  it("refuses to score when the pillar inputs cannot be checked", async () => {
+    const meta = JSON.parse(
+      await readFile(resolve("data/reference/v2-baseline/fixtures/meta.json"), "utf8"),
+    ) as Record<string, unknown>;
+    delete meta.pillar_metrics;
+    const metadataPath = join(temporaryDirectory, "meta-without-pillar-metrics.json");
+    await writeFile(metadataPath, `${JSON.stringify(meta)}\n`);
+    await expect(
+      runVerticalSlice({ ...recipe(), buildId: "preview-no-pillar-metrics", metadataPath }),
+    ).rejects.toThrow("no pillar_metrics");
+
+    const source = JSON.parse(
+      await readFile(resolve("data/reference/v2-baseline/fixtures/universe_floor10.json"), "utf8"),
+    ) as { rows: Array<{ sector: string; raw?: unknown }> };
+    const stock = source.rows.find(({ sector }) => sector !== "ETF");
+    if (stock !== undefined) delete stock.raw;
+    const sourcePath = join(temporaryDirectory, "universe-without-raw.json");
+    await writeFile(sourcePath, `${JSON.stringify(source)}\n`);
+    await expect(
+      runVerticalSlice({ ...recipe(), buildId: "preview-no-raw", sourcePath }),
+    ).rejects.toThrow("no raw inputs");
   });
 
   it("ages the source from its data date and records it beside the observation", async () => {
