@@ -49,6 +49,26 @@ winsorization, or component missing-value formulas used to create each V2 pillar
 The dictionary publishes the evidence that exists and labels that methodology gap explicitly. It
 does not reverse-engineer or guess an undocumented formula.
 
+## Model 3.1.0 (owner decisions 2026-10-20)
+
+Two deliberate departures from the V2 composite, recorded as audit findings D3 and D4:
+
+- **ETFs are not applicable.** The V2 shard fills ETF pillars with neutral placeholders (7.0
+  each). V3 publishes no pillar-based score or rank for an ETF: its row is excluded with the
+  reason `not-applicable-etf`, it is never a portfolio candidate, and it sits outside the
+  coverage population and the buy/sell breadth tiers. The dashboard shows "Not applicable (ETF)".
+- **A pillar with no observed inputs is unavailable.** V2 still publishes a score for a pillar
+  whose component inputs are all null, often the top grade (CTRA and BK Momentum 12, FISV
+  Profitability 12). V3 checks each pillar's inputs against the bake's `pillar_metrics` and
+  treats a pillar with none as missing: it gets no score, and the security's composite uses the
+  remaining weights, renormalized explicitly (`renormalize-explicitly`, `available-weight`).
+  A security needs at least 60% of the pillar weight (three of five pillars). Scoring fails
+  closed if the metadata has no `pillar_metrics` or a stock row has no `raw` inputs.
+
+The maturity report counts only immutable daily builds made under the active model version, so
+builds made under 3.0.0 do not count toward 3.1.0's maturity gates. The daily observation
+ledger itself stays one dated sequence across versions.
+
 ## Change control
 
 Any change to a pillar, weight, component definition, missing-data policy, minimum coverage, or

@@ -371,7 +371,7 @@ describe("protected evidence API", () => {
       externalModelUsed: false,
       focus: "factor-contributions",
     });
-    expect(payload.explanation).toContain("Missing factors are never silently reweighted");
+    expect(payload.explanation).toContain("Every pillar had observed inputs.");
     expect(payload.citations).toContain("scores.json:security.contributions");
   });
 

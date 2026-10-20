@@ -424,6 +424,8 @@ export const V2BaselineUniverseRowSchema = z.object({
     Momentum: z.number().finite().nullable(),
     "EPS Revisions": z.number().finite().nullable(),
   }),
+  /** V2's raw pillar inputs; model 3.1.0 uses a pillar only when one of them was observed. */
+  raw: z.record(z.string(), z.number().finite().nullable()).optional(),
 });
 export type V2BaselineUniverseRow = z.infer<typeof V2BaselineUniverseRowSchema>;
 
@@ -1273,11 +1275,23 @@ export const ModelCardSchema = z
       .object({
         name: z.literal("weighted-five-pillar"),
         weights: z.record(ScoringPillarSchema, z.number().finite().nonnegative()),
-        missingDataPolicy: z.literal("require-complete"),
-        minimumCoverage: z.literal(1),
-        normalization: z.literal("total-weight"),
+        missingDataPolicy: z.enum(["require-complete", "renormalize-explicitly"]),
+        minimumCoverage: z.number().min(0).max(1),
+        normalization: z.enum(["total-weight", "available-weight"]),
       })
-      .strict(),
+      .strict()
+      .refine(
+        (method) =>
+          method.normalization ===
+            (method.missingDataPolicy === "renormalize-explicitly"
+              ? "available-weight"
+              : "total-weight") &&
+          (method.missingDataPolicy === "renormalize-explicitly" || method.minimumCoverage === 1),
+        {
+          message:
+            "require-complete needs full coverage and total-weight normalization; renormalize-explicitly needs available-weight.",
+        },
+      ),
     validation: z
       .array(
         z

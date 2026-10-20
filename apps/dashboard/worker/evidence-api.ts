@@ -1005,7 +1005,11 @@ function explanationText(
     .join(" and ");
 
   if (focus === "factor-contributions") {
-    return `${security.ticker} has a composite score of ${security.score.toFixed(2)} with ${(security.coverage * 100).toFixed(0)}% factor coverage. Its largest weighted contributions are ${contributionSummary}. Missing factors are never silently reweighted.`;
+    return `${security.ticker} has a composite score of ${security.score.toFixed(2)} with ${(security.coverage * 100).toFixed(0)}% factor coverage. Its largest weighted contributions are ${contributionSummary}. ${
+      security.missingPillars.length === 0
+        ? "Every pillar had observed inputs."
+        : `${security.missingPillars.join(" and ")} had no observed inputs, so ${security.missingPillars.length === 1 ? "it is" : "they are"} unavailable and the remaining weights are renormalized explicitly.`
+    }`;
   }
 
   if (focus === "portfolio") {
