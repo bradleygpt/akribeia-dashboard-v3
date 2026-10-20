@@ -6,7 +6,7 @@ import type {
 } from "../app/market-health-api-types";
 
 const MARKET_HEALTH_PATH = "/api/v3/market-health";
-const V2_APP_COMMIT = "5bfbe0190466dfa166c8071e2acca8800cb3cb2f";
+const V2_APP_COMMIT = "2ac4c6586980709c9118f58546d0b5a85ae3cc8b";
 const V2_SOURCE_COMMIT = "1858840c581f406492dec2e809830d05764ad3d9";
 const MARKET_STATIC_URL = `https://raw.githubusercontent.com/bradleygpt/quant-dashboard-pro-v2/${V2_APP_COMMIT}/public/data/market_static.json`;
 const PGI_BAKED_URL = `https://raw.githubusercontent.com/bradleygpt/quant-dashboard-pro-v2/${V2_APP_COMMIT}/public/data/pgi_money_market.json`;

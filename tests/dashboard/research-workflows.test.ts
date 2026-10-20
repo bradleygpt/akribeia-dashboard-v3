@@ -573,7 +573,7 @@ describe("Wave 2 bounded API adapters", () => {
       source: { v2AppCommit: string };
     };
     expect(body.ok).toBe(true);
-    expect(body.source.v2AppCommit).toBe("5bfbe0190466dfa166c8071e2acca8800cb3cb2f");
+    expect(body.source.v2AppCommit).toBe("2ac4c6586980709c9118f58546d0b5a85ae3cc8b");
 
     const indexCandidates = await handleResearchReferenceApi(
       new Request("https://akribeia.test/api/v3/research-reference?dataset=index-add-candidates"),
@@ -601,7 +601,7 @@ describe("Wave 2 bounded API adapters", () => {
         {
           fetcher: async (input) => {
             expect(String(input)).toContain(
-              `5bfbe0190466dfa166c8071e2acca8800cb3cb2f/public/data/${filename}`,
+              `2ac4c6586980709c9118f58546d0b5a85ae3cc8b/public/data/${filename}`,
             );
             return new Response(JSON.stringify({ generated_at: "2026-07-28" }));
           },
