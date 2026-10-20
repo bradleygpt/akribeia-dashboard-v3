@@ -28,33 +28,123 @@ if (EXPIRES !== null && Date.now() > Date.parse(EXPIRES))
   throw new Error(`temporary exception expired: ${EXPIRES}`);
 if (HIGH_EXCEPTIONS.length > 0 && EXPIRES === null)
   throw new Error("HIGH_EXCEPTIONS requires a review deadline: set EXPIRES");
-const [{ stdout: auditJson }, { stdout: productionAuditJson }, lockText] = await Promise.all([
-  run("npm audit --json", { maxBuffer: 10 * 1024 * 1024, shell: true }).catch((error) => ({
-    stdout: error.stdout,
-  })),
-  run("npm audit --omit=dev --json", { maxBuffer: 10 * 1024 * 1024, shell: true }),
+// npm audit exits non-zero whenever it reports anything, including the vendored braces
+// finding discounted below, so both runs are read from stdout and then required to be a
+// real audit report: an npm error object (registry or network failure) is never "clean".
+const auditReport = (command) =>
+  run(command, { maxBuffer: 10 * 1024 * 1024, shell: true })
+    .catch((error) => ({ stdout: error.stdout }))
+    .then(({ stdout }) => {
+      const report = JSON.parse(stdout);
+      if (report.error || report.auditReportVersion !== 2 || !report.metadata?.vulnerabilities)
+        throw new Error(`${command} did not produce an audit report: ${stdout.slice(0, 300)}`);
+      return report;
+    });
+const [audit, productionAudit, lockText] = await Promise.all([
+  auditReport("npm audit --json"),
+  auditReport("npm audit --omit=dev --json"),
   readFile(new URL("../package-lock.json", import.meta.url), "utf8"),
 ]);
 const lock = JSON.parse(lockText);
-const audit = JSON.parse(auditJson);
-const productionAudit = JSON.parse(productionAuditJson);
-const metadata = audit.metadata?.vulnerabilities ?? {};
-const productionMetadata = productionAudit.metadata?.vulnerabilities ?? {};
-if ((productionMetadata.critical ?? 0) !== 0 || (productionMetadata.high ?? 0) !== 0)
+
+// braces: GHSA-vfj7-8cjw-p6xm (stack-exhaustion DoS via deeply nested patterns) covers
+// every version <=3.0.3 with NO upstream fix. Remediated at the root, not excepted: braces
+// is VENDORED as a workspace with a nesting-depth limit (vendor/braces/AKRIBEIA_PATCH.md).
+// This guard is what keeps the fix honest -- it fails closed if node_modules/braces stops
+// resolving to the vendor workspace, or if the vendored parser loses its depth check.
+{
+  const braces = lock.packages?.["node_modules/braces"];
+  if (!braces || braces.link !== true || braces.resolved !== "vendor/braces")
+    throw new Error(
+      `braces must resolve to the patched vendor/braces workspace, got ${JSON.stringify(braces)}`,
+    );
+  const parseSrc = await readFile(
+    new URL("../vendor/braces/lib/parse.js", import.meta.url),
+    "utf8",
+  );
+  const constSrc = await readFile(
+    new URL("../vendor/braces/lib/constants.js", import.meta.url),
+    "utf8",
+  );
+  if (!/MAX_DEPTH:\s*128\b/.test(constSrc) || !/depth > maxDepth/.test(parseSrc))
+    throw new Error("vendored braces has lost its GHSA-vfj7-8cjw-p6xm nesting-depth limit");
+  for (const node of Object.keys(lock.packages ?? {}))
+    if (node.endsWith("/node_modules/braces"))
+      throw new Error(`unpatched nested braces at ${node}: only vendor/braces may satisfy braces`);
+}
+
+// Whether npm audit reports the vendored copy depends on the npm version: npm 11 skips the
+// linked workspace, but npm 10 (Node 22, which CI runs) audits it by its version number --
+// 3.0.3 is inside the advisory range -- and reports braces as a high PRODUCTION finding, plus
+// every package that reaches it (micromatch, fast-glob, vinext, ...) as high through `via`.
+// That turned CI red on 2026-10-07 and blocked every point-in-time refresh from 2026-10-08.
+// The guard above has just proven the patch, so exactly this advisory on exactly the vendored
+// nodes is discounted, and severity is recomputed through `via` so its dependents drop with
+// it. A different advisory, an extra braces node, or anything else stays counted.
+const VENDORED_BRACES_ADVISORY = "GHSA-vfj7-8cjw-p6xm";
+const VENDORED_BRACES_NODES = new Set(["node_modules/braces", "vendor/braces"]);
+const SEVERITY_RANK = { info: 0, low: 1, moderate: 2, high: 3, critical: 4 };
+function isVendoredBracesFinding(entry, item) {
+  return (
+    entry.name === "braces" &&
+    typeof item.url === "string" &&
+    item.url.endsWith(`/${VENDORED_BRACES_ADVISORY}`) &&
+    (entry.nodes ?? []).every((node) => VENDORED_BRACES_NODES.has(node))
+  );
+}
+function effectiveFindings(report) {
+  const vulnerabilities = report.vulnerabilities ?? {};
+  const memo = new Map();
+  const severityOf = (name, visiting) => {
+    if (memo.has(name)) return memo.get(name);
+    const entry = vulnerabilities[name];
+    if (!entry || visiting.has(name)) return null;
+    visiting.add(name);
+    let severity = null;
+    for (const item of entry.via ?? []) {
+      const itemSeverity =
+        typeof item === "string"
+          ? severityOf(item, visiting)
+          : isVendoredBracesFinding(entry, item)
+            ? null
+            : item.severity;
+      if (
+        itemSeverity &&
+        (severity === null || SEVERITY_RANK[itemSeverity] > SEVERITY_RANK[severity])
+      )
+        severity = itemSeverity;
+    }
+    visiting.delete(name);
+    memo.set(name, severity);
+    return severity;
+  };
+  const entries = Object.values(vulnerabilities).map((entry) => ({
+    ...entry,
+    severity: severityOf(entry.name, new Set()),
+    reportedSeverity: entry.severity,
+  }));
+  const count = (severity) => entries.filter((entry) => entry.severity === severity).length;
+  return {
+    entries,
+    critical: count("critical"),
+    high: count("high"),
+    discounted: entries
+      .filter((entry) => entry.severity !== entry.reportedSeverity)
+      .map(({ name, reportedSeverity, severity }) => ({ name, reportedSeverity, severity })),
+  };
+}
+const findings = effectiveFindings(audit);
+const productionFindings = effectiveFindings(productionAudit);
+if (productionFindings.critical !== 0 || productionFindings.high !== 0)
   throw new Error("production dependency audit is not clean");
-if ((metadata.critical ?? 0) !== 0) throw new Error("critical vulnerabilities are not permitted");
+if (findings.critical !== 0) throw new Error("critical vulnerabilities are not permitted");
 
 // Every high finding must be one of the enumerated exceptions — no more, no
 // fewer, and each must match its pinned node, version, and exact advisory set.
-const highEntries = Object.values(audit.vulnerabilities ?? {}).filter(
-  (entry) => entry.severity === "high",
-);
-if (
-  (metadata.high ?? 0) !== HIGH_EXCEPTIONS.length ||
-  highEntries.length !== HIGH_EXCEPTIONS.length
-)
+const highEntries = findings.entries.filter((entry) => entry.severity === "high");
+if (findings.high !== HIGH_EXCEPTIONS.length || highEntries.length !== HIGH_EXCEPTIONS.length)
   throw new Error(
-    `expected exactly the ${HIGH_EXCEPTIONS.length} enumerated high advisories, got ${metadata.high ?? 0}`,
+    `expected exactly the ${HIGH_EXCEPTIONS.length} enumerated high advisories, got ${findings.high}`,
   );
 for (const exception of HIGH_EXCEPTIONS) {
   const entry = highEntries.find((candidate) => candidate.name === exception.name);
@@ -152,32 +242,6 @@ for (const [node, entry] of Object.entries(lock.packages ?? {})) {
       throw new Error(`source-map-js regression at ${node}: ${entry.version} < 1.2.2`);
   }
 }
-// braces: GHSA-vfj7-8cjw-p6xm (stack-exhaustion DoS via deeply nested patterns) covers
-// every version <=3.0.3 with NO upstream fix. Remediated at the root, not excepted: braces
-// is VENDORED as a workspace with a nesting-depth limit (vendor/braces/AKRIBEIA_PATCH.md).
-// npm audit does not see the vendored copy, so this guard is what keeps the fix honest --
-// it fails closed if node_modules/braces stops resolving to the vendor workspace, or if the
-// vendored parser loses its depth check.
-{
-  const braces = lock.packages?.["node_modules/braces"];
-  if (!braces || braces.link !== true || braces.resolved !== "vendor/braces")
-    throw new Error(
-      `braces must resolve to the patched vendor/braces workspace, got ${JSON.stringify(braces)}`,
-    );
-  const parseSrc = await readFile(
-    new URL("../vendor/braces/lib/parse.js", import.meta.url),
-    "utf8",
-  );
-  const constSrc = await readFile(
-    new URL("../vendor/braces/lib/constants.js", import.meta.url),
-    "utf8",
-  );
-  if (!/MAX_DEPTH:\s*128\b/.test(constSrc) || !/depth > maxDepth/.test(parseSrc))
-    throw new Error("vendored braces has lost its GHSA-vfj7-8cjw-p6xm nesting-depth limit");
-  for (const node of Object.keys(lock.packages ?? {}))
-    if (node.endsWith("/node_modules/braces"))
-      throw new Error(`unpatched nested braces at ${node}: only vendor/braces may satisfy braces`);
-}
 const packageJson = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
 if (packageJson.devDependencies?.undici || packageJson.overrides?.undici)
   throw new Error("direct undici pin/override must remain absent");
@@ -195,8 +259,11 @@ console.log(
       tracking,
     })),
     productionAudit: {
-      critical: productionMetadata.critical ?? 0,
-      high: productionMetadata.high ?? 0,
+      critical: productionFindings.critical,
+      high: productionFindings.high,
     },
+    // Findings npm reported above their effective severity because they trace only to the
+    // patched vendored braces (empty when the running npm does not audit the workspace).
+    vendoredRemediations: findings.discounted,
   }),
 );
