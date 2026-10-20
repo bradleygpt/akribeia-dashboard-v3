@@ -169,7 +169,7 @@ export function classifyDashboardAvailability(
   return classifiedStatus("healthy", input, ageSeconds);
 }
 
-async function sha256(payload: Uint8Array): Promise<string> {
+async function sha256(payload: Uint8Array<ArrayBuffer>): Promise<string> {
   const digest = await globalThis.crypto.subtle.digest("SHA-256", payload);
 
   return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");

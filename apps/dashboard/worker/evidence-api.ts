@@ -41,6 +41,15 @@ interface RateLimitBucket {
   resetAt: number;
 }
 
+type ScoreContribution = PublishedScoredSecurity["contributions"][number];
+type WeightedContribution = ScoreContribution & { status: "available"; weightedValue: number };
+
+// The contract guarantees an available contribution carries a weightedValue; this guard
+// makes the type say so instead of the call sites assuming it.
+function isWeighted(contribution: ScoreContribution): contribution is WeightedContribution {
+  return contribution.status === "available" && contribution.weightedValue !== null;
+}
+
 interface ActiveEvidence {
   buildId: string;
   scores: PublishedScoresArtifact;
@@ -183,7 +192,7 @@ function validateProtectedRequest(request: Request): Response | null {
   return null;
 }
 
-async function sha256(payload: Uint8Array): Promise<string> {
+async function sha256(payload: Uint8Array<ArrayBuffer>): Promise<string> {
   const digest = await crypto.subtle.digest("SHA-256", payload);
   return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
 }
@@ -491,7 +500,7 @@ function thesisPrompt(
 ): string {
   const contributions = security.contributions
     .map((contribution) =>
-      contribution.status === "available"
+      isWeighted(contribution)
         ? `${contribution.pillar}: weighted ${contribution.weightedValue.toFixed(2)}`
         : `${contribution.pillar}: unavailable`,
     )
@@ -678,7 +687,7 @@ function researchFactBlock(
 ): PortfolioFactBlock {
   const contributions = security.contributions
     .map((contribution) =>
-      contribution.status === "available"
+      isWeighted(contribution)
         ? `${contribution.pillar}: weighted ${contribution.weightedValue.toFixed(2)}`
         : `${contribution.pillar}: unavailable`,
     )
@@ -957,7 +966,7 @@ function explanationText(
   }
 
   const strongest = [...security.contributions]
-    .filter((contribution) => contribution.status === "available")
+    .filter(isWeighted)
     .sort(
       (left, right) =>
         right.weightedValue - left.weightedValue || left.pillar.localeCompare(right.pillar),

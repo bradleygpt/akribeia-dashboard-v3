@@ -6,14 +6,14 @@ import {
 } from "vinext/server/image-optimization";
 import handler from "vinext/server/app-router-entry";
 import { handleEngineApi } from "./engine-api";
-import { handleEvidenceApi } from "./evidence-api";
+import { handleEvidenceApi, type AssetFetcher } from "./evidence-api";
 import { handleMarketHealthApi } from "./market-health-api";
 import { handleQuoteApi } from "./quote-api";
 import { handleResearchReferenceApi } from "./research-reference-api";
 import { handleSecurityReferenceApi } from "./security-reference-api";
 
 interface Env {
-  ASSETS: Fetcher;
+  ASSETS: AssetFetcher;
   /** optional Markets engine origin (no trailing slash); secret, set via wrangler. */
   MARKETS_ENGINE_URL?: string;
   /** optional Markets engine bearer credential; secret, never logged or echoed. */
