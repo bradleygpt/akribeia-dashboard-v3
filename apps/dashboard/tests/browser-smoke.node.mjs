@@ -13,6 +13,8 @@ import {
   activeBuildId as ACTIVE_BUILD_ID,
   matchedRegistrants as REG_MATCHED,
   scoredTotal as SCORED_TOTAL,
+  topScoreTicker as TOP_TICKER,
+  firstUnresolvedRegistrant as UNRESOLVED_TICKER,
 } from "./active-build.node.mjs";
 
 const execFileAsync = promisify(execFile);
@@ -234,14 +236,14 @@ test("hydrates the responsive dashboard and verifies its active evidence in Chro
     );
     assert.match(stdout, /Post-cutoff excluded/);
     assert.match(stdout, /Retrospective metadata/);
-    assert.match(stdout, /CTRA/);
+    if (UNRESOLVED_TICKER) assert.match(stdout, new RegExp(UNRESOLVED_TICKER));
     assert.match(stdout, /What the model is—and is not/);
     assert.match(stdout, /Not release eligible/);
     assert.match(stdout, /Known methodology gap/);
     assert.match(stdout, /Measured now\. Compared when evidence exists/);
     assert.match(stdout, /insufficient history/);
     assert.match(stdout, /Identity evidence, without false permanence/);
-    assert.match(stdout, /AKR-TICKER:MU/);
+    assert.match(stdout, new RegExp(`AKR-TICKER:${TOP_TICKER}`));
     assert.match(stdout, /Ticker history unavailable/);
     assert.match(stdout, /Every ticker checked\. Identity scope stays honest/);
     assert.match(stdout, new RegExp(`${REG_MATCHED}<!-- --> /<!-- --> <!-- -->${SCORED_TOTAL}`));

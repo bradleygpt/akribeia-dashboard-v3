@@ -75,8 +75,35 @@ export function parseStoredHoldings(raw: string | null): {
   }
 }
 
+// RFC 4180 fields: a quoted field may hold commas and doubled quotes. Brokerage exports
+// quote thousands ("1,000") and names ("Apple, Inc."); splitting on every comma read
+// "1,000" as 1 share and shifted every later column of a row with a quoted name.
 function splitCsvLine(line: string): string[] {
-  return line.split(",").map((value) => value.trim().replace(/^"|"$/g, ""));
+  const cells: string[] = [];
+  let cell = "";
+  let quoted = false;
+  for (let index = 0; index < line.length; index += 1) {
+    const char = line[index];
+    if (quoted) {
+      if (char === '"' && line[index + 1] === '"') {
+        cell += '"';
+        index += 1;
+      } else if (char === '"') {
+        quoted = false;
+      } else {
+        cell += char;
+      }
+    } else if (char === '"') {
+      quoted = true;
+    } else if (char === ",") {
+      cells.push(cell.trim());
+      cell = "";
+    } else {
+      cell += char;
+    }
+  }
+  cells.push(cell.trim());
+  return cells;
 }
 
 export function parseHoldingsCsv(text: string): Holding[] {

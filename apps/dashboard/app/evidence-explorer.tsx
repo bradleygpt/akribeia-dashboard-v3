@@ -12,8 +12,10 @@ type ExplorerState =
   | { kind: "success"; result: EvidenceExplanationResponse }
   | { kind: "error"; message: string };
 
-export function EvidenceExplorer() {
-  const [ticker, setTicker] = useState("MU");
+// The default ticker comes from the page (the active build's top score): a fixed "MU"
+// would open on "not in the published build" the day MU left the scored set.
+export function EvidenceExplorer({ defaultTicker }: { defaultTicker: string }) {
+  const [ticker, setTicker] = useState(defaultTicker);
   const [focus, setFocus] = useState<"summary" | "factor-contributions" | "portfolio" | "thesis">(
     "summary",
   );

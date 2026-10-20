@@ -27,6 +27,18 @@ export const matchedRegistrants = registrants.coverage.matchedSecurityCount;
 /** the active observation date (YYYY-MM-DD). */
 export const activeAsOfDate = daily.asOfDate;
 
+// Values the rendered pages show that the daily refresh regenerates. Tests read them here
+// instead of pinning today's tickers (audit 2026-10-20, G1: a pinned value turns the next
+// refresh PR red the day the ranking or the registrant crosswalk moves).
+/** the highest composite score's ticker (first row of the security-master sample). */
+export const topScoreTicker = dashboard.topScores[0].ticker;
+/** a model-portfolio position sitting exactly at its cap (explanations name the cap). */
+export const cappedPositionTicker = dashboard.portfolio.positions.find(
+  ({ weight, maxWeight }) => weight === maxWeight,
+)?.ticker;
+/** the first ticker the registrant crosswalk could not resolve, if any. */
+export const firstUnresolvedRegistrant = registrants.unmatched[0]?.ticker;
+
 const universeMembership = JSON.parse(
   await readFile(
     new URL("../app/generated/active-universe-membership.json", import.meta.url),

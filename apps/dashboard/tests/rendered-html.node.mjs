@@ -19,6 +19,9 @@ import {
   activeBuildId as ACTIVE_BUILD_ID,
   matchedRegistrants as REG_MATCHED,
   scoredTotal as SCORED_TOTAL,
+  topScoreTicker as TOP_TICKER,
+  cappedPositionTicker as CAPPED_TICKER,
+  firstUnresolvedRegistrant as UNRESOLVED_TICKER,
 } from "./active-build.node.mjs";
 
 async function render(pathname = "/dashboard") {
@@ -109,14 +112,13 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /SHA-256/);
   assert.match(html, new RegExp(FLOOR0_SHA));
   assert.match(html, /Highest composite scores/);
-  assert.match(html, /MU/);
-  assert.match(html, /NVDA/);
+  assert.match(html, new RegExp(TOP_TICKER));
   assert.match(html, /Sector exposure/);
   assert.match(html, /Ask the published build/);
   assert.match(html, /focus calls an external model, grounded in the same verified/);
   assert.match(html, /every other focus uses no external model/);
   assert.match(html, /Grounded thesis \(external model\)/);
-  assert.match(html, /name="ticker" value="MU"/);
+  assert.match(html, new RegExp(`name="ticker" value="${TOP_TICKER}"`));
   assert.match(html, /Explain evidence/);
   assert.match(html, /Composite score ranking table/);
   assert.match(html, /Highest composite scores with sector, factor coverage, score/);
@@ -139,7 +141,7 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /CIK (?:<!-- -->)?\d{10}/);
   assert.match(html, /10-Q/);
   assert.match(html, /Captured/);
-  assert.match(html, />CTRA</);
+  if (UNRESOLVED_TICKER) assert.match(html, new RegExp(`>${UNRESOLVED_TICKER}<`));
   assert.match(html, /What the model is—and is not/);
   assert.match(html, /Not release eligible/);
   assert.match(html, /portfolio parity/);
@@ -154,15 +156,20 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /Temporal drift/);
   assert.match(html, /Identity evidence, without false permanence/);
   assert.match(html, new RegExp(`>${SCORED_TOTAL}(?:<!-- -->)?</strong>`));
-  assert.match(html, /AKR-TICKER:MU/);
+  assert.match(html, new RegExp(`AKR-TICKER:${TOP_TICKER}`));
   assert.match(html, /Ticker history unavailable/);
   assert.match(html, /must not be treated as permanent across ticker changes or ticker reuse/);
   assert.match(html, /Every ticker checked\. Identity scope stays honest/);
   assert.match(html, new RegExp(`${REG_MATCHED}(?:<!-- -->)? /<!-- --> <!-- -->${SCORED_TOTAL}`));
   assert.match(html, /\d+(?:<!-- -->)? \/<!-- --> <!-- -->\d+/);
-  assert.match(html, /47(?:<!-- -->)? \/<!-- --> <!-- -->55/);
+  assert.match(
+    html,
+    new RegExp(
+      `${REG_COVERAGE.fundClassMatchCount}(?:<!-- -->)? /<!-- --> <!-- -->${REG_COVERAGE.registeredFundCount}`,
+    ),
+  );
   assert.match(html, /Every ticker checked/);
-  assert.match(html, /11 unresolved/);
+  assert.match(html, new RegExp(`${REG_COVERAGE.unmatchedSecurityCount} unresolved`));
   assert.match(html, /No fuzzy or company-name fallback is used/);
   assert.match(html, /CIK identifies the registrant, not its exchange listing/);
   assert.match(html, /Current association only/);
@@ -291,7 +298,7 @@ test("serves a protected explanation from the built worker without an external m
         "x-akribeia-client": "dashboard-v3",
       },
       body: JSON.stringify({
-        ticker: "MU",
+        ticker: CAPPED_TICKER,
         focus: "portfolio",
       }),
     }),
@@ -322,7 +329,7 @@ test("serves a protected explanation from the built worker without an external m
   assert.equal(response.headers.get("cache-control"), "no-store");
   assert.equal(payload.mode, "deterministic-evidence");
   assert.equal(payload.externalModelUsed, false);
-  assert.equal(payload.ticker, "MU");
+  assert.equal(payload.ticker, CAPPED_TICKER);
   assert.match(payload.explanation, /exact position cap/);
 });
 

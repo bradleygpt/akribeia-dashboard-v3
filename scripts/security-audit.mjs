@@ -2,6 +2,7 @@
 import { readFile } from "node:fs/promises";
 import { exec } from "node:child_process";
 import { promisify } from "node:util";
+import { effectiveFindings } from "./audit-findings.mjs";
 
 const run = promisify(exec);
 
@@ -81,58 +82,6 @@ const lock = JSON.parse(lockText);
 // The guard above has just proven the patch, so exactly this advisory on exactly the vendored
 // nodes is discounted, and severity is recomputed through `via` so its dependents drop with
 // it. A different advisory, an extra braces node, or anything else stays counted.
-const VENDORED_BRACES_ADVISORY = "GHSA-vfj7-8cjw-p6xm";
-const VENDORED_BRACES_NODES = new Set(["node_modules/braces", "vendor/braces"]);
-const SEVERITY_RANK = { info: 0, low: 1, moderate: 2, high: 3, critical: 4 };
-function isVendoredBracesFinding(entry, item) {
-  return (
-    entry.name === "braces" &&
-    typeof item.url === "string" &&
-    item.url.endsWith(`/${VENDORED_BRACES_ADVISORY}`) &&
-    (entry.nodes ?? []).every((node) => VENDORED_BRACES_NODES.has(node))
-  );
-}
-function effectiveFindings(report) {
-  const vulnerabilities = report.vulnerabilities ?? {};
-  const memo = new Map();
-  const severityOf = (name, visiting) => {
-    if (memo.has(name)) return memo.get(name);
-    const entry = vulnerabilities[name];
-    if (!entry || visiting.has(name)) return null;
-    visiting.add(name);
-    let severity = null;
-    for (const item of entry.via ?? []) {
-      const itemSeverity =
-        typeof item === "string"
-          ? severityOf(item, visiting)
-          : isVendoredBracesFinding(entry, item)
-            ? null
-            : item.severity;
-      if (
-        itemSeverity &&
-        (severity === null || SEVERITY_RANK[itemSeverity] > SEVERITY_RANK[severity])
-      )
-        severity = itemSeverity;
-    }
-    visiting.delete(name);
-    memo.set(name, severity);
-    return severity;
-  };
-  const entries = Object.values(vulnerabilities).map((entry) => ({
-    ...entry,
-    severity: severityOf(entry.name, new Set()),
-    reportedSeverity: entry.severity,
-  }));
-  const count = (severity) => entries.filter((entry) => entry.severity === severity).length;
-  return {
-    entries,
-    critical: count("critical"),
-    high: count("high"),
-    discounted: entries
-      .filter((entry) => entry.severity !== entry.reportedSeverity)
-      .map(({ name, reportedSeverity, severity }) => ({ name, reportedSeverity, severity })),
-  };
-}
 const findings = effectiveFindings(audit);
 const productionFindings = effectiveFindings(productionAudit);
 if (productionFindings.critical !== 0 || productionFindings.high !== 0)
