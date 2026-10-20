@@ -1,18 +1,18 @@
 {
-  "buildId": "preview-20260930-pipeline-v5-9d3647f72c94",
-  "generatedAt": "2026-09-30T12:51:49Z",
+  "buildId": "preview-20261001-pipeline-v5-47090bdd37fe",
+  "generatedAt": "2026-10-01T11:48:08Z",
   "schemaVersion": "3.0.0",
   "modelVersion": "3.0.0",
   "status": "healthy",
   "source": {
     "dataset": "V2 production baseline — $10B+ universe",
     "repositoryPath": "data/observations/current/universe_floor10.json",
-    "sourceCommit": "1e2332d",
-    "contentSha256": "9d3647f72c94c7a40cc55c1c1cf0e6edc9208b7b0d760bdc77a85d89e6689950",
-    "observedAt": "2026-09-30T10:43:08Z",
+    "sourceCommit": "8ab6833",
+    "contentSha256": "47090bdd37fe2153d634d80d47304e26279997f87f3eb4644e25586f36851a39",
+    "observedAt": "2026-10-01T11:11:14Z",
     "rowCount": 654,
     "freshnessStatus": "current",
-    "ageSeconds": 7721,
+    "ageSeconds": 2214,
     "maxAgeSeconds": 604800
   },
   "scoring": {

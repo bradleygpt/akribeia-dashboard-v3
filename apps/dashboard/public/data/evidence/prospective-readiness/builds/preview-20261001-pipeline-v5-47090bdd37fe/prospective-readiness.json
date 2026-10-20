@@ -1,0 +1,244 @@
+{
+  "reportSchemaVersion": "1.0.0",
+  "buildId": "preview-20261001-pipeline-v5-47090bdd37fe",
+  "modelVersion": "3.0.0",
+  "assessedAt": "2026-10-01T11:48:08Z",
+  "status": "blocked-insufficient-prospective-history",
+  "prospectiveValidationEligible": false,
+  "certificationEligible": false,
+  "requirements": {
+    "immutableDailyObservationDays": 30,
+    "executablePortfolioRecords": 30,
+    "costedReturnObservations": 30,
+    "approvedBenchmarkComparisons": 30,
+    "monthlyValidationReports": 1
+  },
+  "progress": {
+    "immutableDailyEvidenceRecordCount": 7,
+    "uniqueObservationDayCount": 7,
+    "remainingObservationDayCount": 23,
+    "executablePortfolioRecordCount": 0,
+    "costedReturnObservationCount": 0,
+    "approvedBenchmarkComparisonCount": 0,
+    "monthlyValidationReportCount": 0,
+    "earliestObservationDate": "2026-07-28",
+    "latestObservationDate": "2026-10-01"
+  },
+  "observations": [
+    {
+      "asOfDate": "2026-07-28",
+      "buildId": "preview-20260728-pipeline-v4-a34fc842220f",
+      "modelVersion": "3.0.0-preview.3",
+      "recordedAt": "2026-07-30T04:36:30Z",
+      "evidenceRecordPath": "daily/2026-07-28/preview-20260728-pipeline-v4-a34fc842220f/evidence.json",
+      "evidenceRecordSha256": "82409751141892e4a0aa9f2ca6df923818c5c08e66fda0470e061f1e7f5862d9",
+      "reproducibilityReportPath": "daily/2026-07-28/preview-20260728-pipeline-v4-a34fc842220f/reproducibility.json",
+      "reproductionVerified": true,
+      "executionRecorded": false,
+      "costedReturnComputed": false,
+      "approvedBenchmarkCompared": false
+    },
+    {
+      "asOfDate": "2026-08-25",
+      "buildId": "preview-20260825-pipeline-v5-f7d093b626d6",
+      "modelVersion": "3.0.0",
+      "recordedAt": "2026-08-26T01:56:31Z",
+      "evidenceRecordPath": "daily/2026-08-25/preview-20260825-pipeline-v5-f7d093b626d6/evidence.json",
+      "evidenceRecordSha256": "dd21eef7909c056e158965fe85ccc995ea7c00af3aaf418cb38120ecca932e73",
+      "reproducibilityReportPath": "daily/2026-08-25/preview-20260825-pipeline-v5-f7d093b626d6/reproducibility.json",
+      "reproductionVerified": true,
+      "executionRecorded": false,
+      "costedReturnComputed": false,
+      "approvedBenchmarkCompared": false
+    },
+    {
+      "asOfDate": "2026-08-26",
+      "buildId": "preview-20260826-pipeline-v5-a263a98e352c",
+      "modelVersion": "3.0.0",
+      "recordedAt": "2026-08-26T13:07:26Z",
+      "evidenceRecordPath": "daily/2026-08-26/preview-20260826-pipeline-v5-a263a98e352c/evidence.json",
+      "evidenceRecordSha256": "ce02268582272d19246d51348c0984f9453559dc8d749475fe6c169854cbb283",
+      "reproducibilityReportPath": "daily/2026-08-26/preview-20260826-pipeline-v5-a263a98e352c/reproducibility.json",
+      "reproductionVerified": true,
+      "executionRecorded": false,
+      "costedReturnComputed": false,
+      "approvedBenchmarkCompared": false
+    },
+    {
+      "asOfDate": "2026-08-27",
+      "buildId": "preview-20260827-pipeline-v5-fb96f2a23bc5",
+      "modelVersion": "3.0.0",
+      "recordedAt": "2026-08-27T16:48:30Z",
+      "evidenceRecordPath": "daily/2026-08-27/preview-20260827-pipeline-v5-fb96f2a23bc5/evidence.json",
+      "evidenceRecordSha256": "dddb6a50214249034080606a1152a97917d939f989d6d7a3928b66ed8d43ac03",
+      "reproducibilityReportPath": "daily/2026-08-27/preview-20260827-pipeline-v5-fb96f2a23bc5/reproducibility.json",
+      "reproductionVerified": true,
+      "executionRecorded": false,
+      "costedReturnComputed": false,
+      "approvedBenchmarkCompared": false
+    },
+    {
+      "asOfDate": "2026-09-09",
+      "buildId": "preview-20260909-pipeline-v5-3c8aaa5b9a7b",
+      "modelVersion": "3.0.0",
+      "recordedAt": "2026-09-09T17:37:47Z",
+      "evidenceRecordPath": "daily/2026-09-09/preview-20260909-pipeline-v5-3c8aaa5b9a7b/evidence.json",
+      "evidenceRecordSha256": "6b29209865cf7cf9152b59cd3a520dea945b59eaeb4b5ef9f887060d7faa811a",
+      "reproducibilityReportPath": "daily/2026-09-09/preview-20260909-pipeline-v5-3c8aaa5b9a7b/reproducibility.json",
+      "reproductionVerified": true,
+      "executionRecorded": false,
+      "costedReturnComputed": false,
+      "approvedBenchmarkCompared": false
+    },
+    {
+      "asOfDate": "2026-09-30",
+      "buildId": "preview-20260930-pipeline-v5-9d3647f72c94",
+      "modelVersion": "3.0.0",
+      "recordedAt": "2026-09-30T12:51:49Z",
+      "evidenceRecordPath": "daily/2026-09-30/preview-20260930-pipeline-v5-9d3647f72c94/evidence.json",
+      "evidenceRecordSha256": "0dd68f1c3ac37315f4dd8478472164be59b068b4169836e5a0fa44971d817a57",
+      "reproducibilityReportPath": "daily/2026-09-30/preview-20260930-pipeline-v5-9d3647f72c94/reproducibility.json",
+      "reproductionVerified": true,
+      "executionRecorded": false,
+      "costedReturnComputed": false,
+      "approvedBenchmarkCompared": false
+    },
+    {
+      "asOfDate": "2026-10-01",
+      "buildId": "preview-20261001-pipeline-v5-47090bdd37fe",
+      "modelVersion": "3.0.0",
+      "recordedAt": "2026-10-01T11:48:08Z",
+      "evidenceRecordPath": "daily/2026-10-01/preview-20261001-pipeline-v5-47090bdd37fe/evidence.json",
+      "evidenceRecordSha256": "712af9214fafd104a8820bfe28a3dc6fdf6559a48f4a0b13bc0f4dca54fdcbb8",
+      "reproducibilityReportPath": "daily/2026-10-01/preview-20261001-pipeline-v5-47090bdd37fe/reproducibility.json",
+      "reproductionVerified": true,
+      "executionRecorded": false,
+      "costedReturnComputed": false,
+      "approvedBenchmarkCompared": false
+    }
+  ],
+  "sourceReports": [
+    {
+      "name": "daily-evidence",
+      "status": "partial-observation-window",
+      "eligibilityClaim": false
+    },
+    {
+      "name": "execution-cost-readiness",
+      "status": "blocked-no-execution-economics",
+      "eligibilityClaim": false
+    },
+    {
+      "name": "benchmark-readiness",
+      "status": "candidate-proxies-not-return-series",
+      "eligibilityClaim": false
+    },
+    {
+      "name": "walk-forward-readiness",
+      "status": "blocked-no-eligible-folds",
+      "eligibilityClaim": false
+    }
+  ],
+  "controls": [
+    {
+      "key": "immutable-daily-ledger",
+      "status": "partial",
+      "detail": "7 of 30 required independent daily observation dates are present in the immutable ledger."
+    },
+    {
+      "key": "independent-observation-window",
+      "status": "blocked",
+      "detail": "The repository has not yet accumulated 30 distinct post-publication observation dates under a frozen prospective protocol."
+    },
+    {
+      "key": "executable-portfolio-records",
+      "status": "blocked",
+      "detail": "No daily record contains capital, prior holdings, executable prices, fills, or realized trade quantities."
+    },
+    {
+      "key": "costed-net-returns",
+      "status": "blocked",
+      "detail": "No daily observation contains turnover, transaction costs, gross return, or net return; missing costs remain null rather than zero."
+    },
+    {
+      "key": "approved-benchmark-comparisons",
+      "status": "blocked",
+      "detail": "No approved benchmark mandate or distribution-inclusive total-return comparison is attached to a daily observation."
+    },
+    {
+      "key": "monthly-validation-reports",
+      "status": "blocked",
+      "detail": "No completed monthly prospective-validation report exists because the first 30-day observation window is incomplete."
+    },
+    {
+      "key": "prospective-protocol",
+      "status": "blocked",
+      "detail": "No frozen policy yet defines the daily decision time, execution convention, benchmark, review cadence, exceptions, and certification thresholds."
+    },
+    {
+      "key": "model-drift-retirement-rules",
+      "status": "blocked",
+      "detail": "No approved prospective thresholds define model drift alerts, investigation, suspension, retirement, or replacement decisions."
+    }
+  ],
+  "certificationConditions": [
+    {
+      "key": "thirty-immutable-observation-days",
+      "requiredCount": 30,
+      "observedCount": 7,
+      "satisfied": false,
+      "detail": "Collect 30 distinct immutable daily evidence dates without backfilling or rewriting records."
+    },
+    {
+      "key": "thirty-executable-portfolio-records",
+      "requiredCount": 30,
+      "observedCount": 0,
+      "satisfied": false,
+      "detail": "Record executable portfolio decisions, fills, and prior-holding lineage for each observation date."
+    },
+    {
+      "key": "thirty-costed-return-observations",
+      "requiredCount": 30,
+      "observedCount": 0,
+      "satisfied": false,
+      "detail": "Compute gross and net returns only from receipted fills, costs, and valuation timestamps."
+    },
+    {
+      "key": "thirty-approved-benchmark-comparisons",
+      "requiredCount": 30,
+      "observedCount": 0,
+      "satisfied": false,
+      "detail": "Use one approved, point-in-time, distribution-inclusive benchmark series aligned to portfolio valuation."
+    },
+    {
+      "key": "one-monthly-validation-report",
+      "requiredCount": 1,
+      "observedCount": 0,
+      "satisfied": false,
+      "detail": "Publish an immutable monthly report covering completeness, exceptions, costs, benchmark comparison, and limitations."
+    },
+    {
+      "key": "frozen-prospective-protocol",
+      "requiredCount": null,
+      "observedCount": 0,
+      "satisfied": false,
+      "detail": "Approve and version the prospective protocol before additional observations can count toward certification."
+    },
+    {
+      "key": "approved-drift-retirement-policy",
+      "requiredCount": null,
+      "observedCount": 0,
+      "satisfied": false,
+      "detail": "Approve versioned drift, escalation, suspension, and model-retirement rules before certification."
+    }
+  ],
+  "limitations": [
+    "The single preserved daily record is a research-preview receipt, not a prospective performance result.",
+    "Repeated builds on one date do not create additional independent observation days.",
+    "No execution, cost, return, benchmark, excess-return, risk, or attribution statistic is computed.",
+    "Thirty dates alone cannot satisfy certification without complete execution, benchmark, protocol, and monthly-review evidence.",
+    "Future records must remain immutable, chronological, reproducible, and free of retroactive model selection.",
+    "This report cannot support an investment-performance or V2-replacement claim."
+  ],
+  "notice": "Research preview only. Scores and model weights are evidence artifacts, not investment advice or a promise of future performance."
+}
