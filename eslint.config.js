@@ -13,6 +13,9 @@ export default defineConfig([
       "**/.vinext/**",
       "**/.wrangler/**",
       "v2-baseline-worktree/**",
+      // Vendored third-party code, kept byte-close to upstream on purpose so its patch stays
+      // reviewable (vendor/braces/AKRIBEIA_PATCH.md). Restyling it would bury the fix.
+      "vendor/**",
     ],
   },
   {
