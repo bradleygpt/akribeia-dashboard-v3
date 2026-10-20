@@ -95,7 +95,8 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, new RegExp(`>${SCORED_TOTAL}<`));
   assert.match(html, /Missing inputs stay visible/);
   assert.match(html, /No new upstream data/);
-  assert.match(html, /no bake date has repeated the active data/);
+  // either no stall day yet, or the latest one -- the page must say which
+  assert.match(html, /no bake date has repeated the active data|data · adds nothing to the count/);
   assert.match(html, /pillars\.EPS Revisions/);
   assert.match(html, /available-weight/);
   assert.match(html, /EXACT CONSTRAINT LEDGER/);
