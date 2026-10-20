@@ -371,7 +371,9 @@ describe("protected evidence API", () => {
       externalModelUsed: false,
       focus: "factor-contributions",
     });
-    expect(payload.explanation).toContain("Every pillar had observed inputs.");
+    expect(payload.explanation).toMatch(
+      /Every pillar had observed inputs\.|had no observed inputs, so (it is|they are) unavailable and the remaining weights are renormalized explicitly\./,
+    );
     expect(payload.citations).toContain("scores.json:security.contributions");
   });
 

@@ -1,5 +1,6 @@
 import { GOVERNED_TOTAL, GOVERNED_STOCKS, floor0Row } from "../observation-fixture";
 import { describe, expect, it } from "vitest";
+import observationMeta from "../../data/observations/current/meta.json";
 import observationProvenance from "../../data/observations/current/provenance.json";
 
 // Security-reference shards are read at the active observation's bulk-data commit.
@@ -113,22 +114,27 @@ describe("Wave 2 research universe", () => {
     });
   });
 
-  it("withholds the score and grade of a pillar with no observed inputs (model 3.1.0)", () => {
-    const ctra = loadResearchUniverse().rows.find(({ ticker }) => ticker === "CTRA");
-    const source = floor0Row("CTRA") as
-      { pillars?: Record<string, number | null>; grades?: Record<string, string> } | undefined;
-
-    // V2 publishes the top Momentum score for CTRA with every momentum input null.
-    expect(
-      ["momentum_1m", "momentum_3m", "momentum_6m", "momentum_12m"].map((key) => ctra?.raw[key]),
-    ).toEqual([null, null, null, null]);
-    expect(source?.pillars?.Momentum).toBe(12);
-    expect(source?.grades?.Momentum).toBeDefined();
-    expect(ctra?.pillars.Momentum).toBeNull();
-    expect(ctra?.grades.Momentum).toBeUndefined();
-    // the pillars it has inputs for keep V2's values
-    expect(ctra?.pillars.Valuation).toBe(source?.pillars?.Valuation);
-    expect(ctra?.grades.Valuation).toBe(source?.grades?.Valuation);
+  it("withholds the score and grade of every pillar with no observed inputs (model 3.1.0)", () => {
+    // V2 still publishes a score and grade for such a pillar (2026-10-20: CTRA and BK Momentum
+    // 12, the top grade, with every momentum input null). Checked over the whole observation,
+    // so it holds whichever stocks lack inputs on a given day.
+    const groups = Object.entries(
+      observationMeta.pillar_metrics as Record<string, Array<{ key: string }>>,
+    );
+    for (const row of loadResearchUniverse().rows) {
+      if (row.isEtf) continue;
+      const source = floor0Row(row.ticker) as
+        { pillars?: Record<string, number | null>; grades?: Record<string, string> } | undefined;
+      for (const [pillar, metrics] of groups) {
+        if (metrics.some(({ key }) => Number.isFinite(row.raw[key]))) {
+          expect(row.pillars[pillar] ?? null).toBe(source?.pillars?.[pillar] ?? null);
+          expect(row.grades[pillar]).toBe(source?.grades?.[pillar]);
+        } else {
+          expect(row.pillars[pillar], `${row.ticker} ${pillar}`).toBeNull();
+          expect(row.grades[pillar], `${row.ticker} ${pillar}`).toBeUndefined();
+        }
+      }
+    }
   });
 
   it("sorts numeric values numerically, keeps nulls last, and stabilizes ties by ticker", () => {
