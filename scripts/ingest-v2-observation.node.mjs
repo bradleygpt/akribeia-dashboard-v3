@@ -128,6 +128,9 @@ for (const floor of FLOORS) {
   if (blob && (!pinned || sha256(bytes) !== pinned.sha256)) {
     throw new Error(`${name} does not match the SHA-256 V2 ${v2Commit} pins for it`);
   }
+  if (blob && !/^\d{4}-\d{2}-\d{2}$/.test(pinned.as_of ?? "")) {
+    throw new Error(`V2 ${v2Commit} records no as_of data date for ${name}`);
+  }
   const parsed = JSON.parse(bytes.toString("utf8"));
   if (!parsed.meta || typeof parsed.meta.floor !== "number" || parsed.meta.floor !== floor) {
     throw new Error(`universe_floor${floor}.json shape mismatch (meta.floor)`);
@@ -153,7 +156,14 @@ for (const floor of FLOORS) {
 // The bulk repo carries no per-file commit stamp, so the receipt binds the
 // akribeia-data commit, the meta source_commit, and both timestamps together.
 // With --v2-commit the V2 manifest's per-file as_of is recorded beside each
-// digest; observed_at still follows meta.generated_at as before.
+// digest. observed_at (and the build id's date) stays the observation run date,
+// meta.generated_at; data_as_of is the files' own data date -- the OLDEST
+// partition's as_of -- and is what freshness is measured from downstream.
+// The ingest's own --max-age-hours check stays on the run: it guards against
+// ingesting from a stalled V2 bake, and on a Monday the newest market data is
+// legitimately Friday's.
+const asOfDates = Object.values(files).map((f) => f.asOf);
+const dataAsOf = blob ? `${asOfDates.toSorted()[0]}T00:00:00Z` : undefined;
 
 // ---- stage, then atomically promote ----------------------------------------
 await rm(STAGE_DIR, { recursive: true, force: true });
@@ -172,6 +182,7 @@ const provenance = {
   delivery: "commit-pinned jsDelivr",
   meta_url: metaUrl,
   v2_source_commit: meta.source_commit,
+  ...(dataAsOf ? { data_as_of: dataAsOf } : {}),
   ...(blob
     ? {
         v2_repository: V2_REPOSITORY,
@@ -205,11 +216,14 @@ await rename(STAGE_DIR, OBS_DIR);
 const stamp = observedAt.toISOString().slice(0, 10).replaceAll("-", "");
 const sourceHash12 = provenance.files["universe_floor10.json"].sha256.slice(0, 12);
 const previousRecipe = JSON.parse(await readFile(RECIPE_PATH, "utf8"));
+// A legacy-form ingest must not inherit the previous observation's data date.
+delete previousRecipe.dataAsOf;
 const recipe = {
   ...previousRecipe,
   buildId: `preview-${stamp}-pipeline-v5-${sourceHash12}`,
   evaluatedAt: retrievedAt.toISOString().replace(/\.\d{3}Z$/, "Z"),
   observedAt: observedAt.toISOString().replace(/\.\d{3}Z$/, "Z"),
+  ...(dataAsOf ? { dataAsOf } : {}),
   sourcePath: `${OBS_DIR}/universe_floor10.json`,
   metadataPath: `${OBS_DIR}/meta.json`,
   sourceCommit: meta.source_commit,
@@ -222,6 +236,7 @@ process.stdout.write(
       ingested: true,
       buildId: recipe.buildId,
       observedAt: recipe.observedAt,
+      dataAsOf: recipe.dataAsOf ?? null,
       v2SourceCommit: meta.source_commit,
       bulkDataCommit: dataCommit,
       rows: Object.fromEntries(Object.entries(files).map(([n, f]) => [n, f.rows])),

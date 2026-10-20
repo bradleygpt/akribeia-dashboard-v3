@@ -92,7 +92,12 @@ function parseJson(path: string, payload: string): unknown {
   }
 }
 
-function sourceAgeSeconds(observedAt: string, evaluatedAt: string): number {
+// Freshness ages the DATA, not the observation run: when the recipe records the source
+// files' data date (dataAsOf), age is measured from it; observations that predate the
+// field fall back to observedAt, which is what they were always aged from.
+function sourceAgeSeconds(recipe: VerticalSliceBuildRecipe): number {
+  const observedAt = recipe.dataAsOf ?? recipe.observedAt;
+  const evaluatedAt = recipe.evaluatedAt;
   const observed = Date.parse(observedAt);
   const evaluated = Date.parse(evaluatedAt);
 
@@ -153,6 +158,7 @@ function artifactMetadata(
     freshness: {
       status: "current",
       observedAt: recipe.observedAt,
+      ...(recipe.dataAsOf === undefined ? {} : { dataAsOf: recipe.dataAsOf }),
       retrievedAt: recipe.observedAt,
       evaluatedAt: recipe.evaluatedAt,
       ageSeconds,
@@ -287,7 +293,7 @@ export async function runVerticalSlice(
     );
   }
 
-  const ageSeconds = sourceAgeSeconds(recipe.observedAt, recipe.evaluatedAt);
+  const ageSeconds = sourceAgeSeconds(recipe);
 
   if (ageSeconds > recipe.maxAgeSeconds) {
     throw new Error(
@@ -368,6 +374,7 @@ export async function runVerticalSlice(
       sourceCommit: recipe.sourceCommit,
       contentSha256: sourceHash,
       observedAt: recipe.observedAt,
+      ...(recipe.dataAsOf === undefined ? {} : { dataAsOf: recipe.dataAsOf }),
       rowCount: snapshot.rows.length,
       freshnessStatus: "current",
       ageSeconds,

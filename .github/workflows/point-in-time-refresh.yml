@@ -137,13 +137,16 @@ jobs:
       #
       # UNBLOCKING IT needs a REFRESH_PR_TOKEN repo secret -- a fine-grained PAT (or a
       # GitHub App token) scoped to this repository with Contents: RW and Pull requests:
-      # RW, and deliberately NOT Workflows. Swap it in for GH_TOKEN on this step, confirm
-      # CI actually runs on the next bot PR, then enable auto-merge. That secret does not
-      # exist yet (2026-09-30: the repo holds only SEC_USER_AGENT), so until it does,
-      # every PR this workflow opens must be reviewed and merged by hand.
+      # RW, and deliberately NOT Workflows. It is wired in below with a fallback to
+      # github.token, so the step works either way; once the secret exists, confirm CI
+      # runs on the next bot PR without approval, then enable auto-merge. As of
+      # 2026-10-20 the secret is still absent from this repo (only SEC_USER_AGENT), so
+      # every PR this workflow opens must be reviewed and merged by hand until it is set.
       - name: Open a reviewable refresh pull request
         if: steps.ingest.outputs.unchanged == 'false'
         shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.REFRESH_PR_TOKEN || github.token }}
         run: |
           build_id='${{ steps.ingest.outputs.after_build }}'
           observation_date=$(node -p 'JSON.parse(require("node:fs").readFileSync("data/observations/current/provenance.json","utf8")).observed_at.slice(0,10)')

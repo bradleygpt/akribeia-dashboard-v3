@@ -186,6 +186,46 @@ describe("visible vertical-slice pipeline", () => {
     expect(PublishedScoresArtifactSchema.safeParse(tampered).success).toBe(false);
   });
 
+  it("ages the source from its data date and records it beside the observation", async () => {
+    const result = await runVerticalSlice({
+      ...recipe(),
+      buildId: "preview-data-date",
+      dataAsOf: "2026-07-27T00:00:00Z",
+    });
+    const scores = PublishedScoresArtifactSchema.parse(
+      JSON.parse(
+        await readFile(
+          join(recipe().outputRoot, "builds", "preview-data-date", "scores.json"),
+          "utf8",
+        ),
+      ),
+    );
+
+    expect(result.dashboard.source.observedAt).toBe("2026-07-28T17:06:46Z");
+    expect(result.dashboard.source.dataAsOf).toBe("2026-07-27T00:00:00Z");
+    // 2026-07-27T00:00:00Z -> 2026-07-30T03:38:40Z
+    expect(result.dashboard.source.ageSeconds).toBe(272_320);
+    expect(scores.source.dataAsOf).toBe("2026-07-27T00:00:00Z");
+  });
+
+  it("omits the data date entirely for recipes that predate it", async () => {
+    const result = await runVerticalSlice(recipe());
+
+    expect(result.dashboard.source).not.toHaveProperty("dataAsOf");
+    // 2026-07-28T17:06:46Z -> 2026-07-30T03:38:40Z
+    expect(result.dashboard.source.ageSeconds).toBe(124_314);
+  });
+
+  it("fails closed when the data date is past the window even if the run is recent", async () => {
+    await expect(
+      runVerticalSlice({
+        ...recipe(),
+        buildId: "preview-old-data",
+        dataAsOf: "2026-07-20T00:00:00Z",
+      }),
+    ).rejects.toThrow("Source snapshot is stale by policy");
+  });
+
   it("fails closed before publication when the repository snapshot is stale", async () => {
     const active = await runVerticalSlice({
       ...recipe(),

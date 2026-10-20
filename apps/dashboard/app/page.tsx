@@ -285,7 +285,7 @@ export function MarketHealthDashboard() {
 
         <MarketHealthPanel
           breadth={marketBreadth}
-          universeAsOf={v2Universe.provenance.publishedAt.slice(0, 10)}
+          universeAsOf={v2Universe.provenance.dataAsOf}
           universeTotal={v2Universe.total}
         />
 

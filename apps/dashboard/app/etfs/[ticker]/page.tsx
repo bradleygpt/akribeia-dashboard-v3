@@ -42,7 +42,7 @@ export default async function EtfDetailPage({ params }: PageProps) {
   }
 
   const hasStockModelEvidence = hasCompleteStockModelEvidence(fund);
-  const snapshotAsOf = loadResearchUniverse().source.publishedAt.slice(0, 10);
+  const snapshotAsOf = loadResearchUniverse().source.dataAsOf;
 
   return (
     <>

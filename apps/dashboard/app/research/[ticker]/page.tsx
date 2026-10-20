@@ -217,7 +217,7 @@ export default async function SecurityDetailPage({ params }: PageProps) {
         <SecurityLivePanel
           ticker={security.ticker}
           snapshotPrice={security.price}
-          snapshotAsOf={universe.source.publishedAt.slice(0, 10)}
+          snapshotAsOf={universe.source.dataAsOf}
         />
         <SecurityDeepReference ticker={security.ticker} />
 
@@ -314,8 +314,8 @@ export default async function SecurityDetailPage({ params }: PageProps) {
 
         <footer className="research-route-footer">
           <span>
-            Preserved research record as of {universe.source.publishedAt.slice(0, 10)} · live market
-            data clearly separated
+            Preserved research record as of {universe.source.dataAsOf} · live market data clearly
+            separated
           </span>
           <span>Research only · not investment advice</span>
         </footer>

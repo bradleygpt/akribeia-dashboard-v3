@@ -18,6 +18,13 @@ export const V2_UNIVERSE_EXPECTED = {
   sourceCommit: observationProvenance.v2_source_commit,
   bulkDataCommit: observationProvenance.bulk_data_commit,
   publishedAt: observationProvenance.observed_at,
+  // The date the universe files' data describes (YYYY-MM-DD): the receipt's data_as_of
+  // when the ingest recorded it, else the observation date, which observations made
+  // before 2026-10-20 were always dated by. Displayed "as of" dates use this.
+  dataAsOf: (
+    (observationProvenance as { data_as_of?: string }).data_as_of ??
+    observationProvenance.observed_at
+  ).slice(0, 10),
 } as const;
 
 interface V2PresetCell {

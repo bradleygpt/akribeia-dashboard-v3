@@ -104,9 +104,12 @@ export async function loadSystemStatus(): Promise<SystemStatus> {
       buildId?: string;
       schemaVersion?: string;
       externalModelConfigured?: boolean;
+      freshness?: { dataAsOf?: string };
     };
     const buildId = j?.buildId ?? null;
-    const asOf = asOfFromBuildId(buildId);
+    // The data date health reports; the build id's date is the observation run date,
+    // which can be later than the data it carries.
+    const asOf = j?.freshness?.dataAsOf?.slice(0, 10) ?? asOfFromBuildId(buildId);
     return {
       evidence: {
         healthy: j?.status === "healthy",
