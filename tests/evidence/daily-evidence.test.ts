@@ -43,7 +43,9 @@ const ACTIVE_BUILD_ID = (
   }
 ).activeBuildId;
 
-describe("immutable daily evidence", () => {
+// These tests copy the published evidence tree (~19 MB, growing with every build); under a
+// full parallel run on a slow disk the copy alone can pass vitest's 5 s default.
+describe("immutable daily evidence", { timeout: 20_000 }, () => {
   it("receipts the active build with explicit benchmark and performance limits", async () => {
     const root = await temporaryRoot();
     const result = await generateDailyEvidence(options(root));
