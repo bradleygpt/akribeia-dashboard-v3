@@ -64,11 +64,19 @@ jobs:
         #                        build; a visible stall record that adds nothing to the
         #                        prospective count or maturity gates, in its own small PR
         #   already-observed     the same bake again: a no-op
+        #   already-proposed     that observation date already has an open or merged refresh
+        #                        (or no-new-upstream-data) PR: a no-op. The PC's nightly starts
+        #                        this workflow once its bake publishes (2026-10-21); the 05:45 UTC
+        #                        schedule is the backup, and must not open a second PR, record a
+        #                        stall day or add a ledger entry for a day already proposed.
         # In September, 11 refresh PRs carried identical data as new observation dates.
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           before_build=$(node -p 'JSON.parse(require("node:fs").readFileSync("data/preview/vertical-slice-build.json","utf8")).buildId')
           node scripts/ingest-v2-observation.node.mjs --v2-commit "${{ steps.source.outputs.v2_commit }}" | tee "$RUNNER_TEMP/ingest.json"
-          disposition=$(node -p 'JSON.parse(require("node:fs").readFileSync(process.argv[1],"utf8")).disposition' "$RUNNER_TEMP/ingest.json")
+          node scripts/refresh-disposition.node.mjs --ingest-summary "$RUNNER_TEMP/ingest.json" | tee "$RUNNER_TEMP/disposition.json"
+          disposition=$(node -p 'JSON.parse(require("node:fs").readFileSync(process.argv[1],"utf8")).disposition' "$RUNNER_TEMP/disposition.json")
           after_build=$(node -p 'JSON.parse(require("node:fs").readFileSync("data/preview/vertical-slice-build.json","utf8")).buildId')
           echo "before_build=$before_build" >> "$GITHUB_OUTPUT"
           echo "after_build=$after_build" >> "$GITHUB_OUTPUT"
@@ -78,6 +86,10 @@ jobs:
             no-new-upstream-data)
               echo "::notice::No new upstream data: every universe partition is byte-identical to the active observation ($before_build). Recorded as a no-new-upstream-data day; it adds nothing to the prospective count." ;;
             already-observed) ;;
+            already-proposed)
+              proposal=$(node -p 'const p=JSON.parse(require("node:fs").readFileSync(process.argv[1],"utf8")); `#${p.proposal.number} (${p.proposal.state}) for ${p.observationDate}`' "$RUNNER_TEMP/disposition.json")
+              echo "::notice::Nothing to do: this observation already has refresh PR $proposal."
+              { echo "## Point-in-time refresh"; echo ""; echo "Nothing to do: this observation already has refresh PR $proposal (no second PR, no stall day, no ledger entry)."; } >> "$GITHUB_STEP_SUMMARY" ;;
             *) echo "Unknown ingest disposition: $disposition" >&2; exit 1 ;;
           esac
 
