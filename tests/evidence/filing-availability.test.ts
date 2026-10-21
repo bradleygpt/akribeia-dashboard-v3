@@ -12,6 +12,20 @@ import { captureSecSubmissionSources, generateFilingAvailability } from "@akribe
 
 const temporaryDirectories: string[] = [];
 
+// The SEC snapshot the ACTIVE build's filing report was generated from: each refresh captures one
+// for the companies its scores select. A fixed 2026-08-26 snapshot failed the 2026-10-21 refresh,
+// because once the scores moved it no longer covered the selected companies.
+const ACTIVE_SOURCE_RECEIPT = resolvePath(
+  (
+    JSON.parse(
+      readFileSync(
+        resolvePath("apps/dashboard/app/generated/active-filing-availability.json"),
+        "utf8",
+      ),
+    ) as { sourceReceipt: { path: string } }
+  ).sourceReceipt.path,
+);
+
 async function temporaryRoot(): Promise<string> {
   const root = await mkdtemp(join(tmpdir(), "akribeia-filing-availability-"));
   temporaryDirectories.push(root);
@@ -28,7 +42,7 @@ function generatorOptions(
       "apps/dashboard/public/data/evidence/sec-registrants/active.json",
     ),
     publishedDataRoot: resolve("apps/dashboard/public/data"),
-    sourceReceiptPath: resolve("data/reference/sec/filing-submissions/2026-08-26/receipt.json"),
+    sourceReceiptPath: ACTIVE_SOURCE_RECEIPT,
     reportRoot: join(root, "filing-availability"),
     dashboardProjectionPath: join(root, "generated", "active-filing-availability.json"),
     publicReportRoot: join(root, "public-filing-availability"),
@@ -189,12 +203,7 @@ describe("filing availability evidence", () => {
 
   it("fails closed when the source receipt no longer covers the selected CIKs", async () => {
     const root = await temporaryRoot();
-    const receipt = JSON.parse(
-      await readFile(
-        resolve("data/reference/sec/filing-submissions/2026-08-26/receipt.json"),
-        "utf8",
-      ),
-    );
+    const receipt = JSON.parse(await readFile(ACTIVE_SOURCE_RECEIPT, "utf8"));
     receipt.sources = receipt.sources.slice(1);
     const sourceReceiptPath = join(root, "receipt.json");
     await writeFile(sourceReceiptPath, `${JSON.stringify(receipt, null, 2)}\n`);
@@ -206,12 +215,7 @@ describe("filing availability evidence", () => {
 
   it("fails closed when a captured submission no longer matches its digest", async () => {
     const root = await temporaryRoot();
-    const receipt = JSON.parse(
-      await readFile(
-        resolve("data/reference/sec/filing-submissions/2026-08-26/receipt.json"),
-        "utf8",
-      ),
-    );
+    const receipt = JSON.parse(await readFile(ACTIVE_SOURCE_RECEIPT, "utf8"));
     receipt.sources[0].sha256 = "0".repeat(64);
     const sourceReceiptPath = join(root, "receipt.json");
     await writeFile(sourceReceiptPath, `${JSON.stringify(receipt, null, 2)}\n`);
