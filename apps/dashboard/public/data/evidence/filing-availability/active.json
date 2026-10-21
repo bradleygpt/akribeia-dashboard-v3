@@ -1,26 +1,54 @@
 {
   "reportSchemaVersion": "1.0.0",
-  "buildId": "preview-20261020-pipeline-v6-f88d3b9d1b6f",
+  "buildId": "preview-20261021-pipeline-v6-e2272c5aab34",
   "modelVersion": "3.1.0",
-  "generatedAt": "2026-10-20T14:53:27.758Z",
-  "decisionCutoffAt": "2026-10-20T10:52:57Z",
+  "generatedAt": "2026-10-21T15:35:37.862Z",
+  "decisionCutoffAt": "2026-10-21T09:31:46Z",
   "status": "partial-retrospective-metadata",
   "historicalValidationEligible": false,
   "sourceReceipt": {
-    "path": "data/reference/sec/filing-submissions/2026-10-20/receipt.json",
-    "sha256": "3c60451c3d2763e8c0ebe331a7cc66989c227e5bb36197ce9c75e60cf318e7ad",
-    "snapshotId": "2026-10-20",
-    "retrievedAt": "2026-10-20T14:53:27.758Z"
+    "path": "data/reference/sec/filing-submissions/2026-10-21/receipt.json",
+    "sha256": "b6067dedf00412e525e24c0e46ea551590fc2f9d34def1230c1ac9fbf03ff29a",
+    "snapshotId": "2026-10-21",
+    "retrievedAt": "2026-10-21T15:35:37.862Z"
   },
   "selection": {
     "policy": "dashboard-top-scores-and-active-portfolio",
     "topScoreTickerCount": 12,
-    "portfolioTickerCount": 9,
+    "portfolioTickerCount": 10,
     "selectedTickerCount": 12,
     "submissionHistoryCount": 12,
     "unmatchedTickerCount": 0
   },
   "entries": [
+    {
+      "ticker": "AFRM",
+      "provisionalSecurityId": "AKR-TICKER:AFRM",
+      "cik": "0001820953",
+      "secName": "Affirm Holdings, Inc.",
+      "tickerPresentInSubmission": true,
+      "latestPeriodic": {
+        "accessionNumber": "0001628280-26-059279",
+        "form": "10-K",
+        "filingDate": "2026-08-27",
+        "reportDate": "2026-06-30",
+        "acceptedAt": "2026-08-28T01:06:37.000Z",
+        "primaryDocument": "afrm-20260630.htm",
+        "availabilityBasis": "edgar-acceptance-time",
+        "eligibleAtCutoff": true
+      },
+      "latestCurrent": {
+        "accessionNumber": "0001628280-26-059271",
+        "form": "8-K",
+        "filingDate": "2026-08-27",
+        "reportDate": "2026-08-25",
+        "acceptedAt": "2026-08-28T00:31:12.000Z",
+        "primaryDocument": "afrm-20260825.htm",
+        "availabilityBasis": "edgar-acceptance-time",
+        "eligibleAtCutoff": true
+      },
+      "filingsAfterCutoffExcluded": 0
+    },
     {
       "ticker": "ALL",
       "provisionalSecurityId": "AKR-TICKER:ALL",
@@ -50,6 +78,62 @@
       "filingsAfterCutoffExcluded": 0
     },
     {
+      "ticker": "AMT",
+      "provisionalSecurityId": "AKR-TICKER:AMT",
+      "cik": "0001053507",
+      "secName": "AMERICAN TOWER CORP /MA/",
+      "tickerPresentInSubmission": true,
+      "latestPeriodic": {
+        "accessionNumber": "0001053507-26-000133",
+        "form": "10-Q",
+        "filingDate": "2026-07-28",
+        "reportDate": "2026-06-30",
+        "acceptedAt": "2026-07-29T00:07:11.000Z",
+        "primaryDocument": "amt-20260630.htm",
+        "availabilityBasis": "edgar-acceptance-time",
+        "eligibleAtCutoff": true
+      },
+      "latestCurrent": {
+        "accessionNumber": "0001053507-26-000145",
+        "form": "8-K",
+        "filingDate": "2026-09-18",
+        "reportDate": "2026-09-17",
+        "acceptedAt": "2026-09-18T16:50:18.000Z",
+        "primaryDocument": "amt-20260917.htm",
+        "availabilityBasis": "edgar-acceptance-time",
+        "eligibleAtCutoff": true
+      },
+      "filingsAfterCutoffExcluded": 0
+    },
+    {
+      "ticker": "AMZN",
+      "provisionalSecurityId": "AKR-TICKER:AMZN",
+      "cik": "0001018724",
+      "secName": "AMAZON COM INC",
+      "tickerPresentInSubmission": true,
+      "latestPeriodic": {
+        "accessionNumber": "0001018724-26-000026",
+        "form": "10-Q",
+        "filingDate": "2026-07-31",
+        "reportDate": "2026-06-30",
+        "acceptedAt": "2026-07-31T02:11:13.000Z",
+        "primaryDocument": "amzn-20260630.htm",
+        "availabilityBasis": "edgar-acceptance-time",
+        "eligibleAtCutoff": true
+      },
+      "latestCurrent": {
+        "accessionNumber": "0001104659-26-107526",
+        "form": "8-K",
+        "filingDate": "2026-09-14",
+        "reportDate": "2026-09-14",
+        "acceptedAt": "2026-09-15T00:45:41.000Z",
+        "primaryDocument": "tm2624614d5_8k.htm",
+        "availabilityBasis": "edgar-acceptance-time",
+        "eligibleAtCutoff": true
+      },
+      "filingsAfterCutoffExcluded": 0
+    },
+    {
       "ticker": "BKNG",
       "provisionalSecurityId": "AKR-TICKER:BKNG",
       "cik": "0001075531",
@@ -72,90 +156,6 @@
         "reportDate": "2026-08-04",
         "acceptedAt": "2026-08-05T00:03:14.000Z",
         "primaryDocument": "bkng-20260804.htm",
-        "availabilityBasis": "edgar-acceptance-time",
-        "eligibleAtCutoff": true
-      },
-      "filingsAfterCutoffExcluded": 0
-    },
-    {
-      "ticker": "COF",
-      "provisionalSecurityId": "AKR-TICKER:COF",
-      "cik": "0000927628",
-      "secName": "CAPITAL ONE FINANCIAL CORP",
-      "tickerPresentInSubmission": true,
-      "latestPeriodic": {
-        "accessionNumber": "0000927628-26-000089",
-        "form": "10-Q",
-        "filingDate": "2026-07-28",
-        "reportDate": "2026-06-30",
-        "acceptedAt": "2026-07-29T01:08:09.000Z",
-        "primaryDocument": "cof-20260630.htm",
-        "availabilityBasis": "edgar-acceptance-time",
-        "eligibleAtCutoff": true
-      },
-      "latestCurrent": {
-        "accessionNumber": "0001193125-26-391921",
-        "form": "8-K",
-        "filingDate": "2026-09-15",
-        "reportDate": "2026-09-15",
-        "acceptedAt": "2026-09-16T00:12:17.000Z",
-        "primaryDocument": "d458116d8k.htm",
-        "availabilityBasis": "edgar-acceptance-time",
-        "eligibleAtCutoff": true
-      },
-      "filingsAfterCutoffExcluded": 0
-    },
-    {
-      "ticker": "DAR",
-      "provisionalSecurityId": "AKR-TICKER:DAR",
-      "cik": "0000916540",
-      "secName": "DARLING INGREDIENTS INC.",
-      "tickerPresentInSubmission": true,
-      "latestPeriodic": {
-        "accessionNumber": "0000916540-26-000023",
-        "form": "10-Q",
-        "filingDate": "2026-08-07",
-        "reportDate": "2026-07-04",
-        "acceptedAt": "2026-08-07T20:21:26.000Z",
-        "primaryDocument": "dar-20260704.htm",
-        "availabilityBasis": "edgar-acceptance-time",
-        "eligibleAtCutoff": true
-      },
-      "latestCurrent": {
-        "accessionNumber": "0000916540-26-000021",
-        "form": "8-K",
-        "filingDate": "2026-08-05",
-        "reportDate": "2026-08-05",
-        "acceptedAt": "2026-08-05T20:52:01.000Z",
-        "primaryDocument": "dar-20260805.htm",
-        "availabilityBasis": "edgar-acceptance-time",
-        "eligibleAtCutoff": true
-      },
-      "filingsAfterCutoffExcluded": 0
-    },
-    {
-      "ticker": "EIX",
-      "provisionalSecurityId": "AKR-TICKER:EIX",
-      "cik": "0000827052",
-      "secName": "EDISON INTERNATIONAL",
-      "tickerPresentInSubmission": true,
-      "latestPeriodic": {
-        "accessionNumber": "0000827052-26-000059",
-        "form": "10-Q",
-        "filingDate": "2026-07-30",
-        "reportDate": "2026-06-30",
-        "acceptedAt": "2026-07-31T00:08:53.000Z",
-        "primaryDocument": "eix-20260630.htm",
-        "availabilityBasis": "edgar-acceptance-time",
-        "eligibleAtCutoff": true
-      },
-      "latestCurrent": {
-        "accessionNumber": "0000827052-26-000061",
-        "form": "8-K",
-        "filingDate": "2026-07-31",
-        "reportDate": "2026-07-30",
-        "acceptedAt": "2026-07-31T02:03:22.000Z",
-        "primaryDocument": "eix-20260730.htm",
         "availabilityBasis": "edgar-acceptance-time",
         "eligibleAtCutoff": true
       },
@@ -200,7 +200,7 @@
         "form": "10-Q",
         "filingDate": "2026-07-30",
         "reportDate": "2026-06-28",
-        "acceptedAt": "2026-07-30T20:02:23.000Z",
+        "acceptedAt": "2026-07-31T00:02:23.000Z",
         "primaryDocument": "has-20260628.htm",
         "availabilityBasis": "edgar-acceptance-time",
         "eligibleAtCutoff": true
@@ -210,7 +210,7 @@
         "form": "8-K",
         "filingDate": "2026-10-20",
         "reportDate": "2026-10-20",
-        "acceptedAt": "2026-10-20T10:32:14.000Z",
+        "acceptedAt": "2026-10-20T14:32:14.000Z",
         "primaryDocument": "has-20261020.htm",
         "availabilityBasis": "edgar-acceptance-time",
         "eligibleAtCutoff": true
@@ -218,28 +218,56 @@
       "filingsAfterCutoffExcluded": 0
     },
     {
-      "ticker": "JLL",
-      "provisionalSecurityId": "AKR-TICKER:JLL",
-      "cik": "0001037976",
-      "secName": "JONES LANG LASALLE INC",
+      "ticker": "LLY",
+      "provisionalSecurityId": "AKR-TICKER:LLY",
+      "cik": "0000059478",
+      "secName": "ELI LILLY & Co",
       "tickerPresentInSubmission": true,
       "latestPeriodic": {
-        "accessionNumber": "0001037976-26-000152",
+        "accessionNumber": "0000059478-26-000081",
         "form": "10-Q",
-        "filingDate": "2026-07-30",
+        "filingDate": "2026-08-05",
         "reportDate": "2026-06-30",
-        "acceptedAt": "2026-07-30T17:45:50.000Z",
-        "primaryDocument": "jll-20260630.htm",
+        "acceptedAt": "2026-08-05T22:40:40.000Z",
+        "primaryDocument": "lly-20260630.htm",
         "availabilityBasis": "edgar-acceptance-time",
         "eligibleAtCutoff": true
       },
       "latestCurrent": {
-        "accessionNumber": "0001037976-26-000173",
+        "accessionNumber": "0000059478-26-000077",
         "form": "8-K",
-        "filingDate": "2026-09-30",
-        "reportDate": "2026-09-28",
-        "acceptedAt": "2026-09-30T20:45:55.000Z",
-        "primaryDocument": "jll-20260928.htm",
+        "filingDate": "2026-08-05",
+        "reportDate": "2026-08-05",
+        "acceptedAt": "2026-08-05T15:05:09.000Z",
+        "primaryDocument": "lly-20260805.htm",
+        "availabilityBasis": "edgar-acceptance-time",
+        "eligibleAtCutoff": true
+      },
+      "filingsAfterCutoffExcluded": 0
+    },
+    {
+      "ticker": "MA",
+      "provisionalSecurityId": "AKR-TICKER:MA",
+      "cik": "0001141391",
+      "secName": "Mastercard Inc",
+      "tickerPresentInSubmission": true,
+      "latestPeriodic": {
+        "accessionNumber": "0001141391-26-000083",
+        "form": "10-Q",
+        "filingDate": "2026-07-30",
+        "reportDate": "2026-06-30",
+        "acceptedAt": "2026-07-30T18:28:40.000Z",
+        "primaryDocument": "ma-20260630.htm",
+        "availabilityBasis": "edgar-acceptance-time",
+        "eligibleAtCutoff": true
+      },
+      "latestCurrent": {
+        "accessionNumber": "0001141391-26-000081",
+        "form": "8-K",
+        "filingDate": "2026-07-30",
+        "reportDate": "2026-07-30",
+        "acceptedAt": "2026-07-30T16:07:03.000Z",
+        "primaryDocument": "ma-20260730.htm",
         "availabilityBasis": "edgar-acceptance-time",
         "eligibleAtCutoff": true
       },
@@ -274,56 +302,28 @@
       "filingsAfterCutoffExcluded": 0
     },
     {
-      "ticker": "NEM",
-      "provisionalSecurityId": "AKR-TICKER:NEM",
-      "cik": "0001164727",
-      "secName": "NEWMONT Corp /DE/",
+      "ticker": "NVDA",
+      "provisionalSecurityId": "AKR-TICKER:NVDA",
+      "cik": "0001045810",
+      "secName": "NVIDIA CORP",
       "tickerPresentInSubmission": true,
       "latestPeriodic": {
-        "accessionNumber": "0001164727-26-000036",
+        "accessionNumber": "0001045810-26-000075",
         "form": "10-Q",
-        "filingDate": "2026-07-23",
-        "reportDate": "2026-06-30",
-        "acceptedAt": "2026-07-23T20:46:06.000Z",
-        "primaryDocument": "nem-20260630.htm",
+        "filingDate": "2026-08-26",
+        "reportDate": "2026-07-26",
+        "acceptedAt": "2026-08-27T00:36:00.000Z",
+        "primaryDocument": "nvda-20260726.htm",
         "availabilityBasis": "edgar-acceptance-time",
         "eligibleAtCutoff": true
       },
       "latestCurrent": {
-        "accessionNumber": "0001104659-26-099237",
+        "accessionNumber": "0001045810-26-000078",
         "form": "8-K",
-        "filingDate": "2026-08-20",
-        "reportDate": "2026-08-20",
-        "acceptedAt": "2026-08-20T20:17:00.000Z",
-        "primaryDocument": "tm2623668d1_8k.htm",
-        "availabilityBasis": "edgar-acceptance-time",
-        "eligibleAtCutoff": true
-      },
-      "filingsAfterCutoffExcluded": 0
-    },
-    {
-      "ticker": "PCG",
-      "provisionalSecurityId": "AKR-TICKER:PCG",
-      "cik": "0001004980",
-      "secName": "PG&E Corp",
-      "tickerPresentInSubmission": true,
-      "latestPeriodic": {
-        "accessionNumber": "0001004980-26-000048",
-        "form": "10-Q",
-        "filingDate": "2026-07-23",
-        "reportDate": "2026-06-30",
-        "acceptedAt": "2026-07-23T00:25:25.000Z",
-        "primaryDocument": "pcg-20260630.htm",
-        "availabilityBasis": "edgar-acceptance-time",
-        "eligibleAtCutoff": true
-      },
-      "latestCurrent": {
-        "accessionNumber": "0001999371-26-019256",
-        "form": "8-K",
-        "filingDate": "2026-08-31",
-        "reportDate": "2026-08-31",
-        "acceptedAt": "2026-08-31T12:00:27.000Z",
-        "primaryDocument": "pcg-8k_083126.htm",
+        "filingDate": "2026-09-03",
+        "reportDate": "2026-09-02",
+        "acceptedAt": "2026-09-03T16:03:56.000Z",
+        "primaryDocument": "nvda-20260902.htm",
         "availabilityBasis": "edgar-acceptance-time",
         "eligibleAtCutoff": true
       },

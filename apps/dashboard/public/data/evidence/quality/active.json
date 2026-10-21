@@ -1,23 +1,23 @@
 {
   "reportSchemaVersion": "1.0.0",
-  "buildId": "preview-20261020-pipeline-v6-f88d3b9d1b6f",
+  "buildId": "preview-20261021-pipeline-v6-e2272c5aab34",
   "modelVersion": "3.1.0",
-  "recordedAt": "2026-10-20T14:52:54Z",
+  "recordedAt": "2026-10-21T15:34:39Z",
   "quality": {
     "status": "pass",
-    "rowCount": 654,
-    "uniqueTickerCount": 654,
+    "rowCount": 635,
+    "uniqueTickerCount": 635,
     "duplicateTickers": [],
     "invalidPriceCount": 0,
     "invalidMarketCapCount": 0,
-    "eligibleSecurities": 599,
+    "eligibleSecurities": 580,
     "excludedSecurities": 55,
     "factorCoverage": [
       {
         "pillar": "valuation",
         "sourceField": "pillars.Valuation",
         "weight": 0.2,
-        "availableSecurities": 599,
+        "availableSecurities": 580,
         "missingSecurities": 0,
         "coverage": 1
       },
@@ -25,44 +25,44 @@
         "pillar": "growth",
         "sourceField": "pillars.Growth",
         "weight": 0.2,
-        "availableSecurities": 597,
+        "availableSecurities": 578,
         "missingSecurities": 2,
-        "coverage": 0.996661101836394
+        "coverage": 0.996551724137931
       },
       {
         "pillar": "profitability",
         "sourceField": "pillars.Profitability",
         "weight": 0.2,
-        "availableSecurities": 598,
+        "availableSecurities": 579,
         "missingSecurities": 1,
-        "coverage": 0.998330550918197
+        "coverage": 0.9982758620689656
       },
       {
         "pillar": "momentum",
         "sourceField": "pillars.Momentum",
         "weight": 0.2,
-        "availableSecurities": 597,
-        "missingSecurities": 2,
-        "coverage": 0.996661101836394
+        "availableSecurities": 573,
+        "missingSecurities": 7,
+        "coverage": 0.9879310344827587
       },
       {
         "pillar": "revisions",
         "sourceField": "pillars.EPS Revisions",
         "weight": 0.2,
-        "availableSecurities": 599,
+        "availableSecurities": 580,
         "missingSecurities": 0,
         "coverage": 1
       }
     ],
     "scoreDistribution": {
-      "count": 599,
-      "minimum": 3.5533333333333337,
-      "maximum": 9.85047619047619,
-      "mean": 6.940339388398656,
-      "median": 6.961428571428572
+      "count": 580,
+      "minimum": 3.1533333333333333,
+      "maximum": 9.617619047619048,
+      "mean": 6.943072112753152,
+      "median": 6.977142857142858
     },
     "portfolio": {
-      "positionCount": 9,
+      "positionCount": 10,
       "totalWeightUnits": 1000000000,
       "weightScale": 1000000000,
       "reconciled": true
