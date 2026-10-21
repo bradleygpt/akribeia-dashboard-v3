@@ -745,7 +745,8 @@ test("packages a deployable worker and integrity-valid active evidence tree", as
   );
   assert.equal(versionedExecutionCosts, packagedExecutionCosts);
   assert.equal(executionCosts.buildId, activeEvidence.build.buildId);
-  assert.equal(executionCosts.portfolio.positionCount, 9);
+  // the active build's portfolio size, not a pinned count (a refresh's portfolio may differ)
+  assert.equal(executionCosts.portfolio.positionCount, activeEvidence.portfolio.positions.length);
   assert.equal(executionCosts.portfolio.pricedExecutionCount, 0);
   assert.equal(executionCosts.portfolio.transactionCost, null);
   assert.equal(executionCosts.portfolio.netReturn, null);
