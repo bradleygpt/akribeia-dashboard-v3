@@ -98,6 +98,7 @@ jobs:
       # Same token caveat as the refresh PR below: until REFRESH_PR_TOKEN is set, this PR's
       # checks wait for manual approval.
       - name: Open a no-new-upstream-data pull request
+        id: stall_pr
         if: steps.ingest.outputs.disposition == 'no-new-upstream-data'
         shell: bash
         env:
@@ -139,11 +140,13 @@ jobs:
           - whitespace validation passed
           BODY
 
-          gh pr create \
+          pr_url=$(gh pr create \
             --base main \
             --head "$branch" \
             --title "data: no new upstream data ${observation_date}" \
-            --body-file "$pr_body"
+            --body-file "$pr_body")
+          echo "$pr_url"
+          echo "pr_url=$pr_url" >> "$GITHUB_OUTPUT"
 
       - name: Capture the SEC submissions snapshot
         if: steps.ingest.outputs.disposition == 'ingested'
@@ -226,10 +229,11 @@ jobs:
       # GitHub App token) scoped to this repository with Contents: RW and Pull requests:
       # RW, and deliberately NOT Workflows. It is wired in below with a fallback to
       # github.token, so the step works either way; once the secret exists, confirm CI
-      # runs on the next bot PR without approval, then enable auto-merge. As of
-      # 2026-10-20 the secret is still absent from this repo (only SEC_USER_AGENT), so
-      # every PR this workflow opens must be reviewed and merged by hand until it is set.
+      # runs on the next bot PR without approval, then enable auto-merge. The secret was
+      # set on 2026-10-20 (16:06Z); the auto-merge step after this one stays off until the
+      # conditions it lists hold.
       - name: Open a reviewable refresh pull request
+        id: refresh_pr
         if: steps.ingest.outputs.disposition == 'ingested'
         shell: bash
         env:
@@ -271,8 +275,30 @@ jobs:
           This automated pull request does not deploy production, alter V2, fabricate market data, or claim investment performance.
           BODY
 
-          gh pr create \
+          pr_url=$(gh pr create \
             --base main \
             --head "$branch" \
             --title "data: point-in-time observation refresh ${observation_date}" \
-            --body-file "$pr_body"
+            --body-file "$pr_body")
+          echo "$pr_url"
+          echo "pr_url=$pr_url" >> "$GITHUB_OUTPUT"
+
+      # AUTO-MERGE ON GREEN (owner decision 2026-10-20) stays off until all of these hold:
+      #   1. a real bot PR opened with REFRESH_PR_TOKEN ran CI and CodeQL without approval;
+      #   2. main's branch protection requires the CI `validate` check -- with no required
+      #      check, auto-merge has nothing to wait for and can merge before CI finishes;
+      #   3. the repository allows auto-merge, and the repo variable REFRESH_AUTO_MERGE is "true".
+      - name: Enable auto-merge on green
+        if: >-
+          vars.REFRESH_AUTO_MERGE == 'true' &&
+          (steps.refresh_pr.outputs.pr_url != '' || steps.stall_pr.outputs.pr_url != '')
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.REFRESH_PR_TOKEN }}
+          PR_URL: ${{ steps.refresh_pr.outputs.pr_url || steps.stall_pr.outputs.pr_url }}
+        run: |
+          if [[ -z "$GH_TOKEN" ]]; then
+            echo "::warning::REFRESH_PR_TOKEN is not set, so CI would wait for approval; not enabling auto-merge."
+            exit 0
+          fi
+          gh pr merge "$PR_URL" --auto --merge
