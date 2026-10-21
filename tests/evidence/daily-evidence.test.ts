@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { resolve as resolvePath } from "node:path";
 import { cp, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -13,6 +13,12 @@ import { runVerticalSlice } from "../../packages/pipeline/src/index.js";
 import { copyPublishedEvidenceInputs } from "./published-data";
 
 const temporaryDirectories: string[] = [];
+// The active build's portfolio size: read, not pinned, so a refresh's new portfolio passes.
+const ACTIVE_POSITION_COUNT = (
+  JSON.parse(
+    readFileSync(resolvePath("apps/dashboard/app/generated/active-dashboard.json"), "utf8"),
+  ) as { portfolio: { positions: unknown[] } }
+).portfolio.positions.length;
 
 async function temporaryRoot(): Promise<string> {
   const root = await mkdtemp(join(tmpdir(), "akribeia-evidence-"));
@@ -71,7 +77,7 @@ describe("immutable daily evidence", { timeout: 20_000 }, () => {
     expect(record.build.buildId).toBe(ACTIVE_BUILD_ID);
     expect(record.artifacts.map(({ name }) => name)).toEqual(["dashboard", "portfolio", "scores"]);
     expect(record.portfolio.totalWeightUnits).toBe(1_000_000_000);
-    expect(record.portfolio.positions).toHaveLength(9);
+    expect(record.portfolio.positions).toHaveLength(ACTIVE_POSITION_COUNT);
     expect(record.benchmark.status).toBe("unavailable");
     expect(record.benchmark.return).toBeNull();
     expect(record.performance.status).toBe("not-computed");
@@ -134,7 +140,7 @@ describe("immutable daily evidence", { timeout: 20_000 }, () => {
     const parsed = DailyEvidenceRecordSchema.safeParse({
       ...result.record,
       artifacts: result.record.artifacts.map((artifact) =>
-        artifact.name === "portfolio" ? { ...artifact, rowCount: 10 } : artifact,
+        artifact.name === "portfolio" ? { ...artifact, rowCount: artifact.rowCount + 1 } : artifact,
       ),
     });
 
@@ -175,13 +181,21 @@ describe("immutable daily evidence", { timeout: 20_000 }, () => {
   });
 
   it("never adds a ledger date whose scored source repeats the latest date's", async () => {
-    // The ledger holds 2026-10-20; a build observed on 2026-10-21 from the same bytes is
-    // not a new observation day (owner decision 2026-10-20), while new bytes are.
+    // A build observed the day after the ledger's latest date, from that date's bytes (the
+    // current observation), is not a new observation day (owner decision 2026-10-20), while
+    // new bytes are. The latest date is read from the ledger, so a refresh's new date counts.
+    const latestDate = readdirSync(resolvePath("data/evidence/daily"))
+      .filter((name) => /^\d{4}-\d{2}-\d{2}$/.test(name))
+      .sort()
+      .at(-1)!;
+    const nextDate = new Date(Date.parse(`${latestDate}T00:00:00Z`) + 86_400_000)
+      .toISOString()
+      .slice(0, 10);
     const publishBuild = async (root: string, sourceDirectory: string, sourceCommit: string) => {
       await runVerticalSlice({
-        buildId: "preview-20261021-pipeline-v6-guardtest",
-        evaluatedAt: "2026-10-21T11:00:00Z",
-        observedAt: "2026-10-21T10:00:00Z",
+        buildId: `preview-${nextDate.replaceAll("-", "")}-pipeline-v6-guardtest`,
+        evaluatedAt: `${nextDate}T11:00:00Z`,
+        observedAt: `${nextDate}T10:00:00Z`,
         maxAgeSeconds: 604800,
         sourcePath: resolve(sourceDirectory, "universe_floor10.json"),
         metadataPath: resolve(sourceDirectory, "meta.json"),
@@ -191,9 +205,13 @@ describe("immutable daily evidence", { timeout: 20_000 }, () => {
         schemaVersion: "3.0.0",
         modelVersion: "3.1.0",
       });
-      await cp(resolve("data/evidence/daily/2026-10-20"), join(root, "evidence/daily/2026-10-20"), {
-        recursive: true,
-      });
+      await cp(
+        resolve("data/evidence/daily", latestDate),
+        join(root, "evidence/daily", latestDate),
+        {
+          recursive: true,
+        },
+      );
       return options(root, join(root, "published"));
     };
     const currentMeta = JSON.parse(
@@ -211,6 +229,6 @@ describe("immutable daily evidence", { timeout: 20_000 }, () => {
     const result = await generateDailyEvidence(
       await publishBuild(fresh, "data/reference/v2-baseline/fixtures", "0de8cd6"),
     );
-    expect(result.asOfDate).toBe("2026-10-21");
+    expect(result.asOfDate).toBe(nextDate);
   });
 });

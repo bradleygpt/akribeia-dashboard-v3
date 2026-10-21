@@ -37,7 +37,7 @@ const COMMITTED_EXEC = JSON.parse(
     resolvePath("apps/dashboard/app/generated/active-execution-cost-readiness.json"),
     "utf8",
   ),
-) as { targets: unknown };
+) as { targets: unknown; portfolio: { positionCount: number } };
 
 describe("execution-cost readiness", () => {
   it("preserves exact targets while all execution economics remain null", async () => {
@@ -48,7 +48,7 @@ describe("execution-cost readiness", () => {
     expect(report.executionRecorded).toBe(false);
     expect(report.netPerformanceEligible).toBe(false);
     expect(report.portfolio).toMatchObject({
-      positionCount: 9,
+      positionCount: COMMITTED_EXEC.portfolio.positionCount,
       totalTargetWeightUnits: 1_000_000_000,
       pricedExecutionCount: 0,
       turnover: null,
