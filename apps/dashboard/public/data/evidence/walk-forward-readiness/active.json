@@ -1,8 +1,8 @@
 {
   "reportSchemaVersion": "1.0.0",
-  "buildId": "preview-20261020-pipeline-v6-f88d3b9d1b6f",
+  "buildId": "preview-20261021-pipeline-v6-e2272c5aab34",
   "modelVersion": "3.1.0",
-  "assessedAt": "2026-10-20T14:52:54Z",
+  "assessedAt": "2026-10-21T15:34:39Z",
   "status": "blocked-no-eligible-folds",
   "walkForwardEligible": false,
   "outOfSampleEligible": false,

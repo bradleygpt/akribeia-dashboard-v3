@@ -1,6 +1,6 @@
 {
   "crosswalkSchemaVersion": "1.0.0",
-  "buildId": "preview-20261020-pipeline-v6-f88d3b9d1b6f",
+  "buildId": "preview-20261021-pipeline-v6-e2272c5aab34",
   "modelVersion": "3.1.0",
   "generatedAt": "2026-07-30T06:49:38.889Z",
   "status": "partial-current-snapshot",
@@ -12,17 +12,17 @@
     "retrievedAt": "2026-07-30T06:49:38.889Z"
   },
   "coverage": {
-    "activeSecurityCount": 654,
-    "matchedSecurityCount": 643,
+    "activeSecurityCount": 635,
+    "matchedSecurityCount": 624,
     "unmatchedSecurityCount": 11,
     "ambiguousSecurityCount": 0,
-    "operatingCompanyCount": 599,
-    "companyCikMatchCount": 596,
+    "operatingCompanyCount": 580,
+    "companyCikMatchCount": 577,
     "registeredFundCount": 55,
     "fundClassMatchCount": 47,
-    "uniqueCikCount": 606,
-    "registrantCoverage": 0.9831804281345565,
-    "companyCikCoverage": 0.994991652754591,
+    "uniqueCikCount": 587,
+    "registrantCoverage": 0.9826771653543307,
+    "companyCikCoverage": 0.9948275862068966,
     "fundClassCoverage": 0.8545454545454545,
     "operatingCompanyListingIdentityCoverage": 0
   },
@@ -512,17 +512,6 @@
       "identityScope": "registrant-only"
     },
     {
-      "ticker": "APTV",
-      "provisionalSecurityId": "AKR-TICKER:APTV",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0001521332",
-      "secTitle": "Aptiv PLC",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
       "ticker": "ARES",
       "provisionalSecurityId": "AKR-TICKER:ARES",
       "sourceType": "company-ticker",
@@ -617,6 +606,17 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0001730168",
       "secTitle": "Broadcom Inc.",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
+      "ticker": "AVTR",
+      "provisionalSecurityId": "AKR-TICKER:AVTR",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0001722482",
+      "secTitle": "Avantor, Inc.",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"
@@ -963,17 +963,6 @@
       "identityScope": "registrant-only"
     },
     {
-      "ticker": "BROS",
-      "provisionalSecurityId": "AKR-TICKER:BROS",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0001866581",
-      "secTitle": "Dutch Bros Inc.",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
       "ticker": "BSX",
       "provisionalSecurityId": "AKR-TICKER:BSX",
       "sourceType": "company-ticker",
@@ -1244,17 +1233,6 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0001527166",
       "secTitle": "Carlyle Group Inc.",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
-      "ticker": "CGNX",
-      "provisionalSecurityId": "AKR-TICKER:CGNX",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0000851205",
-      "secTitle": "COGNEX CORP",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"
@@ -1546,17 +1524,6 @@
       "identityScope": "registrant-only"
     },
     {
-      "ticker": "CPT",
-      "provisionalSecurityId": "AKR-TICKER:CPT",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0000906345",
-      "secTitle": "CAMDEN PROPERTY TRUST",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
       "ticker": "CRDO",
       "provisionalSecurityId": "AKR-TICKER:CRDO",
       "sourceType": "company-ticker",
@@ -1667,17 +1634,6 @@
       "identityScope": "registrant-only"
     },
     {
-      "ticker": "CTVA",
-      "provisionalSecurityId": "AKR-TICKER:CTVA",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0001755672",
-      "secTitle": "Corteva, Inc.",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
       "ticker": "CVNA",
       "provisionalSecurityId": "AKR-TICKER:CVNA",
       "sourceType": "company-ticker",
@@ -1739,17 +1695,6 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0000027904",
       "secTitle": "DELTA AIR LINES, INC.",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
-      "ticker": "DAR",
-      "provisionalSecurityId": "AKR-TICKER:DAR",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0000916540",
-      "secTitle": "DARLING INGREDIENTS INC.",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"
@@ -2041,17 +1986,6 @@
       "identityScope": "registrant-only"
     },
     {
-      "ticker": "EAT",
-      "provisionalSecurityId": "AKR-TICKER:EAT",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0000703351",
-      "secTitle": "BRINKER INTERNATIONAL, INC",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
       "ticker": "EBAY",
       "provisionalSecurityId": "AKR-TICKER:EBAY",
       "sourceType": "company-ticker",
@@ -2239,6 +2173,17 @@
       "identityScope": "registrant-only"
     },
     {
+      "ticker": "ESTC",
+      "provisionalSecurityId": "AKR-TICKER:ESTC",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0001707753",
+      "secTitle": "Elastic N.V.",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
       "ticker": "ETN",
       "provisionalSecurityId": "AKR-TICKER:ETN",
       "sourceType": "company-ticker",
@@ -2256,17 +2201,6 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0000065984",
       "secTitle": "ENTERGY CORP /DE/",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
-      "ticker": "EVR",
-      "provisionalSecurityId": "AKR-TICKER:EVR",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0001360901",
-      "secTitle": "Evercore Inc.",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"
@@ -2393,6 +2327,17 @@
       "identityScope": "registrant-only"
     },
     {
+      "ticker": "FDS",
+      "provisionalSecurityId": "AKR-TICKER:FDS",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0001013237",
+      "secTitle": "FACTSET RESEARCH SYSTEMS INC",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
       "ticker": "FDX",
       "provisionalSecurityId": "AKR-TICKER:FDX",
       "sourceType": "company-ticker",
@@ -2503,17 +2448,6 @@
       "identityScope": "registrant-only"
     },
     {
-      "ticker": "FORM",
-      "provisionalSecurityId": "AKR-TICKER:FORM",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0001039399",
-      "secTitle": "FORMFACTOR INC",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
       "ticker": "FOX",
       "provisionalSecurityId": "AKR-TICKER:FOX",
       "sourceType": "company-ticker",
@@ -2531,17 +2465,6 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0001754301",
       "secTitle": "Fox Corp",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
-      "ticker": "FRT",
-      "provisionalSecurityId": "AKR-TICKER:FRT",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0000034903",
-      "secTitle": "FEDERAL REALTY INVESTMENT TRUST",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"
@@ -2943,17 +2866,6 @@
       "identityScope": "registrant-only"
     },
     {
-      "ticker": "HSIC",
-      "provisionalSecurityId": "AKR-TICKER:HSIC",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0001000228",
-      "secTitle": "HENRY SCHEIN INC",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
       "ticker": "HST",
       "provisionalSecurityId": "AKR-TICKER:HST",
       "sourceType": "company-ticker",
@@ -2993,17 +2905,6 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0000049071",
       "secTitle": "HUMANA INC",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
-      "ticker": "HUT",
-      "provisionalSecurityId": "AKR-TICKER:HUT",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0001964789",
-      "secTitle": "Hut 8 Corp.",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"
@@ -3636,17 +3537,6 @@
       "identityScope": "registrant-only"
     },
     {
-      "ticker": "LFUS",
-      "provisionalSecurityId": "AKR-TICKER:LFUS",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0000889331",
-      "secTitle": "LITTELFUSE INC /DE",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
       "ticker": "LH",
       "provisionalSecurityId": "AKR-TICKER:LH",
       "sourceType": "company-ticker",
@@ -3999,17 +3889,6 @@
       "identityScope": "registrant-only"
     },
     {
-      "ticker": "MGM",
-      "provisionalSecurityId": "AKR-TICKER:MGM",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0000789570",
-      "secTitle": "MGM Resorts International",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
       "ticker": "MKC",
       "provisionalSecurityId": "AKR-TICKER:MKC",
       "sourceType": "company-ticker",
@@ -4175,17 +4054,6 @@
       "identityScope": "registrant-only"
     },
     {
-      "ticker": "MSGS",
-      "provisionalSecurityId": "AKR-TICKER:MSGS",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0001636519",
-      "secTitle": "Madison Square Garden Sports Corp.",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
       "ticker": "MSI",
       "provisionalSecurityId": "AKR-TICKER:MSI",
       "sourceType": "company-ticker",
@@ -4214,6 +4082,17 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0000036270",
       "secTitle": "M&T BANK CORP",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
+      "ticker": "MTCH",
+      "provisionalSecurityId": "AKR-TICKER:MTCH",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0000891103",
+      "secTitle": "Match Group, Inc.",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"
@@ -4335,17 +4214,6 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0001111711",
       "secTitle": "NISOURCE INC.",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
-      "ticker": "NIO",
-      "provisionalSecurityId": "AKR-TICKER:NIO",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0001736541",
-      "secTitle": "NIO Inc.",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"
@@ -4604,17 +4472,6 @@
       "identityScope": "registrant-only"
     },
     {
-      "ticker": "ORI",
-      "provisionalSecurityId": "AKR-TICKER:ORI",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0000074260",
-      "secTitle": "OLD REPUBLIC INTERNATIONAL CORP",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
       "ticker": "ORLY",
       "provisionalSecurityId": "AKR-TICKER:ORLY",
       "sourceType": "company-ticker",
@@ -4676,6 +4533,17 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0001327567",
       "secTitle": "Palo Alto Networks Inc",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
+      "ticker": "PAYC",
+      "provisionalSecurityId": "AKR-TICKER:PAYC",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0001590955",
+      "secTitle": "Paycom Software, Inc.",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"
@@ -4901,17 +4769,6 @@
       "identityScope": "registrant-only"
     },
     {
-      "ticker": "PNR",
-      "provisionalSecurityId": "AKR-TICKER:PNR",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0000077360",
-      "secTitle": "PENTAIR plc",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
       "ticker": "PNW",
       "provisionalSecurityId": "AKR-TICKER:PNW",
       "sourceType": "company-ticker",
@@ -5031,6 +4888,17 @@
       "seriesId": "S000101292",
       "classId": "C000271435",
       "identityScope": "registered-fund-class"
+    },
+    {
+      "ticker": "QRVO",
+      "provisionalSecurityId": "AKR-TICKER:QRVO",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0001604778",
+      "secTitle": "Qorvo, Inc.",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
     },
     {
       "ticker": "RBA",
@@ -5319,28 +5187,6 @@
       "identityScope": "registrant-only"
     },
     {
-      "ticker": "SAIA",
-      "provisionalSecurityId": "AKR-TICKER:SAIA",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0001177702",
-      "secTitle": "SAIA INC",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
-      "ticker": "SANM",
-      "provisionalSecurityId": "AKR-TICKER:SANM",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0000897723",
-      "secTitle": "SANMINA CORP",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
       "ticker": "SBAC",
       "provisionalSecurityId": "AKR-TICKER:SBAC",
       "sourceType": "company-ticker",
@@ -5556,6 +5402,17 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0000091440",
       "secTitle": "Snap-on Inc",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
+      "ticker": "SNAP",
+      "provisionalSecurityId": "AKR-TICKER:SNAP",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0001564408",
+      "secTitle": "Snap Inc",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"
@@ -6375,17 +6232,6 @@
       "identityScope": "registrant-only"
     },
     {
-      "ticker": "VIAV",
-      "provisionalSecurityId": "AKR-TICKER:VIAV",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0000912093",
-      "secTitle": "VIAVI SOLUTIONS INC.",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
       "ticker": "VICI",
       "provisionalSecurityId": "AKR-TICKER:VICI",
       "sourceType": "company-ticker",
@@ -6524,17 +6370,6 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0000875320",
       "secTitle": "VERTEX PHARMACEUTICALS INC / MA",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
-      "ticker": "VSAT",
-      "provisionalSecurityId": "AKR-TICKER:VSAT",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0000797721",
-      "secTitle": "VIASAT INC",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"
@@ -6793,17 +6628,6 @@
       "identityScope": "registrant-only"
     },
     {
-      "ticker": "WMS",
-      "provisionalSecurityId": "AKR-TICKER:WMS",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0001604028",
-      "secTitle": "ADVANCED DRAINAGE SYSTEMS, INC.",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
       "ticker": "WMT",
       "provisionalSecurityId": "AKR-TICKER:WMT",
       "sourceType": "company-ticker",
@@ -6876,17 +6700,6 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0000106535",
       "secTitle": "WEYERHAEUSER CO",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
-      "ticker": "WYNN",
-      "provisionalSecurityId": "AKR-TICKER:WYNN",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0001174922",
-      "secTitle": "WYNN RESORTS LTD",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"
@@ -7002,17 +6815,6 @@
       "identityScope": "registrant-only"
     },
     {
-      "ticker": "XPEV",
-      "provisionalSecurityId": "AKR-TICKER:XPEV",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0001810997",
-      "secTitle": "XPENG INC.",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
       "ticker": "XYL",
       "provisionalSecurityId": "AKR-TICKER:XYL",
       "sourceType": "company-ticker",
@@ -7063,17 +6865,6 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0000877212",
       "secTitle": "ZEBRA TECHNOLOGIES CORP",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
-      "ticker": "ZION",
-      "provisionalSecurityId": "AKR-TICKER:ZION",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0000109380",
-      "secTitle": "ZIONS BANCORPORATION, NATIONAL ASSOCIATION /UT/",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"

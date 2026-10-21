@@ -1,8 +1,8 @@
 {
   "reportSchemaVersion": "1.0.0",
-  "buildId": "preview-20261020-pipeline-v6-f88d3b9d1b6f",
+  "buildId": "preview-20261021-pipeline-v6-e2272c5aab34",
   "modelVersion": "3.1.0",
-  "assessedAt": "2026-10-20T14:52:54Z",
+  "assessedAt": "2026-10-21T15:34:39Z",
   "status": "blocked-insufficient-prospective-history",
   "prospectiveValidationEligible": false,
   "certificationEligible": false,
@@ -14,15 +14,15 @@
     "monthlyValidationReports": 1
   },
   "progress": {
-    "immutableDailyEvidenceRecordCount": 10,
-    "uniqueObservationDayCount": 9,
-    "remainingObservationDayCount": 21,
+    "immutableDailyEvidenceRecordCount": 11,
+    "uniqueObservationDayCount": 10,
+    "remainingObservationDayCount": 20,
     "executablePortfolioRecordCount": 0,
     "costedReturnObservationCount": 0,
     "approvedBenchmarkComparisonCount": 0,
     "monthlyValidationReportCount": 0,
     "earliestObservationDate": "2026-07-28",
-    "latestObservationDate": "2026-10-20"
+    "latestObservationDate": "2026-10-21"
   },
   "observations": [
     {
@@ -154,6 +154,19 @@
       "executionRecorded": false,
       "costedReturnComputed": false,
       "approvedBenchmarkCompared": false
+    },
+    {
+      "asOfDate": "2026-10-21",
+      "buildId": "preview-20261021-pipeline-v6-e2272c5aab34",
+      "modelVersion": "3.1.0",
+      "recordedAt": "2026-10-21T15:34:39Z",
+      "evidenceRecordPath": "daily/2026-10-21/preview-20261021-pipeline-v6-e2272c5aab34/evidence.json",
+      "evidenceRecordSha256": "d59f83df42827b76f6cd9e9449c1bcd782903a2572e343c021fea0ccb03381e4",
+      "reproducibilityReportPath": "daily/2026-10-21/preview-20261021-pipeline-v6-e2272c5aab34/reproducibility.json",
+      "reproductionVerified": true,
+      "executionRecorded": false,
+      "costedReturnComputed": false,
+      "approvedBenchmarkCompared": false
     }
   ],
   "sourceReports": [
@@ -182,7 +195,7 @@
     {
       "key": "immutable-daily-ledger",
       "status": "partial",
-      "detail": "9 of 30 required independent daily observation dates are present in the immutable ledger."
+      "detail": "10 of 30 required independent daily observation dates are present in the immutable ledger."
     },
     {
       "key": "independent-observation-window",
@@ -224,7 +237,7 @@
     {
       "key": "thirty-immutable-observation-days",
       "requiredCount": 30,
-      "observedCount": 9,
+      "observedCount": 10,
       "satisfied": false,
       "detail": "Collect 30 distinct immutable daily evidence dates without backfilling or rewriting records."
     },
