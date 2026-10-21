@@ -1,0 +1,111 @@
+name: Deploy
+
+# Production deploys on every push to main (owner decision 2026-10-21). Nothing deployed the
+# Worker on its own -- every live update was a manual `npx wrangler deploy` -- so once refresh
+# PRs auto-merge, the live site would sit on the last manual deploy while main moved daily.
+#
+# ORDER IS THE SAFETY. The full CI gate (the commands ci.yml runs) builds and tests first;
+# wrangler deploys only after every one of them passed, from the dist/server that gate just built
+# and tested. A failed gate or build stops the job before the deploy step. Afterwards the
+# deployed bundle is checked (apps/dashboard/scripts/check-deployed-bundle.node.mjs): its
+# /api/v3/health must serve main's active build, workers.dev without an Access token must be
+# refused, and Cloudflare must report the uploaded version serving 100%. The live /api/v3/health
+# sits behind Cloudflare Access, so the bundle -- the exact bytes uploaded -- is what is called.
+#
+# CREDENTIALS: repo secrets CLOUDFLARE_API_TOKEN (Workers Scripts: Edit + Account Settings: Read,
+# account 60a274eca74a0c70d5678d63f9b4ed10, no zone permissions) and CLOUDFLARE_ACCOUNT_ID. Until
+# both exist the job skips with a warning instead of failing red.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# One deploy at a time, in order; a newer push replaces a queued older one.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check the deploy credentials
+        id: credentials
+        shell: bash
+        env:
+          HAS_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+          HAS_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+        run: |
+          if [[ "$HAS_TOKEN" == "true" && "$HAS_ACCOUNT" == "true" ]]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::warning title=Production deploy skipped::CLOUDFLARE_API_TOKEN or CLOUDFLARE_ACCOUNT_ID is not set, so nothing was deployed. Production stays on the last deploy until the secrets exist (or deploy by hand: npx wrangler deploy from apps/dashboard/dist/server)."
+            echo "## Production deploy skipped" >> "$GITHUB_STEP_SUMMARY"
+            echo "CLOUDFLARE_API_TOKEN or CLOUDFLARE_ACCOUNT_ID is not set; nothing was deployed." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - uses: actions/checkout@v7
+        if: steps.credentials.outputs.ready == 'true'
+
+      - uses: actions/setup-node@v7
+        if: steps.credentials.outputs.ready == 'true'
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        if: steps.credentials.outputs.ready == 'true'
+        run: npm ci
+
+      # format, typecheck, lint, build, vitest and the dashboard tests -- the same gate as ci.yml
+      - name: Full CI gate and build
+        if: steps.credentials.outputs.ready == 'true'
+        run: npm run ci
+
+      - name: Dependency audit
+        if: steps.credentials.outputs.ready == 'true'
+        run: npm run security:audit
+
+      - name: Deploy the Worker
+        id: deploy
+        if: steps.credentials.outputs.ready == 'true'
+        working-directory: apps/dashboard/dist/server
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx wrangler deploy 2>&1 | tee "$RUNNER_TEMP/wrangler-deploy.log"
+          version_id=$(grep -oE 'Current Version ID: [0-9a-f-]{36}' "$RUNNER_TEMP/wrangler-deploy.log" | awk '{print $4}' | tail -1)
+          if [[ -z "$version_id" ]]; then
+            echo "::error::wrangler deploy printed no version id"
+            exit 1
+          fi
+          echo "version_id=$version_id" >> "$GITHUB_OUTPUT"
+
+      - name: Check the deployed bundle
+        if: steps.credentials.outputs.ready == 'true'
+        working-directory: apps/dashboard
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: >-
+          node --import ./tests/register-worker-hooks.node.mjs scripts/check-deployed-bundle.node.mjs
+          --version-id "${{ steps.deploy.outputs.version_id }}"
+
+      - name: Check the live edge still requires Access
+        if: steps.credentials.outputs.ready == 'true'
+        shell: bash
+        run: |
+          code=$(curl -s -o /dev/null -w '%{http_code}' -I https://akribeia-dashboard.akribeia-insights.workers.dev/api/v3/health)
+          if [[ "$code" != "302" && "$code" != "403" ]]; then
+            echo "::error::the live workers.dev route answered $code without credentials; expected the Access redirect (302) or 403"
+            exit 1
+          fi
+          echo "live edge answered $code without credentials (Access in front)"
