@@ -1,6 +1,6 @@
 import { BULK_DATA_COMMIT } from "./bulk-data-pin";
 const REFERENCE_PATH = "/api/v3/research-reference";
-const V2_APP_COMMIT = "2455fe08bbfadea8b8090d506c3fba073e58c162";
+const V2_APP_COMMIT = "e42c28ec1ce2336cdccf24d5ea1dd450e0179c6f";
 const RAW_BASE = `https://raw.githubusercontent.com/bradleygpt/quant-dashboard-pro-v2/${V2_APP_COMMIT}/public/data`;
 const USER_AGENT = "Mozilla/5.0 (compatible; Akribeia/3.0; +https://akribeia.com)";
 const TICKER_PATTERN = /^[A-Z][A-Z0-9.-]{0,9}$/;
