@@ -1,6 +1,6 @@
 {
   "reportSchemaVersion": "1.0.0",
-  "generatedAt": "2026-10-21T15:36:43.248Z",
+  "generatedAt": "2026-10-23T04:46:51.065Z",
   "signalId": "akribeia-composite-v3",
   "methodology": "spearman-rank-ic-prospective-only: statistics use contemporaneously captured immutable vintages and receipted forward prices; no hindsight reconstruction",
   "policy": {
@@ -17,9 +17,9 @@
     ]
   },
   "ledger": {
-    "vintageCount": 9,
+    "vintageCount": 10,
     "firstObservationDate": "2026-07-28",
-    "latestObservationDate": "2026-10-21",
+    "latestObservationDate": "2026-10-23",
     "observationDates": [
       "2026-07-28",
       "2026-08-26",
@@ -29,7 +29,8 @@
       "2026-10-01",
       "2026-10-02",
       "2026-10-20",
-      "2026-10-21"
+      "2026-10-21",
+      "2026-10-23"
     ]
   },
   "overallState": "insufficient-history",
@@ -42,7 +43,7 @@
       "meanRankIc": null,
       "hitRate": null,
       "topMinusBottomQuintileSpread": null,
-      "excludedForMissingForwardWindow": 9
+      "excludedForMissingForwardWindow": 10
     },
     {
       "horizonTradingDays": 10,
@@ -52,7 +53,7 @@
       "meanRankIc": null,
       "hitRate": null,
       "topMinusBottomQuintileSpread": null,
-      "excludedForMissingForwardWindow": 7
+      "excludedForMissingForwardWindow": 8
     },
     {
       "horizonTradingDays": 21,
@@ -62,7 +63,7 @@
       "meanRankIc": null,
       "hitRate": null,
       "topMinusBottomQuintileSpread": null,
-      "excludedForMissingForwardWindow": 9
+      "excludedForMissingForwardWindow": 10
     },
     {
       "horizonTradingDays": 42,
@@ -72,7 +73,7 @@
       "meanRankIc": null,
       "hitRate": null,
       "topMinusBottomQuintileSpread": null,
-      "excludedForMissingForwardWindow": 9
+      "excludedForMissingForwardWindow": 10
     },
     {
       "horizonTradingDays": 63,
@@ -82,7 +83,7 @@
       "meanRankIc": null,
       "hitRate": null,
       "topMinusBottomQuintileSpread": null,
-      "excludedForMissingForwardWindow": 9
+      "excludedForMissingForwardWindow": 10
     },
     {
       "horizonTradingDays": 126,
@@ -92,12 +93,12 @@
       "meanRankIc": null,
       "hitRate": null,
       "topMinusBottomQuintileSpread": null,
-      "excludedForMissingForwardWindow": 9
+      "excludedForMissingForwardWindow": 10
     }
   ],
   "rankPersistence": {
     "state": "insufficient-history",
-    "vintagePairsUsed": 6,
+    "vintagePairsUsed": 7,
     "vintagePairsRequired": 12,
     "meanRankAutocorrelation": null
   },

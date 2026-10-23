@@ -1,0 +1,351 @@
+{
+  "buildId": "preview-20261023-pipeline-v6-70aa855462b1",
+  "generatedAt": "2026-10-23T04:44:52Z",
+  "schemaVersion": "3.0.0",
+  "modelVersion": "3.1.0",
+  "scoring": {
+    "method": "weighted-five-pillar",
+    "weights": {
+      "valuation": 0.2,
+      "growth": 0.2,
+      "profitability": 0.2,
+      "momentum": 0.2,
+      "revisions": 0.2
+    },
+    "missingDataPolicy": "renormalize-explicitly",
+    "minimumCoverage": 0.6,
+    "eligibleNormalization": "available-weight",
+    "eligibleSecurities": 580,
+    "excludedSecurities": 55,
+    "notApplicableSecurities": 55,
+    "averageCoverage": 0.996551724137931,
+    "factorCoverage": [
+      {
+        "pillar": "valuation",
+        "sourceField": "pillars.Valuation",
+        "weight": 0.2,
+        "availableSecurities": 580,
+        "missingSecurities": 0,
+        "coverage": 1
+      },
+      {
+        "pillar": "growth",
+        "sourceField": "pillars.Growth",
+        "weight": 0.2,
+        "availableSecurities": 578,
+        "missingSecurities": 2,
+        "coverage": 0.996551724137931
+      },
+      {
+        "pillar": "profitability",
+        "sourceField": "pillars.Profitability",
+        "weight": 0.2,
+        "availableSecurities": 579,
+        "missingSecurities": 1,
+        "coverage": 0.9982758620689656
+      },
+      {
+        "pillar": "momentum",
+        "sourceField": "pillars.Momentum",
+        "weight": 0.2,
+        "availableSecurities": 573,
+        "missingSecurities": 7,
+        "coverage": 0.9879310344827587
+      },
+      {
+        "pillar": "revisions",
+        "sourceField": "pillars.EPS Revisions",
+        "weight": 0.2,
+        "availableSecurities": 580,
+        "missingSecurities": 0,
+        "coverage": 1
+      }
+    ]
+  },
+  "portfolio": {
+    "constraints": {
+      "maxPositionWeight": 0.12,
+      "maxSectorWeight": 0.3
+    },
+    "totalWeight": 1,
+    "totalWeightUnits": 1000000000,
+    "positions": [
+      {
+        "ticker": "MU",
+        "name": "Micron Technology, Inc.",
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "score": 9.612857142857143,
+        "coverage": 1,
+        "missingPillars": [],
+        "price": 860,
+        "marketCapB": 975.2,
+        "weight": 0.12,
+        "weightUnits": 120000000,
+        "maxWeight": 0.12,
+        "maxWeightUnits": 120000000
+      },
+      {
+        "ticker": "ALL",
+        "name": "Allstate Corporation (The)",
+        "sector": "Financial Services",
+        "industry": "Insurance - Property & Casualty",
+        "score": 8.971428571428572,
+        "coverage": 1,
+        "missingPillars": [],
+        "price": 258.99,
+        "marketCapB": 65.5,
+        "weight": 0.12,
+        "weightUnits": 120000000,
+        "maxWeight": 0.12,
+        "maxWeightUnits": 120000000
+      },
+      {
+        "ticker": "HAS",
+        "name": "Hasbro, Inc.",
+        "sector": "Consumer Cyclical",
+        "industry": "Leisure",
+        "score": 8.88,
+        "coverage": 1,
+        "missingPillars": [],
+        "price": 115.56,
+        "marketCapB": 16.3,
+        "weight": 0.12,
+        "weightUnits": 120000000,
+        "maxWeight": 0.12,
+        "maxWeightUnits": 120000000
+      },
+      {
+        "ticker": "AMT",
+        "name": "American Tower Corporation (REI",
+        "sector": "Real Estate",
+        "industry": "REIT - Specialty",
+        "score": 8.756190476190476,
+        "coverage": 1,
+        "missingPillars": [],
+        "price": 180.94,
+        "marketCapB": 84.4,
+        "weight": 0.12,
+        "weightUnits": 120000000,
+        "maxWeight": 0.12,
+        "maxWeightUnits": 120000000
+      },
+      {
+        "ticker": "EXPE",
+        "name": "Expedia Group, Inc.",
+        "sector": "Consumer Cyclical",
+        "industry": "Travel Services",
+        "score": 8.713809523809525,
+        "coverage": 1,
+        "missingPillars": [],
+        "price": 296.69,
+        "marketCapB": 35.6,
+        "weight": 0.12,
+        "weightUnits": 120000000,
+        "maxWeight": 0.12,
+        "maxWeightUnits": 120000000
+      },
+      {
+        "ticker": "BKNG",
+        "name": "Booking Holdings Inc. Common St",
+        "sector": "Consumer Cyclical",
+        "industry": "Travel Services",
+        "score": 8.702857142857143,
+        "coverage": 1,
+        "missingPillars": [],
+        "price": 161.76,
+        "marketCapB": 125.3,
+        "weight": 0.06,
+        "weightUnits": 60000000,
+        "maxWeight": 0.12,
+        "maxWeightUnits": 120000000
+      },
+      {
+        "ticker": "SNDK",
+        "name": "Sandisk Corporation",
+        "sector": "Technology",
+        "industry": "Computer Hardware",
+        "score": 8.680476190476192,
+        "coverage": 1,
+        "missingPillars": [],
+        "price": 1251.32,
+        "marketCapB": 181.7,
+        "weight": 0.12,
+        "weightUnits": 120000000,
+        "maxWeight": 0.12,
+        "maxWeightUnits": 120000000
+      },
+      {
+        "ticker": "NVDA",
+        "name": "NVIDIA Corporation",
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "score": 8.623333333333335,
+        "coverage": 1,
+        "missingPillars": [],
+        "price": 212.41,
+        "marketCapB": 5125.7,
+        "weight": 0.06,
+        "weightUnits": 60000000,
+        "maxWeight": 0.12,
+        "maxWeightUnits": 120000000
+      },
+      {
+        "ticker": "MA",
+        "name": "Mastercard Incorporated",
+        "sector": "Financial Services",
+        "industry": "Credit Services",
+        "score": 8.505238095238095,
+        "coverage": 1,
+        "missingPillars": [],
+        "price": 631.99,
+        "marketCapB": 552.5,
+        "weight": 0.12,
+        "weightUnits": 120000000,
+        "maxWeight": 0.12,
+        "maxWeightUnits": 120000000
+      },
+      {
+        "ticker": "MPC",
+        "name": "Marathon Petroleum Corporation",
+        "sector": "Energy",
+        "industry": "Oil & Gas Refining & Marketing",
+        "score": 8.438095238095238,
+        "coverage": 1,
+        "missingPillars": [],
+        "price": 459.46,
+        "marketCapB": 133.8,
+        "weight": 0.04,
+        "weightUnits": 40000000,
+        "maxWeight": 0.12,
+        "maxWeightUnits": 120000000
+      }
+    ],
+    "sectorWeights": {
+      "Consumer Cyclical": 0.3,
+      "Energy": 0.04,
+      "Financial Services": 0.24,
+      "Real Estate": 0.12,
+      "Technology": 0.3
+    },
+    "sectorWeightUnits": {
+      "Consumer Cyclical": 300000000,
+      "Energy": 40000000,
+      "Financial Services": 240000000,
+      "Real Estate": 120000000,
+      "Technology": 300000000
+    },
+    "construction": {
+      "method": "ranked-greedy-integer-units-v1",
+      "weightScale": 1000000000,
+      "candidateCount": 580,
+      "sectorCount": 11,
+      "maximumFeasibleWeight": 3.3,
+      "maximumFeasibleWeightUnits": 3300000000,
+      "sectorCapacities": [
+        {
+          "sector": "Basic Materials",
+          "candidateCapacity": 2.16,
+          "candidateCapacityUnits": 2160000000,
+          "cappedCapacity": 0.3,
+          "cappedCapacityUnits": 300000000
+        },
+        {
+          "sector": "Communication Services",
+          "candidateCapacity": 3.36,
+          "candidateCapacityUnits": 3360000000,
+          "cappedCapacity": 0.3,
+          "cappedCapacityUnits": 300000000
+        },
+        {
+          "sector": "Consumer Cyclical",
+          "candidateCapacity": 7.2,
+          "candidateCapacityUnits": 7200000000,
+          "cappedCapacity": 0.3,
+          "cappedCapacityUnits": 300000000
+        },
+        {
+          "sector": "Consumer Defensive",
+          "candidateCapacity": 4.08,
+          "candidateCapacityUnits": 4080000000,
+          "cappedCapacity": 0.3,
+          "cappedCapacityUnits": 300000000
+        },
+        {
+          "sector": "Energy",
+          "candidateCapacity": 3.24,
+          "candidateCapacityUnits": 3240000000,
+          "cappedCapacity": 0.3,
+          "cappedCapacityUnits": 300000000
+        },
+        {
+          "sector": "Financial Services",
+          "candidateCapacity": 10.44,
+          "candidateCapacityUnits": 10440000000,
+          "cappedCapacity": 0.3,
+          "cappedCapacityUnits": 300000000
+        },
+        {
+          "sector": "Healthcare",
+          "candidateCapacity": 8.64,
+          "candidateCapacityUnits": 8640000000,
+          "cappedCapacity": 0.3,
+          "cappedCapacityUnits": 300000000
+        },
+        {
+          "sector": "Industrials",
+          "candidateCapacity": 9.48,
+          "candidateCapacityUnits": 9480000000,
+          "cappedCapacity": 0.3,
+          "cappedCapacityUnits": 300000000
+        },
+        {
+          "sector": "Real Estate",
+          "candidateCapacity": 3.84,
+          "candidateCapacityUnits": 3840000000,
+          "cappedCapacity": 0.3,
+          "cappedCapacityUnits": 300000000
+        },
+        {
+          "sector": "Technology",
+          "candidateCapacity": 13.44,
+          "candidateCapacityUnits": 13440000000,
+          "cappedCapacity": 0.3,
+          "cappedCapacityUnits": 300000000
+        },
+        {
+          "sector": "Utilities",
+          "candidateCapacity": 3.72,
+          "candidateCapacityUnits": 3720000000,
+          "cappedCapacity": 0.3,
+          "cappedCapacityUnits": 300000000
+        }
+      ],
+      "bindingPositionIds": [
+        "MU",
+        "ALL",
+        "HAS",
+        "AMT",
+        "EXPE",
+        "SNDK",
+        "MA"
+      ],
+      "bindingSectors": [
+        "Consumer Cyclical",
+        "Technology"
+      ]
+    }
+  },
+  "source": {
+    "dataset": "V2 production baseline — $10B+ universe",
+    "repositoryPath": "data/observations/current/universe_floor10.json",
+    "sourceCommit": "84faae7",
+    "contentSha256": "70aa855462b1c3946c3358302fb6fb12f563ea5aaba675872c5861b4f0412981",
+    "observedAt": "2026-10-23T04:43:08Z",
+    "dataAsOf": "2026-10-23T00:00:00Z",
+    "rowCount": 635,
+    "freshnessStatus": "current",
+    "ageSeconds": 17092,
+    "maxAgeSeconds": 604800
+  }
+}

@@ -1,16 +1,16 @@
 {
   "reportSchemaVersion": "1.0.0",
-  "buildId": "preview-20261021-pipeline-v6-e2272c5aab34",
+  "buildId": "preview-20261023-pipeline-v6-70aa855462b1",
   "modelVersion": "3.1.0",
-  "generatedAt": "2026-10-21T15:35:37.862Z",
-  "decisionCutoffAt": "2026-10-21T09:31:46Z",
+  "generatedAt": "2026-10-23T04:45:52.415Z",
+  "decisionCutoffAt": "2026-10-23T04:43:08Z",
   "status": "partial-retrospective-metadata",
   "historicalValidationEligible": false,
   "sourceReceipt": {
-    "path": "data/reference/sec/filing-submissions/2026-10-21/receipt.json",
-    "sha256": "b6067dedf00412e525e24c0e46ea551590fc2f9d34def1230c1ac9fbf03ff29a",
-    "snapshotId": "2026-10-21",
-    "retrievedAt": "2026-10-21T15:35:37.862Z"
+    "path": "data/reference/sec/filing-submissions/2026-10-23/receipt.json",
+    "sha256": "f0440fdb41b470ecaa19e2436d7911ba5e5ea7088f93ca7eabee3c0d9aa58d60",
+    "snapshotId": "2026-10-23",
+    "retrievedAt": "2026-10-23T04:45:52.415Z"
   },
   "selection": {
     "policy": "dashboard-top-scores-and-active-portfolio",
@@ -106,34 +106,6 @@
       "filingsAfterCutoffExcluded": 0
     },
     {
-      "ticker": "AMZN",
-      "provisionalSecurityId": "AKR-TICKER:AMZN",
-      "cik": "0001018724",
-      "secName": "AMAZON COM INC",
-      "tickerPresentInSubmission": true,
-      "latestPeriodic": {
-        "accessionNumber": "0001018724-26-000026",
-        "form": "10-Q",
-        "filingDate": "2026-07-31",
-        "reportDate": "2026-06-30",
-        "acceptedAt": "2026-07-31T02:11:13.000Z",
-        "primaryDocument": "amzn-20260630.htm",
-        "availabilityBasis": "edgar-acceptance-time",
-        "eligibleAtCutoff": true
-      },
-      "latestCurrent": {
-        "accessionNumber": "0001104659-26-107526",
-        "form": "8-K",
-        "filingDate": "2026-09-14",
-        "reportDate": "2026-09-14",
-        "acceptedAt": "2026-09-15T00:45:41.000Z",
-        "primaryDocument": "tm2624614d5_8k.htm",
-        "availabilityBasis": "edgar-acceptance-time",
-        "eligibleAtCutoff": true
-      },
-      "filingsAfterCutoffExcluded": 0
-    },
-    {
       "ticker": "BKNG",
       "provisionalSecurityId": "AKR-TICKER:BKNG",
       "cik": "0001075531",
@@ -156,6 +128,34 @@
         "reportDate": "2026-08-04",
         "acceptedAt": "2026-08-05T00:03:14.000Z",
         "primaryDocument": "bkng-20260804.htm",
+        "availabilityBasis": "edgar-acceptance-time",
+        "eligibleAtCutoff": true
+      },
+      "filingsAfterCutoffExcluded": 0
+    },
+    {
+      "ticker": "DLTR",
+      "provisionalSecurityId": "AKR-TICKER:DLTR",
+      "cik": "0000935703",
+      "secName": "DOLLAR TREE, INC.",
+      "tickerPresentInSubmission": true,
+      "latestPeriodic": {
+        "accessionNumber": "0000935703-26-000109",
+        "form": "10-Q",
+        "filingDate": "2026-08-27",
+        "reportDate": "2026-08-01",
+        "acceptedAt": "2026-08-27T14:35:11.000Z",
+        "primaryDocument": "dltr-20260801.htm",
+        "availabilityBasis": "edgar-acceptance-time",
+        "eligibleAtCutoff": true
+      },
+      "latestCurrent": {
+        "accessionNumber": "0000935703-26-000116",
+        "form": "8-K",
+        "filingDate": "2026-09-25",
+        "reportDate": "2026-09-24",
+        "acceptedAt": "2026-09-26T00:30:10.000Z",
+        "primaryDocument": "dltr-20260924.htm",
         "availabilityBasis": "edgar-acceptance-time",
         "eligibleAtCutoff": true
       },
@@ -218,34 +218,6 @@
       "filingsAfterCutoffExcluded": 0
     },
     {
-      "ticker": "LLY",
-      "provisionalSecurityId": "AKR-TICKER:LLY",
-      "cik": "0000059478",
-      "secName": "ELI LILLY & Co",
-      "tickerPresentInSubmission": true,
-      "latestPeriodic": {
-        "accessionNumber": "0000059478-26-000081",
-        "form": "10-Q",
-        "filingDate": "2026-08-05",
-        "reportDate": "2026-06-30",
-        "acceptedAt": "2026-08-05T22:40:40.000Z",
-        "primaryDocument": "lly-20260630.htm",
-        "availabilityBasis": "edgar-acceptance-time",
-        "eligibleAtCutoff": true
-      },
-      "latestCurrent": {
-        "accessionNumber": "0000059478-26-000077",
-        "form": "8-K",
-        "filingDate": "2026-08-05",
-        "reportDate": "2026-08-05",
-        "acceptedAt": "2026-08-05T15:05:09.000Z",
-        "primaryDocument": "lly-20260805.htm",
-        "availabilityBasis": "edgar-acceptance-time",
-        "eligibleAtCutoff": true
-      },
-      "filingsAfterCutoffExcluded": 0
-    },
-    {
       "ticker": "MA",
       "provisionalSecurityId": "AKR-TICKER:MA",
       "cik": "0001141391",
@@ -268,6 +240,34 @@
         "reportDate": "2026-07-30",
         "acceptedAt": "2026-07-30T16:07:03.000Z",
         "primaryDocument": "ma-20260730.htm",
+        "availabilityBasis": "edgar-acceptance-time",
+        "eligibleAtCutoff": true
+      },
+      "filingsAfterCutoffExcluded": 0
+    },
+    {
+      "ticker": "MPC",
+      "provisionalSecurityId": "AKR-TICKER:MPC",
+      "cik": "0001510295",
+      "secName": "Marathon Petroleum Corp",
+      "tickerPresentInSubmission": true,
+      "latestPeriodic": {
+        "accessionNumber": "0001510295-26-000061",
+        "form": "10-Q",
+        "filingDate": "2026-08-04",
+        "reportDate": "2026-06-30",
+        "acceptedAt": "2026-08-04T18:34:21.000Z",
+        "primaryDocument": "mpc-20260630.htm",
+        "availabilityBasis": "edgar-acceptance-time",
+        "eligibleAtCutoff": true
+      },
+      "latestCurrent": {
+        "accessionNumber": "0001510295-26-000060",
+        "form": "8-K",
+        "filingDate": "2026-08-04",
+        "reportDate": "2026-08-04",
+        "acceptedAt": "2026-08-04T10:49:20.000Z",
+        "primaryDocument": "mpc-20260804.htm",
         "availabilityBasis": "edgar-acceptance-time",
         "eligibleAtCutoff": true
       },

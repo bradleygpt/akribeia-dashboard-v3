@@ -1,6 +1,6 @@
 {
   "crosswalkSchemaVersion": "1.0.0",
-  "buildId": "preview-20261021-pipeline-v6-e2272c5aab34",
+  "buildId": "preview-20261023-pipeline-v6-70aa855462b1",
   "modelVersion": "3.1.0",
   "generatedAt": "2026-07-30T06:49:38.889Z",
   "status": "partial-current-snapshot",
@@ -1519,6 +1519,17 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0000900075",
       "secTitle": "COPART INC",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
+      "ticker": "CPT",
+      "provisionalSecurityId": "AKR-TICKER:CPT",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0000906345",
+      "secTitle": "CAMDEN PROPERTY TRUST",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"
@@ -3136,17 +3147,6 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0001699150",
       "secTitle": "Ingersoll Rand Inc.",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
-      "ticker": "IREN",
-      "provisionalSecurityId": "AKR-TICKER:IREN",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0001878848",
-      "secTitle": "IREN Ltd",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"
