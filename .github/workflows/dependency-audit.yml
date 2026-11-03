@@ -1,0 +1,109 @@
+name: Dependency audit alert
+
+# The full dependency audit, every day, on main (owner decision 2026-11-03). Refresh PRs and
+# deploys that change no dependency file now run the audit in report mode
+# (scripts/audit-scope.mjs), so a new advisory no longer stops the data -- from 2026-10-24 to
+# 2026-11-02 it did, while production kept serving the vulnerable code anyway. This job is
+# where a new advisory surfaces instead: a failure opens one alert issue, or updates the open
+# one when the findings change (a new advisory, or a different set); a pass closes it.
+# Dependabot security updates are on for this repository, so fixes arrive as PRs, and those
+# run the full audit in CI because they change the lockfile.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "20 14 * * *"
+
+concurrency:
+  group: dependency-audit
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Full dependency audit
+        shell: bash
+        env:
+          AUDIT_ADVISORIES: enforce
+        run: |
+          npm run --silent security:audit > "$RUNNER_TEMP/audit.out" 2> "$RUNNER_TEMP/audit.err" && status=0 || status=$?
+          cat "$RUNNER_TEMP/audit.out" "$RUNNER_TEMP/audit.err" >> "$GITHUB_STEP_SUMMARY"
+          exit "$status"
+
+      - name: Open or update the alert issue
+        if: failure()
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="Dependency audit alert: new advisory on main"
+          # The findings: the audit's error lines (Error: ... and the lines after it), else
+          # whatever it printed. The fingerprint is the sorted advisory ids, so the issue is
+          # updated only when the set changes rather than every day.
+          findings=$(sed -n '/^Error: /,/^    at /p' "$RUNNER_TEMP/audit.err" 2>/dev/null | grep -v '^    at ' || true)
+          if [[ -z "$findings" ]]; then
+            findings=$(tail -n 20 "$RUNNER_TEMP/audit.err" "$RUNNER_TEMP/audit.out" 2>/dev/null || echo "The audit step failed before recording output; see the run.")
+          fi
+          fingerprint=$(grep -oE 'GHSA(-[a-z0-9]{4}){3}|CVE-[0-9]{4}-[0-9]+' <<< "$findings" | sort -u | paste -sd, -)
+          [[ -n "$fingerprint" ]] || fingerprint="sha256:$(sha256sum <<< "$findings" | cut -c1-16)"
+          run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          body="$RUNNER_TEMP/audit-issue.md"
+          {
+            echo "<!-- audit-fingerprint: $fingerprint -->"
+            echo "The daily full dependency audit failed on main: $run_url"
+            echo
+            echo '```'
+            echo "$findings"
+            echo '```'
+            echo
+            echo "Refresh PRs and deploys that change no dependency file keep running (report mode);"
+            echo "PRs that change dependencies stay blocked until this is fixed. Look for a Dependabot"
+            echo "security PR first; this issue closes itself when the daily audit passes again."
+          } > "$body"
+          existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --limit 100 \
+            --json number,title --jq ".[] | select(.title == \"$title\") | .number" | head -1)
+          if [[ -z "$existing" ]]; then
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body-file "$body"
+            exit 0
+          fi
+          previous=$(gh issue view "$existing" --repo "$GITHUB_REPOSITORY" --json body \
+            --jq '.body' | grep -oE 'audit-fingerprint: [^ ]+' | head -1 | cut -d' ' -f2)
+          if [[ "$previous" == "$fingerprint" ]]; then
+            echo "Alert #$existing already records these findings ($fingerprint)." >> "$GITHUB_STEP_SUMMARY"
+          else
+            gh issue edit "$existing" --repo "$GITHUB_REPOSITORY" --body-file "$body"
+            gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" \
+              --body "The findings changed ($previous -> $fingerprint): $run_url"
+          fi
+
+      - name: Close the alert issue on recovery
+        if: success()
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="Dependency audit alert: new advisory on main"
+          existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --limit 100 \
+            --json number,title --jq ".[] | select(.title == \"$title\") | .number" | head -1)
+          if [[ -n "$existing" ]]; then
+            run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            gh issue close "$existing" --repo "$GITHUB_REPOSITORY" --reason completed \
+              --comment "Recovered: $run_url passed the full dependency audit."
+          fi

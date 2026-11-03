@@ -28,6 +28,7 @@ concurrency:
 
 permissions:
   contents: read
+  actions: read # the audit scope reads the last successful deploy
 
 jobs:
   deploy:
@@ -52,6 +53,9 @@ jobs:
 
       - uses: actions/checkout@v7
         if: steps.credentials.outputs.ready == 'true'
+        with:
+          # full history, so the audit scope can diff against the last successful deploy
+          fetch-depth: 0
 
       - uses: actions/setup-node@v7
         if: steps.credentials.outputs.ready == 'true'
@@ -68,8 +72,31 @@ jobs:
         if: steps.credentials.outputs.ready == 'true'
         run: npm run ci
 
+      # AUDIT SCOPE (owner decision 2026-11-03): measured from the commit production is serving,
+      # the last successful deploy. When nothing since then touched a dependency file, this
+      # deploy carries the same dependencies production already runs, so advisories warn
+      # (report mode) instead of holding back the data; every other audit check still fails
+      # closed. A dependency change since then, or no successful deploy to measure from, runs
+      # the full audit. New advisories alert through dependency-audit.yml.
+      - name: Choose the audit scope
+        id: audit_scope
+        if: steps.credentials.outputs.ready == 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AUDIT_SCOPE_ELIGIBLE: "true"
+          AUDIT_SCOPE_HEAD: ${{ github.sha }}
+        run: |
+          AUDIT_SCOPE_BASE=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow deploy.yml \
+            --branch main --status success --limit 1 --json headSha --jq '.[0].headSha // ""') ||
+            AUDIT_SCOPE_BASE=""
+          export AUDIT_SCOPE_BASE
+          echo "mode=$(node scripts/audit-scope.mjs)" >> "$GITHUB_OUTPUT"
+
       - name: Dependency audit
         if: steps.credentials.outputs.ready == 'true'
+        env:
+          AUDIT_ADVISORIES: ${{ steps.audit_scope.outputs.mode }}
         run: npm run security:audit
 
       - name: Deploy the Worker

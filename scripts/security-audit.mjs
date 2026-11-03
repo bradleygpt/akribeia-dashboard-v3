@@ -1,4 +1,4 @@
-/* global URL, console */
+/* global URL, console, process */
 import { readFile } from "node:fs/promises";
 import { exec } from "node:child_process";
 import { promisify } from "node:util";
@@ -84,16 +84,45 @@ const lock = JSON.parse(lockText);
 // it. A different advisory, an extra braces node, or anything else stays counted.
 const findings = effectiveFindings(audit);
 const productionFindings = effectiveFindings(productionAudit);
+
+// ADVISORY MODE (owner decision 2026-11-03). npm audit's own findings -- the checks that
+// collect into advisoryProblems below -- fail the run under AUDIT_ADVISORIES=enforce (the
+// default) and become warnings under `report`, which scripts/audit-scope.mjs selects only for
+// a change that touches no dependency file: from 2026-10-24 a new zod advisory blocked every
+// data refresh while production kept serving that same zod. Every other check in this file
+// (the braces guard, the version floors, the absent packages, the undici pin) fails closed
+// in both modes. The daily dependency-audit workflow runs `enforce` and alerts.
+const ADVISORY_MODE = process.env.AUDIT_ADVISORIES ?? "enforce";
+if (ADVISORY_MODE !== "enforce" && ADVISORY_MODE !== "report")
+  throw new Error(`AUDIT_ADVISORIES must be enforce or report, got ${ADVISORY_MODE}`);
+const advisoryProblems = [];
+const describeFindings = (entries) =>
+  entries
+    .map((entry) => {
+      const ids = (entry.via ?? [])
+        .filter((item) => typeof item === "object" && item.url)
+        .map((item) => item.url.split("/").pop());
+      const through = (entry.via ?? []).filter((item) => typeof item === "string");
+      return `${entry.name} ${entry.severity} (${ids.length > 0 ? ids.join(", ") : `via ${through.join(", ")}`})`;
+    })
+    .join("; ");
+const atLeastHigh = (entries) =>
+  entries.filter((entry) => entry.severity === "high" || entry.severity === "critical");
 if (productionFindings.critical !== 0 || productionFindings.high !== 0)
-  throw new Error("production dependency audit is not clean");
-if (findings.critical !== 0) throw new Error("critical vulnerabilities are not permitted");
+  advisoryProblems.push(
+    `production dependency audit is not clean: ${describeFindings(atLeastHigh(productionFindings.entries))}`,
+  );
+if (findings.critical !== 0)
+  advisoryProblems.push(
+    `critical vulnerabilities are not permitted: ${describeFindings(findings.entries.filter((entry) => entry.severity === "critical"))}`,
+  );
 
 // Every high finding must be one of the enumerated exceptions — no more, no
 // fewer, and each must match its pinned node, version, and exact advisory set.
 const highEntries = findings.entries.filter((entry) => entry.severity === "high");
 if (findings.high !== HIGH_EXCEPTIONS.length || highEntries.length !== HIGH_EXCEPTIONS.length)
-  throw new Error(
-    `expected exactly the ${HIGH_EXCEPTIONS.length} enumerated high advisories, got ${findings.high}`,
+  advisoryProblems.push(
+    `expected exactly the ${HIGH_EXCEPTIONS.length} enumerated high advisories, got ${findings.high}: ${describeFindings(highEntries)}`,
   );
 for (const exception of HIGH_EXCEPTIONS) {
   const entry = highEntries.find((candidate) => candidate.name === exception.name);
@@ -118,8 +147,8 @@ for (const exception of HIGH_EXCEPTIONS) {
 const unexpectedHigh = highEntries.filter(
   (entry) => !HIGH_EXCEPTIONS.some((exception) => exception.name === entry.name),
 );
-if (unexpectedHigh.length > 0)
-  throw new Error(
+if (unexpectedHigh.length > 0 && HIGH_EXCEPTIONS.length > 0)
+  advisoryProblems.push(
     `unenumerated high findings: ${JSON.stringify(unexpectedHigh.map(({ name }) => name))}`,
   );
 
@@ -210,9 +239,16 @@ for (const [node, entry] of Object.entries(lock.packages ?? {})) {
 const packageJson = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
 if (packageJson.devDependencies?.undici || packageJson.overrides?.undici)
   throw new Error("direct undici pin/override must remain absent");
+if (advisoryProblems.length > 0) {
+  if (ADVISORY_MODE === "enforce") throw new Error(advisoryProblems.join("\n"));
+  for (const problem of advisoryProblems)
+    console.log(`::warning title=Dependency advisory (report mode, not blocking)::${problem}`);
+}
 console.log(
   JSON.stringify({
-    status: "passed",
+    status: advisoryProblems.length > 0 ? "passed-with-advisories" : "passed",
+    advisoryMode: ADVISORY_MODE,
+    advisories: advisoryProblems,
     expires: EXPIRES,
     exceptions: HIGH_EXCEPTIONS.map(({ name, node, version, advisories, reason, tracking }) => ({
       name,

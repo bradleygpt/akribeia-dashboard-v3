@@ -217,11 +217,23 @@ jobs:
             echo "::warning title=V2 reference pin kept::V2_APP_COMMIT stays at $from: $reason"
           fi
 
+      # The refresh changes data and the files it regenerates, never dependencies, so the audit
+      # runs in report mode unless something here did touch a dependency file
+      # (scripts/audit-scope.mjs, owner decision 2026-11-03): from 2026-10-24 to 2026-11-02 a
+      # new zod advisory failed this step every day while production served that same zod.
+      # The PR body records which mode ran and any advisory it reported.
       - name: Validate the refreshed build
         if: steps.ingest.outputs.disposition == 'ingested'
+        shell: bash
+        env:
+          AUDIT_SCOPE_ELIGIBLE: "true"
+          AUDIT_SCOPE_BASE: HEAD
         run: |
           npm run ci
-          npm run security:audit
+          AUDIT_ADVISORIES=$(node scripts/audit-scope.mjs)
+          export AUDIT_ADVISORIES
+          npm run --silent security:audit | tee "$RUNNER_TEMP/security-audit.out"
+          node scripts/audit-summary-line.mjs "$RUNNER_TEMP/security-audit.out" > "$RUNNER_TEMP/audit-line.txt"
           git diff --check
 
       # THESE PRs REQUIRE MANUAL MERGE, AND CANNOT BE AUTO-MERGED ON GREEN YET.
@@ -280,13 +292,16 @@ jobs:
           ## Validation
 
           - full repository CI passed
-          - dependency audit passed at high severity
+          - AUDIT_LINE
           - whitespace validation passed
 
           ## Safety
 
           This automated pull request does not deploy production, alter V2, fabricate market data, or claim investment performance.
           BODY
+          awk -v line_file="$RUNNER_TEMP/audit-line.txt" \
+            '/^- AUDIT_LINE$/ { getline audit < line_file; print "- " audit; next } { print }' \
+            "$pr_body" > "$pr_body.tmp" && mv "$pr_body.tmp" "$pr_body"
 
           pr_url=$(gh pr create \
             --base main \
