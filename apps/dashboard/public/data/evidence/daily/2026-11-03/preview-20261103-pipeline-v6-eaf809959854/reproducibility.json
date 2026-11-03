@@ -1,0 +1,20 @@
+{
+  "reportSchemaVersion": "1.0.0",
+  "buildId": "preview-20261103-pipeline-v6-eaf809959854",
+  "asOfDate": "2026-11-03",
+  "verifiedAt": "2026-11-03T06:51:44Z",
+  "evidenceRecordPath": "daily/2026-11-03/preview-20261103-pipeline-v6-eaf809959854/evidence.json",
+  "evidenceRecordSha256": "c732d9374a0f5a298e841073ce5340c9c361d9add4700bcb3edb32a57252328f",
+  "reproductionCommand": "npm run evidence:generate",
+  "checks": {
+    "activePointer": true,
+    "manifestSchema": true,
+    "publicationHealthy": true,
+    "artifactDigests": true,
+    "artifactSchemas": true,
+    "lineage": true,
+    "exactPortfolioWeights": true,
+    "evidenceSchema": true
+  },
+  "result": "verified"
+}

@@ -1,8 +1,8 @@
 {
   "historicalReadinessSchemaVersion": "1.0.0",
-  "buildId": "preview-20261102-pipeline-v6-188755f87bdd",
+  "buildId": "preview-20261103-pipeline-v6-eaf809959854",
   "modelVersion": "3.1.0",
-  "assessedAt": "2026-11-03T02:53:41Z",
+  "assessedAt": "2026-11-03T06:51:44Z",
   "status": "blocked",
   "historicalValidationEligible": false,
   "inventory": {

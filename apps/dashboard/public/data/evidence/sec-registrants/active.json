@@ -1,6 +1,6 @@
 {
   "crosswalkSchemaVersion": "1.0.0",
-  "buildId": "preview-20261102-pipeline-v6-188755f87bdd",
+  "buildId": "preview-20261103-pipeline-v6-eaf809959854",
   "modelVersion": "3.1.0",
   "generatedAt": "2026-07-30T06:49:38.889Z",
   "status": "partial-current-snapshot",
@@ -12,17 +12,17 @@
     "retrievedAt": "2026-07-30T06:49:38.889Z"
   },
   "coverage": {
-    "activeSecurityCount": 636,
-    "matchedSecurityCount": 625,
+    "activeSecurityCount": 637,
+    "matchedSecurityCount": 626,
     "unmatchedSecurityCount": 11,
     "ambiguousSecurityCount": 0,
-    "operatingCompanyCount": 581,
-    "companyCikMatchCount": 578,
+    "operatingCompanyCount": 582,
+    "companyCikMatchCount": 579,
     "registeredFundCount": 55,
     "fundClassMatchCount": 47,
-    "uniqueCikCount": 588,
-    "registrantCoverage": 0.9827044025157232,
-    "companyCikCoverage": 0.9948364888123924,
+    "uniqueCikCount": 589,
+    "registrantCoverage": 0.9827315541601256,
+    "companyCikCoverage": 0.9948453608247423,
     "fundClassCoverage": 0.8545454545454545,
     "operatingCompanyListingIdentityCoverage": 0
   },
@@ -2173,17 +2173,6 @@
       "identityScope": "registrant-only"
     },
     {
-      "ticker": "ESTC",
-      "provisionalSecurityId": "AKR-TICKER:ESTC",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0001707753",
-      "secTitle": "Elastic N.V.",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
       "ticker": "ETN",
       "provisionalSecurityId": "AKR-TICKER:ETN",
       "sourceType": "company-ticker",
@@ -2855,6 +2844,17 @@
       "identityScope": "registrant-only"
     },
     {
+      "ticker": "HLI",
+      "provisionalSecurityId": "AKR-TICKER:HLI",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0001302215",
+      "secTitle": "HOULIHAN LOKEY, INC.",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
       "ticker": "HON",
       "provisionalSecurityId": "AKR-TICKER:HON",
       "sourceType": "company-ticker",
@@ -3449,6 +3449,17 @@
       "identityScope": "registrant-only"
     },
     {
+      "ticker": "KNX",
+      "provisionalSecurityId": "AKR-TICKER:KNX",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0001492691",
+      "secTitle": "Knight-Swift Transportation Holdings Inc.",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
       "ticker": "KO",
       "provisionalSecurityId": "AKR-TICKER:KO",
       "sourceType": "company-ticker",
@@ -3521,6 +3532,17 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0000920760",
       "secTitle": "LENNAR CORP /NEW/",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
+      "ticker": "LFUS",
+      "provisionalSecurityId": "AKR-TICKER:LFUS",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0000889331",
+      "secTitle": "LITTELFUSE INC /DE",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"
@@ -3642,17 +3664,6 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0000855658",
       "secTitle": "LATTICE SEMICONDUCTOR CORP",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
-      "ticker": "LTH",
-      "provisionalSecurityId": "AKR-TICKER:LTH",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0001869198",
-      "secTitle": "Life Time Group Holdings, Inc.",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"
