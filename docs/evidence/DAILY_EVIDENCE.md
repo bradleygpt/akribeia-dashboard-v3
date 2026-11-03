@@ -19,6 +19,21 @@ The browser-accessible copy uses the same relative path below
 `apps/dashboard/public/data/evidence/`. `active.json` and the server-rendered projection are
 replaceable views of the selected immutable record; they are not the source ledger.
 
+## Missed-observation markers
+
+Dates the ledger will never hold are named, not filled (owner decision 2026-11-03). A marker
+under `data/evidence/daily/gaps/<recorded-on>-missed-<from>-to-<through>.json` lists every
+calendar date in the range, the observations on either side, the cause and the blocked refresh
+runs. It is dated the day it was recorded, never a missed date, and carries no observation data:
+`countsTowardProspectiveHistory: false`, `containsObservationData: false`,
+`backfill: "not-permitted"`. `gaps/` is not a date directory, so every ledger reader skips it,
+and it holds no `evidence.json`. The public copy sits at the same path under
+`apps/dashboard/public/data/evidence/`; the dashboard's prospective section shows the projection
+`apps/dashboard/app/generated/active-observation-gaps.json`.
+
+The first marker, recorded 2026-11-03, covers 2026-10-24 to 2026-11-01: a new zod advisory failed
+the dependency audit on every refresh run in that range.
+
 ## Verified inputs
 
 `npm run evidence:generate` resolves the active-build pointer, parses the published manifest, and

@@ -11,6 +11,7 @@ import {
   MaturityAssessmentSchema,
   MetricDictionarySchema,
   ModelCardSchema,
+  ObservationGapLedgerSchema,
   ProspectiveReadinessSchema,
   SecRegistrantCrosswalkSchema,
   SecurityMasterSchema,
@@ -36,6 +37,7 @@ import activeHistoricalReadiness from "./generated/active-historical-readiness.j
 import activeMetricDictionary from "./generated/active-metric-dictionary.json";
 import activeMaturity from "./generated/active-maturity.json";
 import activeModelCard from "./generated/active-model-card.json";
+import activeObservationGaps from "./generated/active-observation-gaps.json";
 import activeProspectiveReadiness from "./generated/active-prospective-readiness.json";
 import activeQualityReport from "./generated/active-quality-report.json";
 import activeSecRegistrants from "./generated/active-sec-registrants.json";
@@ -62,6 +64,8 @@ const prospectiveReadiness = ProspectiveReadinessSchema.parse(activeProspectiveR
 // Bake dates that repeated the active observation's bytes: shown, never counted.
 const upstreamStalls = UpstreamStallLedgerSchema.parse(activeUpstreamStalls);
 const latestUpstreamStall = upstreamStalls.stalls.at(-1);
+// Calendar dates the ledger will never hold, and why (markers under data/evidence/daily/gaps/).
+const observationGaps = ObservationGapLedgerSchema.parse(activeObservationGaps);
 const qualityReport = DataQualityReportSchema.parse(activeQualityReport);
 const secRegistrants = SecRegistrantCrosswalkSchema.parse(activeSecRegistrants);
 const securityMaster = SecurityMasterSchema.parse(activeSecurityMaster);
@@ -461,6 +465,17 @@ export function MarketHealthDashboard() {
               {upstreamStalls.stalls.map(({ observationDate }) => observationDate).join(", ")}.
             </p>
           ) : null}
+          {observationGaps.gaps.map((gap) => (
+            <p className="prospective-gap-days" key={gap.missedFrom}>
+              Missed observation dates (no record, never backfilled): {gap.missedDates.join(", ")}.{" "}
+              {gap.reason}{" "}
+              <a
+                href={`/data/evidence/daily/gaps/${gap.recordedOn}-missed-${gap.missedFrom}-to-${gap.missedThrough}.json`}
+              >
+                Gap marker recorded {gap.recordedOn}
+              </a>
+            </p>
+          ))}
           <div
             className="table-scroll exit-disposition-table"
             tabIndex={0}
