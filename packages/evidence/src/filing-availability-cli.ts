@@ -8,7 +8,8 @@ const result = await generateFilingAvailability({
   ),
   publishedDataRoot: resolve("apps/dashboard/public/data"),
   sourceReceiptPath: resolve(
-    `data/reference/sec/filing-submissions/${process.env.SEC_SNAPSHOT_ID ?? "2026-07-30"}/receipt.json`,
+    process.env.SEC_SUBMISSIONS_RECEIPT ??
+      `data/reference/sec/filing-submissions/${process.env.SEC_SNAPSHOT_ID ?? "2026-07-30"}/receipt.json`,
   ),
   reportRoot: resolve("data/evidence/filing-availability"),
   dashboardProjectionPath: resolve("apps/dashboard/app/generated/active-filing-availability.json"),
