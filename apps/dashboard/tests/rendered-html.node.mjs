@@ -97,6 +97,14 @@ test("server-renders the active Akribeia evidence dashboard", async () => {
   assert.match(html, /No new upstream data/);
   // either no stall day yet, or the latest one -- the page must say which
   assert.match(html, /no bake date has repeated the active data|data · adds nothing to the count/);
+  // the 2026-10-24 to 2026-11-01 gap is named, with its cause and its marker
+  assert.match(html, /Missed observation dates/);
+  assert.match(
+    html,
+    /2026-10-24, 2026-10-25, 2026-10-26, 2026-10-27, 2026-10-28, 2026-10-29, 2026-10-30, 2026-10-31, 2026-11-01/,
+  );
+  assert.match(html, /blocked by the dependency audit/);
+  assert.match(html, /daily\/gaps\/2026-11-03-missed-2026-10-24-to-2026-11-01\.json/);
   assert.match(html, /pillars\.EPS Revisions/);
   assert.match(html, /available-weight/);
   assert.match(html, /EXACT CONSTRAINT LEDGER/);

@@ -3835,3 +3835,84 @@ export const UpstreamStallLedgerSchema = z
     { message: "Stall days must be counted exactly and listed once each, oldest first." },
   );
 export type UpstreamStallLedger = z.infer<typeof UpstreamStallLedgerSchema>;
+
+const nextIsoDate = (date: string) =>
+  new Date(Date.parse(`${date}T00:00:00Z`) + 86_400_000).toISOString().slice(0, 10);
+
+// A missed-observation marker (owner decision 2026-11-03). It names calendar dates the ledger
+// will never hold -- no refresh produced a record, and backfill is not permitted -- and why.
+// It carries no observation data: no build, no source, no scores, and it counts toward
+// nothing. It lives at data/evidence/daily/gaps/, which every ledger reader skips because it
+// is not a date directory, and it is dated the day it was recorded, never a missed date.
+export const ObservationGapRecordSchema = z
+  .object({
+    recordSchemaVersion: z.literal("1.0.0"),
+    recordedOn: z.string().date(),
+    recordedAt: IsoDateTimeSchema,
+    disposition: z.literal("missed-observation-dates"),
+    countsTowardProspectiveHistory: z.literal(false),
+    containsObservationData: z.literal(false),
+    backfill: z.literal("not-permitted"),
+    missedFrom: z.string().date(),
+    missedThrough: z.string().date(),
+    missedDates: z.array(z.string().date()).min(1),
+    lastObservationBefore: z.string().date(),
+    firstObservationAfter: z.string().date(),
+    cause: z.literal("refresh-blocked-by-dependency-audit"),
+    blockedRefreshDates: z.array(z.string().date()),
+    blockedRefreshRuns: z.array(
+      z
+        .object({
+          runId: z.number().int().positive(),
+          startedAt: IsoDateTimeSchema,
+          url: z.string().url(),
+        })
+        .strict(),
+    ),
+    reason: z.string().min(1),
+  })
+  .strict()
+  .refine(
+    (value) => {
+      const every: string[] = [];
+      for (let date = value.missedFrom; date <= value.missedThrough; date = nextIsoDate(date))
+        every.push(date);
+      return JSON.stringify(every) === JSON.stringify(value.missedDates);
+    },
+    { message: "missedDates must list every calendar date from missedFrom to missedThrough." },
+  )
+  .refine(
+    (value) =>
+      value.lastObservationBefore < value.missedFrom &&
+      value.firstObservationAfter > value.missedThrough &&
+      value.recordedOn > value.missedThrough &&
+      value.recordedAt.slice(0, 10) === value.recordedOn,
+    { message: "A gap sits between two observations and is recorded after it, on recordedOn." },
+  )
+  .refine(
+    (value) =>
+      value.blockedRefreshDates.every((date) => value.missedDates.includes(date)) &&
+      value.blockedRefreshRuns.every(({ startedAt }) =>
+        value.blockedRefreshDates.includes(startedAt.slice(0, 10)),
+      ),
+    { message: "Blocked refreshes must fall on missed dates." },
+  );
+export type ObservationGapRecord = z.infer<typeof ObservationGapRecordSchema>;
+
+export const ObservationGapLedgerSchema = z
+  .object({
+    ledgerSchemaVersion: z.literal("1.0.0"),
+    missedDateCount: z.number().int().nonnegative(),
+    gaps: z.array(ObservationGapRecordSchema),
+  })
+  .strict()
+  .refine(
+    (value) =>
+      value.missedDateCount === value.gaps.reduce((sum, gap) => sum + gap.missedDates.length, 0) &&
+      value.gaps.every(
+        (gap, index) =>
+          index === 0 || (value.gaps[index - 1]?.missedThrough ?? "") < gap.missedFrom,
+      ),
+    { message: "Gaps must be counted exactly and listed once each, oldest first." },
+  );
+export type ObservationGapLedger = z.infer<typeof ObservationGapLedgerSchema>;
