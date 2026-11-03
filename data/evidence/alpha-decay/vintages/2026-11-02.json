@@ -1,0 +1,5241 @@
+{
+  "vintageSchemaVersion": "1.0.0",
+  "observationDate": "2026-11-02",
+  "capturedAt": "2026-11-03T02:55:48.179Z",
+  "signalId": "akribeia-composite-v3",
+  "modelVersion": "3.1.0",
+  "sourceBuildId": "preview-20261102-pipeline-v6-188755f87bdd",
+  "sourceScoresSha256": "4e2f6835d8947db7e1addb8b9c44dcbb066d2304deeb500f6482b272baa128ac",
+  "universeCount": 581,
+  "securities": [
+    {
+      "ticker": "MU",
+      "rank": 1,
+      "score": 9.767619047619046,
+      "sector": "Technology",
+      "price": 867.01,
+      "marketCapB": 980.1,
+      "eligible": true
+    },
+    {
+      "ticker": "ALL",
+      "rank": 2,
+      "score": 8.959523809523809,
+      "sector": "Financial Services",
+      "price": 261.74,
+      "marketCapB": 66.2,
+      "eligible": true
+    },
+    {
+      "ticker": "HAS",
+      "rank": 3,
+      "score": 8.743809523809524,
+      "sector": "Consumer Cyclical",
+      "price": 118.9,
+      "marketCapB": 16.8,
+      "eligible": true
+    },
+    {
+      "ticker": "XEL",
+      "rank": 4,
+      "score": 8.703809523809525,
+      "sector": "Utilities",
+      "price": 80.42,
+      "marketCapB": 50.1,
+      "eligible": true
+    },
+    {
+      "ticker": "DINO",
+      "rank": 5,
+      "score": 8.581904761904763,
+      "sector": "Energy",
+      "price": 113.96,
+      "marketCapB": 19.6,
+      "eligible": true
+    },
+    {
+      "ticker": "EXPE",
+      "rank": 6,
+      "score": 8.57095238095238,
+      "sector": "Consumer Cyclical",
+      "price": 284.05,
+      "marketCapB": 34.2,
+      "eligible": true
+    },
+    {
+      "ticker": "DLTR",
+      "rank": 7,
+      "score": 8.556666666666667,
+      "sector": "Consumer Defensive",
+      "price": 133.11,
+      "marketCapB": 25,
+      "eligible": true
+    },
+    {
+      "ticker": "URI",
+      "rank": 8,
+      "score": 8.477619047619049,
+      "sector": "Industrials",
+      "price": 1169.48,
+      "marketCapB": 72.5,
+      "eligible": true
+    },
+    {
+      "ticker": "BIIB",
+      "rank": 9,
+      "score": 8.476666666666667,
+      "sector": "Healthcare",
+      "price": 252.51,
+      "marketCapB": 37.3,
+      "eligible": true
+    },
+    {
+      "ticker": "NVDA",
+      "rank": 10,
+      "score": 8.461428571428572,
+      "sector": "Technology",
+      "price": 201.48,
+      "marketCapB": 4898.5,
+      "eligible": true
+    },
+    {
+      "ticker": "SNDK",
+      "rank": 11,
+      "score": 8.430476190476192,
+      "sector": "Technology",
+      "price": 1127.21,
+      "marketCapB": 162.4,
+      "eligible": true
+    },
+    {
+      "ticker": "LLY",
+      "rank": 12,
+      "score": 8.426666666666668,
+      "sector": "Healthcare",
+      "price": 1418.61,
+      "marketCapB": 1261.8,
+      "eligible": true
+    },
+    {
+      "ticker": "JLL",
+      "rank": 13,
+      "score": 8.413333333333334,
+      "sector": "Real Estate",
+      "price": 357.2,
+      "marketCapB": 16.3,
+      "eligible": true
+    },
+    {
+      "ticker": "CSX",
+      "rank": 14,
+      "score": 8.394761904761905,
+      "sector": "Industrials",
+      "price": 51.94,
+      "marketCapB": 96.1,
+      "eligible": true
+    },
+    {
+      "ticker": "MA",
+      "rank": 15,
+      "score": 8.36809523809524,
+      "sector": "Financial Services",
+      "price": 638.88,
+      "marketCapB": 556.1,
+      "eligible": true
+    },
+    {
+      "ticker": "PSX",
+      "rank": 16,
+      "score": 8.33904761904762,
+      "sector": "Energy",
+      "price": 281.75,
+      "marketCapB": 109.8,
+      "eligible": true
+    },
+    {
+      "ticker": "V",
+      "rank": 17,
+      "score": 8.318095238095239,
+      "sector": "Financial Services",
+      "price": 414.9,
+      "marketCapB": 774.7,
+      "eligible": true
+    },
+    {
+      "ticker": "NEM",
+      "rank": 18,
+      "score": 8.282857142857143,
+      "sector": "Basic Materials",
+      "price": 104.82,
+      "marketCapB": 109,
+      "eligible": true
+    },
+    {
+      "ticker": "STZ",
+      "rank": 19,
+      "score": 8.265714285714287,
+      "sector": "Consumer Defensive",
+      "price": 134.62,
+      "marketCapB": 22.8,
+      "eligible": true
+    },
+    {
+      "ticker": "ABBV",
+      "rank": 20,
+      "score": 8.246190476190476,
+      "sector": "Healthcare",
+      "price": 294.43,
+      "marketCapB": 520.2,
+      "eligible": true
+    },
+    {
+      "ticker": "OXY",
+      "rank": 21,
+      "score": 8.244285714285716,
+      "sector": "Energy",
+      "price": 64.04,
+      "marketCapB": 63.7,
+      "eligible": true
+    },
+    {
+      "ticker": "BKNG",
+      "rank": 22,
+      "score": 8.231904761904762,
+      "sector": "Consumer Cyclical",
+      "price": 148.1,
+      "marketCapB": 111.2,
+      "eligible": true
+    },
+    {
+      "ticker": "NBIX",
+      "rank": 23,
+      "score": 8.21904761904762,
+      "sector": "Healthcare",
+      "price": 146.94,
+      "marketCapB": 14.9,
+      "eligible": true
+    },
+    {
+      "ticker": "MAS",
+      "rank": 24,
+      "score": 8.207619047619048,
+      "sector": "Industrials",
+      "price": 80.38,
+      "marketCapB": 15.5,
+      "eligible": true
+    },
+    {
+      "ticker": "DVN",
+      "rank": 25,
+      "score": 8.189047619047619,
+      "sector": "Energy",
+      "price": 52.19,
+      "marketCapB": 57.5,
+      "eligible": true
+    },
+    {
+      "ticker": "CCL",
+      "rank": 26,
+      "score": 8.183333333333334,
+      "sector": "Consumer Cyclical",
+      "price": 28.67,
+      "marketCapB": 38.5,
+      "eligible": true
+    },
+    {
+      "ticker": "CRM",
+      "rank": 27,
+      "score": 8.176666666666668,
+      "sector": "Technology",
+      "price": 229.55,
+      "marketCapB": 188.4,
+      "eligible": true
+    },
+    {
+      "ticker": "EOG",
+      "rank": 28,
+      "score": 8.174285714285714,
+      "sector": "Energy",
+      "price": 165.13,
+      "marketCapB": 86.6,
+      "eligible": true
+    },
+    {
+      "ticker": "AFRM",
+      "rank": 29,
+      "score": 8.164761904761905,
+      "sector": "Financial Services",
+      "price": 71.39,
+      "marketCapB": 24.2,
+      "eligible": true
+    },
+    {
+      "ticker": "META",
+      "rank": 30,
+      "score": 8.160000000000002,
+      "sector": "Communication Services",
+      "price": 612.56,
+      "marketCapB": 1567.4,
+      "eligible": true
+    },
+    {
+      "ticker": "FIVE",
+      "rank": 31,
+      "score": 8.155714285714286,
+      "sector": "Consumer Cyclical",
+      "price": 238.18,
+      "marketCapB": 13.1,
+      "eligible": true
+    },
+    {
+      "ticker": "TSM",
+      "rank": 32,
+      "score": 8.146190476190476,
+      "sector": "Technology",
+      "price": 402.13,
+      "marketCapB": 2092.4,
+      "eligible": true
+    },
+    {
+      "ticker": "BLK",
+      "rank": 33,
+      "score": 8.140952380952381,
+      "sector": "Financial Services",
+      "price": 1139.37,
+      "marketCapB": 185.2,
+      "eligible": true
+    },
+    {
+      "ticker": "SJM",
+      "rank": 34,
+      "score": 8.136190476190476,
+      "sector": "Consumer Defensive",
+      "price": 130.4,
+      "marketCapB": 13.9,
+      "eligible": true
+    },
+    {
+      "ticker": "WMS",
+      "rank": 35,
+      "score": 8.135714285714286,
+      "sector": "Industrials",
+      "price": 135.08,
+      "marketCapB": 10.2,
+      "eligible": true
+    },
+    {
+      "ticker": "UNP",
+      "rank": 36,
+      "score": 8.090476190476192,
+      "sector": "Industrials",
+      "price": 303.51,
+      "marketCapB": 180.1,
+      "eligible": true
+    },
+    {
+      "ticker": "RGA",
+      "rank": 37,
+      "score": 8.08904761904762,
+      "sector": "Financial Services",
+      "price": 262.86,
+      "marketCapB": 17.2,
+      "eligible": true
+    },
+    {
+      "ticker": "KIM",
+      "rank": 38,
+      "score": 8.07047619047619,
+      "sector": "Real Estate",
+      "price": 24.5,
+      "marketCapB": 16.3,
+      "eligible": true
+    },
+    {
+      "ticker": "NDAQ",
+      "rank": 39,
+      "score": 8.07047619047619,
+      "sector": "Financial Services",
+      "price": 106.09,
+      "marketCapB": 59.2,
+      "eligible": true
+    },
+    {
+      "ticker": "H",
+      "rank": 40,
+      "score": 8.065238095238096,
+      "sector": "Consumer Cyclical",
+      "price": 180.1,
+      "marketCapB": 17,
+      "eligible": true
+    },
+    {
+      "ticker": "AMT",
+      "rank": 41,
+      "score": 8.055714285714286,
+      "sector": "Real Estate",
+      "price": 188.74,
+      "marketCapB": 87.4,
+      "eligible": true
+    },
+    {
+      "ticker": "VRT",
+      "rank": 42,
+      "score": 8.033333333333335,
+      "sector": "Industrials",
+      "price": 228.4,
+      "marketCapB": 88.6,
+      "eligible": true
+    },
+    {
+      "ticker": "VLO",
+      "rank": 43,
+      "score": 8.002380952380953,
+      "sector": "Energy",
+      "price": 397.98,
+      "marketCapB": 110.5,
+      "eligible": true
+    },
+    {
+      "ticker": "CLH",
+      "rank": 44,
+      "score": 8.001428571428573,
+      "sector": "Industrials",
+      "price": 303.95,
+      "marketCapB": 16,
+      "eligible": true
+    },
+    {
+      "ticker": "APA",
+      "rank": 45,
+      "score": 7.984761904761905,
+      "sector": "Energy",
+      "price": 52.55,
+      "marketCapB": 18.4,
+      "eligible": true
+    },
+    {
+      "ticker": "RCL",
+      "rank": 46,
+      "score": 7.98,
+      "sector": "Consumer Cyclical",
+      "price": 307.08,
+      "marketCapB": 82.1,
+      "eligible": true
+    },
+    {
+      "ticker": "HALO",
+      "rank": 47,
+      "score": 7.976190476190476,
+      "sector": "Healthcare",
+      "price": 130.78,
+      "marketCapB": 14.9,
+      "eligible": true
+    },
+    {
+      "ticker": "YUM",
+      "rank": 48,
+      "score": 7.967142857142858,
+      "sector": "Consumer Cyclical",
+      "price": 156.35,
+      "marketCapB": 42.5,
+      "eligible": true
+    },
+    {
+      "ticker": "RBRK",
+      "rank": 49,
+      "score": 7.958571428571429,
+      "sector": "Technology",
+      "price": 122.69,
+      "marketCapB": 25.4,
+      "eligible": true
+    },
+    {
+      "ticker": "MO",
+      "rank": 50,
+      "score": 7.933809523809525,
+      "sector": "Consumer Defensive",
+      "price": 78.17,
+      "marketCapB": 130,
+      "eligible": true
+    },
+    {
+      "ticker": "REGN",
+      "rank": 51,
+      "score": 7.932857142857143,
+      "sector": "Healthcare",
+      "price": 916.14,
+      "marketCapB": 94.6,
+      "eligible": true
+    },
+    {
+      "ticker": "AMGN",
+      "rank": 52,
+      "score": 7.919047619047619,
+      "sector": "Healthcare",
+      "price": 465.77,
+      "marketCapB": 252.1,
+      "eligible": true
+    },
+    {
+      "ticker": "IRM",
+      "rank": 53,
+      "score": 7.913809523809523,
+      "sector": "Real Estate",
+      "price": 115.71,
+      "marketCapB": 34.5,
+      "eligible": true
+    },
+    {
+      "ticker": "ALLE",
+      "rank": 54,
+      "score": 7.903333333333333,
+      "sector": "Industrials",
+      "price": 186.15,
+      "marketCapB": 15.8,
+      "eligible": true
+    },
+    {
+      "ticker": "LUV",
+      "rank": 55,
+      "score": 7.897142857142858,
+      "sector": "Industrials",
+      "price": 42.14,
+      "marketCapB": 20.7,
+      "eligible": true
+    },
+    {
+      "ticker": "TGT",
+      "rank": 56,
+      "score": 7.892857142857144,
+      "sector": "Consumer Defensive",
+      "price": 152.51,
+      "marketCapB": 69.4,
+      "eligible": true
+    },
+    {
+      "ticker": "COP",
+      "rank": 57,
+      "score": 7.8914285714285715,
+      "sector": "Energy",
+      "price": 153.11,
+      "marketCapB": 184,
+      "eligible": true
+    },
+    {
+      "ticker": "ESTC",
+      "rank": 58,
+      "score": 7.8828571428571435,
+      "sector": "Technology",
+      "price": 96.94,
+      "marketCapB": 10.2,
+      "eligible": true
+    },
+    {
+      "ticker": "NUE",
+      "rank": 59,
+      "score": 7.882380952380953,
+      "sector": "Basic Materials",
+      "price": 269.7,
+      "marketCapB": 61.3,
+      "eligible": true
+    },
+    {
+      "ticker": "AVGO",
+      "rank": 60,
+      "score": 7.863333333333333,
+      "sector": "Technology",
+      "price": 320.19,
+      "marketCapB": 1533.8,
+      "eligible": true
+    },
+    {
+      "ticker": "GILD",
+      "rank": 61,
+      "score": 7.845238095238096,
+      "sector": "Healthcare",
+      "price": 171.11,
+      "marketCapB": 212.9,
+      "eligible": true
+    },
+    {
+      "ticker": "ADSK",
+      "rank": 62,
+      "score": 7.839047619047619,
+      "sector": "Technology",
+      "price": 248.27,
+      "marketCapB": 52,
+      "eligible": true
+    },
+    {
+      "ticker": "GEN",
+      "rank": 63,
+      "score": 7.832380952380953,
+      "sector": "Technology",
+      "price": 28.69,
+      "marketCapB": 17.2,
+      "eligible": true
+    },
+    {
+      "ticker": "AMCR",
+      "rank": 64,
+      "score": 7.83,
+      "sector": "Consumer Cyclical",
+      "price": 46.92,
+      "marketCapB": 21.7,
+      "eligible": true
+    },
+    {
+      "ticker": "PDD",
+      "rank": 65,
+      "score": 7.820476190476191,
+      "sector": "Consumer Cyclical",
+      "price": 78.67,
+      "marketCapB": 112,
+      "eligible": true
+    },
+    {
+      "ticker": "WDC",
+      "rank": 66,
+      "score": 7.811428571428571,
+      "sector": "Technology",
+      "price": 364.05,
+      "marketCapB": 136.9,
+      "eligible": true
+    },
+    {
+      "ticker": "CF",
+      "rank": 67,
+      "score": 7.803809523809524,
+      "sector": "Basic Materials",
+      "price": 122.4,
+      "marketCapB": 18.5,
+      "eligible": true
+    },
+    {
+      "ticker": "EFX",
+      "rank": 68,
+      "score": 7.803333333333333,
+      "sector": "Industrials",
+      "price": 184.59,
+      "marketCapB": 21.7,
+      "eligible": true
+    },
+    {
+      "ticker": "MPC",
+      "rank": 69,
+      "score": 7.792380952380953,
+      "sector": "Energy",
+      "price": 443.32,
+      "marketCapB": 124,
+      "eligible": true
+    },
+    {
+      "ticker": "PNFP",
+      "rank": 70,
+      "score": 7.7909523809523815,
+      "sector": "Financial Services",
+      "price": 100.97,
+      "marketCapB": 15.2,
+      "eligible": true
+    },
+    {
+      "ticker": "LOW",
+      "rank": 71,
+      "score": 7.790952380952381,
+      "sector": "Consumer Cyclical",
+      "price": 209.41,
+      "marketCapB": 117.3,
+      "eligible": true
+    },
+    {
+      "ticker": "MSCI",
+      "rank": 72,
+      "score": 7.7857142857142865,
+      "sector": "Financial Services",
+      "price": 622.96,
+      "marketCapB": 45.2,
+      "eligible": true
+    },
+    {
+      "ticker": "FOXA",
+      "rank": 73,
+      "score": 7.7823809523809535,
+      "sector": "Communication Services",
+      "price": 62.92,
+      "marketCapB": 26.6,
+      "eligible": true
+    },
+    {
+      "ticker": "WEC",
+      "rank": 74,
+      "score": 7.78142857142857,
+      "sector": "Utilities",
+      "price": 116.38,
+      "marketCapB": 38.3,
+      "eligible": true
+    },
+    {
+      "ticker": "DECK",
+      "rank": 75,
+      "score": 7.770476190476192,
+      "sector": "Consumer Cyclical",
+      "price": 82.25,
+      "marketCapB": 11,
+      "eligible": true
+    },
+    {
+      "ticker": "ED",
+      "rank": 76,
+      "score": 7.770476190476191,
+      "sector": "Utilities",
+      "price": 117.19,
+      "marketCapB": 43.3,
+      "eligible": true
+    },
+    {
+      "ticker": "BXP",
+      "rank": 77,
+      "score": 7.769047619047619,
+      "sector": "Real Estate",
+      "price": 62.42,
+      "marketCapB": 11.3,
+      "eligible": true
+    },
+    {
+      "ticker": "AEP",
+      "rank": 78,
+      "score": 7.768571428571429,
+      "sector": "Utilities",
+      "price": 131.02,
+      "marketCapB": 71.3,
+      "eligible": true
+    },
+    {
+      "ticker": "AZO",
+      "rank": 79,
+      "score": 7.746666666666667,
+      "sector": "Consumer Cyclical",
+      "price": 3156.63,
+      "marketCapB": 50.8,
+      "eligible": true
+    },
+    {
+      "ticker": "COKE",
+      "rank": 80,
+      "score": 7.746190476190476,
+      "sector": "Consumer Defensive",
+      "price": 211.46,
+      "marketCapB": 14.1,
+      "eligible": true
+    },
+    {
+      "ticker": "SBAC",
+      "rank": 81,
+      "score": 7.743333333333334,
+      "sector": "Real Estate",
+      "price": 189.64,
+      "marketCapB": 20.1,
+      "eligible": true
+    },
+    {
+      "ticker": "RL",
+      "rank": 82,
+      "score": 7.7404761904761905,
+      "sector": "Consumer Cyclical",
+      "price": 393.93,
+      "marketCapB": 23.5,
+      "eligible": true
+    },
+    {
+      "ticker": "GLPI",
+      "rank": 83,
+      "score": 7.73952380952381,
+      "sector": "Real Estate",
+      "price": 39,
+      "marketCapB": 11.7,
+      "eligible": true
+    },
+    {
+      "ticker": "LTH",
+      "rank": 84,
+      "score": 7.738095238095239,
+      "sector": "Consumer Cyclical",
+      "price": 44.97,
+      "marketCapB": 10.1,
+      "eligible": true
+    },
+    {
+      "ticker": "EVRG",
+      "rank": 85,
+      "score": 7.732857142857143,
+      "sector": "Utilities",
+      "price": 86.14,
+      "marketCapB": 19.9,
+      "eligible": true
+    },
+    {
+      "ticker": "ULTA",
+      "rank": 86,
+      "score": 7.732857142857143,
+      "sector": "Consumer Cyclical",
+      "price": 635.84,
+      "marketCapB": 27.2,
+      "eligible": true
+    },
+    {
+      "ticker": "EL",
+      "rank": 87,
+      "score": 7.731904761904762,
+      "sector": "Consumer Defensive",
+      "price": 108.53,
+      "marketCapB": 39.3,
+      "eligible": true
+    },
+    {
+      "ticker": "ALNY",
+      "rank": 88,
+      "score": 7.725714285714286,
+      "sector": "Healthcare",
+      "price": 166.76,
+      "marketCapB": 22.4,
+      "eligible": true
+    },
+    {
+      "ticker": "ICE",
+      "rank": 89,
+      "score": 7.7128571428571435,
+      "sector": "Financial Services",
+      "price": 169.7,
+      "marketCapB": 94.7,
+      "eligible": true
+    },
+    {
+      "ticker": "HST",
+      "rank": 90,
+      "score": 7.7004761904761905,
+      "sector": "Real Estate",
+      "price": 25.18,
+      "marketCapB": 17.5,
+      "eligible": true
+    },
+    {
+      "ticker": "ADI",
+      "rank": 91,
+      "score": 7.7,
+      "sector": "Technology",
+      "price": 408.21,
+      "marketCapB": 198.6,
+      "eligible": true
+    },
+    {
+      "ticker": "EIX",
+      "rank": 92,
+      "score": 7.698571428571428,
+      "sector": "Utilities",
+      "price": 59.47,
+      "marketCapB": 22.9,
+      "eligible": true
+    },
+    {
+      "ticker": "NXPI",
+      "rank": 93,
+      "score": 7.694285714285714,
+      "sector": "Technology",
+      "price": 254.04,
+      "marketCapB": 64.4,
+      "eligible": true
+    },
+    {
+      "ticker": "CVX",
+      "rank": 94,
+      "score": 7.692380952380954,
+      "sector": "Energy",
+      "price": 234.71,
+      "marketCapB": 460.7,
+      "eligible": true
+    },
+    {
+      "ticker": "ORCL",
+      "rank": 95,
+      "score": 7.684285714285715,
+      "sector": "Technology",
+      "price": 130.09,
+      "marketCapB": 393.4,
+      "eligible": true
+    },
+    {
+      "ticker": "VLTO",
+      "rank": 96,
+      "score": 7.6761904761904765,
+      "sector": "Industrials",
+      "price": 113,
+      "marketCapB": 27.4,
+      "eligible": true
+    },
+    {
+      "ticker": "CNP",
+      "rank": 97,
+      "score": 7.660000000000001,
+      "sector": "Utilities",
+      "price": 42.56,
+      "marketCapB": 28.2,
+      "eligible": true
+    },
+    {
+      "ticker": "TPR",
+      "rank": 98,
+      "score": 7.653333333333334,
+      "sector": "Consumer Cyclical",
+      "price": 117.5,
+      "marketCapB": 23.3,
+      "eligible": true
+    },
+    {
+      "ticker": "MSFT",
+      "rank": 99,
+      "score": 7.650476190476191,
+      "sector": "Technology",
+      "price": 519.43,
+      "marketCapB": 3866.2,
+      "eligible": true
+    },
+    {
+      "ticker": "CCK",
+      "rank": 100,
+      "score": 7.64904761904762,
+      "sector": "Consumer Cyclical",
+      "price": 118.57,
+      "marketCapB": 12.8,
+      "eligible": true
+    },
+    {
+      "ticker": "SPG",
+      "rank": 101,
+      "score": 7.640476190476191,
+      "sector": "Real Estate",
+      "price": 218.06,
+      "marketCapB": 82.7,
+      "eligible": true
+    },
+    {
+      "ticker": "CBOE",
+      "rank": 102,
+      "score": 7.64047619047619,
+      "sector": "Financial Services",
+      "price": 342.78,
+      "marketCapB": 35.7,
+      "eligible": true
+    },
+    {
+      "ticker": "TRV",
+      "rank": 103,
+      "score": 7.635238095238096,
+      "sector": "Financial Services",
+      "price": 398.09,
+      "marketCapB": 81.3,
+      "eligible": true
+    },
+    {
+      "ticker": "BRK-B",
+      "rank": 104,
+      "score": 7.632857142857143,
+      "sector": "Financial Services",
+      "price": 543.97,
+      "marketCapB": 1165.1,
+      "eligible": true
+    },
+    {
+      "ticker": "DG",
+      "rank": 105,
+      "score": 7.632857142857143,
+      "sector": "Consumer Defensive",
+      "price": 131.2,
+      "marketCapB": 29,
+      "eligible": true
+    },
+    {
+      "ticker": "TMUS",
+      "rank": 106,
+      "score": 7.629047619047621,
+      "sector": "Communication Services",
+      "price": 156.93,
+      "marketCapB": 165.4,
+      "eligible": true
+    },
+    {
+      "ticker": "DUK",
+      "rank": 107,
+      "score": 7.624285714285714,
+      "sector": "Utilities",
+      "price": 127.93,
+      "marketCapB": 99.8,
+      "eligible": true
+    },
+    {
+      "ticker": "GM",
+      "rank": 108,
+      "score": 7.6190476190476195,
+      "sector": "Consumer Cyclical",
+      "price": 87.5,
+      "marketCapB": 74.4,
+      "eligible": true
+    },
+    {
+      "ticker": "TXN",
+      "rank": 109,
+      "score": 7.617619047619048,
+      "sector": "Technology",
+      "price": 297.14,
+      "marketCapB": 272.5,
+      "eligible": true
+    },
+    {
+      "ticker": "STX",
+      "rank": 110,
+      "score": 7.602857142857143,
+      "sector": "Technology",
+      "price": 631.88,
+      "marketCapB": 144.6,
+      "eligible": true
+    },
+    {
+      "ticker": "PM",
+      "rank": 111,
+      "score": 7.596190476190476,
+      "sector": "Consumer Defensive",
+      "price": 208.36,
+      "marketCapB": 324.8,
+      "eligible": true
+    },
+    {
+      "ticker": "MMM",
+      "rank": 112,
+      "score": 7.584761904761905,
+      "sector": "Industrials",
+      "price": 174.22,
+      "marketCapB": 89.7,
+      "eligible": true
+    },
+    {
+      "ticker": "MAR",
+      "rank": 113,
+      "score": 7.580952380952382,
+      "sector": "Consumer Cyclical",
+      "price": 400.77,
+      "marketCapB": 104.3,
+      "eligible": true
+    },
+    {
+      "ticker": "LMT",
+      "rank": 114,
+      "score": 7.580476190476191,
+      "sector": "Industrials",
+      "price": 639.84,
+      "marketCapB": 147.7,
+      "eligible": true
+    },
+    {
+      "ticker": "GEHC",
+      "rank": 115,
+      "score": 7.58,
+      "sector": "Healthcare",
+      "price": 76.49,
+      "marketCapB": 34.5,
+      "eligible": true
+    },
+    {
+      "ticker": "BAM",
+      "rank": 116,
+      "score": 7.5790476190476195,
+      "sector": "Financial Services",
+      "price": 47.71,
+      "marketCapB": 76.3,
+      "eligible": true
+    },
+    {
+      "ticker": "SPGI",
+      "rank": 117,
+      "score": 7.575238095238096,
+      "sector": "Financial Services",
+      "price": 465.59,
+      "marketCapB": 134.6,
+      "eligible": true
+    },
+    {
+      "ticker": "MDT",
+      "rank": 118,
+      "score": 7.5738095238095235,
+      "sector": "Healthcare",
+      "price": 96.68,
+      "marketCapB": 123.7,
+      "eligible": true
+    },
+    {
+      "ticker": "ZBRA",
+      "rank": 119,
+      "score": 7.571428571428571,
+      "sector": "Technology",
+      "price": 352.89,
+      "marketCapB": 16.9,
+      "eligible": true
+    },
+    {
+      "ticker": "PAYC",
+      "rank": 120,
+      "score": 7.5652380952380955,
+      "sector": "Technology",
+      "price": 261.72,
+      "marketCapB": 11.8,
+      "eligible": true
+    },
+    {
+      "ticker": "WST",
+      "rank": 121,
+      "score": 7.558095238095239,
+      "sector": "Healthcare",
+      "price": 410.33,
+      "marketCapB": 28.7,
+      "eligible": true
+    },
+    {
+      "ticker": "FE",
+      "rank": 122,
+      "score": 7.547142857142858,
+      "sector": "Utilities",
+      "price": 47.28,
+      "marketCapB": 27.4,
+      "eligible": true
+    },
+    {
+      "ticker": "FIS",
+      "rank": 123,
+      "score": 7.546666666666668,
+      "sector": "Technology",
+      "price": 38.59,
+      "marketCapB": 19.8,
+      "eligible": true
+    },
+    {
+      "ticker": "VEEV",
+      "rank": 124,
+      "score": 7.541904761904762,
+      "sector": "Healthcare",
+      "price": 310.89,
+      "marketCapB": 50.5,
+      "eligible": true
+    },
+    {
+      "ticker": "ABNB",
+      "rank": 125,
+      "score": 7.533333333333334,
+      "sector": "Consumer Cyclical",
+      "price": 164.32,
+      "marketCapB": 98.6,
+      "eligible": true
+    },
+    {
+      "ticker": "PFE",
+      "rank": 126,
+      "score": 7.53,
+      "sector": "Healthcare",
+      "price": 30.47,
+      "marketCapB": 173.6,
+      "eligible": true
+    },
+    {
+      "ticker": "SU",
+      "rank": 127,
+      "score": 7.528095238095238,
+      "sector": "Energy",
+      "price": 78.86,
+      "marketCapB": 92.9,
+      "eligible": true
+    },
+    {
+      "ticker": "NI",
+      "rank": 128,
+      "score": 7.523333333333333,
+      "sector": "Utilities",
+      "price": 44.59,
+      "marketCapB": 21.4,
+      "eligible": true
+    },
+    {
+      "ticker": "RNR",
+      "rank": 129,
+      "score": 7.517619047619047,
+      "sector": "Financial Services",
+      "price": 340.32,
+      "marketCapB": 13.7,
+      "eligible": true
+    },
+    {
+      "ticker": "SO",
+      "rank": 130,
+      "score": 7.5095238095238095,
+      "sector": "Utilities",
+      "price": 94.15,
+      "marketCapB": 108.2,
+      "eligible": true
+    },
+    {
+      "ticker": "PPG",
+      "rank": 131,
+      "score": 7.50904761904762,
+      "sector": "Basic Materials",
+      "price": 119.22,
+      "marketCapB": 26.4,
+      "eligible": true
+    },
+    {
+      "ticker": "KO",
+      "rank": 132,
+      "score": 7.5080952380952395,
+      "sector": "Consumer Defensive",
+      "price": 94.32,
+      "marketCapB": 405.5,
+      "eligible": true
+    },
+    {
+      "ticker": "CVS",
+      "rank": 133,
+      "score": 7.507619047619048,
+      "sector": "Healthcare",
+      "price": 90.7,
+      "marketCapB": 116,
+      "eligible": true
+    },
+    {
+      "ticker": "RGLD",
+      "rank": 134,
+      "score": 7.503333333333335,
+      "sector": "Basic Materials",
+      "price": 225.68,
+      "marketCapB": 19.2,
+      "eligible": true
+    },
+    {
+      "ticker": "AMZN",
+      "rank": 135,
+      "score": 7.502380952380953,
+      "sector": "Consumer Cyclical",
+      "price": 237.48,
+      "marketCapB": 2577,
+      "eligible": true
+    },
+    {
+      "ticker": "MDLZ",
+      "rank": 136,
+      "score": 7.501428571428572,
+      "sector": "Consumer Defensive",
+      "price": 64.95,
+      "marketCapB": 83,
+      "eligible": true
+    },
+    {
+      "ticker": "WSM",
+      "rank": 137,
+      "score": 7.496666666666667,
+      "sector": "Consumer Cyclical",
+      "price": 251.3,
+      "marketCapB": 29.7,
+      "eligible": true
+    },
+    {
+      "ticker": "PLTR",
+      "rank": 138,
+      "score": 7.493809523809524,
+      "sector": "Technology",
+      "price": 184.49,
+      "marketCapB": 445.2,
+      "eligible": true
+    },
+    {
+      "ticker": "DXCM",
+      "rank": 139,
+      "score": 7.480952380952381,
+      "sector": "Healthcare",
+      "price": 82.39,
+      "marketCapB": 31.1,
+      "eligible": true
+    },
+    {
+      "ticker": "CART",
+      "rank": 140,
+      "score": 7.475714285714286,
+      "sector": "Consumer Cyclical",
+      "price": 56.38,
+      "marketCapB": 13.3,
+      "eligible": true
+    },
+    {
+      "ticker": "PKG",
+      "rank": 141,
+      "score": 7.473333333333334,
+      "sector": "Consumer Cyclical",
+      "price": 255.02,
+      "marketCapB": 22.8,
+      "eligible": true
+    },
+    {
+      "ticker": "GEV",
+      "rank": 142,
+      "score": 7.462380952380952,
+      "sector": "Industrials",
+      "price": 844.92,
+      "marketCapB": 226,
+      "eligible": true
+    },
+    {
+      "ticker": "OVV",
+      "rank": 143,
+      "score": 7.461904761904762,
+      "sector": "Energy",
+      "price": 72.5,
+      "marketCapB": 20,
+      "eligible": true
+    },
+    {
+      "ticker": "MNST",
+      "rank": 144,
+      "score": 7.460952380952381,
+      "sector": "Consumer Defensive",
+      "price": 47.18,
+      "marketCapB": 92,
+      "eligible": true
+    },
+    {
+      "ticker": "SWK",
+      "rank": 145,
+      "score": 7.460476190476191,
+      "sector": "Industrials",
+      "price": 102.9,
+      "marketCapB": 15.5,
+      "eligible": true
+    },
+    {
+      "ticker": "EXPD",
+      "rank": 146,
+      "score": 7.446666666666668,
+      "sector": "Industrials",
+      "price": 198.8,
+      "marketCapB": 25.9,
+      "eligible": true
+    },
+    {
+      "ticker": "WM",
+      "rank": 147,
+      "score": 7.438095238095238,
+      "sector": "Industrials",
+      "price": 234.98,
+      "marketCapB": 93.1,
+      "eligible": true
+    },
+    {
+      "ticker": "APH",
+      "rank": 148,
+      "score": 7.436190476190477,
+      "sector": "Technology",
+      "price": 77.79,
+      "marketCapB": 192.2,
+      "eligible": true
+    },
+    {
+      "ticker": "EMR",
+      "rank": 149,
+      "score": 7.432857142857143,
+      "sector": "Industrials",
+      "price": 163.66,
+      "marketCapB": 91.7,
+      "eligible": true
+    },
+    {
+      "ticker": "ORLY",
+      "rank": 150,
+      "score": 7.430952380952381,
+      "sector": "Consumer Cyclical",
+      "price": 89.01,
+      "marketCapB": 71.8,
+      "eligible": true
+    },
+    {
+      "ticker": "GH",
+      "rank": 151,
+      "score": 7.4300000000000015,
+      "sector": "Healthcare",
+      "price": 176,
+      "marketCapB": 23.7,
+      "eligible": true
+    },
+    {
+      "ticker": "ACGL",
+      "rank": 152,
+      "score": 7.429523809523809,
+      "sector": "Financial Services",
+      "price": 106.37,
+      "marketCapB": 34.8,
+      "eligible": true
+    },
+    {
+      "ticker": "FCX",
+      "rank": 153,
+      "score": 7.429047619047621,
+      "sector": "Basic Materials",
+      "price": 61.66,
+      "marketCapB": 88.8,
+      "eligible": true
+    },
+    {
+      "ticker": "CNC",
+      "rank": 154,
+      "score": 7.425714285714286,
+      "sector": "Healthcare",
+      "price": 68.18,
+      "marketCapB": 33.7,
+      "eligible": true
+    },
+    {
+      "ticker": "IT",
+      "rank": 155,
+      "score": 7.425714285714285,
+      "sector": "Technology",
+      "price": 227.03,
+      "marketCapB": 14.4,
+      "eligible": true
+    },
+    {
+      "ticker": "BJ",
+      "rank": 156,
+      "score": 7.425238095238096,
+      "sector": "Consumer Defensive",
+      "price": 107.16,
+      "marketCapB": 13.5,
+      "eligible": true
+    },
+    {
+      "ticker": "NU",
+      "rank": 157,
+      "score": 7.421904761904763,
+      "sector": "Financial Services",
+      "price": 11.49,
+      "marketCapB": 55.7,
+      "eligible": true
+    },
+    {
+      "ticker": "VRSK",
+      "rank": 158,
+      "score": 7.416666666666668,
+      "sector": "Industrials",
+      "price": 197.25,
+      "marketCapB": 25.6,
+      "eligible": true
+    },
+    {
+      "ticker": "IR",
+      "rank": 159,
+      "score": 7.4090476190476195,
+      "sector": "Industrials",
+      "price": 79.92,
+      "marketCapB": 31.2,
+      "eligible": true
+    },
+    {
+      "ticker": "FOX",
+      "rank": 160,
+      "score": 7.408571428571429,
+      "sector": "Communication Services",
+      "price": 55.94,
+      "marketCapB": 23.6,
+      "eligible": true
+    },
+    {
+      "ticker": "MCHP",
+      "rank": 161,
+      "score": 7.402857142857143,
+      "sector": "Technology",
+      "price": 75.86,
+      "marketCapB": 41.3,
+      "eligible": true
+    },
+    {
+      "ticker": "UNH",
+      "rank": 162,
+      "score": 7.4019047619047615,
+      "sector": "Healthcare",
+      "price": 408.79,
+      "marketCapB": 365,
+      "eligible": true
+    },
+    {
+      "ticker": "NVT",
+      "rank": 163,
+      "score": 7.39952380952381,
+      "sector": "Industrials",
+      "price": 123.6,
+      "marketCapB": 20,
+      "eligible": true
+    },
+    {
+      "ticker": "BTSG",
+      "rank": 164,
+      "score": 7.3880952380952385,
+      "sector": "Healthcare",
+      "price": 64.39,
+      "marketCapB": 12.9,
+      "eligible": true
+    },
+    {
+      "ticker": "TDG",
+      "rank": 165,
+      "score": 7.381904761904762,
+      "sector": "Industrials",
+      "price": 1147.44,
+      "marketCapB": 63.6,
+      "eligible": true
+    },
+    {
+      "ticker": "PWR",
+      "rank": 166,
+      "score": 7.3776190476190475,
+      "sector": "Industrials",
+      "price": 613.16,
+      "marketCapB": 93.1,
+      "eligible": true
+    },
+    {
+      "ticker": "EXR",
+      "rank": 167,
+      "score": 7.375714285714286,
+      "sector": "Real Estate",
+      "price": 151.68,
+      "marketCapB": 33.5,
+      "eligible": true
+    },
+    {
+      "ticker": "NTAP",
+      "rank": 168,
+      "score": 7.3757142857142854,
+      "sector": "Technology",
+      "price": 196.63,
+      "marketCapB": 38.5,
+      "eligible": true
+    },
+    {
+      "ticker": "HUM",
+      "rank": 169,
+      "score": 7.370952380952382,
+      "sector": "Healthcare",
+      "price": 410.93,
+      "marketCapB": 49.3,
+      "eligible": true
+    },
+    {
+      "ticker": "GDDY",
+      "rank": 170,
+      "score": 7.37,
+      "sector": "Technology",
+      "price": 114.69,
+      "marketCapB": 14.6,
+      "eligible": true
+    },
+    {
+      "ticker": "VICI",
+      "rank": 171,
+      "score": 7.366666666666667,
+      "sector": "Real Estate",
+      "price": 24.45,
+      "marketCapB": 26.9,
+      "eligible": true
+    },
+    {
+      "ticker": "CTSH",
+      "rank": 172,
+      "score": 7.35952380952381,
+      "sector": "Technology",
+      "price": 65.7,
+      "marketCapB": 29.3,
+      "eligible": true
+    },
+    {
+      "ticker": "COF",
+      "rank": 173,
+      "score": 7.358095238095238,
+      "sector": "Financial Services",
+      "price": 202.78,
+      "marketCapB": 124.2,
+      "eligible": true
+    },
+    {
+      "ticker": "FIX",
+      "rank": 174,
+      "score": 7.344285714285714,
+      "sector": "Industrials",
+      "price": 1218.79,
+      "marketCapB": 43.2,
+      "eligible": true
+    },
+    {
+      "ticker": "CNQ",
+      "rank": 175,
+      "score": 7.337142857142857,
+      "sector": "Energy",
+      "price": 55.85,
+      "marketCapB": 115.1,
+      "eligible": true
+    },
+    {
+      "ticker": "GNRC",
+      "rank": 176,
+      "score": 7.337142857142857,
+      "sector": "Industrials",
+      "price": 193.31,
+      "marketCapB": 11.5,
+      "eligible": true
+    },
+    {
+      "ticker": "DOV",
+      "rank": 177,
+      "score": 7.3342857142857145,
+      "sector": "Industrials",
+      "price": 206.79,
+      "marketCapB": 27.6,
+      "eligible": true
+    },
+    {
+      "ticker": "EQIX",
+      "rank": 178,
+      "score": 7.325238095238095,
+      "sector": "Real Estate",
+      "price": 1010.77,
+      "marketCapB": 99.7,
+      "eligible": true
+    },
+    {
+      "ticker": "ALB",
+      "rank": 179,
+      "score": 7.321904761904762,
+      "sector": "Basic Materials",
+      "price": 89.92,
+      "marketCapB": 10.6,
+      "eligible": true
+    },
+    {
+      "ticker": "OTIS",
+      "rank": 180,
+      "score": 7.320952380952382,
+      "sector": "Industrials",
+      "price": 76.11,
+      "marketCapB": 28.9,
+      "eligible": true
+    },
+    {
+      "ticker": "VZ",
+      "rank": 181,
+      "score": 7.318571428571428,
+      "sector": "Communication Services",
+      "price": 45.01,
+      "marketCapB": 186.2,
+      "eligible": true
+    },
+    {
+      "ticker": "REG",
+      "rank": 182,
+      "score": 7.314285714285715,
+      "sector": "Real Estate",
+      "price": 74.84,
+      "marketCapB": 14,
+      "eligible": true
+    },
+    {
+      "ticker": "SYF",
+      "rank": 183,
+      "score": 7.311428571428571,
+      "sector": "Financial Services",
+      "price": 75.17,
+      "marketCapB": 24.4,
+      "eligible": true
+    },
+    {
+      "ticker": "AFG",
+      "rank": 184,
+      "score": 7.298095238095239,
+      "sector": "Financial Services",
+      "price": 153.6,
+      "marketCapB": 12.7,
+      "eligible": true
+    },
+    {
+      "ticker": "ASML",
+      "rank": 185,
+      "score": 7.298095238095239,
+      "sector": "Technology",
+      "price": 1544.3,
+      "marketCapB": 596.2,
+      "eligible": true
+    },
+    {
+      "ticker": "AIZ",
+      "rank": 186,
+      "score": 7.297142857142857,
+      "sector": "Financial Services",
+      "price": 292.73,
+      "marketCapB": 14.5,
+      "eligible": true
+    },
+    {
+      "ticker": "DIS",
+      "rank": 187,
+      "score": 7.290476190476191,
+      "sector": "Communication Services",
+      "price": 110.93,
+      "marketCapB": 191.5,
+      "eligible": true
+    },
+    {
+      "ticker": "GS",
+      "rank": 188,
+      "score": 7.285238095238095,
+      "sector": "Financial Services",
+      "price": 881.79,
+      "marketCapB": 258.3,
+      "eligible": true
+    },
+    {
+      "ticker": "WDAY",
+      "rank": 189,
+      "score": 7.284761904761905,
+      "sector": "Technology",
+      "price": 197.63,
+      "marketCapB": 47.6,
+      "eligible": true
+    },
+    {
+      "ticker": "INTU",
+      "rank": 190,
+      "score": 7.270476190476191,
+      "sector": "Technology",
+      "price": 341.4,
+      "marketCapB": 91.2,
+      "eligible": true
+    },
+    {
+      "ticker": "PG",
+      "rank": 191,
+      "score": 7.2700000000000005,
+      "sector": "Consumer Defensive",
+      "price": 162.38,
+      "marketCapB": 375.8,
+      "eligible": true
+    },
+    {
+      "ticker": "RDDT",
+      "rank": 192,
+      "score": 7.269523809523811,
+      "sector": "Communication Services",
+      "price": 90.54,
+      "marketCapB": 17.5,
+      "eligible": true
+    },
+    {
+      "ticker": "CMCSA",
+      "rank": 193,
+      "score": 7.269047619047619,
+      "sector": "Communication Services",
+      "price": 23.01,
+      "marketCapB": 81.6,
+      "eligible": true
+    },
+    {
+      "ticker": "FDX",
+      "rank": 194,
+      "score": 7.269047619047619,
+      "sector": "Industrials",
+      "price": 317.25,
+      "marketCapB": 74.4,
+      "eligible": true
+    },
+    {
+      "ticker": "TW",
+      "rank": 195,
+      "score": 7.269047619047619,
+      "sector": "Financial Services",
+      "price": 122.91,
+      "marketCapB": 26.5,
+      "eligible": true
+    },
+    {
+      "ticker": "C",
+      "rank": 196,
+      "score": 7.267619047619048,
+      "sector": "Financial Services",
+      "price": 121.16,
+      "marketCapB": 200.2,
+      "eligible": true
+    },
+    {
+      "ticker": "UTHR",
+      "rank": 197,
+      "score": 7.267619047619048,
+      "sector": "Healthcare",
+      "price": 600.95,
+      "marketCapB": 25.8,
+      "eligible": true
+    },
+    {
+      "ticker": "TEAM",
+      "rank": 198,
+      "score": 7.2647619047619045,
+      "sector": "Technology",
+      "price": 190.62,
+      "marketCapB": 48.5,
+      "eligible": true
+    },
+    {
+      "ticker": "UPS",
+      "rank": 199,
+      "score": 7.256190476190476,
+      "sector": "Industrials",
+      "price": 108.71,
+      "marketCapB": 92.4,
+      "eligible": true
+    },
+    {
+      "ticker": "ARMK",
+      "rank": 200,
+      "score": 7.253333333333333,
+      "sector": "Industrials",
+      "price": 53.78,
+      "marketCapB": 14.2,
+      "eligible": true
+    },
+    {
+      "ticker": "PPL",
+      "rank": 201,
+      "score": 7.252380952380952,
+      "sector": "Utilities",
+      "price": 35.91,
+      "marketCapB": 27,
+      "eligible": true
+    },
+    {
+      "ticker": "EVR",
+      "rank": 202,
+      "score": 7.245238095238095,
+      "sector": "Financial Services",
+      "price": 287.32,
+      "marketCapB": 11.1,
+      "eligible": true
+    },
+    {
+      "ticker": "SMCI",
+      "rank": 203,
+      "score": 7.243333333333333,
+      "sector": "Technology",
+      "price": 31.47,
+      "marketCapB": 20.6,
+      "eligible": true
+    },
+    {
+      "ticker": "HSY",
+      "rank": 204,
+      "score": 7.241428571428571,
+      "sector": "Consumer Defensive",
+      "price": 164.91,
+      "marketCapB": 33.2,
+      "eligible": true
+    },
+    {
+      "ticker": "CCI",
+      "rank": 205,
+      "score": 7.23904761904762,
+      "sector": "Real Estate",
+      "price": 89.79,
+      "marketCapB": 39.2,
+      "eligible": true
+    },
+    {
+      "ticker": "PH",
+      "rank": 206,
+      "score": 7.237619047619048,
+      "sector": "Industrials",
+      "price": 895.23,
+      "marketCapB": 112.2,
+      "eligible": true
+    },
+    {
+      "ticker": "NFLX",
+      "rank": 207,
+      "score": 7.228095238095238,
+      "sector": "Communication Services",
+      "price": 61.83,
+      "marketCapB": 257.1,
+      "eligible": true
+    },
+    {
+      "ticker": "ADBE",
+      "rank": 208,
+      "score": 7.224761904761905,
+      "sector": "Technology",
+      "price": 250.01,
+      "marketCapB": 97.5,
+      "eligible": true
+    },
+    {
+      "ticker": "LHX",
+      "rank": 209,
+      "score": 7.2247619047619045,
+      "sector": "Industrials",
+      "price": 277.67,
+      "marketCapB": 51.6,
+      "eligible": true
+    },
+    {
+      "ticker": "ROKU",
+      "rank": 210,
+      "score": 7.2247619047619045,
+      "sector": "Communication Services",
+      "price": 154.88,
+      "marketCapB": 23,
+      "eligible": true
+    },
+    {
+      "ticker": "RTX",
+      "rank": 211,
+      "score": 7.2247619047619045,
+      "sector": "Industrials",
+      "price": 200.43,
+      "marketCapB": 270.6,
+      "eligible": true
+    },
+    {
+      "ticker": "PYPL",
+      "rank": 212,
+      "score": 7.2214285714285715,
+      "sector": "Financial Services",
+      "price": 57.22,
+      "marketCapB": 47.6,
+      "eligible": true
+    },
+    {
+      "ticker": "KEY",
+      "rank": 213,
+      "score": 7.2195238095238095,
+      "sector": "Financial Services",
+      "price": 21.01,
+      "marketCapB": 22.2,
+      "eligible": true
+    },
+    {
+      "ticker": "SMTC",
+      "rank": 214,
+      "score": 7.21857142857143,
+      "sector": "Technology",
+      "price": 123.71,
+      "marketCapB": 11.5,
+      "eligible": true
+    },
+    {
+      "ticker": "EBAY",
+      "rank": 215,
+      "score": 7.215714285714286,
+      "sector": "Consumer Cyclical",
+      "price": 121.98,
+      "marketCapB": 54.2,
+      "eligible": true
+    },
+    {
+      "ticker": "TER",
+      "rank": 216,
+      "score": 7.211428571428572,
+      "sector": "Technology",
+      "price": 268.27,
+      "marketCapB": 42,
+      "eligible": true
+    },
+    {
+      "ticker": "EXC",
+      "rank": 217,
+      "score": 7.210000000000001,
+      "sector": "Utilities",
+      "price": 46.4,
+      "marketCapB": 47.9,
+      "eligible": true
+    },
+    {
+      "ticker": "CAH",
+      "rank": 218,
+      "score": 7.203809523809524,
+      "sector": "Healthcare",
+      "price": 253.22,
+      "marketCapB": 58.6,
+      "eligible": true
+    },
+    {
+      "ticker": "DPZ",
+      "rank": 219,
+      "score": 7.201428571428572,
+      "sector": "Consumer Cyclical",
+      "price": 313.78,
+      "marketCapB": 10.3,
+      "eligible": true
+    },
+    {
+      "ticker": "TWLO",
+      "rank": 220,
+      "score": 7.19904761904762,
+      "sector": "Technology",
+      "price": 202.45,
+      "marketCapB": 31.7,
+      "eligible": true
+    },
+    {
+      "ticker": "FSLR",
+      "rank": 221,
+      "score": 7.198095238095238,
+      "sector": "Technology",
+      "price": 171.3,
+      "marketCapB": 18.5,
+      "eligible": true
+    },
+    {
+      "ticker": "AXP",
+      "rank": 222,
+      "score": 7.196190476190477,
+      "sector": "Financial Services",
+      "price": 317.31,
+      "marketCapB": 213,
+      "eligible": true
+    },
+    {
+      "ticker": "APP",
+      "rank": 223,
+      "score": 7.195238095238096,
+      "sector": "Communication Services",
+      "price": 225.73,
+      "marketCapB": 76.2,
+      "eligible": true
+    },
+    {
+      "ticker": "CME",
+      "rank": 224,
+      "score": 7.190952380952381,
+      "sector": "Financial Services",
+      "price": 305.99,
+      "marketCapB": 109.5,
+      "eligible": true
+    },
+    {
+      "ticker": "HAL",
+      "rank": 225,
+      "score": 7.190952380952381,
+      "sector": "Energy",
+      "price": 36.08,
+      "marketCapB": 29.8,
+      "eligible": true
+    },
+    {
+      "ticker": "FANG",
+      "rank": 226,
+      "score": 7.18952380952381,
+      "sector": "Energy",
+      "price": 211.42,
+      "marketCapB": 59.3,
+      "eligible": true
+    },
+    {
+      "ticker": "PRU",
+      "rank": 227,
+      "score": 7.177619047619048,
+      "sector": "Financial Services",
+      "price": 116.41,
+      "marketCapB": 40.2,
+      "eligible": true
+    },
+    {
+      "ticker": "DVA",
+      "rank": 228,
+      "score": 7.176190476190477,
+      "sector": "Healthcare",
+      "price": 186.71,
+      "marketCapB": 12,
+      "eligible": true
+    },
+    {
+      "ticker": "BBY",
+      "rank": 229,
+      "score": 7.1761904761904765,
+      "sector": "Consumer Cyclical",
+      "price": 94.91,
+      "marketCapB": 19.9,
+      "eligible": true
+    },
+    {
+      "ticker": "HCA",
+      "rank": 230,
+      "score": 7.174285714285715,
+      "sector": "Healthcare",
+      "price": 475.77,
+      "marketCapB": 102.8,
+      "eligible": true
+    },
+    {
+      "ticker": "CB",
+      "rank": 231,
+      "score": 7.1728571428571435,
+      "sector": "Financial Services",
+      "price": 364.46,
+      "marketCapB": 139.3,
+      "eligible": true
+    },
+    {
+      "ticker": "GKOS",
+      "rank": 232,
+      "score": 7.170000000000001,
+      "sector": "Healthcare",
+      "price": 237.84,
+      "marketCapB": 14.2,
+      "eligible": true
+    },
+    {
+      "ticker": "OMC",
+      "rank": 233,
+      "score": 7.16952380952381,
+      "sector": "Communication Services",
+      "price": 81.15,
+      "marketCapB": 22.2,
+      "eligible": true
+    },
+    {
+      "ticker": "NEE",
+      "rank": 234,
+      "score": 7.168571428571429,
+      "sector": "Utilities",
+      "price": 84.18,
+      "marketCapB": 176.8,
+      "eligible": true
+    },
+    {
+      "ticker": "GRAB",
+      "rank": 235,
+      "score": 7.163809523809524,
+      "sector": "Technology",
+      "price": 2.7,
+      "marketCapB": 11.1,
+      "eligible": true
+    },
+    {
+      "ticker": "ENTG",
+      "rank": 236,
+      "score": 7.161904761904762,
+      "sector": "Technology",
+      "price": 151.65,
+      "marketCapB": 23.2,
+      "eligible": true
+    },
+    {
+      "ticker": "WPC",
+      "rank": 237,
+      "score": 7.160952380952381,
+      "sector": "Real Estate",
+      "price": 64.39,
+      "marketCapB": 14.8,
+      "eligible": true
+    },
+    {
+      "ticker": "STLD",
+      "rank": 238,
+      "score": 7.152380952380953,
+      "sector": "Basic Materials",
+      "price": 247.72,
+      "marketCapB": 35.1,
+      "eligible": true
+    },
+    {
+      "ticker": "MCD",
+      "rank": 239,
+      "score": 7.145238095238096,
+      "sector": "Consumer Cyclical",
+      "price": 259.08,
+      "marketCapB": 182.9,
+      "eligible": true
+    },
+    {
+      "ticker": "MCO",
+      "rank": 240,
+      "score": 7.144285714285714,
+      "sector": "Financial Services",
+      "price": 492.58,
+      "marketCapB": 85.1,
+      "eligible": true
+    },
+    {
+      "ticker": "DAL",
+      "rank": 241,
+      "score": 7.142380952380954,
+      "sector": "Industrials",
+      "price": 78.79,
+      "marketCapB": 52.1,
+      "eligible": true
+    },
+    {
+      "ticker": "FITB",
+      "rank": 242,
+      "score": 7.140000000000001,
+      "sector": "Financial Services",
+      "price": 53.58,
+      "marketCapB": 48.7,
+      "eligible": true
+    },
+    {
+      "ticker": "DASH",
+      "rank": 243,
+      "score": 7.13857142857143,
+      "sector": "Consumer Cyclical",
+      "price": 180.48,
+      "marketCapB": 78.5,
+      "eligible": true
+    },
+    {
+      "ticker": "BK",
+      "rank": 244,
+      "score": 7.130357142857143,
+      "sector": "Financial Services",
+      "price": 157.13,
+      "marketCapB": 94.1,
+      "eligible": true
+    },
+    {
+      "ticker": "KDP",
+      "rank": 245,
+      "score": 7.127142857142857,
+      "sector": "Consumer Defensive",
+      "price": 35.88,
+      "marketCapB": 48.9,
+      "eligible": true
+    },
+    {
+      "ticker": "HWM",
+      "rank": 246,
+      "score": 7.123809523809524,
+      "sector": "Industrials",
+      "price": 199.35,
+      "marketCapB": 79.9,
+      "eligible": true
+    },
+    {
+      "ticker": "CSCO",
+      "rank": 247,
+      "score": 7.123809523809523,
+      "sector": "Technology",
+      "price": 103.76,
+      "marketCapB": 408.3,
+      "eligible": true
+    },
+    {
+      "ticker": "LAMR",
+      "rank": 248,
+      "score": 7.123333333333334,
+      "sector": "Real Estate",
+      "price": 157.12,
+      "marketCapB": 16,
+      "eligible": true
+    },
+    {
+      "ticker": "ROST",
+      "rank": 249,
+      "score": 7.1223809523809525,
+      "sector": "Consumer Cyclical",
+      "price": 229.22,
+      "marketCapB": 73.5,
+      "eligible": true
+    },
+    {
+      "ticker": "SCHW",
+      "rank": 250,
+      "score": 7.121904761904762,
+      "sector": "Financial Services",
+      "price": 87.68,
+      "marketCapB": 151.3,
+      "eligible": true
+    },
+    {
+      "ticker": "LRCX",
+      "rank": 251,
+      "score": 7.111428571428571,
+      "sector": "Technology",
+      "price": 235.2,
+      "marketCapB": 295.7,
+      "eligible": true
+    },
+    {
+      "ticker": "UAL",
+      "rank": 252,
+      "score": 7.1104761904761915,
+      "sector": "Industrials",
+      "price": 101.88,
+      "marketCapB": 33.6,
+      "eligible": true
+    },
+    {
+      "ticker": "BEN",
+      "rank": 253,
+      "score": 7.11,
+      "sector": "Financial Services",
+      "price": 31.25,
+      "marketCapB": 15.9,
+      "eligible": true
+    },
+    {
+      "ticker": "CSGP",
+      "rank": 254,
+      "score": 7.109523809523811,
+      "sector": "Real Estate",
+      "price": 29.82,
+      "marketCapB": 12,
+      "eligible": true
+    },
+    {
+      "ticker": "WTW",
+      "rank": 255,
+      "score": 7.104761904761905,
+      "sector": "Financial Services",
+      "price": 324.74,
+      "marketCapB": 29.8,
+      "eligible": true
+    },
+    {
+      "ticker": "ANET",
+      "rank": 256,
+      "score": 7.103809523809524,
+      "sector": "Technology",
+      "price": 167.18,
+      "marketCapB": 211.7,
+      "eligible": true
+    },
+    {
+      "ticker": "NTRA",
+      "rank": 257,
+      "score": 7.102380952380953,
+      "sector": "Healthcare",
+      "price": 410.98,
+      "marketCapB": 59,
+      "eligible": true
+    },
+    {
+      "ticker": "FICO",
+      "rank": 258,
+      "score": 7.101428571428572,
+      "sector": "Technology",
+      "price": 708.95,
+      "marketCapB": 15.3,
+      "eligible": true
+    },
+    {
+      "ticker": "PINS",
+      "rank": 259,
+      "score": 7.090476190476191,
+      "sector": "Communication Services",
+      "price": 18.99,
+      "marketCapB": 10.9,
+      "eligible": true
+    },
+    {
+      "ticker": "ACN",
+      "rank": 260,
+      "score": 7.09,
+      "sector": "Technology",
+      "price": 257.95,
+      "marketCapB": 158,
+      "eligible": true
+    },
+    {
+      "ticker": "VRTX",
+      "rank": 261,
+      "score": 7.0842857142857145,
+      "sector": "Healthcare",
+      "price": 560.82,
+      "marketCapB": 141.5,
+      "eligible": true
+    },
+    {
+      "ticker": "AVY",
+      "rank": 262,
+      "score": 7.083333333333335,
+      "sector": "Consumer Cyclical",
+      "price": 180.99,
+      "marketCapB": 13.8,
+      "eligible": true
+    },
+    {
+      "ticker": "AEE",
+      "rank": 263,
+      "score": 7.080952380952381,
+      "sector": "Utilities",
+      "price": 110.99,
+      "marketCapB": 30.7,
+      "eligible": true
+    },
+    {
+      "ticker": "TXT",
+      "rank": 264,
+      "score": 7.071904761904762,
+      "sector": "Industrials",
+      "price": 85.39,
+      "marketCapB": 14.5,
+      "eligible": true
+    },
+    {
+      "ticker": "WCC",
+      "rank": 265,
+      "score": 7.06952380952381,
+      "sector": "Industrials",
+      "price": 338.62,
+      "marketCapB": 16.6,
+      "eligible": true
+    },
+    {
+      "ticker": "CFG",
+      "rank": 266,
+      "score": 7.067619047619048,
+      "sector": "Financial Services",
+      "price": 63.48,
+      "marketCapB": 26.6,
+      "eligible": true
+    },
+    {
+      "ticker": "SRE",
+      "rank": 267,
+      "score": 7.063333333333334,
+      "sector": "Utilities",
+      "price": 86.53,
+      "marketCapB": 56.5,
+      "eligible": true
+    },
+    {
+      "ticker": "KEYS",
+      "rank": 268,
+      "score": 7.060952380952382,
+      "sector": "Technology",
+      "price": 303.12,
+      "marketCapB": 51.8,
+      "eligible": true
+    },
+    {
+      "ticker": "WAB",
+      "rank": 269,
+      "score": 7.060952380952381,
+      "sector": "Industrials",
+      "price": 280.7,
+      "marketCapB": 47.4,
+      "eligible": true
+    },
+    {
+      "ticker": "DHR",
+      "rank": 270,
+      "score": 7.060000000000001,
+      "sector": "Healthcare",
+      "price": 230.78,
+      "marketCapB": 162.7,
+      "eligible": true
+    },
+    {
+      "ticker": "LYB",
+      "rank": 271,
+      "score": 7.0566666666666675,
+      "sector": "Basic Materials",
+      "price": 68.31,
+      "marketCapB": 22.1,
+      "eligible": true
+    },
+    {
+      "ticker": "GPN",
+      "rank": 272,
+      "score": 7.043809523809523,
+      "sector": "Technology",
+      "price": 95.73,
+      "marketCapB": 25.1,
+      "eligible": true
+    },
+    {
+      "ticker": "AMD",
+      "rank": 273,
+      "score": 7.042857142857144,
+      "sector": "Technology",
+      "price": 494.31,
+      "marketCapB": 808.1,
+      "eligible": true
+    },
+    {
+      "ticker": "GOOGL",
+      "rank": 274,
+      "score": 7.041904761904763,
+      "sector": "Communication Services",
+      "price": 277.34,
+      "marketCapB": 3418.1,
+      "eligible": true
+    },
+    {
+      "ticker": "USB",
+      "rank": 275,
+      "score": 7.041904761904763,
+      "sector": "Financial Services",
+      "price": 59.43,
+      "marketCapB": 92.7,
+      "eligible": true
+    },
+    {
+      "ticker": "CTRA",
+      "rank": 276,
+      "score": 7.039285714285715,
+      "sector": "Energy",
+      "price": 32.56,
+      "marketCapB": 24.7,
+      "eligible": true
+    },
+    {
+      "ticker": "SBUX",
+      "rank": 277,
+      "score": 7.038571428571429,
+      "sector": "Consumer Cyclical",
+      "price": 104.31,
+      "marketCapB": 119.2,
+      "eligible": true
+    },
+    {
+      "ticker": "TOST",
+      "rank": 278,
+      "score": 7.030476190476191,
+      "sector": "Technology",
+      "price": 31.67,
+      "marketCapB": 18.3,
+      "eligible": true
+    },
+    {
+      "ticker": "UDR",
+      "rank": 279,
+      "score": 7.028571428571429,
+      "sector": "Real Estate",
+      "price": 35.72,
+      "marketCapB": 13.1,
+      "eligible": true
+    },
+    {
+      "ticker": "AMAT",
+      "rank": 280,
+      "score": 7.026666666666666,
+      "sector": "Technology",
+      "price": 384.14,
+      "marketCapB": 305.1,
+      "eligible": true
+    },
+    {
+      "ticker": "RJF",
+      "rank": 281,
+      "score": 7.025714285714286,
+      "sector": "Financial Services",
+      "price": 156.41,
+      "marketCapB": 30,
+      "eligible": true
+    },
+    {
+      "ticker": "TMO",
+      "rank": 282,
+      "score": 7.018095238095239,
+      "sector": "Healthcare",
+      "price": 693.66,
+      "marketCapB": 256.7,
+      "eligible": true
+    },
+    {
+      "ticker": "CI",
+      "rank": 283,
+      "score": 7.018095238095238,
+      "sector": "Healthcare",
+      "price": 299.66,
+      "marketCapB": 79.2,
+      "eligible": true
+    },
+    {
+      "ticker": "IEX",
+      "rank": 284,
+      "score": 7.014761904761905,
+      "sector": "Industrials",
+      "price": 234.71,
+      "marketCapB": 17.3,
+      "eligible": true
+    },
+    {
+      "ticker": "FTV",
+      "rank": 285,
+      "score": 7.013809523809525,
+      "sector": "Technology",
+      "price": 64.86,
+      "marketCapB": 19.4,
+      "eligible": true
+    },
+    {
+      "ticker": "PFG",
+      "rank": 286,
+      "score": 7.0095238095238095,
+      "sector": "Financial Services",
+      "price": 110.96,
+      "marketCapB": 23.7,
+      "eligible": true
+    },
+    {
+      "ticker": "NOC",
+      "rank": 287,
+      "score": 7.007142857142858,
+      "sector": "Industrials",
+      "price": 559.01,
+      "marketCapB": 79.5,
+      "eligible": true
+    },
+    {
+      "ticker": "MS",
+      "rank": 288,
+      "score": 7.001904761904762,
+      "sector": "Financial Services",
+      "price": 183.15,
+      "marketCapB": 286.3,
+      "eligible": true
+    },
+    {
+      "ticker": "CAT",
+      "rank": 289,
+      "score": 6.996190476190477,
+      "sector": "Industrials",
+      "price": 623.99,
+      "marketCapB": 285.8,
+      "eligible": true
+    },
+    {
+      "ticker": "DD",
+      "rank": 290,
+      "score": 6.9938095238095235,
+      "sector": "Basic Materials",
+      "price": 139.48,
+      "marketCapB": 18.9,
+      "eligible": true
+    },
+    {
+      "ticker": "TRMB",
+      "rank": 291,
+      "score": 6.98904761904762,
+      "sector": "Technology",
+      "price": 65.01,
+      "marketCapB": 15.2,
+      "eligible": true
+    },
+    {
+      "ticker": "MET",
+      "rank": 292,
+      "score": 6.985714285714287,
+      "sector": "Financial Services",
+      "price": 100.09,
+      "marketCapB": 63.5,
+      "eligible": true
+    },
+    {
+      "ticker": "LH",
+      "rank": 293,
+      "score": 6.984761904761905,
+      "sector": "Healthcare",
+      "price": 361.47,
+      "marketCapB": 29.3,
+      "eligible": true
+    },
+    {
+      "ticker": "TT",
+      "rank": 294,
+      "score": 6.9733333333333345,
+      "sector": "Industrials",
+      "price": 410.37,
+      "marketCapB": 89.8,
+      "eligible": true
+    },
+    {
+      "ticker": "AES",
+      "rank": 295,
+      "score": 6.973333333333334,
+      "sector": "Utilities",
+      "price": 14.86,
+      "marketCapB": 10.6,
+      "eligible": true
+    },
+    {
+      "ticker": "CRL",
+      "rank": 296,
+      "score": 6.971428571428572,
+      "sector": "Healthcare",
+      "price": 353.62,
+      "marketCapB": 17,
+      "eligible": true
+    },
+    {
+      "ticker": "NXT",
+      "rank": 297,
+      "score": 6.9628571428571435,
+      "sector": "Technology",
+      "price": 77.9,
+      "marketCapB": 12,
+      "eligible": true
+    },
+    {
+      "ticker": "PNC",
+      "rank": 298,
+      "score": 6.962857142857143,
+      "sector": "Financial Services",
+      "price": 227.52,
+      "marketCapB": 90.4,
+      "eligible": true
+    },
+    {
+      "ticker": "BE",
+      "rank": 299,
+      "score": 6.962380952380952,
+      "sector": "Industrials",
+      "price": 195.73,
+      "marketCapB": 58,
+      "eligible": true
+    },
+    {
+      "ticker": "GD",
+      "rank": 300,
+      "score": 6.962380952380952,
+      "sector": "Industrials",
+      "price": 373.42,
+      "marketCapB": 101,
+      "eligible": true
+    },
+    {
+      "ticker": "KR",
+      "rank": 301,
+      "score": 6.962380952380952,
+      "sector": "Consumer Defensive",
+      "price": 66.8,
+      "marketCapB": 39.3,
+      "eligible": true
+    },
+    {
+      "ticker": "CL",
+      "rank": 302,
+      "score": 6.961904761904763,
+      "sector": "Consumer Defensive",
+      "price": 96.16,
+      "marketCapB": 76.7,
+      "eligible": true
+    },
+    {
+      "ticker": "DGX",
+      "rank": 303,
+      "score": 6.961428571428572,
+      "sector": "Healthcare",
+      "price": 252.16,
+      "marketCapB": 27.8,
+      "eligible": true
+    },
+    {
+      "ticker": "VTRS",
+      "rank": 304,
+      "score": 6.955238095238096,
+      "sector": "Healthcare",
+      "price": 19.07,
+      "marketCapB": 21.8,
+      "eligible": true
+    },
+    {
+      "ticker": "ROK",
+      "rank": 305,
+      "score": 6.946666666666666,
+      "sector": "Industrials",
+      "price": 434.6,
+      "marketCapB": 48.4,
+      "eligible": true
+    },
+    {
+      "ticker": "SNPS",
+      "rank": 306,
+      "score": 6.945714285714287,
+      "sector": "Technology",
+      "price": 461.78,
+      "marketCapB": 88.3,
+      "eligible": true
+    },
+    {
+      "ticker": "GOOG",
+      "rank": 307,
+      "score": 6.944285714285715,
+      "sector": "Communication Services",
+      "price": 275.83,
+      "marketCapB": 3399.9,
+      "eligible": true
+    },
+    {
+      "ticker": "STT",
+      "rank": 308,
+      "score": 6.943809523809525,
+      "sector": "Financial Services",
+      "price": 168.39,
+      "marketCapB": 45.7,
+      "eligible": true
+    },
+    {
+      "ticker": "WAT",
+      "rank": 309,
+      "score": 6.940952380952382,
+      "sector": "Healthcare",
+      "price": 460.57,
+      "marketCapB": 45.3,
+      "eligible": true
+    },
+    {
+      "ticker": "NSC",
+      "rank": 310,
+      "score": 6.94047619047619,
+      "sector": "Industrials",
+      "price": 341.41,
+      "marketCapB": 76.8,
+      "eligible": true
+    },
+    {
+      "ticker": "ATO",
+      "rank": 311,
+      "score": 6.93904761904762,
+      "sector": "Utilities",
+      "price": 172.98,
+      "marketCapB": 29.2,
+      "eligible": true
+    },
+    {
+      "ticker": "MRK",
+      "rank": 312,
+      "score": 6.9366666666666665,
+      "sector": "Healthcare",
+      "price": 149.82,
+      "marketCapB": 368.7,
+      "eligible": true
+    },
+    {
+      "ticker": "SOFI",
+      "rank": 313,
+      "score": 6.931428571428572,
+      "sector": "Financial Services",
+      "price": 16.52,
+      "marketCapB": 21.4,
+      "eligible": true
+    },
+    {
+      "ticker": "CHTR",
+      "rank": 314,
+      "score": 6.927619047619048,
+      "sector": "Communication Services",
+      "price": 110.11,
+      "marketCapB": 14.3,
+      "eligible": true
+    },
+    {
+      "ticker": "AZN",
+      "rank": 315,
+      "score": 6.920952380952381,
+      "sector": "Healthcare",
+      "price": 186.8,
+      "marketCapB": 289.7,
+      "eligible": true
+    },
+    {
+      "ticker": "HON",
+      "rank": 316,
+      "score": 6.915238095238096,
+      "sector": "Industrials",
+      "price": 219.29,
+      "marketCapB": 69.5,
+      "eligible": true
+    },
+    {
+      "ticker": "ICLR",
+      "rank": 317,
+      "score": 6.9071428571428575,
+      "sector": "Healthcare",
+      "price": 208.95,
+      "marketCapB": 15.7,
+      "eligible": true
+    },
+    {
+      "ticker": "PEP",
+      "rank": 318,
+      "score": 6.904285714285714,
+      "sector": "Consumer Defensive",
+      "price": 138,
+      "marketCapB": 188,
+      "eligible": true
+    },
+    {
+      "ticker": "IP",
+      "rank": 319,
+      "score": 6.898571428571429,
+      "sector": "Consumer Cyclical",
+      "price": 36.14,
+      "marketCapB": 19.1,
+      "eligible": true
+    },
+    {
+      "ticker": "EA",
+      "rank": 320,
+      "score": 6.894642857142857,
+      "sector": "Communication Services",
+      "price": 209.7,
+      "marketCapB": 52.9,
+      "eligible": true
+    },
+    {
+      "ticker": "AFL",
+      "rank": 321,
+      "score": 6.893809523809524,
+      "sector": "Financial Services",
+      "price": 124.37,
+      "marketCapB": 62.4,
+      "eligible": true
+    },
+    {
+      "ticker": "MRVL",
+      "rank": 322,
+      "score": 6.881904761904763,
+      "sector": "Technology",
+      "price": 192.49,
+      "marketCapB": 173.2,
+      "eligible": true
+    },
+    {
+      "ticker": "BWA",
+      "rank": 323,
+      "score": 6.881428571428572,
+      "sector": "Consumer Cyclical",
+      "price": 51.06,
+      "marketCapB": 10.3,
+      "eligible": true
+    },
+    {
+      "ticker": "LULU",
+      "rank": 324,
+      "score": 6.87952380952381,
+      "sector": "Consumer Cyclical",
+      "price": 107.41,
+      "marketCapB": 12.4,
+      "eligible": true
+    },
+    {
+      "ticker": "SPOT",
+      "rank": 325,
+      "score": 6.876190476190476,
+      "sector": "Communication Services",
+      "price": 587.77,
+      "marketCapB": 120.9,
+      "eligible": true
+    },
+    {
+      "ticker": "IQV",
+      "rank": 326,
+      "score": 6.873809523809523,
+      "sector": "Healthcare",
+      "price": 264.55,
+      "marketCapB": 43.7,
+      "eligible": true
+    },
+    {
+      "ticker": "ODFL",
+      "rank": 327,
+      "score": 6.871428571428572,
+      "sector": "Industrials",
+      "price": 173.09,
+      "marketCapB": 35.9,
+      "eligible": true
+    },
+    {
+      "ticker": "APD",
+      "rank": 328,
+      "score": 6.869523809523811,
+      "sector": "Basic Materials",
+      "price": 313.58,
+      "marketCapB": 69.9,
+      "eligible": true
+    },
+    {
+      "ticker": "INCY",
+      "rank": 329,
+      "score": 6.868571428571428,
+      "sector": "Healthcare",
+      "price": 119.98,
+      "marketCapB": 24.3,
+      "eligible": true
+    },
+    {
+      "ticker": "RF",
+      "rank": 330,
+      "score": 6.864285714285715,
+      "sector": "Financial Services",
+      "price": 28.52,
+      "marketCapB": 24.3,
+      "eligible": true
+    },
+    {
+      "ticker": "DRI",
+      "rank": 331,
+      "score": 6.852857142857143,
+      "sector": "Consumer Cyclical",
+      "price": 220.39,
+      "marketCapB": 25,
+      "eligible": true
+    },
+    {
+      "ticker": "ZBH",
+      "rank": 332,
+      "score": 6.851904761904762,
+      "sector": "Healthcare",
+      "price": 95.57,
+      "marketCapB": 18.2,
+      "eligible": true
+    },
+    {
+      "ticker": "JD",
+      "rank": 333,
+      "score": 6.843333333333334,
+      "sector": "Consumer Cyclical",
+      "price": 25.7,
+      "marketCapB": 34.7,
+      "eligible": true
+    },
+    {
+      "ticker": "ROP",
+      "rank": 334,
+      "score": 6.837142857142858,
+      "sector": "Technology",
+      "price": 468.64,
+      "marketCapB": 46.3,
+      "eligible": true
+    },
+    {
+      "ticker": "AAPL",
+      "rank": 335,
+      "score": 6.832380952380952,
+      "sector": "Technology",
+      "price": 342.45,
+      "marketCapB": 5010.4,
+      "eligible": true
+    },
+    {
+      "ticker": "NWSA",
+      "rank": 336,
+      "score": 6.831428571428572,
+      "sector": "Communication Services",
+      "price": 29.19,
+      "marketCapB": 15.7,
+      "eligible": true
+    },
+    {
+      "ticker": "CHRW",
+      "rank": 337,
+      "score": 6.83,
+      "sector": "Industrials",
+      "price": 123.51,
+      "marketCapB": 14.2,
+      "eligible": true
+    },
+    {
+      "ticker": "GWW",
+      "rank": 338,
+      "score": 6.827142857142857,
+      "sector": "Industrials",
+      "price": 1357.11,
+      "marketCapB": 64,
+      "eligible": true
+    },
+    {
+      "ticker": "NDSN",
+      "rank": 339,
+      "score": 6.825238095238096,
+      "sector": "Industrials",
+      "price": 320.89,
+      "marketCapB": 17.9,
+      "eligible": true
+    },
+    {
+      "ticker": "KLAC",
+      "rank": 340,
+      "score": 6.823333333333333,
+      "sector": "Technology",
+      "price": 156.97,
+      "marketCapB": 205.9,
+      "eligible": true
+    },
+    {
+      "ticker": "PNR",
+      "rank": 341,
+      "score": 6.821428571428572,
+      "sector": "Industrials",
+      "price": 66.27,
+      "marketCapB": 10.6,
+      "eligible": true
+    },
+    {
+      "ticker": "BMY",
+      "rank": 342,
+      "score": 6.81952380952381,
+      "sector": "Healthcare",
+      "price": 62.94,
+      "marketCapB": 128.3,
+      "eligible": true
+    },
+    {
+      "ticker": "ECL",
+      "rank": 343,
+      "score": 6.8152380952380955,
+      "sector": "Basic Materials",
+      "price": 302.18,
+      "marketCapB": 84.8,
+      "eligible": true
+    },
+    {
+      "ticker": "RBA",
+      "rank": 344,
+      "score": 6.814761904761904,
+      "sector": "Industrials",
+      "price": 89.78,
+      "marketCapB": 16.5,
+      "eligible": true
+    },
+    {
+      "ticker": "DOW",
+      "rank": 345,
+      "score": 6.813809523809525,
+      "sector": "Basic Materials",
+      "price": 34.65,
+      "marketCapB": 25.2,
+      "eligible": true
+    },
+    {
+      "ticker": "PSA",
+      "rank": 346,
+      "score": 6.813809523809524,
+      "sector": "Real Estate",
+      "price": 325.09,
+      "marketCapB": 60.7,
+      "eligible": true
+    },
+    {
+      "ticker": "ALAB",
+      "rank": 347,
+      "score": 6.812380952380954,
+      "sector": "Technology",
+      "price": 250.45,
+      "marketCapB": 43.7,
+      "eligible": true
+    },
+    {
+      "ticker": "CARR",
+      "rank": 348,
+      "score": 6.811904761904763,
+      "sector": "Industrials",
+      "price": 53.24,
+      "marketCapB": 43.8,
+      "eligible": true
+    },
+    {
+      "ticker": "RMD",
+      "rank": 349,
+      "score": 6.808571428571429,
+      "sector": "Healthcare",
+      "price": 232.79,
+      "marketCapB": 32.7,
+      "eligible": true
+    },
+    {
+      "ticker": "LYV",
+      "rank": 350,
+      "score": 6.795714285714286,
+      "sector": "Communication Services",
+      "price": 177.38,
+      "marketCapB": 41.4,
+      "eligible": true
+    },
+    {
+      "ticker": "NWS",
+      "rank": 351,
+      "score": 6.795714285714286,
+      "sector": "Communication Services",
+      "price": 31.86,
+      "marketCapB": 17.1,
+      "eligible": true
+    },
+    {
+      "ticker": "MKSI",
+      "rank": 352,
+      "score": 6.791428571428572,
+      "sector": "Technology",
+      "price": 197.21,
+      "marketCapB": 13.4,
+      "eligible": true
+    },
+    {
+      "ticker": "FDS",
+      "rank": 353,
+      "score": 6.79,
+      "sector": "Financial Services",
+      "price": 330.6,
+      "marketCapB": 11.6,
+      "eligible": true
+    },
+    {
+      "ticker": "TEL",
+      "rank": 354,
+      "score": 6.78904761904762,
+      "sector": "Technology",
+      "price": 213.26,
+      "marketCapB": 61.3,
+      "eligible": true
+    },
+    {
+      "ticker": "NTRS",
+      "rank": 355,
+      "score": 6.779523809523809,
+      "sector": "Financial Services",
+      "price": 168.23,
+      "marketCapB": 30.8,
+      "eligible": true
+    },
+    {
+      "ticker": "PGR",
+      "rank": 356,
+      "score": 6.7771428571428585,
+      "sector": "Financial Services",
+      "price": 232.85,
+      "marketCapB": 134.5,
+      "eligible": true
+    },
+    {
+      "ticker": "MSI",
+      "rank": 357,
+      "score": 6.772857142857144,
+      "sector": "Technology",
+      "price": 493.39,
+      "marketCapB": 81.4,
+      "eligible": true
+    },
+    {
+      "ticker": "AME",
+      "rank": 358,
+      "score": 6.763809523809524,
+      "sector": "Industrials",
+      "price": 240.48,
+      "marketCapB": 55.2,
+      "eligible": true
+    },
+    {
+      "ticker": "TD",
+      "rank": 359,
+      "score": 6.762857142857143,
+      "sector": "Financial Services",
+      "price": 124,
+      "marketCapB": 202.7,
+      "eligible": true
+    },
+    {
+      "ticker": "DOCU",
+      "rank": 360,
+      "score": 6.760476190476191,
+      "sector": "Technology",
+      "price": 82.44,
+      "marketCapB": 15.4,
+      "eligible": true
+    },
+    {
+      "ticker": "MPWR",
+      "rank": 361,
+      "score": 6.7561904761904765,
+      "sector": "Technology",
+      "price": 1190.22,
+      "marketCapB": 58.9,
+      "eligible": true
+    },
+    {
+      "ticker": "ABT",
+      "rank": 362,
+      "score": 6.751428571428572,
+      "sector": "Healthcare",
+      "price": 106.42,
+      "marketCapB": 183.9,
+      "eligible": true
+    },
+    {
+      "ticker": "ALGN",
+      "rank": 363,
+      "score": 6.7457142857142856,
+      "sector": "Healthcare",
+      "price": 147.62,
+      "marketCapB": 10.5,
+      "eligible": true
+    },
+    {
+      "ticker": "EWBC",
+      "rank": 364,
+      "score": 6.735714285714286,
+      "sector": "Financial Services",
+      "price": 130.49,
+      "marketCapB": 17.9,
+      "eligible": true
+    },
+    {
+      "ticker": "RSG",
+      "rank": 365,
+      "score": 6.733333333333333,
+      "sector": "Industrials",
+      "price": 245.37,
+      "marketCapB": 75.2,
+      "eligible": true
+    },
+    {
+      "ticker": "AIG",
+      "rank": 366,
+      "score": 6.731904761904762,
+      "sector": "Financial Services",
+      "price": 81.68,
+      "marketCapB": 42.8,
+      "eligible": true
+    },
+    {
+      "ticker": "WFC",
+      "rank": 367,
+      "score": 6.724285714285715,
+      "sector": "Financial Services",
+      "price": 83.3,
+      "marketCapB": 249.4,
+      "eligible": true
+    },
+    {
+      "ticker": "AWK",
+      "rank": 368,
+      "score": 6.718571428571428,
+      "sector": "Utilities",
+      "price": 145.07,
+      "marketCapB": 28.9,
+      "eligible": true
+    },
+    {
+      "ticker": "CVNA",
+      "rank": 369,
+      "score": 6.713333333333333,
+      "sector": "Consumer Cyclical",
+      "price": 69.6,
+      "marketCapB": 76.8,
+      "eligible": true
+    },
+    {
+      "ticker": "CLS",
+      "rank": 370,
+      "score": 6.7023809523809526,
+      "sector": "Technology",
+      "price": 257.29,
+      "marketCapB": 32.4,
+      "eligible": true
+    },
+    {
+      "ticker": "KMB",
+      "rank": 371,
+      "score": 6.6971428571428575,
+      "sector": "Consumer Defensive",
+      "price": 109.25,
+      "marketCapB": 36.4,
+      "eligible": true
+    },
+    {
+      "ticker": "ISRG",
+      "rank": 372,
+      "score": 6.690952380952382,
+      "sector": "Healthcare",
+      "price": 434.31,
+      "marketCapB": 153.4,
+      "eligible": true
+    },
+    {
+      "ticker": "PANW",
+      "rank": 373,
+      "score": 6.688571428571429,
+      "sector": "Technology",
+      "price": 362.53,
+      "marketCapB": 296.6,
+      "eligible": true
+    },
+    {
+      "ticker": "DDOG",
+      "rank": 374,
+      "score": 6.681428571428571,
+      "sector": "Technology",
+      "price": 233.92,
+      "marketCapB": 84.1,
+      "eligible": true
+    },
+    {
+      "ticker": "CTAS",
+      "rank": 375,
+      "score": 6.680000000000001,
+      "sector": "Industrials",
+      "price": 222.01,
+      "marketCapB": 88.1,
+      "eligible": true
+    },
+    {
+      "ticker": "PTC",
+      "rank": 376,
+      "score": 6.671904761904763,
+      "sector": "Technology",
+      "price": 194.93,
+      "marketCapB": 21.2,
+      "eligible": true
+    },
+    {
+      "ticker": "GL",
+      "rank": 377,
+      "score": 6.67,
+      "sector": "Financial Services",
+      "price": 158.65,
+      "marketCapB": 12.2,
+      "eligible": true
+    },
+    {
+      "ticker": "MLM",
+      "rank": 378,
+      "score": 6.66857142857143,
+      "sector": "Basic Materials",
+      "price": 538.26,
+      "marketCapB": 38.3,
+      "eligible": true
+    },
+    {
+      "ticker": "LITE",
+      "rank": 379,
+      "score": 6.668571428571429,
+      "sector": "Technology",
+      "price": 823.07,
+      "marketCapB": 75.3,
+      "eligible": true
+    },
+    {
+      "ticker": "MTZ",
+      "rank": 380,
+      "score": 6.668095238095238,
+      "sector": "Industrials",
+      "price": 179.95,
+      "marketCapB": 14.6,
+      "eligible": true
+    },
+    {
+      "ticker": "AVTR",
+      "rank": 381,
+      "score": 6.666190476190477,
+      "sector": "Healthcare",
+      "price": 15.9,
+      "marketCapB": 10.8,
+      "eligible": true
+    },
+    {
+      "ticker": "MANH",
+      "rank": 382,
+      "score": 6.662857142857143,
+      "sector": "Technology",
+      "price": 248.24,
+      "marketCapB": 14.4,
+      "eligible": true
+    },
+    {
+      "ticker": "BURL",
+      "rank": 383,
+      "score": 6.661904761904762,
+      "sector": "Consumer Cyclical",
+      "price": 236.92,
+      "marketCapB": 14.9,
+      "eligible": true
+    },
+    {
+      "ticker": "LIN",
+      "rank": 384,
+      "score": 6.661904761904762,
+      "sector": "Basic Materials",
+      "price": 514.46,
+      "marketCapB": 235.6,
+      "eligible": true
+    },
+    {
+      "ticker": "MDB",
+      "rank": 385,
+      "score": 6.656666666666667,
+      "sector": "Technology",
+      "price": 347.34,
+      "marketCapB": 28,
+      "eligible": true
+    },
+    {
+      "ticker": "SYK",
+      "rank": 386,
+      "score": 6.654761904761905,
+      "sector": "Healthcare",
+      "price": 292.69,
+      "marketCapB": 112.8,
+      "eligible": true
+    },
+    {
+      "ticker": "XOM",
+      "rank": 387,
+      "score": 6.6538095238095245,
+      "sector": "Energy",
+      "price": 186.64,
+      "marketCapB": 766.3,
+      "eligible": true
+    },
+    {
+      "ticker": "ZS",
+      "rank": 388,
+      "score": 6.650952380952382,
+      "sector": "Technology",
+      "price": 234.9,
+      "marketCapB": 38.7,
+      "eligible": true
+    },
+    {
+      "ticker": "SHOP",
+      "rank": 389,
+      "score": 6.637619047619048,
+      "sector": "Technology",
+      "price": 154.59,
+      "marketCapB": 201,
+      "eligible": true
+    },
+    {
+      "ticker": "TPG",
+      "rank": 390,
+      "score": 6.637142857142857,
+      "sector": "Financial Services",
+      "price": 46.39,
+      "marketCapB": 18.2,
+      "eligible": true
+    },
+    {
+      "ticker": "COST",
+      "rank": 391,
+      "score": 6.636190476190476,
+      "sector": "Consumer Defensive",
+      "price": 1020.67,
+      "marketCapB": 451.9,
+      "eligible": true
+    },
+    {
+      "ticker": "ARW",
+      "rank": 392,
+      "score": 6.6347619047619055,
+      "sector": "Technology",
+      "price": 201.74,
+      "marketCapB": 10.3,
+      "eligible": true
+    },
+    {
+      "ticker": "PCAR",
+      "rank": 393,
+      "score": 6.630000000000001,
+      "sector": "Industrials",
+      "price": 102.25,
+      "marketCapB": 53.7,
+      "eligible": true
+    },
+    {
+      "ticker": "AJG",
+      "rank": 394,
+      "score": 6.629047619047619,
+      "sector": "Financial Services",
+      "price": 276.88,
+      "marketCapB": 70.9,
+      "eligible": true
+    },
+    {
+      "ticker": "VRSN",
+      "rank": 395,
+      "score": 6.626666666666667,
+      "sector": "Technology",
+      "price": 307.71,
+      "marketCapB": 27.6,
+      "eligible": true
+    },
+    {
+      "ticker": "JPM",
+      "rank": 396,
+      "score": 6.618571428571428,
+      "sector": "Financial Services",
+      "price": 336.02,
+      "marketCapB": 892.3,
+      "eligible": true
+    },
+    {
+      "ticker": "TRGP",
+      "rank": 397,
+      "score": 6.6157142857142865,
+      "sector": "Energy",
+      "price": 314.31,
+      "marketCapB": 67.2,
+      "eligible": true
+    },
+    {
+      "ticker": "IBKR",
+      "rank": 398,
+      "score": 6.6119047619047615,
+      "sector": "Financial Services",
+      "price": 75.68,
+      "marketCapB": 129.5,
+      "eligible": true
+    },
+    {
+      "ticker": "CRDO",
+      "rank": 399,
+      "score": 6.60952380952381,
+      "sector": "Technology",
+      "price": 145.9,
+      "marketCapB": 27.4,
+      "eligible": true
+    },
+    {
+      "ticker": "VSAT",
+      "rank": 400,
+      "score": 6.604761904761905,
+      "sector": "Technology",
+      "price": 75.47,
+      "marketCapB": 10.6,
+      "eligible": true
+    },
+    {
+      "ticker": "SCI",
+      "rank": 401,
+      "score": 6.604285714285715,
+      "sector": "Consumer Cyclical",
+      "price": 76.72,
+      "marketCapB": 10.4,
+      "eligible": true
+    },
+    {
+      "ticker": "ETR",
+      "rank": 402,
+      "score": 6.601428571428571,
+      "sector": "Utilities",
+      "price": 110.41,
+      "marketCapB": 52.7,
+      "eligible": true
+    },
+    {
+      "ticker": "KKR",
+      "rank": 403,
+      "score": 6.6000000000000005,
+      "sector": "Financial Services",
+      "price": 94.19,
+      "marketCapB": 87,
+      "eligible": true
+    },
+    {
+      "ticker": "APO",
+      "rank": 404,
+      "score": 6.599523809523809,
+      "sector": "Financial Services",
+      "price": 115.98,
+      "marketCapB": 68.6,
+      "eligible": true
+    },
+    {
+      "ticker": "O",
+      "rank": 405,
+      "score": 6.597142857142858,
+      "sector": "Real Estate",
+      "price": 57.12,
+      "marketCapB": 54,
+      "eligible": true
+    },
+    {
+      "ticker": "SNOW",
+      "rank": 406,
+      "score": 6.594285714285714,
+      "sector": "Technology",
+      "price": 297.72,
+      "marketCapB": 105.5,
+      "eligible": true
+    },
+    {
+      "ticker": "EW",
+      "rank": 407,
+      "score": 6.591428571428572,
+      "sector": "Healthcare",
+      "price": 92.61,
+      "marketCapB": 53.2,
+      "eligible": true
+    },
+    {
+      "ticker": "AON",
+      "rank": 408,
+      "score": 6.570476190476191,
+      "sector": "Financial Services",
+      "price": 325.05,
+      "marketCapB": 69,
+      "eligible": true
+    },
+    {
+      "ticker": "NRG",
+      "rank": 409,
+      "score": 6.568571428571429,
+      "sector": "Utilities",
+      "price": 94.34,
+      "marketCapB": 19.9,
+      "eligible": true
+    },
+    {
+      "ticker": "L",
+      "rank": 410,
+      "score": 6.567142857142858,
+      "sector": "Financial Services",
+      "price": 111.71,
+      "marketCapB": 22.8,
+      "eligible": true
+    },
+    {
+      "ticker": "EQT",
+      "rank": 411,
+      "score": 6.563809523809525,
+      "sector": "Energy",
+      "price": 55.29,
+      "marketCapB": 34.5,
+      "eligible": true
+    },
+    {
+      "ticker": "ITW",
+      "rank": 412,
+      "score": 6.561904761904763,
+      "sector": "Industrials",
+      "price": 280.11,
+      "marketCapB": 79.6,
+      "eligible": true
+    },
+    {
+      "ticker": "JKHY",
+      "rank": 413,
+      "score": 6.556666666666667,
+      "sector": "Technology",
+      "price": 162.1,
+      "marketCapB": 11.4,
+      "eligible": true
+    },
+    {
+      "ticker": "WMT",
+      "rank": 414,
+      "score": 6.555238095238096,
+      "sector": "Consumer Defensive",
+      "price": 123.69,
+      "marketCapB": 982.6,
+      "eligible": true
+    },
+    {
+      "ticker": "FTNT",
+      "rank": 415,
+      "score": 6.554285714285714,
+      "sector": "Technology",
+      "price": 135.15,
+      "marketCapB": 99,
+      "eligible": true
+    },
+    {
+      "ticker": "KVUE",
+      "rank": 416,
+      "score": 6.548095238095239,
+      "sector": "Consumer Defensive",
+      "price": 19.47,
+      "marketCapB": 37.4,
+      "eligible": true
+    },
+    {
+      "ticker": "INVH",
+      "rank": 417,
+      "score": 6.546666666666667,
+      "sector": "Real Estate",
+      "price": 26.66,
+      "marketCapB": 15.5,
+      "eligible": true
+    },
+    {
+      "ticker": "RBC",
+      "rank": 418,
+      "score": 6.540000000000001,
+      "sector": "Industrials",
+      "price": 467.38,
+      "marketCapB": 14.9,
+      "eligible": true
+    },
+    {
+      "ticker": "DE",
+      "rank": 419,
+      "score": 6.520476190476191,
+      "sector": "Industrials",
+      "price": 672.46,
+      "marketCapB": 181.6,
+      "eligible": true
+    },
+    {
+      "ticker": "MCK",
+      "rank": 420,
+      "score": 6.519523809523809,
+      "sector": "Healthcare",
+      "price": 993.15,
+      "marketCapB": 115.6,
+      "eligible": true
+    },
+    {
+      "ticker": "HUBB",
+      "rank": 421,
+      "score": 6.516190476190475,
+      "sector": "Industrials",
+      "price": 420.33,
+      "marketCapB": 22.3,
+      "eligible": true
+    },
+    {
+      "ticker": "COHR",
+      "rank": 422,
+      "score": 6.499047619047619,
+      "sector": "Technology",
+      "price": 205.72,
+      "marketCapB": 40.4,
+      "eligible": true
+    },
+    {
+      "ticker": "TSCO",
+      "rank": 423,
+      "score": 6.497142857142857,
+      "sector": "Consumer Cyclical",
+      "price": 33.88,
+      "marketCapB": 17.6,
+      "eligible": true
+    },
+    {
+      "ticker": "U",
+      "rank": 424,
+      "score": 6.487619047619048,
+      "sector": "Technology",
+      "price": 37.36,
+      "marketCapB": 16.5,
+      "eligible": true
+    },
+    {
+      "ticker": "GRMN",
+      "rank": 425,
+      "score": 6.477619047619048,
+      "sector": "Technology",
+      "price": 274.67,
+      "marketCapB": 52.8,
+      "eligible": true
+    },
+    {
+      "ticker": "MEDP",
+      "rank": 426,
+      "score": 6.477142857142857,
+      "sector": "Healthcare",
+      "price": 650.81,
+      "marketCapB": 18.2,
+      "eligible": true
+    },
+    {
+      "ticker": "BR",
+      "rank": 427,
+      "score": 6.471904761904763,
+      "sector": "Technology",
+      "price": 178.99,
+      "marketCapB": 20.2,
+      "eligible": true
+    },
+    {
+      "ticker": "IOT",
+      "rank": 428,
+      "score": 6.471904761904762,
+      "sector": "Technology",
+      "price": 41.35,
+      "marketCapB": 24.4,
+      "eligible": true
+    },
+    {
+      "ticker": "FAST",
+      "rank": 429,
+      "score": 6.46952380952381,
+      "sector": "Industrials",
+      "price": 52.08,
+      "marketCapB": 59.7,
+      "eligible": true
+    },
+    {
+      "ticker": "T",
+      "rank": 430,
+      "score": 6.468571428571429,
+      "sector": "Communication Services",
+      "price": 21.42,
+      "marketCapB": 144,
+      "eligible": true
+    },
+    {
+      "ticker": "SE",
+      "rank": 431,
+      "score": 6.467619047619047,
+      "sector": "Consumer Cyclical",
+      "price": 74.29,
+      "marketCapB": 45.4,
+      "eligible": true
+    },
+    {
+      "ticker": "ADM",
+      "rank": 432,
+      "score": 6.464285714285715,
+      "sector": "Consumer Defensive",
+      "price": 76.69,
+      "marketCapB": 37,
+      "eligible": true
+    },
+    {
+      "ticker": "ENSG",
+      "rank": 433,
+      "score": 6.4609523809523814,
+      "sector": "Healthcare",
+      "price": 182.84,
+      "marketCapB": 10.7,
+      "eligible": true
+    },
+    {
+      "ticker": "JCI",
+      "rank": 434,
+      "score": 6.455238095238095,
+      "sector": "Industrials",
+      "price": 147.79,
+      "marketCapB": 90,
+      "eligible": true
+    },
+    {
+      "ticker": "CPRT",
+      "rank": 435,
+      "score": 6.452857142857143,
+      "sector": "Industrials",
+      "price": 30.33,
+      "marketCapB": 28.1,
+      "eligible": true
+    },
+    {
+      "ticker": "IBM",
+      "rank": 436,
+      "score": 6.45,
+      "sector": "Technology",
+      "price": 256.3,
+      "marketCapB": 242.8,
+      "eligible": true
+    },
+    {
+      "ticker": "OKE",
+      "rank": 437,
+      "score": 6.445238095238096,
+      "sector": "Energy",
+      "price": 97.07,
+      "marketCapB": 61,
+      "eligible": true
+    },
+    {
+      "ticker": "TDY",
+      "rank": 438,
+      "score": 6.436190476190476,
+      "sector": "Technology",
+      "price": 652.35,
+      "marketCapB": 30.3,
+      "eligible": true
+    },
+    {
+      "ticker": "CHD",
+      "rank": 439,
+      "score": 6.42,
+      "sector": "Consumer Defensive",
+      "price": 108.4,
+      "marketCapB": 25.7,
+      "eligible": true
+    },
+    {
+      "ticker": "SOLV",
+      "rank": 440,
+      "score": 6.415714285714286,
+      "sector": "Healthcare",
+      "price": 81.23,
+      "marketCapB": 13.8,
+      "eligible": true
+    },
+    {
+      "ticker": "BX",
+      "rank": 441,
+      "score": 6.413809523809524,
+      "sector": "Financial Services",
+      "price": 117.86,
+      "marketCapB": 141.4,
+      "eligible": true
+    },
+    {
+      "ticker": "LDOS",
+      "rank": 442,
+      "score": 6.413333333333333,
+      "sector": "Technology",
+      "price": 142.34,
+      "marketCapB": 17.9,
+      "eligible": true
+    },
+    {
+      "ticker": "SHW",
+      "rank": 443,
+      "score": 6.412857142857143,
+      "sector": "Basic Materials",
+      "price": 330.3,
+      "marketCapB": 79.7,
+      "eligible": true
+    },
+    {
+      "ticker": "HBAN",
+      "rank": 444,
+      "score": 6.393809523809524,
+      "sector": "Financial Services",
+      "price": 15.68,
+      "marketCapB": 31.6,
+      "eligible": true
+    },
+    {
+      "ticker": "PHM",
+      "rank": 445,
+      "score": 6.3933333333333335,
+      "sector": "Consumer Cyclical",
+      "price": 124.5,
+      "marketCapB": 23.7,
+      "eligible": true
+    },
+    {
+      "ticker": "SYY",
+      "rank": 446,
+      "score": 6.390476190476191,
+      "sector": "Consumer Defensive",
+      "price": 82.95,
+      "marketCapB": 40.8,
+      "eligible": true
+    },
+    {
+      "ticker": "BMRN",
+      "rank": 447,
+      "score": 6.388095238095238,
+      "sector": "Healthcare",
+      "price": 58.12,
+      "marketCapB": 11.3,
+      "eligible": true
+    },
+    {
+      "ticker": "EQR",
+      "rank": 448,
+      "score": 6.383928571428572,
+      "sector": "Real Estate",
+      "price": 63.66,
+      "marketCapB": 24.6,
+      "eligible": true
+    },
+    {
+      "ticker": "WELL",
+      "rank": 449,
+      "score": 6.381428571428572,
+      "sector": "Real Estate",
+      "price": 236.8,
+      "marketCapB": 173.6,
+      "eligible": true
+    },
+    {
+      "ticker": "PNW",
+      "rank": 450,
+      "score": 6.379047619047618,
+      "sector": "Utilities",
+      "price": 106.65,
+      "marketCapB": 12.9,
+      "eligible": true
+    },
+    {
+      "ticker": "VST",
+      "rank": 451,
+      "score": 6.375714285714286,
+      "sector": "Utilities",
+      "price": 136.49,
+      "marketCapB": 46.1,
+      "eligible": true
+    },
+    {
+      "ticker": "LVS",
+      "rank": 452,
+      "score": 6.372857142857143,
+      "sector": "Consumer Cyclical",
+      "price": 36.99,
+      "marketCapB": 23.9,
+      "eligible": true
+    },
+    {
+      "ticker": "BSX",
+      "rank": 453,
+      "score": 6.367142857142857,
+      "sector": "Healthcare",
+      "price": 41.88,
+      "marketCapB": 60.8,
+      "eligible": true
+    },
+    {
+      "ticker": "GE",
+      "rank": 454,
+      "score": 6.36,
+      "sector": "Industrials",
+      "price": 300.7,
+      "marketCapB": 313,
+      "eligible": true
+    },
+    {
+      "ticker": "QRVO",
+      "rank": 455,
+      "score": 6.355357142857143,
+      "sector": "Technology",
+      "price": 114.17,
+      "marketCapB": 10.1,
+      "eligible": true
+    },
+    {
+      "ticker": "AMP",
+      "rank": 456,
+      "score": 6.353809523809525,
+      "sector": "Financial Services",
+      "price": 487,
+      "marketCapB": 42.5,
+      "eligible": true
+    },
+    {
+      "ticker": "BRO",
+      "rank": 457,
+      "score": 6.353809523809525,
+      "sector": "Financial Services",
+      "price": 70.15,
+      "marketCapB": 23.3,
+      "eligible": true
+    },
+    {
+      "ticker": "CMG",
+      "rank": 458,
+      "score": 6.347619047619048,
+      "sector": "Consumer Cyclical",
+      "price": 32.13,
+      "marketCapB": 40.6,
+      "eligible": true
+    },
+    {
+      "ticker": "TROW",
+      "rank": 459,
+      "score": 6.345714285714287,
+      "sector": "Financial Services",
+      "price": 102.81,
+      "marketCapB": 22.1,
+      "eligible": true
+    },
+    {
+      "ticker": "ON",
+      "rank": 460,
+      "score": 6.341904761904763,
+      "sector": "Technology",
+      "price": 70.04,
+      "marketCapB": 27.4,
+      "eligible": true
+    },
+    {
+      "ticker": "DT",
+      "rank": 461,
+      "score": 6.340952380952381,
+      "sector": "Technology",
+      "price": 57.64,
+      "marketCapB": 16.7,
+      "eligible": true
+    },
+    {
+      "ticker": "IDXX",
+      "rank": 462,
+      "score": 6.338095238095239,
+      "sector": "Healthcare",
+      "price": 552.67,
+      "marketCapB": 42.9,
+      "eligible": true
+    },
+    {
+      "ticker": "ALLY",
+      "rank": 463,
+      "score": 6.336666666666667,
+      "sector": "Financial Services",
+      "price": 37.95,
+      "marketCapB": 11.6,
+      "eligible": true
+    },
+    {
+      "ticker": "MTD",
+      "rank": 464,
+      "score": 6.336190476190477,
+      "sector": "Healthcare",
+      "price": 1678.44,
+      "marketCapB": 33.6,
+      "eligible": true
+    },
+    {
+      "ticker": "CRWD",
+      "rank": 465,
+      "score": 6.335714285714286,
+      "sector": "Technology",
+      "price": 246,
+      "marketCapB": 251.7,
+      "eligible": true
+    },
+    {
+      "ticker": "ILMN",
+      "rank": 466,
+      "score": 6.3309523809523816,
+      "sector": "Healthcare",
+      "price": 233.27,
+      "marketCapB": 35.6,
+      "eligible": true
+    },
+    {
+      "ticker": "CCEP",
+      "rank": 467,
+      "score": 6.32952380952381,
+      "sector": "Consumer Defensive",
+      "price": 113.97,
+      "marketCapB": 50,
+      "eligible": true
+    },
+    {
+      "ticker": "LNT",
+      "rank": 468,
+      "score": 6.326666666666668,
+      "sector": "Utilities",
+      "price": 72.13,
+      "marketCapB": 18.7,
+      "eligible": true
+    },
+    {
+      "ticker": "MKC",
+      "rank": 469,
+      "score": 6.324761904761905,
+      "sector": "Consumer Defensive",
+      "price": 47.5,
+      "marketCapB": 12.8,
+      "eligible": true
+    },
+    {
+      "ticker": "XYZ",
+      "rank": 470,
+      "score": 6.324761904761905,
+      "sector": "Technology",
+      "price": 75.38,
+      "marketCapB": 45.7,
+      "eligible": true
+    },
+    {
+      "ticker": "XYL",
+      "rank": 471,
+      "score": 6.3219047619047615,
+      "sector": "Industrials",
+      "price": 92.89,
+      "marketCapB": 21.2,
+      "eligible": true
+    },
+    {
+      "ticker": "ADP",
+      "rank": 472,
+      "score": 6.318095238095239,
+      "sector": "Technology",
+      "price": 295.64,
+      "marketCapB": 117,
+      "eligible": true
+    },
+    {
+      "ticker": "MTB",
+      "rank": 473,
+      "score": 6.307619047619048,
+      "sector": "Financial Services",
+      "price": 219.84,
+      "marketCapB": 31.6,
+      "eligible": true
+    },
+    {
+      "ticker": "CDNS",
+      "rank": 474,
+      "score": 6.307142857142858,
+      "sector": "Technology",
+      "price": 324.21,
+      "marketCapB": 88.8,
+      "eligible": true
+    },
+    {
+      "ticker": "PSTG",
+      "rank": 475,
+      "score": 6.307142857142858,
+      "sector": "Technology",
+      "price": 72.31,
+      "marketCapB": 22.4,
+      "eligible": true
+    },
+    {
+      "ticker": "SNA",
+      "rank": 476,
+      "score": 6.3014285714285725,
+      "sector": "Industrials",
+      "price": 357.35,
+      "marketCapB": 18.4,
+      "eligible": true
+    },
+    {
+      "ticker": "KHC",
+      "rank": 477,
+      "score": 6.298095238095238,
+      "sector": "Consumer Defensive",
+      "price": 24.53,
+      "marketCapB": 29.1,
+      "eligible": true
+    },
+    {
+      "ticker": "RY",
+      "rank": 478,
+      "score": 6.291428571428572,
+      "sector": "Financial Services",
+      "price": 202.03,
+      "marketCapB": 280.3,
+      "eligible": true
+    },
+    {
+      "ticker": "DTE",
+      "rank": 479,
+      "score": 6.286190476190477,
+      "sector": "Utilities",
+      "price": 135.61,
+      "marketCapB": 28.2,
+      "eligible": true
+    },
+    {
+      "ticker": "PAYX",
+      "rank": 480,
+      "score": 6.285238095238095,
+      "sector": "Technology",
+      "price": 112.64,
+      "marketCapB": 39.9,
+      "eligible": true
+    },
+    {
+      "ticker": "CINF",
+      "rank": 481,
+      "score": 6.284761904761904,
+      "sector": "Financial Services",
+      "price": 182.12,
+      "marketCapB": 28,
+      "eligible": true
+    },
+    {
+      "ticker": "BG",
+      "rank": 482,
+      "score": 6.284285714285714,
+      "sector": "Consumer Defensive",
+      "price": 95.64,
+      "marketCapB": 18.4,
+      "eligible": true
+    },
+    {
+      "ticker": "JBHT",
+      "rank": 483,
+      "score": 6.283333333333333,
+      "sector": "Industrials",
+      "price": 220.06,
+      "marketCapB": 20.7,
+      "eligible": true
+    },
+    {
+      "ticker": "ITT",
+      "rank": 484,
+      "score": 6.2804761904761905,
+      "sector": "Industrials",
+      "price": 197.81,
+      "marketCapB": 18.2,
+      "eligible": true
+    },
+    {
+      "ticker": "MSTR",
+      "rank": 485,
+      "score": 6.276666666666667,
+      "sector": "Technology",
+      "price": 129.39,
+      "marketCapB": 55,
+      "eligible": true
+    },
+    {
+      "ticker": "ZTS",
+      "rank": 486,
+      "score": 6.262380952380953,
+      "sector": "Healthcare",
+      "price": 79.81,
+      "marketCapB": 32.9,
+      "eligible": true
+    },
+    {
+      "ticker": "CDW",
+      "rank": 487,
+      "score": 6.261428571428571,
+      "sector": "Technology",
+      "price": 148.13,
+      "marketCapB": 18.5,
+      "eligible": true
+    },
+    {
+      "ticker": "CMI",
+      "rank": 488,
+      "score": 6.260000000000001,
+      "sector": "Industrials",
+      "price": 500.88,
+      "marketCapB": 68.8,
+      "eligible": true
+    },
+    {
+      "ticker": "UHS",
+      "rank": 489,
+      "score": 6.258095238095239,
+      "sector": "Healthcare",
+      "price": 175.9,
+      "marketCapB": 10.4,
+      "eligible": true
+    },
+    {
+      "ticker": "AVB",
+      "rank": 490,
+      "score": 6.257142857142857,
+      "sector": "Real Estate",
+      "price": 184.06,
+      "marketCapB": 26.3,
+      "eligible": true
+    },
+    {
+      "ticker": "JEF",
+      "rank": 491,
+      "score": 6.256666666666667,
+      "sector": "Financial Services",
+      "price": 45.84,
+      "marketCapB": 10.5,
+      "eligible": true
+    },
+    {
+      "ticker": "PLD",
+      "rank": 492,
+      "score": 6.2561904761904765,
+      "sector": "Real Estate",
+      "price": 128.23,
+      "marketCapB": 124.7,
+      "eligible": true
+    },
+    {
+      "ticker": "TTWO",
+      "rank": 493,
+      "score": 6.251428571428572,
+      "sector": "Communication Services",
+      "price": 190.57,
+      "marketCapB": 35.7,
+      "eligible": true
+    },
+    {
+      "ticker": "VTR",
+      "rank": 494,
+      "score": 6.25,
+      "sector": "Real Estate",
+      "price": 84.9,
+      "marketCapB": 45,
+      "eligible": true
+    },
+    {
+      "ticker": "VMC",
+      "rank": 495,
+      "score": 6.245238095238095,
+      "sector": "Basic Materials",
+      "price": 279.45,
+      "marketCapB": 35.9,
+      "eligible": true
+    },
+    {
+      "ticker": "STE",
+      "rank": 496,
+      "score": 6.233809523809525,
+      "sector": "Healthcare",
+      "price": 226.99,
+      "marketCapB": 22.1,
+      "eligible": true
+    },
+    {
+      "ticker": "OWL",
+      "rank": 497,
+      "score": 6.212380952380952,
+      "sector": "Financial Services",
+      "price": 10.2,
+      "marketCapB": 16.1,
+      "eligible": true
+    },
+    {
+      "ticker": "FNF",
+      "rank": 498,
+      "score": 6.210476190476191,
+      "sector": "Financial Services",
+      "price": 40.74,
+      "marketCapB": 11,
+      "eligible": true
+    },
+    {
+      "ticker": "CBRE",
+      "rank": 499,
+      "score": 6.2076190476190485,
+      "sector": "Real Estate",
+      "price": 128.57,
+      "marketCapB": 37.1,
+      "eligible": true
+    },
+    {
+      "ticker": "BF-B",
+      "rank": 500,
+      "score": 6.197142857142857,
+      "sector": "Consumer Defensive",
+      "price": 28.7,
+      "marketCapB": 13.2,
+      "eligible": true
+    },
+    {
+      "ticker": "COO",
+      "rank": 501,
+      "score": 6.1938095238095245,
+      "sector": "Healthcare",
+      "price": 59.58,
+      "marketCapB": 11.3,
+      "eligible": true
+    },
+    {
+      "ticker": "RVTY",
+      "rank": 502,
+      "score": 6.187142857142857,
+      "sector": "Healthcare",
+      "price": 156.62,
+      "marketCapB": 17.4,
+      "eligible": true
+    },
+    {
+      "ticker": "JNJ",
+      "rank": 503,
+      "score": 6.183809523809524,
+      "sector": "Healthcare",
+      "price": 274.57,
+      "marketCapB": 661.2,
+      "eligible": true
+    },
+    {
+      "ticker": "BN",
+      "rank": 504,
+      "score": 6.177619047619048,
+      "sector": "Financial Services",
+      "price": 38.99,
+      "marketCapB": 87.2,
+      "eligible": true
+    },
+    {
+      "ticker": "BAX",
+      "rank": 505,
+      "score": 6.171904761904763,
+      "sector": "Healthcare",
+      "price": 22.66,
+      "marketCapB": 11.7,
+      "eligible": true
+    },
+    {
+      "ticker": "PEG",
+      "rank": 506,
+      "score": 6.166666666666668,
+      "sector": "Utilities",
+      "price": 74.31,
+      "marketCapB": 37.1,
+      "eligible": true
+    },
+    {
+      "ticker": "BDX",
+      "rank": 507,
+      "score": 6.1590476190476195,
+      "sector": "Healthcare",
+      "price": 197.18,
+      "marketCapB": 53.8,
+      "eligible": true
+    },
+    {
+      "ticker": "J",
+      "rank": 508,
+      "score": 6.1328571428571435,
+      "sector": "Industrials",
+      "price": 154.1,
+      "marketCapB": 18,
+      "eligible": true
+    },
+    {
+      "ticker": "D",
+      "rank": 509,
+      "score": 6.1276190476190475,
+      "sector": "Utilities",
+      "price": 66.83,
+      "marketCapB": 58.9,
+      "eligible": true
+    },
+    {
+      "ticker": "WRB",
+      "rank": 510,
+      "score": 6.123333333333333,
+      "sector": "Financial Services",
+      "price": 74.29,
+      "marketCapB": 27.5,
+      "eligible": true
+    },
+    {
+      "ticker": "GLW",
+      "rank": 511,
+      "score": 6.117619047619048,
+      "sector": "Technology",
+      "price": 121.69,
+      "marketCapB": 105.1,
+      "eligible": true
+    },
+    {
+      "ticker": "TYL",
+      "rank": 512,
+      "score": 6.115714285714286,
+      "sector": "Technology",
+      "price": 395.8,
+      "marketCapB": 15.7,
+      "eligible": true
+    },
+    {
+      "ticker": "SW",
+      "rank": 513,
+      "score": 6.107142857142858,
+      "sector": "Consumer Cyclical",
+      "price": 42.21,
+      "marketCapB": 22,
+      "eligible": true
+    },
+    {
+      "ticker": "QCOM",
+      "rank": 514,
+      "score": 6.0980952380952385,
+      "sector": "Technology",
+      "price": 162.75,
+      "marketCapB": 173.6,
+      "eligible": true
+    },
+    {
+      "ticker": "IVZ",
+      "rank": 515,
+      "score": 6.096666666666667,
+      "sector": "Financial Services",
+      "price": 27.47,
+      "marketCapB": 12.1,
+      "eligible": true
+    },
+    {
+      "ticker": "INTC",
+      "rank": 516,
+      "score": 6.09,
+      "sector": "Technology",
+      "price": 63.72,
+      "marketCapB": 339.9,
+      "eligible": true
+    },
+    {
+      "ticker": "LSCC",
+      "rank": 517,
+      "score": 6.080476190476191,
+      "sector": "Technology",
+      "price": 91.24,
+      "marketCapB": 13,
+      "eligible": true
+    },
+    {
+      "ticker": "WBS",
+      "rank": 518,
+      "score": 6.080357142857142,
+      "sector": "Financial Services",
+      "price": 77.57,
+      "marketCapB": 12.6,
+      "eligible": true
+    },
+    {
+      "ticker": "ETN",
+      "rank": 519,
+      "score": 6.076190476190476,
+      "sector": "Industrials",
+      "price": 365.52,
+      "marketCapB": 142.6,
+      "eligible": true
+    },
+    {
+      "ticker": "TSN",
+      "rank": 520,
+      "score": 6.0738095238095235,
+      "sector": "Consumer Defensive",
+      "price": 57.42,
+      "marketCapB": 20.2,
+      "eligible": true
+    },
+    {
+      "ticker": "FTI",
+      "rank": 521,
+      "score": 6.0652380952380955,
+      "sector": "Energy",
+      "price": 67.85,
+      "marketCapB": 26.8,
+      "eligible": true
+    },
+    {
+      "ticker": "CEG",
+      "rank": 522,
+      "score": 6.043809523809525,
+      "sector": "Utilities",
+      "price": 260.84,
+      "marketCapB": 92.2,
+      "eligible": true
+    },
+    {
+      "ticker": "ES",
+      "rank": 523,
+      "score": 6.042857142857144,
+      "sector": "Utilities",
+      "price": 68.67,
+      "marketCapB": 25.9,
+      "eligible": true
+    },
+    {
+      "ticker": "MELI",
+      "rank": 524,
+      "score": 6.0252380952380955,
+      "sector": "Consumer Cyclical",
+      "price": 1625.11,
+      "marketCapB": 82.5,
+      "eligible": true
+    },
+    {
+      "ticker": "RBLX",
+      "rank": 525,
+      "score": 6.020952380952382,
+      "sector": "Communication Services",
+      "price": 41.93,
+      "marketCapB": 30.8,
+      "eligible": true
+    },
+    {
+      "ticker": "CRWV",
+      "rank": 526,
+      "score": 6.017142857142857,
+      "sector": "Technology",
+      "price": 54.13,
+      "marketCapB": 29.7,
+      "eligible": true
+    },
+    {
+      "ticker": "NET",
+      "rank": 527,
+      "score": 6.015714285714286,
+      "sector": "Technology",
+      "price": 277.14,
+      "marketCapB": 98.4,
+      "eligible": true
+    },
+    {
+      "ticker": "PCG",
+      "rank": 528,
+      "score": 6.003333333333334,
+      "sector": "Utilities",
+      "price": 13.18,
+      "marketCapB": 39.6,
+      "eligible": true
+    },
+    {
+      "ticker": "FFIV",
+      "rank": 529,
+      "score": 5.99,
+      "sector": "Technology",
+      "price": 337.83,
+      "marketCapB": 19.2,
+      "eligible": true
+    },
+    {
+      "ticker": "BABA",
+      "rank": 530,
+      "score": 5.988571428571428,
+      "sector": "Consumer Cyclical",
+      "price": 97.64,
+      "marketCapB": 243,
+      "eligible": true
+    },
+    {
+      "ticker": "ARM",
+      "rank": 531,
+      "score": 5.982857142857143,
+      "sector": "Technology",
+      "price": 199.84,
+      "marketCapB": 214.1,
+      "eligible": true
+    },
+    {
+      "ticker": "WY",
+      "rank": 532,
+      "score": 5.972857142857142,
+      "sector": "Real Estate",
+      "price": 20.17,
+      "marketCapB": 14.5,
+      "eligible": true
+    },
+    {
+      "ticker": "WMB",
+      "rank": 533,
+      "score": 5.937619047619048,
+      "sector": "Energy",
+      "price": 73.58,
+      "marketCapB": 89.6,
+      "eligible": true
+    },
+    {
+      "ticker": "BAC",
+      "rank": 534,
+      "score": 5.934761904761905,
+      "sector": "Financial Services",
+      "price": 49.85,
+      "marketCapB": 345.2,
+      "eligible": true
+    },
+    {
+      "ticker": "BA",
+      "rank": 535,
+      "score": 5.916666666666667,
+      "sector": "Industrials",
+      "price": 170.65,
+      "marketCapB": 135.4,
+      "eligible": true
+    },
+    {
+      "ticker": "DKS",
+      "rank": 536,
+      "score": 5.8880952380952385,
+      "sector": "Consumer Cyclical",
+      "price": 140.73,
+      "marketCapB": 13.9,
+      "eligible": true
+    },
+    {
+      "ticker": "MRNA",
+      "rank": 537,
+      "score": 5.880952380952381,
+      "sector": "Healthcare",
+      "price": 218.83,
+      "marketCapB": 87.2,
+      "eligible": true
+    },
+    {
+      "ticker": "HOOD",
+      "rank": 538,
+      "score": 5.874761904761905,
+      "sector": "Financial Services",
+      "price": 82.46,
+      "marketCapB": 74.5,
+      "eligible": true
+    },
+    {
+      "ticker": "MAA",
+      "rank": 539,
+      "score": 5.821904761904762,
+      "sector": "Real Estate",
+      "price": 117.82,
+      "marketCapB": 14,
+      "eligible": true
+    },
+    {
+      "ticker": "DHI",
+      "rank": 540,
+      "score": 5.820000000000001,
+      "sector": "Consumer Cyclical",
+      "price": 145.42,
+      "marketCapB": 40.8,
+      "eligible": true
+    },
+    {
+      "ticker": "IFF",
+      "rank": 541,
+      "score": 5.806190476190477,
+      "sector": "Basic Materials",
+      "price": 92.06,
+      "marketCapB": 23.5,
+      "eligible": true
+    },
+    {
+      "ticker": "BIDU",
+      "rank": 542,
+      "score": 5.790476190476191,
+      "sector": "Communication Services",
+      "price": 75.91,
+      "marketCapB": 25.8,
+      "eligible": true
+    },
+    {
+      "ticker": "ESS",
+      "rank": 543,
+      "score": 5.788571428571428,
+      "sector": "Real Estate",
+      "price": 265.65,
+      "marketCapB": 18.3,
+      "eligible": true
+    },
+    {
+      "ticker": "SLB",
+      "rank": 544,
+      "score": 5.778095238095238,
+      "sector": "Energy",
+      "price": 53.38,
+      "marketCapB": 78.4,
+      "eligible": true
+    },
+    {
+      "ticker": "DLR",
+      "rank": 545,
+      "score": 5.773809523809524,
+      "sector": "Real Estate",
+      "price": 178.18,
+      "marketCapB": 67.2,
+      "eligible": true
+    },
+    {
+      "ticker": "GPC",
+      "rank": 546,
+      "score": 5.726666666666667,
+      "sector": "Consumer Cyclical",
+      "price": 120.41,
+      "marketCapB": 16.6,
+      "eligible": true
+    },
+    {
+      "ticker": "NKE",
+      "rank": 547,
+      "score": 5.709999999999999,
+      "sector": "Consumer Cyclical",
+      "price": 38.76,
+      "marketCapB": 57.6,
+      "eligible": true
+    },
+    {
+      "ticker": "CMS",
+      "rank": 548,
+      "score": 5.701904761904762,
+      "sector": "Utilities",
+      "price": 70.61,
+      "marketCapB": 22.1,
+      "eligible": true
+    },
+    {
+      "ticker": "RIVN",
+      "rank": 549,
+      "score": 5.673809523809524,
+      "sector": "Consumer Cyclical",
+      "price": 11.7,
+      "marketCapB": 17.2,
+      "eligible": true
+    },
+    {
+      "ticker": "COIN",
+      "rank": 550,
+      "score": 5.63952380952381,
+      "sector": "Financial Services",
+      "price": 138.02,
+      "marketCapB": 36.3,
+      "eligible": true
+    },
+    {
+      "ticker": "CW",
+      "rank": 551,
+      "score": 5.606666666666667,
+      "sector": "Industrials",
+      "price": 475.72,
+      "marketCapB": 17.5,
+      "eligible": true
+    },
+    {
+      "ticker": "ARES",
+      "rank": 552,
+      "score": 5.5809523809523816,
+      "sector": "Financial Services",
+      "price": 126.4,
+      "marketCapB": 42.1,
+      "eligible": true
+    },
+    {
+      "ticker": "KMI",
+      "rank": 553,
+      "score": 5.563809523809525,
+      "sector": "Energy",
+      "price": 33.69,
+      "marketCapB": 75,
+      "eligible": true
+    },
+    {
+      "ticker": "SWKS",
+      "rank": 554,
+      "score": 5.563809523809525,
+      "sector": "Technology",
+      "price": 85.75,
+      "marketCapB": 20.1,
+      "eligible": true
+    },
+    {
+      "ticker": "CLX",
+      "rank": 555,
+      "score": 5.557142857142858,
+      "sector": "Consumer Defensive",
+      "price": 89.04,
+      "marketCapB": 10.8,
+      "eligible": true
+    },
+    {
+      "ticker": "GFS",
+      "rank": 556,
+      "score": 5.524285714285714,
+      "sector": "Technology",
+      "price": 41.1,
+      "marketCapB": 23,
+      "eligible": true
+    },
+    {
+      "ticker": "BKR",
+      "rank": 557,
+      "score": 5.51047619047619,
+      "sector": "Energy",
+      "price": 54.87,
+      "marketCapB": 54.5,
+      "eligible": true
+    },
+    {
+      "ticker": "TECH",
+      "rank": 558,
+      "score": 5.498571428571429,
+      "sector": "Healthcare",
+      "price": 72.7,
+      "marketCapB": 11.4,
+      "eligible": true
+    },
+    {
+      "ticker": "NOW",
+      "rank": 559,
+      "score": 5.4819047619047625,
+      "sector": "Technology",
+      "price": 104.03,
+      "marketCapB": 107.8,
+      "eligible": true
+    },
+    {
+      "ticker": "AKAM",
+      "rank": 560,
+      "score": 5.4695238095238095,
+      "sector": "Technology",
+      "price": 91.93,
+      "marketCapB": 13.2,
+      "eligible": true
+    },
+    {
+      "ticker": "TPL",
+      "rank": 561,
+      "score": 5.424761904761906,
+      "sector": "Energy",
+      "price": 328.43,
+      "marketCapB": 22.7,
+      "eligible": true
+    },
+    {
+      "ticker": "ROL",
+      "rank": 562,
+      "score": 5.4019047619047615,
+      "sector": "Consumer Cyclical",
+      "price": 34.77,
+      "marketCapB": 16.7,
+      "eligible": true
+    },
+    {
+      "ticker": "CG",
+      "rank": 563,
+      "score": 5.265238095238096,
+      "sector": "Financial Services",
+      "price": 39.92,
+      "marketCapB": 14.2,
+      "eligible": true
+    },
+    {
+      "ticker": "TFC",
+      "rank": 564,
+      "score": 5.236190476190477,
+      "sector": "Financial Services",
+      "price": 48.51,
+      "marketCapB": 58.1,
+      "eligible": true
+    },
+    {
+      "ticker": "RKLB",
+      "rank": 565,
+      "score": 5.213333333333333,
+      "sector": "Industrials",
+      "price": 53.47,
+      "marketCapB": 34.7,
+      "eligible": true
+    },
+    {
+      "ticker": "FISV",
+      "rank": 566,
+      "score": 5.142857142857143,
+      "sector": "Technology",
+      "price": 49.85,
+      "marketCapB": 26.5,
+      "eligible": true
+    },
+    {
+      "ticker": "F",
+      "rank": 567,
+      "score": 5.062857142857143,
+      "sector": "Consumer Cyclical",
+      "price": 12.2,
+      "marketCapB": 48.8,
+      "eligible": true
+    },
+    {
+      "ticker": "NVR",
+      "rank": 568,
+      "score": 5.053809523809524,
+      "sector": "Consumer Cyclical",
+      "price": 5944.51,
+      "marketCapB": 15.9,
+      "eligible": true
+    },
+    {
+      "ticker": "BMNR",
+      "rank": 569,
+      "score": 5.052380952380952,
+      "sector": "Financial Services",
+      "price": 19.67,
+      "marketCapB": 11.9,
+      "eligible": true
+    },
+    {
+      "ticker": "AXON",
+      "rank": 570,
+      "score": 5.047142857142857,
+      "sector": "Industrials",
+      "price": 424.73,
+      "marketCapB": 34.5,
+      "eligible": true
+    },
+    {
+      "ticker": "MOH",
+      "rank": 571,
+      "score": 5.011428571428572,
+      "sector": "Healthcare",
+      "price": 205.1,
+      "marketCapB": 10.6,
+      "eligible": true
+    },
+    {
+      "ticker": "GIS",
+      "rank": 572,
+      "score": 4.918571428571429,
+      "sector": "Consumer Defensive",
+      "price": 34.53,
+      "marketCapB": 18.5,
+      "eligible": true
+    },
+    {
+      "ticker": "PEN",
+      "rank": 573,
+      "score": 4.879047619047618,
+      "sector": "Healthcare",
+      "price": 319.17,
+      "marketCapB": 12.6,
+      "eligible": true
+    },
+    {
+      "ticker": "CPT",
+      "rank": 574,
+      "score": 4.827619047619049,
+      "sector": "Real Estate",
+      "price": 101.57,
+      "marketCapB": 11.7,
+      "eligible": true
+    },
+    {
+      "ticker": "LEN",
+      "rank": 575,
+      "score": 4.701904761904762,
+      "sector": "Consumer Cyclical",
+      "price": 86.6,
+      "marketCapB": 20.7,
+      "eligible": true
+    },
+    {
+      "ticker": "ASTS",
+      "rank": 576,
+      "score": 4.690476190476191,
+      "sector": "Technology",
+      "price": 39.31,
+      "marketCapB": 15.4,
+      "eligible": true
+    },
+    {
+      "ticker": "LI",
+      "rank": 577,
+      "score": 4.651428571428571,
+      "sector": "Consumer Cyclical",
+      "price": 10.99,
+      "marketCapB": 10.8,
+      "eligible": true
+    },
+    {
+      "ticker": "TSLA",
+      "rank": 578,
+      "score": 4.650476190476191,
+      "sector": "Consumer Cyclical",
+      "price": 396.49,
+      "marketCapB": 1575.3,
+      "eligible": true
+    },
+    {
+      "ticker": "UHAL",
+      "rank": 579,
+      "score": 4.466666666666667,
+      "sector": "Industrials",
+      "price": 57.04,
+      "marketCapB": 11.1,
+      "eligible": true
+    },
+    {
+      "ticker": "WBD",
+      "rank": 580,
+      "score": 3.8696428571428574,
+      "sector": "Communication Services",
+      "price": 30.95,
+      "marketCapB": 77.6,
+      "eligible": true
+    },
+    {
+      "ticker": "CCJ",
+      "rank": 581,
+      "score": 3.1819047619047622,
+      "sector": "Energy",
+      "price": 75.31,
+      "marketCapB": 32.8,
+      "eligible": true
+    }
+  ]
+}
