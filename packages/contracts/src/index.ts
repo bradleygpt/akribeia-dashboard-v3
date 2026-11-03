@@ -326,7 +326,7 @@ export const BuildManifestSchema = z
     publishedAt: IsoDateTimeSchema.optional(),
     status: z.enum(["healthy", "degraded", "failed"]),
     publication: PublicationSchema,
-    files: z.record(ArtifactFileSchema),
+    files: z.record(z.string(), ArtifactFileSchema),
   })
   .superRefine((value, context) => {
     const files = Object.values(value.files);
@@ -705,7 +705,7 @@ export type FactorCoverage = z.infer<typeof FactorCoverageSchema>;
 const ScoringSummarySchema = z
   .object({
     method: z.literal("weighted-five-pillar"),
-    weights: z.record(ScoringPillarSchema, z.number().finite().nonnegative()),
+    weights: z.partialRecord(ScoringPillarSchema, z.number().finite().nonnegative()),
     missingDataPolicy: z.enum(["require-complete", "renormalize-explicitly"]),
     minimumCoverage: z.number().min(0).max(1),
     eligibleNormalization: z.enum(["total-weight", "available-weight"]),
@@ -1274,7 +1274,7 @@ export const ModelCardSchema = z
     method: z
       .object({
         name: z.literal("weighted-five-pillar"),
-        weights: z.record(ScoringPillarSchema, z.number().finite().nonnegative()),
+        weights: z.partialRecord(ScoringPillarSchema, z.number().finite().nonnegative()),
         missingDataPolicy: z.enum(["require-complete", "renormalize-explicitly"]),
         minimumCoverage: z.number().min(0).max(1),
         normalization: z.enum(["total-weight", "available-weight"]),
@@ -1428,11 +1428,13 @@ export const V2MetricMetadataSchema = z
     default_preset: z.string().min(1),
     pillars: z.array(z.string().min(1)).length(SCORING_PILLARS.length),
     presets: z.record(
+      z.string(),
       z.object({
         weights: z.record(z.string(), z.number().finite().nonnegative()),
       }),
     ),
     pillar_metrics: z.record(
+      z.string(),
       z.array(
         z.object({
           key: z.string().min(1),
@@ -1965,6 +1967,7 @@ const SecSeriesIdSchema = z.string().regex(/^S\d{9}$/);
 const SecClassIdSchema = z.string().regex(/^C\d{9}$/);
 
 export const SecCompanyTickerAssociationsSchema = z.record(
+  z.string(),
   z
     .object({
       cik_str: z.number().int().nonnegative(),

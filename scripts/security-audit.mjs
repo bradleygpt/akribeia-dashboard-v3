@@ -136,9 +136,25 @@ for (const [node, entry] of Object.entries(lock.packages ?? {})) {
     // trap as fast-uri 3.1.5 below. miniflare 5.20260926.1-alpha pins 7.29.1, reached by
     // upgrading wrangler + @cloudflare/vite-plugin together (the plugin pins wrangler
     // exactly, so bumping one alone duplicates the tree). A direct pin stays forbidden.
+    // FLOOR RAISED 2026-11-02: eight more advisories (GHSA-4qv8-2p9j-2685 and seven others)
+    // published a range ending below 7.30.1, the fourth stale undici floor. miniflare
+    // 5.20261101.0-beta pins 7.30.1, reached through wrangler 4.156.1 + @cloudflare/vite-plugin
+    // 1.67.0 moved together for the same reason as before.
     const [major, minor, patch] = entry.version.split(".").map(Number);
-    if (major < 7 || (major === 7 && (minor < 29 || (minor === 29 && patch < 1))))
-      throw new Error(`undici regression at ${node}: ${entry.version} < 7.29.1`);
+    if (major < 7 || (major === 7 && (minor < 30 || (minor === 30 && patch < 1))))
+      throw new Error(`undici regression at ${node}: ${entry.version} < 7.30.1`);
+  }
+}
+// zod: GHSA-mrhx-c7xc-m3w5 (memory exhaustion through unbounded array issue accumulation)
+// covers every version <4.6.6, including the whole 3.x line, with no 3.x backport. It is a
+// PRODUCTION dependency (the contracts package validates every artifact), so from 2026-10-24
+// it failed the production gate and blocked every point-in-time refresh until 2026-11-02,
+// when contracts moved to zod 4. Any copy below 4.6.6 is a regression.
+for (const [node, entry] of Object.entries(lock.packages ?? {})) {
+  if ((node === "node_modules/zod" || node.endsWith("/node_modules/zod")) && entry.version) {
+    const [major, minor, patch] = entry.version.split(".").map(Number);
+    if (major < 4 || (major === 4 && (minor < 6 || (minor === 6 && patch < 6))))
+      throw new Error(`zod regression at ${node}: ${entry.version} < 4.6.6`);
   }
 }
 if (lock.packages?.["node_modules/nanoid"]?.version === "3.3.16")
