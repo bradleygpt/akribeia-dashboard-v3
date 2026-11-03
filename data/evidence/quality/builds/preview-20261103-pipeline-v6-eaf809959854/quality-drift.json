@@ -1,0 +1,80 @@
+{
+  "reportSchemaVersion": "1.0.0",
+  "buildId": "preview-20261103-pipeline-v6-eaf809959854",
+  "modelVersion": "3.1.0",
+  "recordedAt": "2026-11-03T06:51:44Z",
+  "quality": {
+    "status": "pass",
+    "rowCount": 637,
+    "uniqueTickerCount": 637,
+    "duplicateTickers": [],
+    "invalidPriceCount": 0,
+    "invalidMarketCapCount": 0,
+    "eligibleSecurities": 582,
+    "excludedSecurities": 55,
+    "factorCoverage": [
+      {
+        "pillar": "valuation",
+        "sourceField": "pillars.Valuation",
+        "weight": 0.2,
+        "availableSecurities": 582,
+        "missingSecurities": 0,
+        "coverage": 1
+      },
+      {
+        "pillar": "growth",
+        "sourceField": "pillars.Growth",
+        "weight": 0.2,
+        "availableSecurities": 580,
+        "missingSecurities": 2,
+        "coverage": 0.9965635738831615
+      },
+      {
+        "pillar": "profitability",
+        "sourceField": "pillars.Profitability",
+        "weight": 0.2,
+        "availableSecurities": 581,
+        "missingSecurities": 1,
+        "coverage": 0.9982817869415808
+      },
+      {
+        "pillar": "momentum",
+        "sourceField": "pillars.Momentum",
+        "weight": 0.2,
+        "availableSecurities": 574,
+        "missingSecurities": 8,
+        "coverage": 0.9862542955326461
+      },
+      {
+        "pillar": "revisions",
+        "sourceField": "pillars.EPS Revisions",
+        "weight": 0.2,
+        "availableSecurities": 582,
+        "missingSecurities": 0,
+        "coverage": 1
+      }
+    ],
+    "scoreDistribution": {
+      "count": 582,
+      "minimum": 3.8696428571428574,
+      "maximum": 9.63904761904762,
+      "mean": 6.93998534064256,
+      "median": 6.967857142857143
+    },
+    "portfolio": {
+      "positionCount": 9,
+      "totalWeightUnits": 1000000000,
+      "weightScale": 1000000000,
+      "reconciled": true
+    }
+  },
+  "drift": {
+    "status": "insufficient-history",
+    "availableBuilds": 1,
+    "requiredBuilds": 2,
+    "baselineBuildId": null,
+    "comparisons": [],
+    "reason": "Only one immutable model observation exists; temporal drift requires at least two comparable builds."
+  },
+  "notice": "Research preview only. Scores and model weights are evidence artifacts, not investment advice or a promise of future performance."
+}

@@ -1,16 +1,16 @@
 {
   "reportSchemaVersion": "1.0.0",
-  "buildId": "preview-20261102-pipeline-v6-188755f87bdd",
+  "buildId": "preview-20261103-pipeline-v6-eaf809959854",
   "modelVersion": "3.1.0",
-  "generatedAt": "2026-11-03T02:54:41.344Z",
-  "decisionCutoffAt": "2026-11-02T23:16:43Z",
+  "generatedAt": "2026-11-03T06:52:34.036Z",
+  "decisionCutoffAt": "2026-11-03T06:13:24Z",
   "status": "partial-retrospective-metadata",
   "historicalValidationEligible": false,
   "sourceReceipt": {
-    "path": "data/reference/sec/filing-submissions/2026-11-03/receipt.json",
-    "sha256": "2696b826d5dd9f4e744ce69dd591e00f644643e0898959b219c002a6798cc056",
+    "path": "data/reference/sec/filing-submissions/2026-11-03-preview-20261103-pipeline-v6-eaf809959854/receipt.json",
+    "sha256": "50a00498957f1c1b460513d69b6491c26d386c368d3d8e4981068f5f9d201038",
     "snapshotId": "2026-11-03",
-    "retrievedAt": "2026-11-03T02:54:41.344Z"
+    "retrievedAt": "2026-11-03T06:52:34.036Z"
   },
   "selection": {
     "policy": "dashboard-top-scores-and-active-portfolio",
@@ -21,6 +21,34 @@
     "unmatchedTickerCount": 0
   },
   "entries": [
+    {
+      "ticker": "ABBV",
+      "provisionalSecurityId": "AKR-TICKER:ABBV",
+      "cik": "0001551152",
+      "secName": "AbbVie Inc.",
+      "tickerPresentInSubmission": true,
+      "latestPeriodic": {
+        "accessionNumber": "0001551152-26-000026",
+        "form": "10-Q",
+        "filingDate": "2026-08-03",
+        "reportDate": "2026-06-30",
+        "acceptedAt": "2026-08-03T18:14:01.000Z",
+        "primaryDocument": "abbv-20260630.htm",
+        "availabilityBasis": "edgar-acceptance-time",
+        "eligibleAtCutoff": true
+      },
+      "latestCurrent": {
+        "accessionNumber": "0001104659-26-121322",
+        "form": "8-K",
+        "filingDate": "2026-11-02",
+        "reportDate": "2026-10-28",
+        "acceptedAt": "2026-11-02T21:05:38.000Z",
+        "primaryDocument": "tm2628215d1_8k.htm",
+        "availabilityBasis": "edgar-acceptance-time",
+        "eligibleAtCutoff": true
+      },
+      "filingsAfterCutoffExcluded": 0
+    },
     {
       "ticker": "ALL",
       "provisionalSecurityId": "AKR-TICKER:ALL",
@@ -44,34 +72,6 @@
         "reportDate": "2026-10-15",
         "acceptedAt": "2026-10-15T11:41:31.000Z",
         "primaryDocument": "all-20261015.htm",
-        "availabilityBasis": "edgar-acceptance-time",
-        "eligibleAtCutoff": true
-      },
-      "filingsAfterCutoffExcluded": 0
-    },
-    {
-      "ticker": "BIIB",
-      "provisionalSecurityId": "AKR-TICKER:BIIB",
-      "cik": "0000875045",
-      "secName": "BIOGEN INC.",
-      "tickerPresentInSubmission": true,
-      "latestPeriodic": {
-        "accessionNumber": "0000875045-26-000096",
-        "form": "10-Q",
-        "filingDate": "2026-10-28",
-        "reportDate": "2026-09-30",
-        "acceptedAt": "2026-10-28T10:23:04.000Z",
-        "primaryDocument": "biib-20260930.htm",
-        "availabilityBasis": "edgar-acceptance-time",
-        "eligibleAtCutoff": true
-      },
-      "latestCurrent": {
-        "accessionNumber": "0000875045-26-000094",
-        "form": "8-K",
-        "filingDate": "2026-10-28",
-        "reportDate": "2026-10-28",
-        "acceptedAt": "2026-10-28T10:07:33.000Z",
-        "primaryDocument": "biib-20261028.htm",
         "availabilityBasis": "edgar-acceptance-time",
         "eligibleAtCutoff": true
       },
@@ -131,7 +131,7 @@
         "availabilityBasis": "edgar-acceptance-time",
         "eligibleAtCutoff": true
       },
-      "filingsAfterCutoffExcluded": 1
+      "filingsAfterCutoffExcluded": 0
     },
     {
       "ticker": "EXPE",
@@ -190,28 +190,28 @@
       "filingsAfterCutoffExcluded": 0
     },
     {
-      "ticker": "LLY",
-      "provisionalSecurityId": "AKR-TICKER:LLY",
-      "cik": "0000059478",
-      "secName": "ELI LILLY & Co",
+      "ticker": "JLL",
+      "provisionalSecurityId": "AKR-TICKER:JLL",
+      "cik": "0001037976",
+      "secName": "JONES LANG LASALLE INC",
       "tickerPresentInSubmission": true,
       "latestPeriodic": {
-        "accessionNumber": "0000059478-26-000108",
+        "accessionNumber": "0001037976-26-000189",
         "form": "10-Q",
-        "filingDate": "2026-10-29",
+        "filingDate": "2026-10-28",
         "reportDate": "2026-09-30",
-        "acceptedAt": "2026-10-29T15:35:46.000Z",
-        "primaryDocument": "lly-20260930.htm",
+        "acceptedAt": "2026-10-28T17:41:50.000Z",
+        "primaryDocument": "jll-20260930.htm",
         "availabilityBasis": "edgar-acceptance-time",
         "eligibleAtCutoff": true
       },
       "latestCurrent": {
-        "accessionNumber": "0000059478-26-000104",
+        "accessionNumber": "0001037976-26-000191",
         "form": "8-K",
-        "filingDate": "2026-10-29",
+        "filingDate": "2026-10-30",
         "reportDate": "2026-10-29",
-        "acceptedAt": "2026-10-29T11:03:30.000Z",
-        "primaryDocument": "lly-20261029.htm",
+        "acceptedAt": "2026-10-30T11:56:01.000Z",
+        "primaryDocument": "jll-20261029.htm",
         "availabilityBasis": "edgar-acceptance-time",
         "eligibleAtCutoff": true
       },
@@ -274,6 +274,34 @@
       "filingsAfterCutoffExcluded": 0
     },
     {
+      "ticker": "REGN",
+      "provisionalSecurityId": "AKR-TICKER:REGN",
+      "cik": "0000872589",
+      "secName": "REGENERON PHARMACEUTICALS, INC.",
+      "tickerPresentInSubmission": true,
+      "latestPeriodic": {
+        "accessionNumber": "0000872589-26-000034",
+        "form": "10-Q",
+        "filingDate": "2026-10-30",
+        "reportDate": "2026-09-30",
+        "acceptedAt": "2026-10-30T10:55:31.000Z",
+        "primaryDocument": "regn-20260930.htm",
+        "availabilityBasis": "edgar-acceptance-time",
+        "eligibleAtCutoff": true
+      },
+      "latestCurrent": {
+        "accessionNumber": "0000872589-26-000032",
+        "form": "8-K",
+        "filingDate": "2026-10-30",
+        "reportDate": "2026-10-30",
+        "acceptedAt": "2026-10-30T10:50:20.000Z",
+        "primaryDocument": "regn-20261030.htm",
+        "availabilityBasis": "edgar-acceptance-time",
+        "eligibleAtCutoff": true
+      },
+      "filingsAfterCutoffExcluded": 0
+    },
+    {
       "ticker": "SNDK",
       "provisionalSecurityId": "AKR-TICKER:SNDK",
       "cik": "0002023554",
@@ -302,56 +330,28 @@
       "filingsAfterCutoffExcluded": 0
     },
     {
-      "ticker": "URI",
-      "provisionalSecurityId": "AKR-TICKER:URI",
-      "cik": "0001067701",
-      "secName": "UNITED RENTALS, INC.",
+      "ticker": "STZ",
+      "provisionalSecurityId": "AKR-TICKER:STZ",
+      "cik": "0000016918",
+      "secName": "CONSTELLATION BRANDS, INC.",
       "tickerPresentInSubmission": true,
       "latestPeriodic": {
-        "accessionNumber": "0001067701-26-000034",
+        "accessionNumber": "0000016918-26-000040",
         "form": "10-Q",
-        "filingDate": "2026-10-21",
-        "reportDate": "2026-09-30",
-        "acceptedAt": "2026-10-21T20:21:14.000Z",
-        "primaryDocument": "uri-20260930.htm",
+        "filingDate": "2026-10-07",
+        "reportDate": "2026-08-31",
+        "acceptedAt": "2026-10-07T18:00:50.000Z",
+        "primaryDocument": "stz-20260831.htm",
         "availabilityBasis": "edgar-acceptance-time",
         "eligibleAtCutoff": true
       },
       "latestCurrent": {
-        "accessionNumber": "0001104659-26-120211",
+        "accessionNumber": "0000016918-26-000039",
         "form": "8-K",
-        "filingDate": "2026-10-29",
-        "reportDate": "2026-10-23",
-        "acceptedAt": "2026-10-29T20:15:43.000Z",
-        "primaryDocument": "tm2628016d6_8k.htm",
-        "availabilityBasis": "edgar-acceptance-time",
-        "eligibleAtCutoff": true
-      },
-      "filingsAfterCutoffExcluded": 0
-    },
-    {
-      "ticker": "XEL",
-      "provisionalSecurityId": "AKR-TICKER:XEL",
-      "cik": "0000072903",
-      "secName": "XCEL ENERGY INC",
-      "tickerPresentInSubmission": true,
-      "latestPeriodic": {
-        "accessionNumber": "0000072903-26-000181",
-        "form": "10-Q",
-        "filingDate": "2026-10-29",
-        "reportDate": "2026-09-30",
-        "acceptedAt": "2026-10-29T19:30:29.000Z",
-        "primaryDocument": "xel-20260930.htm",
-        "availabilityBasis": "edgar-acceptance-time",
-        "eligibleAtCutoff": true
-      },
-      "latestCurrent": {
-        "accessionNumber": "0001193125-26-442653",
-        "form": "8-K",
-        "filingDate": "2026-11-02",
-        "reportDate": "2026-11-02",
-        "acceptedAt": "2026-11-02T12:17:28.000Z",
-        "primaryDocument": "d132424d8k.htm",
+        "filingDate": "2026-10-06",
+        "reportDate": "2026-10-06",
+        "acceptedAt": "2026-10-06T20:18:54.000Z",
+        "primaryDocument": "stz-20261006.htm",
         "availabilityBasis": "edgar-acceptance-time",
         "eligibleAtCutoff": true
       },
@@ -365,7 +365,7 @@
     "tickerVerifiedCount": 12,
     "periodicFilingAvailableCount": 12,
     "currentFilingAvailableCount": 12,
-    "excludedPostCutoffFilingCount": 1,
+    "excludedPostCutoffFilingCount": 0,
     "submissionCoverage": 1
   },
   "limitations": [

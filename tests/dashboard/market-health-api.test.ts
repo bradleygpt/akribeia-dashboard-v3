@@ -54,7 +54,7 @@ const pgiBakedPayload = {
   as_of: "2026-07-01",
 };
 const expectedMarketStaticPath =
-  "/bradleygpt/quant-dashboard-pro-v2/e2ced15c6ad1276b4069a79406b49e06ab72ec01/public/data/market_static.json";
+  "/bradleygpt/quant-dashboard-pro-v2/a7951d19ca30c218615a008a208383f855676f57/public/data/market_static.json";
 
 function isExpectedMarketStaticUrl(input: string | URL | Request): boolean {
   try {
@@ -121,7 +121,7 @@ describe("V3 Market Health server adapter", () => {
         pgi: { ok: true, fredKeyless: true, source: "live", stale: false },
       },
       source: {
-        v2AppCommit: "e2ced15c6ad1276b4069a79406b49e06ab72ec01",
+        v2AppCommit: "a7951d19ca30c218615a008a208383f855676f57",
         staticAsOf: "2026-07-29",
       },
     });
