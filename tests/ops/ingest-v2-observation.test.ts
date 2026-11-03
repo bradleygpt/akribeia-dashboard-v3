@@ -44,6 +44,8 @@ function fixture(
   options: {
     asOf?: Record<number, string | undefined>;
     corruptDigest?: number;
+    // floor -> how many requests for its CDN file answer 403 before it is served
+    cdn403?: Record<number, number>;
     generatedAt?: string;
   } = {},
 ): Fixture {
@@ -73,13 +75,33 @@ function fixture(
 
   const fixturesPath = join(root, "fixtures.json");
   writeFileSync(fixturesPath, JSON.stringify(files));
+  const flakyPath = join(root, "flaky.json");
+  writeFileSync(
+    flakyPath,
+    JSON.stringify(
+      Object.fromEntries(
+        Object.entries(options.cdn403 ?? {}).map(([floor, n]) => [
+          `${CDN}/universe_floor${floor}.json`,
+          n,
+        ]),
+      ),
+    ),
+  );
   const stubPath = join(root, "fetch-stub.mjs");
   writeFileSync(
     stubPath,
     `import { readFileSync } from "node:fs";
 const files = JSON.parse(readFileSync(process.env.FETCH_FIXTURES, "utf8"));
-globalThis.fetch = async (url) =>
-  url in files ? new Response(files[url], { status: 200 }) : new Response("missing", { status: 404 });
+const flaky = JSON.parse(readFileSync(process.env.FETCH_FLAKY, "utf8"));
+globalThis.fetch = async (url) => {
+  if (flaky[url] > 0) {
+    flaky[url] -= 1;
+    return new Response("Package size exceeded the configured limit of 50 MB.", { status: 403 });
+  }
+  return url in files
+    ? new Response(files[url], { status: 200 })
+    : new Response("missing", { status: 404 });
+};
 `,
   );
   mkdirSync(join(root, "data", "preview"), { recursive: true });
@@ -105,7 +127,16 @@ globalThis.fetch = async (url) =>
       spawnSync(
         process.execPath,
         ["--import", pathToFileURL(stubPath).href, SCRIPT, "--v2-commit", V2, ...extraArgs],
-        { cwd: root, encoding: "utf8", env: { ...process.env, FETCH_FIXTURES: fixturesPath } },
+        {
+          cwd: root,
+          encoding: "utf8",
+          env: {
+            ...process.env,
+            FETCH_FIXTURES: fixturesPath,
+            FETCH_FLAKY: flakyPath,
+            INGEST_FETCH_RETRY_BASE_MS: "1",
+          },
+        },
       ),
   };
 }
@@ -277,5 +308,27 @@ describe("V2 observation ingest", () => {
     });
     expect(readFileSync(join(root, "data/preview/vertical-slice-build.json"), "utf8")).toBe(recipe);
     expect(existsSync(join(root, "data/evidence/upstream-stalls"))).toBe(false);
+  });
+
+  it("retries jsDelivr's 403 on a just-pushed data commit until it serves the file", () => {
+    // 2026-11-03: the nightly dispatched 31 s after its akribeia-data push and the ingest died
+    // on jsDelivr's transient "Package size exceeded" 403.
+    const { root, run } = fixture({ cdn403: { 1: 3 } });
+    const result = run();
+
+    expect(result.status, String(result.stderr)).toBe(0);
+    expect(String(result.stderr)).toMatch(/universe_floor1\.json -> HTTP 403; retrying/);
+    expect(existsSync(join(root, "data/observations/current/provenance.json"))).toBe(true);
+  });
+
+  it("gives up after the last attempt and leaves the active build alone", () => {
+    const { root, run, recipeBefore } = fixture({ cdn403: { 0: 99 } });
+    const result = run();
+
+    expect(result.status).not.toBe(0);
+    expect(String(result.stderr)).toMatch(/universe_floor0\.json -> HTTP 403 \(after 6 attempts\)/);
+    expect(readFileSync(join(root, "data/preview/vertical-slice-build.json"), "utf8")).toBe(
+      recipeBefore,
+    );
   });
 });
