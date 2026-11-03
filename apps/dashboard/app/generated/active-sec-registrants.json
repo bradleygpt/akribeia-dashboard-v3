@@ -1,6 +1,6 @@
 {
   "crosswalkSchemaVersion": "1.0.0",
-  "buildId": "preview-20261023-pipeline-v6-70aa855462b1",
+  "buildId": "preview-20261102-pipeline-v6-188755f87bdd",
   "modelVersion": "3.1.0",
   "generatedAt": "2026-07-30T06:49:38.889Z",
   "status": "partial-current-snapshot",
@@ -12,17 +12,17 @@
     "retrievedAt": "2026-07-30T06:49:38.889Z"
   },
   "coverage": {
-    "activeSecurityCount": 635,
-    "matchedSecurityCount": 624,
+    "activeSecurityCount": 636,
+    "matchedSecurityCount": 625,
     "unmatchedSecurityCount": 11,
     "ambiguousSecurityCount": 0,
-    "operatingCompanyCount": 580,
-    "companyCikMatchCount": 577,
+    "operatingCompanyCount": 581,
+    "companyCikMatchCount": 578,
     "registeredFundCount": 55,
     "fundClassMatchCount": 47,
-    "uniqueCikCount": 587,
-    "registrantCoverage": 0.9826771653543307,
-    "companyCikCoverage": 0.9948275862068966,
+    "uniqueCikCount": 588,
+    "registrantCoverage": 0.9827044025157232,
+    "companyCikCoverage": 0.9948364888123924,
     "fundClassCoverage": 0.8545454545454545,
     "operatingCompanyListingIdentityCoverage": 0
   },
@@ -1491,17 +1491,6 @@
       "identityScope": "registrant-only"
     },
     {
-      "ticker": "CORT",
-      "provisionalSecurityId": "AKR-TICKER:CORT",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0001088856",
-      "secTitle": "CORCEPT THERAPEUTICS INC",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
       "ticker": "COST",
       "provisionalSecurityId": "AKR-TICKER:COST",
       "sourceType": "company-ticker",
@@ -2212,6 +2201,17 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0000065984",
       "secTitle": "ENTERGY CORP /DE/",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
+      "ticker": "EVR",
+      "provisionalSecurityId": "AKR-TICKER:EVR",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0001360901",
+      "secTitle": "Evercore Inc.",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"
@@ -3449,17 +3449,6 @@
       "identityScope": "registrant-only"
     },
     {
-      "ticker": "KNX",
-      "provisionalSecurityId": "AKR-TICKER:KNX",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0001492691",
-      "secTitle": "Knight-Swift Transportation Holdings Inc.",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
       "ticker": "KO",
       "provisionalSecurityId": "AKR-TICKER:KO",
       "sourceType": "company-ticker",
@@ -3653,6 +3642,17 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0000855658",
       "secTitle": "LATTICE SEMICONDUCTOR CORP",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
+      "ticker": "LTH",
+      "provisionalSecurityId": "AKR-TICKER:LTH",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0001869198",
+      "secTitle": "Life Time Group Holdings, Inc.",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"
@@ -4082,17 +4082,6 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0000036270",
       "secTitle": "M&T BANK CORP",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
-      "ticker": "MTCH",
-      "provisionalSecurityId": "AKR-TICKER:MTCH",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0000891103",
-      "secTitle": "Match Group, Inc.",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"
@@ -4769,6 +4758,17 @@
       "identityScope": "registrant-only"
     },
     {
+      "ticker": "PNR",
+      "provisionalSecurityId": "AKR-TICKER:PNR",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0000077360",
+      "secTitle": "PENTAIR plc",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
       "ticker": "PNW",
       "provisionalSecurityId": "AKR-TICKER:PNW",
       "sourceType": "company-ticker",
@@ -5402,17 +5402,6 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0000091440",
       "secTitle": "Snap-on Inc",
-      "seriesId": null,
-      "classId": null,
-      "identityScope": "registrant-only"
-    },
-    {
-      "ticker": "SNAP",
-      "provisionalSecurityId": "AKR-TICKER:SNAP",
-      "sourceType": "company-ticker",
-      "matchMethod": "exact-current-ticker",
-      "cik": "0001564408",
-      "secTitle": "Snap Inc",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"
@@ -6375,6 +6364,17 @@
       "identityScope": "registrant-only"
     },
     {
+      "ticker": "VSAT",
+      "provisionalSecurityId": "AKR-TICKER:VSAT",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0000797721",
+      "secTitle": "VIASAT INC",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
       "ticker": "VSS",
       "provisionalSecurityId": "AKR-TICKER:VSS",
       "sourceType": "mutual-fund-class",
@@ -6623,6 +6623,17 @@
       "matchMethod": "exact-current-ticker",
       "cik": "0000107263",
       "secTitle": "WILLIAMS COMPANIES, INC.",
+      "seriesId": null,
+      "classId": null,
+      "identityScope": "registrant-only"
+    },
+    {
+      "ticker": "WMS",
+      "provisionalSecurityId": "AKR-TICKER:WMS",
+      "sourceType": "company-ticker",
+      "matchMethod": "exact-current-ticker",
+      "cik": "0001604028",
+      "secTitle": "ADVANCED DRAINAGE SYSTEMS, INC.",
       "seriesId": null,
       "classId": null,
       "identityScope": "registrant-only"

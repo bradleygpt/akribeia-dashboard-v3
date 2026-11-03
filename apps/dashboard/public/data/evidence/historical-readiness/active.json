@@ -1,8 +1,8 @@
 {
   "historicalReadinessSchemaVersion": "1.0.0",
-  "buildId": "preview-20261023-pipeline-v6-70aa855462b1",
+  "buildId": "preview-20261102-pipeline-v6-188755f87bdd",
   "modelVersion": "3.1.0",
-  "assessedAt": "2026-10-23T04:44:52Z",
+  "assessedAt": "2026-11-03T02:53:41Z",
   "status": "blocked",
   "historicalValidationEligible": false,
   "inventory": {
@@ -33,7 +33,7 @@
           "strictInputIssues": [
             {
               "path": "rows.664.price",
-              "message": "Expected number, received null"
+              "message": "Invalid input: expected number, received null"
             }
           ]
         },
@@ -70,23 +70,23 @@
           "strictInputIssues": [
             {
               "path": "meta.sectors.0",
-              "message": "String must contain at least 1 character(s)"
+              "message": "Too small: expected string to have >=1 characters"
             },
             {
               "path": "rows.453.sector",
-              "message": "String must contain at least 1 character(s)"
+              "message": "Too small: expected string to have >=1 characters"
             },
             {
               "path": "rows.453.industry",
-              "message": "String must contain at least 1 character(s)"
+              "message": "Too small: expected string to have >=1 characters"
             },
             {
               "path": "rows.775.sector",
-              "message": "String must contain at least 1 character(s)"
+              "message": "Too small: expected string to have >=1 characters"
             },
             {
               "path": "rows.775.industry",
-              "message": "String must contain at least 1 character(s)"
+              "message": "Too small: expected string to have >=1 characters"
             }
           ]
         },
