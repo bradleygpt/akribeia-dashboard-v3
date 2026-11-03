@@ -4,7 +4,8 @@ name: Data freshness dead-man
 # point-in-time refresh PR has waited more than 36 hours. Before this workflow (audit
 # 2026-10-20, findings E1/E2) nothing alerted: main's data sat past its 7-day window for
 # about 33 of 54 days, 14 of them with every run green, and refresh PRs waited up to 19
-# days unmerged. A failure opens one issue, or comments on the open one.
+# days unmerged. A failure opens one issue, or comments on the open one; a pass closes it
+# (2026-11-02: #103 stayed open after recovery because nothing closed it).
 
 on:
   workflow_dispatch:
@@ -76,4 +77,19 @@ jobs:
             gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body-file "$body"
           else
             gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body-file "$body"
+          fi
+
+      - name: Close the alert issue on recovery
+        if: success()
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="Data freshness alert: stale active build or a waiting refresh PR"
+          existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --limit 100 \
+            --json number,title --jq ".[] | select(.title == \"$title\") | .number" | head -1)
+          if [[ -n "$existing" ]]; then
+            run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            gh issue close "$existing" --repo "$GITHUB_REPOSITORY" --reason completed \
+              --comment "Recovered: $run_url passed (active build inside its freshness window, no refresh PR waiting more than 36 h)."
           fi
