@@ -96,7 +96,7 @@ describe("historical point-in-time readiness", () => {
       strictInputIssues: [
         {
           path: "rows.664.price",
-          message: "Expected number, received null",
+          message: "Invalid input: expected number, received null",
         },
       ],
     });
