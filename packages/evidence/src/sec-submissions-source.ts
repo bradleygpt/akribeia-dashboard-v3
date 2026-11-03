@@ -120,6 +120,41 @@ async function verifyExistingReceipt(
   }
 }
 
+/**
+ * The directory a capture of `ciks` on `snapshotId` belongs in: `<snapshotId>` unless a receipt
+ * there already holds a different CIK set, then `<snapshotId>-<buildId>`.
+ *
+ * The snapshot is named by its UTC capture date, so a catch-up that ingests two observations on
+ * one UTC day captured twice into one directory. The second build selects different companies,
+ * and the immutable receipt refused it (2026-11-03: the 11-02 catch-up at 02:52 UTC held
+ * 2026-11-03, and the 11-03 observation failed "Existing SEC submission receipt does not match").
+ * The same CIK set still reuses the date directory, as two builds did on 2026-08-26.
+ */
+export async function resolveSubmissionSnapshotRoot(
+  baseRoot: string,
+  snapshotId: string,
+  buildId: string,
+  ciks: string[],
+): Promise<string> {
+  const dateRoot = join(baseRoot, snapshotId);
+  const receiptPath = join(dateRoot, "receipt.json");
+  let payload: Uint8Array;
+  try {
+    payload = await readFile(receiptPath);
+  } catch (error) {
+    if (hasErrorCode(error, "ENOENT")) {
+      return dateRoot;
+    }
+    throw error;
+  }
+
+  const receipt = SecSubmissionSourceReceiptSchema.parse(parseJson(receiptPath, payload));
+  const held = receipt.sources.map(({ cik }) => cik).join(",");
+  return held === canonicalCiks(ciks).join(",")
+    ? dateRoot
+    : join(baseRoot, `${snapshotId}-${buildId}`);
+}
+
 function wait(milliseconds: number): Promise<void> {
   return new Promise((resolveWait) => setTimeout(resolveWait, milliseconds));
 }

@@ -1,7 +1,10 @@
-import { readFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import { appendFile, readFile } from "node:fs/promises";
+import { relative, resolve } from "node:path";
 import { SecRegistrantCrosswalkSchema, VerticalSliceDashboardSchema } from "@akribeia/contracts";
-import { captureSecSubmissionSources } from "./sec-submissions-source.js";
+import {
+  captureSecSubmissionSources,
+  resolveSubmissionSnapshotRoot,
+} from "./sec-submissions-source.js";
 
 const snapshotId = process.env.SEC_SNAPSHOT_ID;
 if (snapshotId === undefined || !/^\d{4}-\d{2}-\d{2}$/.test(snapshotId)) {
@@ -32,10 +35,25 @@ const ciks = crosswalk.matches
   .map(({ cik }) => cik);
 const result = await captureSecSubmissionSources({
   snapshotId,
-  outputRoot: resolve(`data/reference/sec/filing-submissions/${snapshotId}`),
+  outputRoot: await resolveSubmissionSnapshotRoot(
+    resolve("data/reference/sec/filing-submissions"),
+    snapshotId,
+    dashboard.buildId,
+    ciks,
+  ),
   ciks,
   userAgent,
 });
+// The receipt may sit in a per-build directory (see resolveSubmissionSnapshotRoot); hand its
+// path to the filing-availability step that runs next in the refresh workflow.
+if (process.env.GITHUB_ENV) {
+  const receiptPath = relative(resolve("."), result.receiptPath).replaceAll("\\", "/");
+  await appendFile(
+    process.env.GITHUB_ENV,
+    `SEC_SUBMISSIONS_RECEIPT=${receiptPath}
+`,
+  );
+}
 
 process.stdout.write(
   `${JSON.stringify(

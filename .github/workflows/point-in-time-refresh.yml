@@ -183,6 +183,7 @@ jobs:
         if: steps.ingest.outputs.disposition == 'ingested'
         shell: bash
         run: |
+          # SEC_SUBMISSIONS_RECEIPT (set by filing-sources:fetch) names the receipt it wrote.
           SEC_SNAPSHOT_ID="$SEC_SNAPSHOT_ID" npm run filing-availability:generate
           npm run historical-readiness:generate
           npm run universe-membership:generate

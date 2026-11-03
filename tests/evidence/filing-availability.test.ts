@@ -8,7 +8,11 @@ import {
   FilingAvailabilityReportSchema,
   SecSubmissionSourceReceiptSchema,
 } from "@akribeia/contracts";
-import { captureSecSubmissionSources, generateFilingAvailability } from "@akribeia/evidence";
+import {
+  captureSecSubmissionSources,
+  generateFilingAvailability,
+  resolveSubmissionSnapshotRoot,
+} from "@akribeia/evidence";
 
 const temporaryDirectories: string[] = [];
 
@@ -143,6 +147,37 @@ describe("SEC submission source capture", () => {
         requestIntervalMs: 0,
       }),
     ).rejects.toThrow('returned CIK "0000000002"');
+  });
+
+  it("gives a second same-day capture of different companies its own directory", async () => {
+    // 2026-11-03: two observations ingested on one UTC day; the second selected other CIKs.
+    const root = await temporaryRoot();
+    const fetchImpl = vi
+      .fn<typeof fetch>()
+      .mockImplementation(
+        async (uri) => new Response(JSON.stringify(submissionHistory(String(uri).slice(-15, -5)))),
+      );
+    const capture = async (buildId: string, ciks: string[]) =>
+      captureSecSubmissionSources({
+        snapshotId: "2026-11-03",
+        outputRoot: await resolveSubmissionSnapshotRoot(root, "2026-11-03", buildId, ciks),
+        ciks,
+        userAgent: "Akribeia-V3 test@example.com",
+        fetchImpl,
+        requestIntervalMs: 0,
+      });
+
+    const first = await capture("preview-20261102-pipeline-v6-aaa", ["0000000001"]);
+    const again = await capture("preview-20261102-pipeline-v6-bbb", ["0000000001"]);
+    const other = await capture("preview-20261103-pipeline-v6-ccc", ["0000000002"]);
+
+    expect(first.receiptPath).toBe(join(root, "2026-11-03", "receipt.json"));
+    expect(again).toMatchObject({ receiptPath: first.receiptPath, disposition: "reused" });
+    expect(other.receiptPath).toBe(
+      join(root, "2026-11-03-preview-20261103-pipeline-v6-ccc", "receipt.json"),
+    );
+    expect(other.receipt.snapshotId).toBe("2026-11-03");
+    expect(other.receipt.sources.map(({ cik }) => cik)).toEqual(["0000000002"]);
   });
 });
 
