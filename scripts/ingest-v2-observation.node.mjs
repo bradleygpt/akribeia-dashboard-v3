@@ -39,6 +39,7 @@ import { Buffer } from "node:buffer";
 import { createHash } from "node:crypto";
 import { mkdir, readdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import { setTimeout as sleep } from "node:timers/promises";
 import { CLOCK_SKEW_HOURS, parseGeneratedAt } from "./v2-generated-at.mjs";
 
 const FLOORS = [0, 1, 10];
@@ -78,10 +79,37 @@ const maxAgeHours = Number(flag("--max-age-hours") ?? 48);
 const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 const v2RawUrl = (path) => `https://raw.githubusercontent.com/${V2_REPOSITORY}/${v2Commit}/${path}`;
 
+// Retries 403, 429, 5xx and network errors with doubling waits (15 s .. 240 s, ~8 min in all,
+// inside the job's 45 min). The nightly dispatches the refresh seconds after it pushes a new
+// akribeia-data commit, and jsDelivr answers a commit that new with HTTP 403 "Package size
+// exceeded the configured limit of 50 MB" for several minutes before serving it (2026-11-03:
+// run 41588626913 fetched 31 s after the push and failed; the same URL served 200 within the
+// hour). A 404 is a real miss and fails at once.
+const FETCH_ATTEMPTS = Number(process.env.INGEST_FETCH_ATTEMPTS ?? 6);
+const FETCH_RETRY_BASE_MS = Number(process.env.INGEST_FETCH_RETRY_BASE_MS ?? 15_000);
+const retryable = (status) => status === 403 || status === 429 || status >= 500;
+
 async function fetchBytes(url) {
-  const res = await globalThis.fetch(url, { redirect: "follow" });
-  if (!res.ok) throw new Error(`fetch ${url} -> HTTP ${res.status}`);
-  return Buffer.from(await res.arrayBuffer());
+  for (let attempt = 1; ; attempt++) {
+    let res;
+    let failure;
+    try {
+      res = await globalThis.fetch(url, { redirect: "follow" });
+    } catch (error) {
+      failure = String(error?.message ?? error);
+    }
+    if (res?.ok) return Buffer.from(await res.arrayBuffer());
+    if (res) {
+      failure = `HTTP ${res.status}`;
+      if (!retryable(res.status)) throw new Error(`fetch ${url} -> ${failure}`);
+    }
+    if (attempt >= FETCH_ATTEMPTS) {
+      throw new Error(`fetch ${url} -> ${failure} (after ${attempt} attempts)`);
+    }
+    const waitMs = FETCH_RETRY_BASE_MS * 2 ** (attempt - 1);
+    process.stderr.write(`fetch ${url} -> ${failure}; retrying in ${waitMs / 1000}s\n`);
+    await sleep(waitMs);
+  }
 }
 
 // The bulk-data pin V2 serves at this commit, with each universe file's digest.
