@@ -13,10 +13,40 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          # full history, so the audit scope below can diff the change against its base
+          fetch-depth: 0
       - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
       - run: npm ci
       - run: npm run ci
-      - run: npm run security:audit
+
+      # DEPENDENCY AUDIT SCOPE (owner decision 2026-11-03). From 2026-10-24 to 2026-11-02 a new
+      # zod advisory failed this step on every point-in-time refresh PR, so no data reached
+      # production while production kept serving that same zod. A refresh PR -- or the merge of
+      # one on main -- that touches no dependency file now runs the audit in report mode:
+      # advisories warn instead of failing, and every other audit check still fails closed. Any
+      # other PR, and any change to package.json, the lockfile, vendor/ or the audit scripts,
+      # runs the full audit as before. New advisories alert through dependency-audit.yml.
+      - name: Choose the audit scope
+        id: audit_scope
+        shell: bash
+        env:
+          AUDIT_SCOPE_ELIGIBLE: >-
+            ${{ (github.event_name == 'pull_request'
+                 && (startsWith(github.head_ref, 'automation/point-in-time-refresh-')
+                     || startsWith(github.head_ref, 'automation/no-new-upstream-data-')))
+                || (github.event_name == 'push'
+                    && (contains(github.event.head_commit.message, '/automation/point-in-time-refresh-')
+                        || contains(github.event.head_commit.message, '/automation/no-new-upstream-data-'))
+                    && startsWith(github.event.head_commit.message, 'Merge pull request #')) }}
+          AUDIT_SCOPE_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          AUDIT_SCOPE_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: echo "mode=$(node scripts/audit-scope.mjs)" >> "$GITHUB_OUTPUT"
+
+      - name: Dependency audit
+        env:
+          AUDIT_ADVISORIES: ${{ steps.audit_scope.outputs.mode }}
+        run: npm run security:audit
