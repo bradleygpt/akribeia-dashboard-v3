@@ -1,0 +1,22 @@
+{
+  "recordSchemaVersion": "1.0.0",
+  "observationDate": "2026-11-07",
+  "recordedAt": "2026-11-07T11:55:51.492Z",
+  "disposition": "no-new-upstream-data",
+  "countsTowardProspectiveHistory": false,
+  "v2Commit": "9ce8ff039d513cec1b4596bc631c6db50e699a4f",
+  "v2SourceCommit": "5eb1fe6",
+  "v2GeneratedAt": "2026-11-07T11:19:06Z",
+  "bulkDataCommit": "7bc631dbd25ed8478e52714f7c1d95ad20515d58",
+  "dataAsOf": "2026-11-03T00:00:00Z",
+  "universeSha256": {
+    "universe_floor0.json": "4268960a46083cf55cb0ea94c452eb00f0aff91228618895e682c23b6c3279d5",
+    "universe_floor1.json": "b7a0da1855962db82a8c776127161acb570960df278d878261fac8f20c3c5693",
+    "universe_floor10.json": "eaf80995985482c278f5bb3425d0e367eb58769080d6b7f5f2a54b03c256ed5a"
+  },
+  "unchangedSince": {
+    "observationDate": "2026-11-03",
+    "buildId": "preview-20261103-pipeline-v6-eaf809959854"
+  },
+  "reason": "Every V2 universe partition is byte-identical to the 2026-11-03 observation's. This date adds nothing to the prospective count or the maturity gates."
+}
