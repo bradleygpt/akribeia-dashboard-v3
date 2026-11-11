@@ -31,7 +31,7 @@
     "@types/three": "0.180.0",
     "@vitejs/plugin-react": "6.0.4",
     "@vitejs/plugin-rsc": "0.5.35",
-    "react-server-dom-webpack": "19.2.8",
+    "react-server-dom-webpack": "19.2.9",
     "tailwindcss": "4.3.3",
     "typescript": "5.9.3",
     "vinext": "1.0.0",
