@@ -1,6 +1,6 @@
 {
   "ledgerSchemaVersion": "1.0.0",
-  "stallDayCount": 6,
+  "stallDayCount": 7,
   "stalls": [
     {
       "recordSchemaVersion": "1.0.0",
@@ -121,6 +121,28 @@
       "v2Commit": "a3cbc64d75c7e5d1924393edd5855e2522f2e329",
       "v2SourceCommit": "9c1bee7",
       "v2GeneratedAt": "2026-11-10T12:54:30Z",
+      "bulkDataCommit": "7bc631dbd25ed8478e52714f7c1d95ad20515d58",
+      "dataAsOf": "2026-11-03T00:00:00Z",
+      "universeSha256": {
+        "universe_floor0.json": "4268960a46083cf55cb0ea94c452eb00f0aff91228618895e682c23b6c3279d5",
+        "universe_floor1.json": "b7a0da1855962db82a8c776127161acb570960df278d878261fac8f20c3c5693",
+        "universe_floor10.json": "eaf80995985482c278f5bb3425d0e367eb58769080d6b7f5f2a54b03c256ed5a"
+      },
+      "unchangedSince": {
+        "observationDate": "2026-11-03",
+        "buildId": "preview-20261103-pipeline-v6-eaf809959854"
+      },
+      "reason": "Every V2 universe partition is byte-identical to the 2026-11-03 observation's. This date adds nothing to the prospective count or the maturity gates."
+    },
+    {
+      "recordSchemaVersion": "1.0.0",
+      "observationDate": "2026-11-11",
+      "recordedAt": "2026-11-11T12:57:34.121Z",
+      "disposition": "no-new-upstream-data",
+      "countsTowardProspectiveHistory": false,
+      "v2Commit": "a7ecc050a973c328026cd336d486c10c2730ccb6",
+      "v2SourceCommit": "fd07549",
+      "v2GeneratedAt": "2026-11-11T12:04:40Z",
       "bulkDataCommit": "7bc631dbd25ed8478e52714f7c1d95ad20515d58",
       "dataAsOf": "2026-11-03T00:00:00Z",
       "universeSha256": {
